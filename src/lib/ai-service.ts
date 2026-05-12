@@ -18,10 +18,7 @@ interface FetchOptions {
   headers?: Record<string, string>;
 }
 
-export async function aiServiceFetch<T>(
-  path: string,
-  options: FetchOptions = {},
-): Promise<T> {
+export async function aiServiceFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
   const { method = 'POST', body, headers: extraHeaders } = options;
 
   const response = await fetch(`${BASE_URL}${path}`, {

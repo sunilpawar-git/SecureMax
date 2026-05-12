@@ -16,8 +16,7 @@ export function middleware(request: NextRequest) {
   const ip = getClientIp(request);
 
   if (pathname.startsWith('/api/')) {
-    const isAiEndpoint =
-      pathname.includes('/questionnaire') || pathname.includes('/report');
+    const isAiEndpoint = pathname.includes('/questionnaire') || pathname.includes('/report');
 
     const windowMs = isAiEndpoint
       ? RATE_LIMITS.AI_ENDPOINT_WINDOW_MS
@@ -42,10 +41,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/admin/:path*',
-    '/questionnaire/:path*',
-    '/dashboard/:path*',
-    '/api/:path*',
-  ],
+  matcher: ['/admin/:path*', '/questionnaire/:path*', '/dashboard/:path*', '/api/:path*'],
 };

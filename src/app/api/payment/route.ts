@@ -35,10 +35,7 @@ export async function POST(request: NextRequest) {
           key_id: getKeyId(),
         });
       } catch {
-        return NextResponse.json(
-          { error: 'Payment service unavailable' },
-          { status: 503 },
-        );
+        return NextResponse.json({ error: 'Payment service unavailable' }, { status: 503 });
       }
     }
     case 'verify': {
@@ -60,7 +57,10 @@ export async function POST(request: NextRequest) {
       const proposal = validateProposal(body);
       if (!proposal) {
         return NextResponse.json(
-          { error: 'Invalid proposal data. Required: companyName, contactName, contactEmail, facilityCount, reportId' },
+          {
+            error:
+              'Invalid proposal data. Required: companyName, contactName, contactEmail, facilityCount, reportId',
+          },
           { status: 422 },
         );
       }

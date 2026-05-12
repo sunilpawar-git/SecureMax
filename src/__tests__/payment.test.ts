@@ -17,10 +17,7 @@ describe('RazorPay HMAC verification', () => {
     const orderId = 'order_123';
     const paymentId = 'pay_456';
     const body = `${orderId}|${paymentId}`;
-    const signature = crypto
-      .createHmac('sha256', TEST_SECRET)
-      .update(body)
-      .digest('hex');
+    const signature = crypto.createHmac('sha256', TEST_SECRET).update(body).digest('hex');
 
     const result = verifySignature({
       razorpay_order_id: orderId,
@@ -43,10 +40,7 @@ describe('RazorPay HMAC verification', () => {
     const orderId = 'order_123';
     const paymentId = 'pay_456';
     const body = `${orderId}|${paymentId}`;
-    const signature = crypto
-      .createHmac('sha256', TEST_SECRET)
-      .update(body)
-      .digest('hex');
+    const signature = crypto.createHmac('sha256', TEST_SECRET).update(body).digest('hex');
 
     const result = verifySignature({
       razorpay_order_id: 'order_TAMPERED',

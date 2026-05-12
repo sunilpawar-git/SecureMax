@@ -41,10 +41,7 @@ export function handleJwt(token: JWTToken, user?: AuthUser): JWTToken {
   return token;
 }
 
-export function handleSession(
-  sessionUser: SessionUser,
-  token: JWTToken,
-): SessionUser {
+export function handleSession(sessionUser: SessionUser, token: JWTToken): SessionUser {
   return {
     ...sessionUser,
     id: token.sub ?? '',
@@ -68,8 +65,4 @@ export function isAuthorized(
   return true;
 }
 
-export const PROTECTED_ROUTES = [
-  '/admin/:path*',
-  '/questionnaire/:path*',
-  '/dashboard/:path*',
-];
+export const PROTECTED_ROUTES = ['/admin/:path*', '/questionnaire/:path*', '/dashboard/:path*'];

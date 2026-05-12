@@ -22,79 +22,83 @@ export default function QuestionnairePage() {
     if (stored) return stored;
     // Generate unique user ID using crypto for better entropy
     const randomBytes = Array.from(crypto.getRandomValues(new Uint8Array(4)));
-    const randomStr = randomBytes.map(b => b.toString(16).padStart(2, '0')).join('');
+    const randomStr = randomBytes.map((b) => b.toString(16).padStart(2, '0')).join('');
     const newId = `user-${randomStr}`;
     sessionStorage.setItem('audit-user-id', newId);
     return newId;
   }, []);
 
-  const startSession = useCallback(async (track: string) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/questionnaire?action=start', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-User-Id': userId,
-        },
-        body: JSON.stringify({ track }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setSessionId(data.session_id);
-      setCurrentQuestion(data.first_question);
-      setRadarScores(data.radar_scores);
-      setSessionState('active');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to start session');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [userId]);
-
-  const submitAnswer = useCallback(async (answer: string | string[]) => {
-    if (!sessionId || !currentQuestion) return;
-    setIsLoading(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/questionnaire?action=answer', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-User-Id': userId,
-        },
-        body: JSON.stringify({
-          session_id: sessionId,
-          question_id: currentQuestion.id,
-          answer,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setRadarScores(data.radar_scores);
-      setQuestionsAnswered((prev) => prev + 1);
-      if (data.is_complete) {
-        setSessionState('completed');
-        setCurrentQuestion(data.next_question || null);
-      } else {
-        setCurrentQuestion(data.next_question);
+  const startSession = useCallback(
+    async (track: string) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const res = await fetch('/api/questionnaire?action=start', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-User-Id': userId,
+          },
+          body: JSON.stringify({ track }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        setSessionId(data.session_id);
+        setCurrentQuestion(data.first_question);
+        setRadarScores(data.radar_scores);
+        setSessionState('active');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to start session');
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to submit answer');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [sessionId, currentQuestion, userId]);
+    },
+    [userId],
+  );
+
+  const submitAnswer = useCallback(
+    async (answer: string | string[]) => {
+      if (!sessionId || !currentQuestion) return;
+      setIsLoading(true);
+      setError(null);
+      try {
+        const res = await fetch('/api/questionnaire?action=answer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-User-Id': userId,
+          },
+          body: JSON.stringify({
+            session_id: sessionId,
+            question_id: currentQuestion.id,
+            answer,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        setRadarScores(data.radar_scores);
+        setQuestionsAnswered((prev) => prev + 1);
+        if (data.is_complete) {
+          setSessionState('completed');
+          setCurrentQuestion(data.next_question || null);
+        } else {
+          setCurrentQuestion(data.next_question);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to submit answer');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [sessionId, currentQuestion, userId],
+  );
 
   if (sessionState === 'idle') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="max-w-lg w-full space-y-6 text-center">
           <h1 className="text-3xl font-bold text-gray-900">{APP.NAME}</h1>
-          <p className="text-gray-600">
-            Select your audit track to begin the security assessment.
-          </p>
+          <p className="text-gray-600">Select your audit track to begin the security assessment.</p>
           <div className="grid gap-4">
             <button
               onClick={() => startSession('hni')}

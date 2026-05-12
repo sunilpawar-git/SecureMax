@@ -47,15 +47,19 @@ export default function ReportsPage() {
               <tr key={report.id} className="border-b last:border-0">
                 <td className="px-4 py-3 font-mono text-xs">{report.id.slice(0, 8)}...</td>
                 <td className="px-4 py-3">
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                    report.track === 'enterprise' ? 'bg-slate-100' : 'bg-emerald-100'
-                  }`}>
+                  <span
+                    className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      report.track === 'enterprise' ? 'bg-slate-100' : 'bg-emerald-100'
+                    }`}
+                  >
                     {report.track}
                   </span>
                 </td>
                 <td className="px-4 py-3">{report.status}</td>
                 <td className="px-4 py-3">{report.unlocked ? 'Yes' : 'No'}</td>
-                <td className="px-4 py-3 text-gray-500">{new Date(report.createdAt).toLocaleDateString()}</td>
+                <td className="px-4 py-3 text-gray-500">
+                  {new Date(report.createdAt).toLocaleDateString()}
+                </td>
                 <td className="px-4 py-3">
                   <button
                     className="text-xs text-blue-600 hover:underline mr-2 disabled:opacity-50"

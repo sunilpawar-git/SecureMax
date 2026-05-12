@@ -61,11 +61,15 @@ export default function LeadsPage() {
                 </td>
                 <td className="px-4 py-3">{lead.facilityCount}</td>
                 <td className="px-4 py-3">
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[lead.status] || ''}`}>
+                  <span
+                    className={`px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[lead.status] || ''}`}
+                  >
                     {lead.status.replace('_', ' ')}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-gray-500">{new Date(lead.createdAt).toLocaleDateString()}</td>
+                <td className="px-4 py-3 text-gray-500">
+                  {new Date(lead.createdAt).toLocaleDateString()}
+                </td>
               </tr>
             ))}
             {leads.length === 0 && (

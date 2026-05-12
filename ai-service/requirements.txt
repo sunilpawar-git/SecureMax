@@ -16,6 +16,7 @@ httpx>=0.28.0
 # Scraper
 playwright>=1.49.0
 feedparser>=6.0.0
+defusedxml>=0.0.2
 
 # Scheduling
 apscheduler>=3.10.0

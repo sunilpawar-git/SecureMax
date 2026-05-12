@@ -17,7 +17,7 @@ export const SECURITY_HEADERS = {
     "img-src 'self' data: https:",
     "font-src 'self'",
     "connect-src 'self' https://api.razorpay.com",
-    "frame-src https://api.razorpay.com",
+    'frame-src https://api.razorpay.com',
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

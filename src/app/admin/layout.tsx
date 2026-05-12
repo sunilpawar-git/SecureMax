@@ -9,11 +9,7 @@ const NAV_ITEMS = [
   { href: '/admin/linkedin', label: 'LinkedIn' },
 ];
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-slate-900 text-white px-6 py-3">

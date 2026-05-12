@@ -11,7 +11,6 @@ function getSecret(): string {
   return process.env.RAZORPAY_SECRET || '';
 }
 
-
 export interface RazorpayOrder {
   id: string;
   amount: number;
@@ -26,10 +25,7 @@ export interface PaymentVerification {
   razorpay_signature: string;
 }
 
-export async function createOrder(
-  reportId: string,
-  amountInPaise: number,
-): Promise<RazorpayOrder> {
+export async function createOrder(reportId: string, amountInPaise: number): Promise<RazorpayOrder> {
   const keyId = process.env.RAZORPAY_KEY_ID || '';
   const secret = getSecret();
   const authHeader = Buffer.from(`${keyId}:${secret}`).toString('base64');
@@ -62,10 +58,7 @@ export function verifySignature(payment: PaymentVerification): boolean {
   }
 
   const body = `${payment.razorpay_order_id}|${payment.razorpay_payment_id}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(body)
-    .digest('hex');
+  const expectedSignature = crypto.createHmac('sha256', secret).update(body).digest('hex');
 
   const expected = Buffer.from(expectedSignature, 'hex');
   const received = Buffer.from(payment.razorpay_signature, 'hex');

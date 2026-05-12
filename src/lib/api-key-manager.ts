@@ -1,7 +1,7 @@
 /**
  * API Key Manager — Secure server-side key management with encryption
  * Handles storage, retrieval, rotation, and audit logging of API keys
- * 
+ *
  * Security:
  * - Keys encrypted at rest using AES-256-GCM
  * - Keys only decrypted in server components/API routes
@@ -27,7 +27,7 @@ export async function storeApiKey(
   provider: string,
   keyName: string,
   keyValue: string,
-  actor: string = 'system'
+  actor: string = 'system',
 ): Promise<ApiKey> {
   const encrypted = encrypt(keyValue);
   const encryptedName = encrypt(keyName);
@@ -64,7 +64,7 @@ export async function storeApiKey(
  */
 export async function getApiKey(
   provider: string,
-  options: ApiKeyManagerOptions = {}
+  options: ApiKeyManagerOptions = {},
 ): Promise<{ key: string; keyId: string } | null> {
   const apiKey = await prisma.apiKey.findFirst({
     where: { provider, status: 'active' },
@@ -104,7 +104,7 @@ export async function getApiKey(
 export async function rotateApiKey(
   provider: string,
   newKeyValue: string,
-  actor: string = 'admin'
+  actor: string = 'admin',
 ): Promise<ApiKey> {
   // Mark old key as rotated
   const oldKey = await prisma.apiKey.findFirst({
@@ -158,7 +158,7 @@ export async function rotateApiKey(
 export async function revokeApiKey(
   apiKeyId: string,
   actor: string = 'admin',
-  reason?: string
+  reason?: string,
 ): Promise<ApiKey> {
   const apiKey = await prisma.apiKey.update({
     where: { id: apiKeyId },
@@ -184,7 +184,7 @@ export async function revokeApiKey(
  */
 export async function getApiKeyAuditLog(
   apiKeyId: string,
-  limit: number = 100
+  limit: number = 100,
 ): Promise<ApiKeyAudit[]> {
   return prisma.apiKeyAudit.findMany({
     where: { apiKeyId },

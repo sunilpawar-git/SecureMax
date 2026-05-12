@@ -54,9 +54,7 @@ describe('Rate limiting configuration', () => {
   });
 
   it('global limit is higher than AI endpoint', () => {
-    expect(RATE_LIMITS.GLOBAL_MAX_REQUESTS).toBeGreaterThan(
-      RATE_LIMITS.AI_ENDPOINT_MAX_REQUESTS,
-    );
+    expect(RATE_LIMITS.GLOBAL_MAX_REQUESTS).toBeGreaterThan(RATE_LIMITS.AI_ENDPOINT_MAX_REQUESTS);
   });
 
   it('rate limiter blocks after max requests', () => {
@@ -117,9 +115,7 @@ describe('PWA Manifest', () => {
 
 describe('DPDPA Compliance Structure', () => {
   it('consent API route file exists', () => {
-    const consentPath = path.join(
-      process.cwd(), 'src', 'app', 'api', 'consent', 'route.ts',
-    );
+    const consentPath = path.join(process.cwd(), 'src', 'app', 'api', 'consent', 'route.ts');
     expect(fs.existsSync(consentPath)).toBe(true);
   });
 
@@ -133,14 +129,14 @@ describe('next.config.ts integration', () => {
   it('imports SECURITY_HEADERS from config SSOT', () => {
     const configPath = path.join(process.cwd(), 'next.config.ts');
     const content = fs.readFileSync(configPath, 'utf-8');
-    expect(content).toContain("import { SECURITY_HEADERS }");
-    expect(content).toContain("./src/config/security");
+    expect(content).toContain('import { SECURITY_HEADERS }');
+    expect(content).toContain('./src/config/security');
   });
 
   it('does not duplicate header definitions inline', () => {
     const configPath = path.join(process.cwd(), 'next.config.ts');
     const content = fs.readFileSync(configPath, 'utf-8');
-    expect(content).not.toContain("X-Content-Type-Options");
+    expect(content).not.toContain('X-Content-Type-Options');
   });
 });
 

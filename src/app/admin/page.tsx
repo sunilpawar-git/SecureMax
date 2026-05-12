@@ -30,10 +30,26 @@ export default function AdminDashboard() {
   }, []);
 
   const cards = [
-    { label: 'Scraper Status', value: stats.scraperHealthy ? 'Healthy' : 'Degraded', color: stats.scraperHealthy ? 'text-green-600' : 'text-red-600' },
-    { label: 'Threat Intel Articles', value: stats.totalArticles.toString(), color: 'text-slate-900' },
-    { label: 'Pending Enterprise Leads', value: stats.pendingLeads.toString(), color: 'text-amber-600' },
-    { label: 'Reports Generated', value: stats.reportsGenerated.toString(), color: 'text-slate-900' },
+    {
+      label: 'Scraper Status',
+      value: stats.scraperHealthy ? 'Healthy' : 'Degraded',
+      color: stats.scraperHealthy ? 'text-green-600' : 'text-red-600',
+    },
+    {
+      label: 'Threat Intel Articles',
+      value: stats.totalArticles.toString(),
+      color: 'text-slate-900',
+    },
+    {
+      label: 'Pending Enterprise Leads',
+      value: stats.pendingLeads.toString(),
+      color: 'text-amber-600',
+    },
+    {
+      label: 'Reports Generated',
+      value: stats.reportsGenerated.toString(),
+      color: 'text-slate-900',
+    },
   ];
 
   return (

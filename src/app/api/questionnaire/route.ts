@@ -64,10 +64,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(result);
       }
       case 'abandon': {
-        const result = await aiServiceFetch(
-          `/questionnaire/${body.session_id}/abandon`,
-          { body: {}, headers: userHeaders },
-        );
+        const result = await aiServiceFetch(`/questionnaire/${body.session_id}/abandon`, {
+          body: {},
+          headers: userHeaders,
+        });
         return NextResponse.json(result);
       }
       default:
@@ -78,14 +78,8 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     if (error instanceof AIServiceError) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: error.statusCode },
-      );
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
     }
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

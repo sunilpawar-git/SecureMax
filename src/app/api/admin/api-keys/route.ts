@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         if (!body.provider || !body.keyName || !body.keyValue) {
           return NextResponse.json(
             { error: 'Missing provider, keyName, or keyValue' },
-            { status: 400 }
+            { status: 400 },
           );
         }
 
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
           body.provider,
           body.keyName,
           body.keyValue,
-          session.user.email || 'admin'
+          session.user.email || 'admin',
         );
 
         return NextResponse.json({
@@ -52,16 +52,13 @@ export async function POST(request: NextRequest) {
       case 'rotate': {
         // Rotate to a new API key
         if (!body.provider || !body.newKeyValue) {
-          return NextResponse.json(
-            { error: 'Missing provider or newKeyValue' },
-            { status: 400 }
-          );
+          return NextResponse.json({ error: 'Missing provider or newKeyValue' }, { status: 400 });
         }
 
         const apiKey = await rotateApiKey(
           body.provider,
           body.newKeyValue,
-          session.user.email || 'admin'
+          session.user.email || 'admin',
         );
 
         return NextResponse.json({
@@ -74,17 +71,10 @@ export async function POST(request: NextRequest) {
       case 'revoke': {
         // Revoke an API key
         if (!body.keyId) {
-          return NextResponse.json(
-            { error: 'Missing keyId' },
-            { status: 400 }
-          );
+          return NextResponse.json({ error: 'Missing keyId' }, { status: 400 });
         }
 
-        await revokeApiKey(
-          body.keyId,
-          session.user.email || 'admin',
-          body.reason
-        );
+        await revokeApiKey(body.keyId, session.user.email || 'admin', body.reason);
 
         return NextResponse.json({
           success: true,
@@ -95,10 +85,7 @@ export async function POST(request: NextRequest) {
       case 'audit': {
         // Get audit log for an API key
         if (!body.keyId) {
-          return NextResponse.json(
-            { error: 'Missing keyId' },
-            { status: 400 }
-          );
+          return NextResponse.json({ error: 'Missing keyId' }, { status: 400 });
         }
 
         const audits = await getApiKeyAuditLog(body.keyId, body.limit || 100);
@@ -118,15 +105,12 @@ export async function POST(request: NextRequest) {
       default:
         return NextResponse.json(
           { error: 'Invalid action. Use: store, rotate, revoke, audit' },
-          { status: 400 }
+          { status: 400 },
         );
     }
   } catch (error) {
     console.error('API key management error:', error);
-    return NextResponse.json(
-      { error: 'Failed to manage API key' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to manage API key' }, { status: 500 });
   }
 }
 
@@ -139,10 +123,7 @@ export async function GET(request: NextRequest) {
 
   const provider = request.nextUrl.searchParams.get('provider');
   if (!provider) {
-    return NextResponse.json(
-      { error: 'Missing provider parameter' },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'Missing provider parameter' }, { status: 400 });
   }
 
   // Check if provider has an active key (without returning the key itself)

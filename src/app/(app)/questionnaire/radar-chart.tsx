@@ -38,25 +38,46 @@ export function RadarChart({ scores }: RadarChartProps) {
     return polarToCartesian(angle, r);
   });
 
-  const dataPath = dataPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ') + ' Z';
+  const dataPath =
+    dataPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ') + ' Z';
 
-  const avgScore = DOMAIN_KEYS.reduce((sum, key) => sum + (scores[key] ?? 100), 0) / DOMAIN_KEYS.length;
+  const avgScore =
+    DOMAIN_KEYS.reduce((sum, key) => sum + (scores[key] ?? 100), 0) / DOMAIN_KEYS.length;
 
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
       <svg viewBox={`0 0 ${CHART_SIZE} ${CHART_SIZE}`} className="w-full max-w-[240px] mx-auto">
         {gridLevels.map((level) => {
-          const gridPoints = DOMAIN_KEYS.map((_, i) => polarToCartesian(i * angleStep, RADIUS * level));
-          const gridPath = gridPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ') + ' Z';
+          const gridPoints = DOMAIN_KEYS.map((_, i) =>
+            polarToCartesian(i * angleStep, RADIUS * level),
+          );
+          const gridPath =
+            gridPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ') + ' Z';
           return <path key={level} d={gridPath} fill="none" stroke="#e5e7eb" strokeWidth="0.5" />;
         })}
 
         {DOMAIN_KEYS.map((_, i) => {
           const end = polarToCartesian(i * angleStep, RADIUS);
-          return <line key={i} x1={CENTER} y1={CENTER} x2={end.x} y2={end.y} stroke="#e5e7eb" strokeWidth="0.5" />;
+          return (
+            <line
+              key={i}
+              x1={CENTER}
+              y1={CENTER}
+              x2={end.x}
+              y2={end.y}
+              stroke="#e5e7eb"
+              strokeWidth="0.5"
+            />
+          );
         })}
 
-        <path d={dataPath} fill={getColor(avgScore)} fillOpacity={0.2} stroke={getColor(avgScore)} strokeWidth="2" />
+        <path
+          d={dataPath}
+          fill={getColor(avgScore)}
+          fillOpacity={0.2}
+          stroke={getColor(avgScore)}
+          strokeWidth="2"
+        />
 
         {DOMAIN_KEYS.map((key, i) => {
           const labelPos = polarToCartesian(i * angleStep, RADIUS + 18);

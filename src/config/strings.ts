@@ -75,8 +75,7 @@ export const TRUST_STACK = {
   METHODOLOGY: 'CPP Seven Precis Methodology',
   CREDENTIAL: 'Raivan Global \u2014 Registered Security Consultancy',
   ESTIMATED_TIME: '~12 minutes',
-  COMPLIANCE_SIGNAL:
-    'Our findings map to ISO 27001 Annex A.11, PSARA, and BIS/IS standards.',
+  COMPLIANCE_SIGNAL: 'Our findings map to ISO 27001 Annex A.11, PSARA, and BIS/IS standards.',
   VENDOR_POSITIONING:
     'We work alongside your existing security agency. This report becomes a gap brief for them.',
 } as const;

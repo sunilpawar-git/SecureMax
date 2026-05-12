@@ -3,9 +3,7 @@ import { APP, CTA } from '@/config/strings';
 export default function LandingPage() {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen px-6 py-16">
-      <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
-        {APP.NAME}
-      </h1>
+      <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">{APP.NAME}</h1>
       <p className="mt-4 text-lg text-slate-600 text-center max-w-2xl">{APP.TAGLINE}</p>
       <p className="mt-2 text-sm text-slate-500 text-center max-w-xl">{APP.DESCRIPTION}</p>
 
