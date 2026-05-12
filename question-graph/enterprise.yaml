@@ -1,0 +1,222 @@
+# Enterprise Question Graph — SSOT
+# Raivan Global: Physical Security Audit for Enterprise Facilities
+# Version: 1
+# Extends 7 CPP core domains with 6 enterprise-specific modules.
+
+metadata:
+  track: enterprise
+  version: 1
+  entry_node: ent_q1_facility_type
+
+nodes:
+  # ===== OPENING =====
+  - id: ent_q1_facility_type
+    domain: CPP-07
+    text: "What type of facility are we auditing?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-07
+    options: [Fulfilment Centre, Warehouse, Corporate Office, Data Centre, Campus, Industrial Plant, Retail Chain]
+    edges:
+      - target: ent_q2_existing_vendor
+        condition: any
+
+  - id: ent_q2_existing_vendor
+    domain: CPP-07
+    text: "Does this facility currently have a contracted security agency?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-07
+    options: ["Yes", "No"]
+    edges:
+      - target: ent_q3_compliance_audit
+        condition: any
+
+  - id: ent_q3_compliance_audit
+    domain: CPP-07
+    text: "Has this facility undergone a formal security audit against ISO 27001 or PSARA in the last 12 months?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-07
+    score_drop_trigger: true
+    options: ["Yes", "No", "Unsure"]
+    edges:
+      - target: ent_cpp01_perimeter
+        condition: any
+
+  # ===== CPP-01: Physical Security =====
+  - id: ent_cpp01_perimeter
+    domain: CPP-01
+    text: "What is the total perimeter length and how many entry/exit points exist?"
+    question_type: text_input
+    cpp_domain_tag: CPP-01
+    edges:
+      - target: ent_cpp01_cctv_sop
+        condition: any
+
+  - id: ent_cpp01_cctv_sop
+    domain: CPP-01
+    text: "How frequently is CCTV footage reviewed proactively (not just post-incident)?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-01
+    score_drop_trigger: true
+    module_tag: cctv_sop
+    options: ["Daily", "Weekly", "Monthly", "Only after incidents", "Never"]
+    edges:
+      - target: ent_cpp01_lighting
+        condition: any
+
+  - id: ent_cpp01_lighting
+    domain: CPP-01
+    text: "Is the facility perimeter and all entry points adequately lit 24/7?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-01
+    options: ["Yes — all areas", "Partial coverage", "No — significant dark zones"]
+    edges:
+      - target: ent_cpp06_shift_handover
+        condition: any
+
+  # ===== CPP-06: Personnel Security =====
+  - id: ent_cpp06_shift_handover
+    domain: CPP-06
+    text: "Is there a documented security handover checklist for guard shift changes?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-06
+    score_drop_trigger: true
+    module_tag: loading_dock
+    options: ["Yes — documented and followed", "Informal handover", "No checklist"]
+    edges:
+      - target: ent_cpp06_contractor_access
+        condition: any
+
+  - id: ent_cpp06_contractor_access
+    domain: CPP-06
+    text: "Do third-party contractors access restricted zones without an escort?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-06
+    score_drop_trigger: true
+    module_tag: contractor_mgmt
+    options: ["Yes — unescorted", "Escorted only", "No contractor access to restricted zones"]
+    edges:
+      - target: ent_cpp06_bg_checks
+        condition: any
+
+  - id: ent_cpp06_bg_checks
+    domain: CPP-06
+    text: "Are background checks conducted for all contractors and temporary staff?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-06
+    module_tag: contractor_mgmt
+    options: ["Yes — mandatory", "For some roles only", "No"]
+    edges:
+      - target: ent_cpp05_it_room
+        condition: any
+
+  # ===== CPP-05: Information Security =====
+  - id: ent_cpp05_it_room
+    domain: CPP-05
+    text: "Is the server room / IT room protected with keycard access and a visitor log?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-05
+    module_tag: it_physical
+    options: ["Yes — keycard + log", "Keycard only", "No access control", "No IT room on-site"]
+    edges:
+      - target: ent_cpp05_network_segregation
+        condition: any
+
+  - id: ent_cpp05_network_segregation
+    domain: CPP-05
+    text: "Are security systems (CCTV, access control) on a segregated network from corporate IT?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-05
+    options: ["Yes — fully segregated", "Partially", "No — same network"]
+    edges:
+      - target: ent_cpp03_emergency
+        condition: any
+
+  # ===== CPP-03: Crisis Management =====
+  - id: ent_cpp03_emergency
+    domain: CPP-03
+    text: "When was the last evacuation drill conducted at this facility?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-03
+    module_tag: fire_safety
+    options: ["Within last 6 months", "6-12 months ago", "Over 12 months ago", "Never"]
+    edges:
+      - target: ent_cpp03_fire_officer
+        condition: any
+
+  - id: ent_cpp03_fire_officer
+    domain: CPP-03
+    text: "Is there a designated fire safety officer for this facility?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-03
+    module_tag: fire_safety
+    options: ["Yes — trained and certified", "Yes — informal role", "No"]
+    edges:
+      - target: ent_inventory_controls
+        condition: any
+
+  # ===== Enterprise Module: Inventory Controls =====
+  - id: ent_inventory_controls
+    domain: CPP-01
+    text: "Are high-value inventory zones accessible to all warehouse staff?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-01
+    score_drop_trigger: true
+    module_tag: inventory_controls
+    options: ["Yes — all staff", "Restricted to authorised personnel", "Two-person rule enforced"]
+    edges:
+      - target: ent_loading_dock
+        condition: any
+
+  - id: ent_loading_dock
+    domain: CPP-01
+    text: "Is there a two-person verification rule for high-value shipments at the loading dock?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-01
+    score_drop_trigger: true
+    module_tag: loading_dock
+    options: ["Yes", "No", "Not applicable"]
+    edges:
+      - target: ent_cpp02_risk_owner
+        condition: any
+
+  # ===== CPP-02: Business Principles =====
+  - id: ent_cpp02_risk_owner
+    domain: CPP-02
+    text: "Is there a named individual accountable for physical security risk at this facility?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-02
+    options: ["Yes — with defined authority", "Informal role", "No"]
+    edges:
+      - target: ent_cpp07_review_cycle
+        condition: any
+
+  # ===== CPP-07: Security Management =====
+  - id: ent_cpp07_review_cycle
+    domain: CPP-07
+    text: "Is there a recurring (at least annual) security review cycle for this facility?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-07
+    options: ["Yes — quarterly or more", "Yes — annually", "No formal cycle"]
+    edges:
+      - target: ent_cpp04_incident_log
+        condition: any
+
+  # ===== CPP-04: Investigations =====
+  - id: ent_cpp04_incident_log
+    domain: CPP-04
+    text: "Are security incidents formally logged with date, type, response, and corrective actions?"
+    question_type: single_choice
+    cpp_domain_tag: CPP-04
+    options: ["Yes — digital system", "Yes — paper log", "Informal only", "Not logged"]
+    edges:
+      - target: ent_terminal
+        condition: any
+
+  # ===== TERMINAL =====
+  - id: ent_terminal
+    domain: CPP-07
+    text: "Thank you. Your facility security assessment is complete. We are generating your report."
+    question_type: terminal
+    cpp_domain_tag: CPP-07
+    is_terminal: true
+    edges: []
