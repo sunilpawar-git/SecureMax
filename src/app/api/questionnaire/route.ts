@@ -12,14 +12,21 @@ import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
 
 export async function POST(request: NextRequest) {
   let userId: string | undefined;
-  try {
-    const session = await auth();
-    userId = session?.user?.id;
-  } catch (error) {
-    // Auth may fail in dev/test mode; use test user ID
-    userId = 'test-user-' + Math.random().toString(36).substring(7);
+
+  // First, try to get X-User-Id from client request (test mode)
+  userId = request.headers.get('X-User-Id') ?? undefined;
+
+  // Otherwise, try to get from authenticated session
+  if (!userId) {
+    try {
+      const session = await auth();
+      userId = session?.user?.id;
+    } catch (error) {
+      // Auth may fail in dev/test mode
+    }
   }
 
+  // Last resort: generate a test user ID
   if (!userId) {
     userId = 'test-user-' + Math.random().toString(36).substring(7);
   }

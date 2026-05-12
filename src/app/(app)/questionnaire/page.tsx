@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { RadarChart } from './radar-chart';
 import { QuestionCard } from './question-card';
 import { APP, CTA } from '@/config/strings';
@@ -15,13 +15,26 @@ export default function QuestionnairePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Generate a consistent user ID for this session
+  const userId = useMemo(() => {
+    if (typeof window === 'undefined') return 'server-user';
+    const stored = sessionStorage.getItem('audit-user-id');
+    if (stored) return stored;
+    const newId = `user-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    sessionStorage.setItem('audit-user-id', newId);
+    return newId;
+  }, []);
+
   const startSession = useCallback(async (track: string) => {
     setIsLoading(true);
     setError(null);
     try {
       const res = await fetch('/api/questionnaire?action=start', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': userId,
+        },
         body: JSON.stringify({ track }),
       });
       const data = await res.json();
@@ -35,7 +48,7 @@ export default function QuestionnairePage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [userId]);
 
   const submitAnswer = useCallback(async (answer: string | string[]) => {
     if (!sessionId || !currentQuestion) return;
@@ -44,7 +57,10 @@ export default function QuestionnairePage() {
     try {
       const res = await fetch('/api/questionnaire?action=answer', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': userId,
+        },
         body: JSON.stringify({
           session_id: sessionId,
           question_id: currentQuestion.id,
@@ -66,7 +82,7 @@ export default function QuestionnairePage() {
     } finally {
       setIsLoading(false);
     }
-  }, [sessionId, currentQuestion]);
+  }, [sessionId, currentQuestion, userId]);
 
   if (sessionState === 'idle') {
     return (
