@@ -7,8 +7,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production && \
+# Install dependencies (skip postinstall which needs DATABASE_URL)
+RUN npm ci --ignore-scripts && \
+    npm run prisma:generate && \
     npm cache clean --force
 
 # Copy source code
@@ -28,8 +29,8 @@ RUN apk add --no-cache dumb-init
 # Copy package files
 COPY package*.json ./
 
-# Install production dependencies only
-RUN npm ci --only=production && \
+# Install production dependencies only (skip postinstall)
+RUN npm ci --ignore-scripts --omit=dev && \
     npm cache clean --force
 
 # Copy built app from builder
