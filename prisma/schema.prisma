@@ -231,3 +231,39 @@ model EnterpriseLead {
   @@index([status])
   @@map("enterprise_leads")
 }
+
+// ========== API KEYS (Encrypted) ==========
+
+model ApiKey {
+  id              String   @id @default(cuid())
+  provider        String   // "gemini", "openai", etc.
+  keyNameEncrypted String  @map("key_name_encrypted") @db.Text
+  keyEncrypted    String   @map("key_encrypted") @db.Text
+  status          String   @default("active") // "active", "rotated", "revoked"
+  lastUsedAt      DateTime? @map("last_used_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  rotatedAt       DateTime? @map("rotated_at")
+  revokedAt       DateTime? @map("revoked_at")
+
+  @@unique([provider, status]) // Only one active key per provider at a time
+  @@index([provider, status])
+  @@map("api_keys")
+}
+
+// ========== API KEY AUDIT LOG ==========
+
+model ApiKeyAudit {
+  id          String   @id @default(cuid())
+  apiKeyId    String   @map("api_key_id")
+  action      String   // "created", "used", "rotated", "revoked"
+  actor       String?  // "system", "admin_email", etc.
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  status      String   @default("success") // "success", "failed"
+  errorMsg    String?  @map("error_msg")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([apiKeyId, createdAt])
+  @@index([action, createdAt])
+  @@map("api_key_audits")
+}
