@@ -35,6 +35,8 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        env:
+          DATABASE_URL: "postgresql://localhost/dummy"
 
       - name: ESLint
         run: npm run lint
@@ -67,6 +69,8 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        env:
+          DATABASE_URL: "postgresql://localhost/dummy"
 
       - name: Run Jest tests
         run: npm test -- --coverage --passWithNoTests
@@ -94,6 +98,8 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        env:
+          DATABASE_URL: "postgresql://localhost/dummy"
 
       - name: Audit dependencies (npm audit)
         run: npm audit --audit-level=moderate
@@ -294,6 +300,8 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/raivan_test"
 
       - name: Run Prisma migrations
         run: npx prisma migrate deploy
@@ -345,6 +353,8 @@ jobs:
 
       - name: Install Node dependencies
         run: npm ci
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/raivan_test"
 
       - name: Install Python dependencies
         run: |
