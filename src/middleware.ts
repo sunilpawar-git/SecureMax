@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { auth } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { RATE_LIMITS } from '@/config/security';
 
@@ -12,7 +11,7 @@ function getClientIp(request: NextRequest): string {
   );
 }
 
-export default auth((request) => {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const ip = getClientIp(request);
 
@@ -40,7 +39,7 @@ export default auth((request) => {
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: [

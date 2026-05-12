@@ -1,0 +1,48 @@
+[     125ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/questionnaire:0
+[     181ms] [ERROR] Refused to execute script from 'http://localhost:3000/_next/static/development/_clientMiddlewareManifest.js' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled. @ http://localhost:3000/questionnaire:0
+[     237ms] Error: Failed to load external module node:process: TypeError: Native module not found: node:process
+    at DevContext.externalRequire [as x] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1981:15)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0ogd89b._.js:422:79)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1307:27)
+    at runModuleExecutionHooks (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1649:9)
+    at instantiateModuleShared (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1305:9)
+    at instantiateModule (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1621:12)
+    at getOrInstantiateModuleFromParent (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1604:12)
+    at DevContext.esmImport [as i] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:278:20)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0ogd89b._.js:453:220)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1307:27)
+[   15869ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/questionnaire:0
+[   15917ms] Error: Failed to load external module node:process: TypeError: Native module not found: node:process
+    at DevContext.externalRequire [as x] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1981:15)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0ogd89b._.js:422:79)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1307:27)
+    at runModuleExecutionHooks (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1649:9)
+    at instantiateModuleShared (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1305:9)
+    at instantiateModule (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1621:12)
+    at getOrInstantiateModuleFromParent (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1604:12)
+    at DevContext.esmImport [as i] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:278:20)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0ogd89b._.js:453:220)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1307:27)
+[   15997ms] [ERROR] Refused to execute script from 'http://localhost:3000/_next/static/development/_clientMiddlewareManifest.js' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled. @ http://localhost:3000/questionnaire:0
+[   30134ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_0cy.3w3._.js:2343
+[   31137ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_0cy.3w3._.js:2343
+[   32141ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_0cy.3w3._.js:2343
+[   33144ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_0cy.3w3._.js:2343
+[   34148ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_0cy.3w3._.js:2343
+[   39151ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_0cy.3w3._.js:2343
+[   44154ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_0cy.3w3._.js:2343
+[   49157ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_0cy.3w3._.js:2343
+[   54161ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_0cy.3w3._.js:2343
+[   59597ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/questionnaire:0
+[   59649ms] [ERROR] Refused to execute script from 'http://localhost:3000/_next/static/development/_clientMiddlewareManifest.js' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled. @ http://localhost:3000/questionnaire:0
+[   59650ms] Error: Failed to load external module node:process: TypeError: Native module not found: node:process
+    at DevContext.externalRequire [as x] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1981:15)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0ogd89b._.js:422:79)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1307:27)
+    at runModuleExecutionHooks (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1649:9)
+    at instantiateModuleShared (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1305:9)
+    at instantiateModule (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1621:12)
+    at getOrInstantiateModuleFromParent (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1604:12)
+    at DevContext.esmImport [as i] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:278:20)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0ogd89b._.js:453:220)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1307:27)

@@ -8,6 +8,7 @@ const headersArray = Object.entries(SECURITY_HEADERS).map(([key, value]) => ({
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  turbopack: {},
   async headers() {
     return [
       {

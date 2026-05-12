@@ -1,0 +1,39 @@
+[      61ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/questionnaire:0
+[      96ms] [ERROR] Refused to execute script from 'http://localhost:3000/_next/static/development/_clientMiddlewareManifest.js' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled. @ http://localhost:3000/questionnaire:0
+[      98ms] Error: Failed to load external module node:process: TypeError: Native module not found: node:process
+    at DevContext.externalRequire [as x] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1981:15)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0ogd89b._.js:422:79)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1307:27)
+    at runModuleExecutionHooks (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1649:9)
+    at instantiateModuleShared (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1305:9)
+    at instantiateModule (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1621:12)
+    at getOrInstantiateModuleFromParent (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1604:12)
+    at DevContext.esmImport [as i] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:278:20)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0ogd89b._.js:453:220)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1307:27)
+[   14658ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/questionnaire:0
+[   14712ms] Error: Failed to load external module node:process: TypeError: Native module not found: node:process
+    at DevContext.externalRequire [as x] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1981:15)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0ogd89b._.js:422:79)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1307:27)
+    at runModuleExecutionHooks (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1649:9)
+    at instantiateModuleShared (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1305:9)
+    at instantiateModule (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1621:12)
+    at getOrInstantiateModuleFromParent (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1604:12)
+    at DevContext.esmImport [as i] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:278:20)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0ogd89b._.js:453:220)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_0-hk~gn.js:1307:27)
+[   14774ms] [ERROR] Refused to execute script from 'http://localhost:3000/_next/static/development/_clientMiddlewareManifest.js' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled. @ http://localhost:3000/questionnaire:0
+[   29217ms] [ERROR] eval() is not supported in this environment. If this page was served with a `Content-Security-Policy` header, make sure that `unsafe-eval` is included. React requires eval() in development mode for various debugging features like reconstructing callstacks from a different environment.
+React will never use eval() in production mode @ http://localhost:3000/_next/static/chunks/004v_next_dist_0jbz580._.js:3318
+[   29298ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/icons/icon-192.png:0
+[   29301ms] [WARNING] Error while trying to use the following icon from the Manifest: http://localhost:3000/icons/icon-192.png (Download error or resource isn't a valid image) @ http://localhost:3000/questionnaire:0
+[   32302ms] [WARNING] The resource http://localhost:3000/_next/static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/questionnaire:0
+[   41784ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=8jHvWxANNMOt9DcAVlltx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_06rgiko._.js:13322
+[   42786ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=8jHvWxANNMOt9DcAVlltx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_06rgiko._.js:13322
+[   43789ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=8jHvWxANNMOt9DcAVlltx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_06rgiko._.js:13322
+[   44791ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=8jHvWxANNMOt9DcAVlltx' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/004v_next_dist_client_06rgiko._.js:13322
+[   46110ms] [ERROR] eval() is not supported in this environment. If this page was served with a `Content-Security-Policy` header, make sure that `unsafe-eval` is included. React requires eval() in development mode for various debugging features like reconstructing callstacks from a different environment.
+React will never use eval() in production mode @ http://localhost:3000/_next/static/chunks/004v_next_dist_0jbz580._.js:3318
+[   46188ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/icons/icon-192.png:0
+[   46190ms] [WARNING] Error while trying to use the following icon from the Manifest: http://localhost:3000/icons/icon-192.png (Download error or resource isn't a valid image) @ http://localhost:3000/questionnaire:0
