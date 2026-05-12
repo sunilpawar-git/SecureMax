@@ -251,7 +251,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: |
-            ${{ env.REGISTRY }}/${{ github.repository }}/{{ matrix.image-name }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.image-name }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.image-name }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
