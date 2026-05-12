@@ -15,7 +15,7 @@ import { encrypt, decrypt } from '@/lib/encryption';
 import type { ApiKey, ApiKeyAudit } from '@/generated/prisma/client';
 
 export interface ApiKeyManagerOptions {
-  provider: string; // "gemini", "openai", etc.
+  provider?: string; // "gemini", "openai", etc.
   decryptedKey?: boolean; // Return decrypted key for immediate use
 }
 
@@ -36,8 +36,8 @@ export async function storeApiKey(
     where: { provider_status: { provider, status: 'active' } },
     create: {
       provider,
-      keyNameEncrypted: encryptedName.ciphertext,
-      keyEncrypted: encrypted.ciphertext,
+      keyNameEncrypted: encryptedName,
+      keyEncrypted: encrypted,
       status: 'active',
     },
     update: {
@@ -135,8 +135,8 @@ export async function rotateApiKey(
   const newKey = await prisma.apiKey.create({
     data: {
       provider,
-      keyNameEncrypted: encryptedName.ciphertext,
-      keyEncrypted: encrypted.ciphertext,
+      keyNameEncrypted: encryptedName,
+      keyEncrypted: encrypted,
       status: 'active',
     },
   });
