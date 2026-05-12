@@ -51,6 +51,7 @@ class QuestionNode(BaseModel):
 
 class RadarScores(BaseModel):
     """CPP domain scores for the radar chart (0-100 per domain)."""
+
     scores: dict[str, float] = Field(
         default_factory=lambda: {
             "CPP-01": 100.0,

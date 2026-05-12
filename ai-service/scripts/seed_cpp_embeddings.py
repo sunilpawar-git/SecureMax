@@ -68,6 +68,7 @@ async def seed_to_db(chunks: list[dict]) -> None:
         return
 
     import os
+
     url = os.environ.get("DATABASE_URL", "")
     if not url:
         print("DATABASE_URL not set — skipping DB seed")
@@ -99,8 +100,11 @@ async def seed_to_db(chunks: list[dict]) -> None:
                     (id, domain, section, chunk_text, embedding, content_hash, created_at)
                 VALUES (gen_random_uuid(), $1, $2, $3, $4::vector, $5, NOW())
                 """,
-                chunk["domain"], chunk["section"], chunk["chunk_text"],
-                embedding_str, chunk["content_hash"],
+                chunk["domain"],
+                chunk["section"],
+                chunk["chunk_text"],
+                embedding_str,
+                chunk["content_hash"],
             )
             inserted += 1
 

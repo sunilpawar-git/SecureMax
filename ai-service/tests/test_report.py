@@ -24,9 +24,9 @@ def reset_state() -> None:
 
 
 def _create_completed_session(track: str = "hni") -> str:
-    resp = client.post("/questionnaire/start", json={
-        "user_id": f"report-user-{track}", "track": track
-    })
+    resp = client.post(
+        "/questionnaire/start", json={"user_id": f"report-user-{track}", "track": track}
+    )
     session_id = resp.json()["session_id"]
 
     if track == "hni":
@@ -43,11 +43,14 @@ def _create_completed_session(track: str = "hni") -> str:
         ]
 
     for qid, answer in answers:
-        client.post("/questionnaire/answer", json={
-            "session_id": session_id,
-            "question_id": qid,
-            "answer": answer,
-        })
+        client.post(
+            "/questionnaire/answer",
+            json={
+                "session_id": session_id,
+                "question_id": qid,
+                "answer": answer,
+            },
+        )
 
     store.complete_session(session_id)
     return session_id
@@ -56,10 +59,13 @@ def _create_completed_session(track: str = "hni") -> str:
 class TestFindingsEngine:
     def test_generate_findings_from_negative_answers(self) -> None:
         events = [
-            {"domain": "CPP-01", "question_text": "Q1",
-             "answer": "No", "score_drop_trigger": True},
-            {"domain": "CPP-05", "question_text": "Q2",
-             "answer": "Never", "score_drop_trigger": False},
+            {"domain": "CPP-01", "question_text": "Q1", "answer": "No", "score_drop_trigger": True},
+            {
+                "domain": "CPP-05",
+                "question_text": "Q2",
+                "answer": "Never",
+                "score_drop_trigger": False,
+            },
         ]
         findings = generate_findings(events)
         assert len(findings) == 2
@@ -68,8 +74,12 @@ class TestFindingsEngine:
 
     def test_positive_answers_generate_no_findings(self) -> None:
         events = [
-            {"domain": "CPP-01", "question_text": "Q1",
-             "answer": "Yes — full coverage", "score_drop_trigger": True},
+            {
+                "domain": "CPP-01",
+                "question_text": "Q1",
+                "answer": "Yes — full coverage",
+                "score_drop_trigger": True,
+            },
         ]
         findings = generate_findings(events)
         assert len(findings) == 0
@@ -83,8 +93,10 @@ class TestFindingsEngine:
 
     def test_urgency_score_range(self) -> None:
         event = {
-            "domain": "CPP-01", "question_text": "Q",
-            "answer": "No", "score_drop_trigger": True,
+            "domain": "CPP-01",
+            "question_text": "Q",
+            "answer": "No",
+            "score_drop_trigger": True,
         }
         events = [event] * 5
         findings = generate_findings(events)
@@ -104,8 +116,14 @@ class TestFindingsEngine:
 
     def test_split_free_paid_blurs_answers(self) -> None:
         findings = [
-            {"domain": "CPP-01", "domain_name": "Physical Security", "severity": "critical",
-             "question": "Is the gate locked?", "answer": "No", "recommendation": "Lock the gate."},
+            {
+                "domain": "CPP-01",
+                "domain_name": "Physical Security",
+                "severity": "critical",
+                "question": "Is the gate locked?",
+                "answer": "No",
+                "recommendation": "Lock the gate.",
+            },
         ]
         free, paid = split_free_paid(findings)
         assert free[0]["answer"] == "●●●●●●"
@@ -129,9 +147,9 @@ class TestReportAPI:
         assert data["status"] == "completed"
 
     def test_generate_fails_for_active_session(self) -> None:
-        resp = client.post("/questionnaire/start", json={
-            "user_id": "user-report-active", "track": "hni"
-        })
+        resp = client.post(
+            "/questionnaire/start", json={"user_id": "user-report-active", "track": "hni"}
+        )
         session_id = resp.json()["session_id"]
         resp = client.post("/report/generate", json={"session_id": session_id})
         assert resp.status_code == 400

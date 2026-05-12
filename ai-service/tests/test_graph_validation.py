@@ -45,13 +45,19 @@ class TestGraphValidationEdgeCases:
             "metadata": {"entry_node": "a"},
             "nodes": [
                 {
-                    "id": "a", "domain": "CPP-01", "text": "Q",
-                    "question_type": "single_choice", "cpp_domain_tag": "CPP-01",
+                    "id": "a",
+                    "domain": "CPP-01",
+                    "text": "Q",
+                    "question_type": "single_choice",
+                    "cpp_domain_tag": "CPP-01",
                     "edges": [{"target": "b", "condition": "any"}],
                 },
                 {
-                    "id": "b", "domain": "CPP-01", "text": "Q",
-                    "question_type": "single_choice", "cpp_domain_tag": "CPP-01",
+                    "id": "b",
+                    "domain": "CPP-01",
+                    "text": "Q",
+                    "question_type": "single_choice",
+                    "cpp_domain_tag": "CPP-01",
                     "edges": [],
                 },
             ],
@@ -64,8 +70,11 @@ class TestGraphValidationEdgeCases:
             "metadata": {"entry_node": "a"},
             "nodes": [
                 {
-                    "id": "a", "domain": "CPP-01", "text": "Q",
-                    "question_type": "single_choice", "cpp_domain_tag": "CPP-01",
+                    "id": "a",
+                    "domain": "CPP-01",
+                    "text": "Q",
+                    "question_type": "single_choice",
+                    "cpp_domain_tag": "CPP-01",
                     "edges": [{"target": "nonexistent", "condition": "any"}],
                 },
             ],
@@ -78,8 +87,11 @@ class TestGraphValidationEdgeCases:
             "metadata": {"entry_node": "a"},
             "nodes": [
                 {
-                    "id": "a", "domain": "CPP-99", "text": "Q",
-                    "question_type": "single_choice", "cpp_domain_tag": "CPP-01",
+                    "id": "a",
+                    "domain": "CPP-99",
+                    "text": "Q",
+                    "question_type": "single_choice",
+                    "cpp_domain_tag": "CPP-01",
                     "edges": [],
                     "is_terminal": True,
                 },
@@ -172,7 +184,8 @@ class TestEnterprisePathCoverage:
 
     def test_compliance_audit_question_exists(self) -> None:
         compliance_qs = [
-            n for n in self.nodes
+            n
+            for n in self.nodes
             if "iso 27001" in n["text"].lower() or "psara" in n["text"].lower()
         ]
         assert len(compliance_qs) >= 1

@@ -84,23 +84,35 @@ class TestRawArticle:
 
     def test_different_urls_different_hashes(self) -> None:
         a1 = RawArticle(
-            url="https://example.com/1", title="T",
-            content="C", source_name="S", source_tier="rss",
+            url="https://example.com/1",
+            title="T",
+            content="C",
+            source_name="S",
+            source_tier="rss",
         )
         a2 = RawArticle(
-            url="https://example.com/2", title="T",
-            content="C", source_name="S", source_tier="rss",
+            url="https://example.com/2",
+            title="T",
+            content="C",
+            source_name="S",
+            source_tier="rss",
         )
         assert a1.url_hash != a2.url_hash
 
     def test_content_hash_ignores_whitespace(self) -> None:
         a1 = RawArticle(
-            url="https://example.com/1", title="T",
-            content="  content  ", source_name="S", source_tier="rss",
+            url="https://example.com/1",
+            title="T",
+            content="  content  ",
+            source_name="S",
+            source_tier="rss",
         )
         a2 = RawArticle(
-            url="https://example.com/2", title="T",
-            content="content", source_name="S", source_tier="rss",
+            url="https://example.com/2",
+            title="T",
+            content="content",
+            source_name="S",
+            source_tier="rss",
         )
         assert a1.content_hash == a2.content_hash
 
@@ -124,13 +136,15 @@ class TestScraperAPI:
 
         async def rss_side_effect(*args, **kwargs):
             call_count[0] += 1
-            return [RawArticle(
-                url=f"https://rss.example.com/{call_count[0]}",
-                title=f"RSS article {call_count[0]}",
-                content=f"Unique content for RSS article {call_count[0]}.",
-                source_name=args[1] if len(args) > 1 else "RSS",
-                source_tier="rss",
-            )]
+            return [
+                RawArticle(
+                    url=f"https://rss.example.com/{call_count[0]}",
+                    title=f"RSS article {call_count[0]}",
+                    content=f"Unique content for RSS article {call_count[0]}.",
+                    source_name=args[1] if len(args) > 1 else "RSS",
+                    source_tier="rss",
+                )
+            ]
 
         mock_rss.side_effect = rss_side_effect
 
@@ -143,9 +157,7 @@ class TestScraperAPI:
 
     @patch("scraper.pipeline.fetch_news_api", new_callable=AsyncMock)
     @patch("scraper.pipeline.fetch_rss_feed", new_callable=AsyncMock)
-    def test_dedup_prevents_double_insert(
-        self, mock_rss: AsyncMock, mock_news: AsyncMock
-    ) -> None:
+    def test_dedup_prevents_double_insert(self, mock_rss: AsyncMock, mock_news: AsyncMock) -> None:
         article = RawArticle(
             url="https://news.example.com/same",
             title="Same article",
@@ -169,9 +181,7 @@ class TestScraperAPI:
 
     @patch("scraper.pipeline.fetch_news_api", new_callable=AsyncMock)
     @patch("scraper.pipeline.fetch_rss_feed", new_callable=AsyncMock)
-    def test_articles_endpoint(
-        self, mock_rss: AsyncMock, mock_news: AsyncMock
-    ) -> None:
+    def test_articles_endpoint(self, mock_rss: AsyncMock, mock_news: AsyncMock) -> None:
         mock_news.return_value = [
             RawArticle(
                 url="https://example.com/art",

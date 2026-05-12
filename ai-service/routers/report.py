@@ -41,6 +41,7 @@ class ReportStatusResponse(BaseModel):
 @router.post("/generate", response_model=GenerateReportResponse)
 async def generate_report(req: GenerateReportRequest) -> GenerateReportResponse:
     from routers.questionnaire import store as session_store
+
     session = session_store.get_session(req.session_id)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")

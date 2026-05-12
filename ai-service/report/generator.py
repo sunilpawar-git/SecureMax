@@ -29,12 +29,23 @@ def generate_report_data(session: dict) -> dict:
 
     if track == TRACK_ENTERPRISE:
         return _build_enterprise_report(
-            session, radar_scores, findings, paid_findings,
-            free_findings, urgency, benchmark, compliance_gaps,
+            session,
+            radar_scores,
+            findings,
+            paid_findings,
+            free_findings,
+            urgency,
+            benchmark,
+            compliance_gaps,
         )
     return _build_hni_report(
-        session, radar_scores, findings, paid_findings,
-        free_findings, urgency, benchmark,
+        session,
+        radar_scores,
+        findings,
+        paid_findings,
+        free_findings,
+        urgency,
+        benchmark,
     )
 
 

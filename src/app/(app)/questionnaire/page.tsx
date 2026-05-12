@@ -20,7 +20,10 @@ export default function QuestionnairePage() {
     if (typeof window === 'undefined') return 'server-user';
     const stored = sessionStorage.getItem('audit-user-id');
     if (stored) return stored;
-    const newId = `user-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    // Generate unique user ID using crypto for better entropy
+    const randomBytes = Array.from(crypto.getRandomValues(new Uint8Array(4)));
+    const randomStr = randomBytes.map(b => b.toString(16).padStart(2, '0')).join('');
+    const newId = `user-${randomStr}`;
     sessionStorage.setItem('audit-user-id', newId);
     return newId;
   }, []);

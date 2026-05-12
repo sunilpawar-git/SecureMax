@@ -67,8 +67,7 @@ class TestComputeRadarScores:
 
     def test_score_never_goes_below_zero(self) -> None:
         events = [
-            {"domain": "CPP-03", "answer": "No", "score_drop_trigger": True}
-            for _ in range(20)
+            {"domain": "CPP-03", "answer": "No", "score_drop_trigger": True} for _ in range(20)
         ]
         scores = compute_radar_scores(events)
         assert scores["CPP-03"] == 0.0

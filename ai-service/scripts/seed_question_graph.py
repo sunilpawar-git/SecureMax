@@ -32,18 +32,20 @@ def load_and_validate_all() -> list[dict]:
         version = graph["metadata"]["version"]
 
         for node in graph["nodes"]:
-            all_nodes.append({
-                "id": node["id"],
-                "domain": node["domain"],
-                "text": node["text"],
-                "question_type": node["question_type"],
-                "edges": json.dumps(node.get("edges", [])),
-                "cpp_domain_tag": node["cpp_domain_tag"],
-                "track": track,
-                "module_tag": node.get("module_tag"),
-                "version": version,
-                "is_terminal": node.get("is_terminal", False),
-            })
+            all_nodes.append(
+                {
+                    "id": node["id"],
+                    "domain": node["domain"],
+                    "text": node["text"],
+                    "question_type": node["question_type"],
+                    "edges": json.dumps(node.get("edges", [])),
+                    "cpp_domain_tag": node["cpp_domain_tag"],
+                    "track": track,
+                    "module_tag": node.get("module_tag"),
+                    "version": version,
+                    "is_terminal": node.get("is_terminal", False),
+                }
+            )
 
     return all_nodes
 
@@ -57,6 +59,7 @@ async def seed_to_db(nodes: list[dict]) -> None:
         return
 
     import os
+
     url = os.environ.get("DATABASE_URL", "")
     if not url:
         print("DATABASE_URL not set — skipping DB seed")
@@ -82,10 +85,15 @@ async def seed_to_db(nodes: list[dict]) -> None:
                     version = EXCLUDED.version,
                     is_terminal = EXCLUDED.is_terminal
                 """,
-                node["id"], node["domain"], node["text"],
-                node["question_type"], node["edges"],
-                node["cpp_domain_tag"], node["track"],
-                node["module_tag"], node["version"],
+                node["id"],
+                node["domain"],
+                node["text"],
+                node["question_type"],
+                node["edges"],
+                node["cpp_domain_tag"],
+                node["track"],
+                node["module_tag"],
+                node["version"],
                 node["is_terminal"],
             )
         print(f"Seeded {len(nodes)} question nodes to DB")

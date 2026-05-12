@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     try {
       const session = await auth();
       userId = session?.user?.id;
-    } catch (error) {
+    } catch {
       // Auth may fail in dev/test mode
     }
   }

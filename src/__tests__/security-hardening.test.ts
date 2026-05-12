@@ -6,6 +6,7 @@
 import { SECURITY_HEADERS, RATE_LIMITS, ENCRYPTION } from '@/config/security';
 import fs from 'fs';
 import path from 'path';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 describe('OWASP Security Headers', () => {
   it('defines all critical security headers', () => {
@@ -59,7 +60,6 @@ describe('Rate limiting configuration', () => {
   });
 
   it('rate limiter blocks after max requests', () => {
-    const { checkRateLimit } = require('@/lib/rate-limit');
     const id = `test-${Date.now()}`;
     const maxReqs = 3;
     const windowMs = 5000;

@@ -13,9 +13,17 @@ from config import get_settings
 from scraper.models import RawArticle
 
 SECURITY_KEYWORDS = [
-    "physical security", "CCTV", "access control", "perimeter breach",
-    "security audit", "theft prevention", "intrusion detection",
-    "surveillance", "guard patrol", "fire safety", "emergency response",
+    "physical security",
+    "CCTV",
+    "access control",
+    "perimeter breach",
+    "security audit",
+    "theft prevention",
+    "intrusion detection",
+    "surveillance",
+    "guard patrol",
+    "fire safety",
+    "emergency response",
 ]
 
 
@@ -45,14 +53,16 @@ async def fetch_news_api(query: str = "physical security") -> list[RawArticle]:
             content = item.get("content") or item.get("description") or ""
             if not content:
                 continue
-            articles.append(RawArticle(
-                url=item["url"],
-                title=item.get("title", ""),
-                content=content,
-                source_name=item.get("source", {}).get("name", "Unknown"),
-                source_tier="news_api",
-                published_at=_parse_datetime(item.get("publishedAt")),
-            ))
+            articles.append(
+                RawArticle(
+                    url=item["url"],
+                    title=item.get("title", ""),
+                    content=content,
+                    source_name=item.get("source", {}).get("name", "Unknown"),
+                    source_tier="news_api",
+                    published_at=_parse_datetime(item.get("publishedAt")),
+                )
+            )
         return articles
 
 
@@ -79,14 +89,16 @@ async def fetch_rss_feed(feed_url: str, source_name: str) -> list[RawArticle]:
         if not any(kw in combined for kw in SECURITY_KEYWORDS):
             continue
 
-        articles.append(RawArticle(
-            url=link,
-            title=title,
-            content=description,
-            source_name=source_name,
-            source_tier="rss",
-            published_at=_parse_rss_date(pub_date),
-        ))
+        articles.append(
+            RawArticle(
+                url=link,
+                title=title,
+                content=description,
+                source_name=source_name,
+                source_tier="rss",
+                published_at=_parse_rss_date(pub_date),
+            )
+        )
 
     return articles
 
@@ -110,6 +122,7 @@ def _parse_rss_date(dt_str: str) -> datetime | None:
         return None
     try:
         from email.utils import parsedate_to_datetime
+
         return parsedate_to_datetime(dt_str)
     except (ValueError, TypeError):
         return None

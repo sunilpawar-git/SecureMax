@@ -16,9 +16,7 @@ from routers.scraper import router as scraper_router
 
 settings = get_settings()
 
-ALLOWED_ORIGINS = os.environ.get(
-    "CORS_ORIGINS", "http://localhost:3000"
-).split(",")
+ALLOWED_ORIGINS = os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
 
 app = FastAPI(
     title="Raivan Global AI Service",

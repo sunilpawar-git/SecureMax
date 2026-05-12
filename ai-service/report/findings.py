@@ -37,14 +37,16 @@ def generate_findings(events: list[dict]) -> list[dict]:
         domain = event.get("domain", "")
         domain_name = CPP_DOMAINS.get(domain, domain)
 
-        findings.append({
-            "domain": domain,
-            "domain_name": domain_name,
-            "question": event.get("question_text", ""),
-            "answer": answer,
-            "severity": severity,
-            "recommendation": _generate_recommendation(event, severity),
-        })
+        findings.append(
+            {
+                "domain": domain,
+                "domain_name": domain_name,
+                "question": event.get("question_text", ""),
+                "answer": answer,
+                "severity": severity,
+                "recommendation": _generate_recommendation(event, severity),
+            }
+        )
 
     findings.sort(key=lambda f: SEVERITY_ORDER.index(f["severity"]))
     return findings
@@ -94,17 +96,19 @@ def split_free_paid(findings: list[dict]) -> tuple[list[dict], list[dict]]:
     paid_findings: list[dict] = findings
 
     for finding in findings:
-        free_findings.append({
-            "domain": finding["domain"],
-            "domain_name": finding["domain_name"],
-            "severity": finding["severity"],
-            "question": (
-                finding["question"][:60] + "..."
-                if len(finding["question"]) > 60
-                else finding["question"]
-            ),
-            "answer": "●●●●●●",
-            "recommendation": "Unlock full report for detailed recommendations.",
-        })
+        free_findings.append(
+            {
+                "domain": finding["domain"],
+                "domain_name": finding["domain_name"],
+                "severity": finding["severity"],
+                "question": (
+                    finding["question"][:60] + "..."
+                    if len(finding["question"]) > 60
+                    else finding["question"]
+                ),
+                "answer": "●●●●●●",
+                "recommendation": "Unlock full report for detailed recommendations.",
+            }
+        )
 
     return free_findings, paid_findings

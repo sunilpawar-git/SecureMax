@@ -86,12 +86,14 @@ def chunk_document(text: str, domain: str) -> list[dict]:
 
     for heading, body in sections:
         for chunk_text in chunk_section(heading, body):
-            results.append({
-                "domain": domain,
-                "section": heading,
-                "chunk_text": chunk_text,
-                "content_hash": content_hash(chunk_text),
-                "token_estimate": estimate_tokens(chunk_text),
-            })
+            results.append(
+                {
+                    "domain": domain,
+                    "section": heading,
+                    "chunk_text": chunk_text,
+                    "content_hash": content_hash(chunk_text),
+                    "token_estimate": estimate_tokens(chunk_text),
+                }
+            )
 
     return results

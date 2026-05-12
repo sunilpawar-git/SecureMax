@@ -53,13 +53,15 @@ class SessionStore:
         session = self._sessions.get(session_id)
         if not session:
             return
-        session["events"].append({
-            "question_id": question_id,
-            "question_text": question_text,
-            "answer": answer,
-            "domain": domain,
-            "score_drop_trigger": score_drop_trigger,
-        })
+        session["events"].append(
+            {
+                "question_id": question_id,
+                "question_text": question_text,
+                "answer": answer,
+                "domain": domain,
+                "score_drop_trigger": score_drop_trigger,
+            }
+        )
 
     def get_radar_scores(self, session_id: str) -> dict[str, float]:
         session = self._sessions.get(session_id)

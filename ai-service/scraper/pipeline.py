@@ -3,7 +3,6 @@ Scraper pipeline orchestrator.
 Fetches from all tiers, deduplicates, processes, stores.
 """
 
-
 from scraper.dedup import DedupStore
 from scraper.models import ProcessedArticle, RawArticle, SourceHealth
 from scraper.sources import RSS_FEEDS, fetch_news_api, fetch_rss_feed
@@ -96,6 +95,7 @@ def _extract_basic_tags(content: str) -> list[str]:
     """Simple keyword-based tagging. Gemini Flash replaces this in production."""
     content_lower = content.lower()
     from scraper.sources import SECURITY_KEYWORDS
+
     return [kw for kw in SECURITY_KEYWORDS if kw in content_lower]
 
 
