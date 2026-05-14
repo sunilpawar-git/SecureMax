@@ -13,6 +13,9 @@ sqlalchemy[asyncio]>=2.0.0
 google-genai>=1.0.0
 httpx>=0.28.0
 
+# PDF Processing
+PyMuPDF>=1.23.0
+
 # Scraper
 playwright>=1.49.0
 feedparser>=6.0.0

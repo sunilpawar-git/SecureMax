@@ -120,7 +120,7 @@ def _setup_test_schema():
             await conn.execute(_DDL)
             # Verify the tables were created
             result = await conn.fetch(f"""
-                SELECT table_name FROM information_schema.tables 
+                SELECT table_name FROM information_schema.tables
                 WHERE table_schema = '{TEST_SCHEMA}'
             """)
             if not result:

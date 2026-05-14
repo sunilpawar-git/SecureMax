@@ -149,13 +149,13 @@ model QuestionNode {
 // ========== CPP CHUNKS (pgvector embeddings) ==========
 
 model CppChunk {
-  id          String                     @id @default(cuid())
+  id          String                      @id @default(cuid())
   domain      String
   section     String
-  chunkText   String                     @map("chunk_text") @db.Text
-  embedding   Unsupported("vector(768)")
-  contentHash String                     @unique @map("content_hash")
-  createdAt   DateTime                   @default(now()) @map("created_at")
+  chunkText   String                      @map("chunk_text") @db.Text
+  embedding   Unsupported("vector(3072)")
+  contentHash String                      @unique @map("content_hash")
+  createdAt   DateTime                    @default(now()) @map("created_at")
 
   @@index([domain])
   @@map("cpp_chunks")

@@ -42,24 +42,68 @@ def extract_text_from_pdf(filepath: Path) -> str:
 
 
 async def embed_chunks(chunks: list[dict], settings: "Settings") -> list[dict]:  # noqa: F821
-    """Generate embeddings via Gemini text-embedding-004."""
+    """Generate embeddings via Gemini embedding model with retry logic."""
     try:
         from google import genai
     except ImportError:
         print("google-genai not installed — skipping embedding generation")
         return chunks
 
+    import time
+
     client = genai.Client(api_key=settings.gemini_api_key)
-    for chunk in chunks:
-        result = client.models.embed_content(
-            model="models/text-embedding-004",
-            contents=chunk["chunk_text"],
-        )
-        chunk["embedding"] = result.embeddings[0].values
+
+    # Use the latest available embedding model
+    embedding_models = [
+        "models/gemini-embedding-2",
+        "models/gemini-embedding-001",
+    ]
+
+    model_to_use = None
+    for model_name in embedding_models:
+        try:
+            result = client.models.embed_content(
+                model=model_name,
+                contents="test",
+            )
+            model_to_use = model_name
+            print(f"✓ Using embedding model: {model_name}")
+            break
+        except Exception as e:
+            print(f"  {model_name} failed: {e}")
+            continue
+
+    if not model_to_use:
+        print("ERROR: No embedding model available.")
+        raise SystemExit(1)
+
+    # Embed chunks with retry logic
+    max_retries = 3
+    for i, chunk in enumerate(chunks):
+        retries = 0
+        while retries < max_retries:
+            try:
+                result = client.models.embed_content(
+                    model=model_to_use,
+                    contents=chunk["chunk_text"],
+                )
+                chunk["embedding"] = result.embeddings[0].values
+                if (i + 1) % 50 == 0:
+                    print(f"  ✓ Embedded {i + 1}/{len(chunks)} chunks...")
+                break
+            except Exception as e:
+                retries += 1
+                if retries >= max_retries:
+                    print(f"ERROR embedding chunk {i}: {e}")
+                    raise
+                wait_time = 2**retries  # exponential backoff: 2s, 4s, 8s
+                print(f"  Retrying chunk {i} after {wait_time}s (attempt {retries}/{max_retries})")
+                time.sleep(wait_time)
+
     return chunks
 
 
-async def seed_to_db(chunks: list[dict]) -> None:
+async def seed_to_db(chunks: list[dict], settings: "Settings") -> None:  # noqa: F821
     """Insert embedded chunks into cpp_chunks table."""
     try:
         import asyncpg
@@ -67,14 +111,14 @@ async def seed_to_db(chunks: list[dict]) -> None:
         print("asyncpg not installed — skipping DB seed")
         return
 
-    import os
-
-    url = os.environ.get("DATABASE_URL", "")
+    url = settings.database_url
     if not url:
         print("DATABASE_URL not set — skipping DB seed")
         return
 
-    conn = await asyncpg.connect(url.replace("+asyncpg", ""))
+    # Remove connection string parameters that asyncpg doesn't understand
+    url = url.replace("+asyncpg", "").split("?")[0]
+    conn = await asyncpg.connect(url)
     try:
         inserted = 0
         skipped = 0
@@ -145,7 +189,7 @@ async def main() -> None:
 
     if "--dry-run" not in sys.argv:
         all_chunks = await embed_chunks(all_chunks, settings)
-        await seed_to_db(all_chunks)
+        await seed_to_db(all_chunks, settings)
     else:
         print("Dry run — skipping embedding and DB seed")
 

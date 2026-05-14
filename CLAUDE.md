@@ -4,21 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-ProSecure Security Crawler — a physical security audit SaaS for HNIs and enterprises.
+SecureMax Security Crawler — a physical security audit SaaS for HNIs and enterprises.
 Users complete an AI-driven, flowchart-based questionnaire grounded in "CPP Seven Precis" (7 proprietary security PDFs), then receive a PDF audit report that surfaces loopholes and funnels them toward a physical on-site audit.
 Admins run a web scraper that enriches the knowledge base and auto-posts to LinkedIn.
 
 ## Tech Stack
 
-- **Frontend + API routes**: Next.js 14 (App Router), PWA-compliant
-- **AI/LLM microservice**: Python FastAPI — handles Claude API calls and pgvector similarity search
+- **Frontend + API routes**: Next.js 16 (App Router), PWA-compliant
+- **AI/LLM microservice**: Python FastAPI — handles Gemini API calls and pgvector similarity search
 - **Database**: PostgreSQL + pgvector (embeddings of CPP Seven Precis)
-- **Auth**: NextAuth.js with Google OAuth only
-- **Flowchart UI**: React Flow
+- **Auth**: NextAuth.js v5 with Google OAuth only
 - **Report generation**: react-pdf
 - **Web crawler**: Playwright (security news ingestion)
 - **Social posting**: LinkedIn API (admin panel)
-- **AI models**: claude-haiku-4-5 (questionnaire speed), claude-sonnet-4-6 (deep audit analysis)
+- **Payments**: Razorpay (report unlock)
+- **AI models**: Gemini Flash (questionnaire speed), Gemini Pro (deep audit analysis)
 
 ## Development Commands
 
@@ -26,8 +26,11 @@ Admins run a web scraper that enriches the knowledge base and auto-posts to Link
 ```bash
 npm run dev          # start dev server (localhost:3000)
 npm run build        # production build
-npm run lint         # ESLint check
+npm run lint         # ESLint (0 warnings allowed)
 npm run type-check   # tsc --noEmit
+npm test             # Jest unit tests
+npm run test:ci      # Jest with coverage (used in CI)
+npm run format       # Prettier write
 ```
 
 ### Python FastAPI (AI service)
@@ -36,35 +39,47 @@ cd ai-service
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000   # dev server (localhost:8000)
+ruff check .                             # lint (configured in pyproject.toml)
 pytest                                   # run all tests
 pytest tests/test_questionnaire.py -k "test_branch"   # run a single test
 ```
 
 ### Database
 ```bash
-# Apply migrations
 npx prisma migrate dev
 npx prisma generate
 
 # Seed CPP Seven Precis embeddings (run once after DB setup)
 cd ai-service && python scripts/seed_cpp_embeddings.py
+
+# Seed question graph from YAML into question_nodes table (idempotent)
+cd ai-service && python scripts/seed_question_graph.py
+
+# Validate question graph YAML without hitting the DB
+python question-graph/validate.py
 ```
 
 ## Architecture
 
 ### Two-Service Design
-The app is intentionally split. Next.js handles all user-facing concerns (auth, UI, API routes, PDF generation). The FastAPI service is isolated for anything touching the Claude API or pgvector — this keeps AI logic testable independently and keeps the Node runtime lean.
+The app is intentionally split. Next.js handles all user-facing concerns (auth, UI, API routes, PDF generation). The FastAPI service is isolated for anything touching Gemini or pgvector — this keeps AI logic testable independently and keeps the Node runtime lean.
 
 ```
 User → Next.js (port 3000)
-         ↓ internal HTTP
+         ↓ internal HTTP (X-Service-Key header)
        FastAPI AI service (port 8000)
          ↓ pgvector queries
        PostgreSQL
 ```
 
+All Next.js → FastAPI calls go through `src/lib/ai-service.ts` (`aiServiceFetch`), which attaches `X-Service-Key`. The FastAPI `ServiceAuthMiddleware` (`auth_middleware.py`) validates this key on every non-`/health` endpoint.
+
 ### Questionnaire Engine (Core)
-The questionnaire is not a static form — it is a directed graph. Each node is a question; edges are conditional on the user's answer. The AI service drives branching: it takes the current answer, queries pgvector for relevant CPP Seven Precis context, then calls the Claude API to decide the next question branch. The graph state lives in the user's session and is persisted to the DB after every answer.
+The questionnaire is a directed graph. The SSOT is `question-graph/hni.yaml` and `question-graph/enterprise.yaml` — **edit YAML, then reseed; never edit the DB directly.** The seed script validates the graph before writing.
+
+Each node defines `edges` with optional `condition` fields. The AI service (`questionnaire.py`) drives branching: deterministic for `condition: any`, Gemini-assisted for answer-dependent forks. Graph state is persisted to `AuditSession.currentNodeId` after every answer; each answer is written as an immutable `SessionEvent` row with the answer and AI reasoning both AES-encrypted at rest.
+
+Two user tracks: `hni` (high net worth individuals, entry `hni_q1_property_type`) and `enterprise` (entry node in `enterprise.yaml`). Track is set on the `User` row at onboarding.
 
 CPP Seven Precis domains (source of all questions):
 - CPP-01: Physical Security (ESRM, 4 Ds: Deter/Detect/Delay/Deny, access control, perimeter)
@@ -76,13 +91,16 @@ CPP Seven Precis domains (source of all questions):
 - CPP-07: Security Management (ESRM cycle, stakeholders, operating environment)
 
 ### Audit Report Generation
-After the questionnaire ends, the FastAPI service assembles findings ranked by severity. Each finding cites its CPP domain (e.g., "CPP-01: Physical Security"). The AI augments findings with current threat intelligence from the scraper DB. Next.js renders the final PDF via react-pdf.
+After the questionnaire ends, `ai-service/report/` assembles findings ranked by severity (critical → high → medium → low). Each finding cites its CPP domain. The AI augments findings with current threat intelligence from the `threat_intel` table. The PDF bytes are AES-encrypted before being stored in `ReportArtifact.pdfEncrypted`. Next.js decrypts and streams the PDF to the user after Razorpay payment confirmation.
 
 ### Admin Panel
-Separate Next.js route group `/admin` protected by role check in middleware. Admin triggers the Playwright scraper, reviews synthesized security briefings, and posts to LinkedIn. Scraper results are stored in a separate `threat_intel` table and used to enrich questionnaire context.
+Separate Next.js route group `src/app/admin/` protected by role check in middleware. Admin triggers the Playwright scraper (`ai-service/routers/scraper.py`), reviews synthesized security briefings, and posts to LinkedIn. Every LinkedIn post is logged in `LinkedinPost` with status, timestamp, and platform.
 
-### PWA + Mobile Scalability
-The Next.js app ships a service worker and web manifest. The questionnaire flowchart is designed with touch-first interaction. The FastAPI service is stateless so a future React Native app can call the same endpoints.
+### Key DB Tables
+- `AuditSession` — one per questionnaire run; tracks `status`, `domainScores`, `moduleScores`, `paid`, `reportReady`
+- `SessionEvent` — append-only audit trail; `answerEncrypted` + `aiReasoningEncrypted` columns; unique on `(sessionId, questionNodeId)`
+- `CppChunk` — pgvector embeddings (`vector(3072)`) of CPP Seven Precis text, seeded from PDFs in `cpp-pdfs/`
+- `ApiKey` — encrypted storage for third-party API keys; one active key per provider enforced by DB unique constraint
 
 ---
 
@@ -103,8 +121,8 @@ Touch only what you must. Don't "improve" adjacent code. Match existing style.
 ### Rule 4 — Goal-Driven Execution
 Define success criteria before writing a line. Loop until verified. Don't follow steps blindly.
 
-### Rule 5 — Use Claude API for Judgment, Code for Determinism
-Use the Claude API for: question flow decisions, audit finding classification, report narrative, security briefing synthesis.
+### Rule 5 — Use Gemini for Judgment, Code for Determinism
+Use Gemini for: question flow decisions, audit finding classification, report narrative, security briefing synthesis.
 Do NOT use it for: routing logic, retries, PDF layout, CRUD, data transforms. If code can answer, code answers.
 
 ### Rule 6 — Token Budgets Are Not Advisory

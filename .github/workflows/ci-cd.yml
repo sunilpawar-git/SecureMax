@@ -309,7 +309,7 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/raivan_test
 
       - name: Verify schema
-        run: npx prisma db pull --skip-generate
+        run: npx prisma db pull --print
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/raivan_test
         continue-on-error: true
