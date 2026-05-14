@@ -25,12 +25,14 @@ export const SECURITY_HEADERS = {
 } as const;
 
 export const RATE_LIMITS = {
-  AI_ENDPOINT_WINDOW_MS: 1000, // 1 second window for rate limiting
-  AI_ENDPOINT_MAX_REQUESTS: 20, // Allow 20 requests per second for questionnaire endpoints
+  AI_ENDPOINT_WINDOW_MS: 1000,
+  AI_ENDPOINT_MAX_REQUESTS: 20,
   GLOBAL_WINDOW_MS: 60_000,
   GLOBAL_MAX_REQUESTS: 100,
   AUTH_WINDOW_MS: 60_000,
   AUTH_MAX_REQUESTS: 10,
+  ADMIN_WINDOW_MS: 1_000,
+  ADMIN_MAX_REQUESTS: 10,
 } as const;
 
 export const ENCRYPTION = {

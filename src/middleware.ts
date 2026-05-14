@@ -17,13 +17,18 @@ export function middleware(request: NextRequest) {
 
   if (pathname.startsWith('/api/')) {
     const isAiEndpoint = pathname.includes('/questionnaire') || pathname.includes('/report');
+    const isAdminEndpoint = pathname.startsWith('/api/admin');
 
-    const windowMs = isAiEndpoint
-      ? RATE_LIMITS.AI_ENDPOINT_WINDOW_MS
-      : RATE_LIMITS.GLOBAL_WINDOW_MS;
-    const maxReqs = isAiEndpoint
-      ? RATE_LIMITS.AI_ENDPOINT_MAX_REQUESTS
-      : RATE_LIMITS.GLOBAL_MAX_REQUESTS;
+    const windowMs = isAdminEndpoint
+      ? RATE_LIMITS.ADMIN_WINDOW_MS
+      : isAiEndpoint
+        ? RATE_LIMITS.AI_ENDPOINT_WINDOW_MS
+        : RATE_LIMITS.GLOBAL_WINDOW_MS;
+    const maxReqs = isAdminEndpoint
+      ? RATE_LIMITS.ADMIN_MAX_REQUESTS
+      : isAiEndpoint
+        ? RATE_LIMITS.AI_ENDPOINT_MAX_REQUESTS
+        : RATE_LIMITS.GLOBAL_MAX_REQUESTS;
 
     const result = checkRateLimit(`${ip}:${pathname}`, windowMs, maxReqs);
     if (!result.allowed) {

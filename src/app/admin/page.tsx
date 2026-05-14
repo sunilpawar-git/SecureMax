@@ -1,67 +1,66 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+/**
+ * Admin Dashboard — thin orchestrator.
+ * Data fetching lives in useDashboardData hook (MVVM ViewModel).
+ * Rendering delegated to KpiCards, ActionItems, RecentActivity (Views).
+ */
 
-interface DashboardStats {
-  scraperHealthy: boolean;
-  totalArticles: number;
-  pendingLeads: number;
-  reportsGenerated: number;
-}
+import { useDashboardData } from './_hooks/useDashboardData';
+import { KpiCards } from './_components/KpiCards';
+import { ActionItems } from './_components/ActionItems';
+import { RecentActivity } from './_components/RecentActivity';
+
+const EMPTY_STATS = {
+  activeSessions: 0,
+  completedSessions: 0,
+  pendingLeads: 0,
+  totalLeads: 0,
+  reportsGenerated: 0,
+  totalArticles: 0,
+  scraperHealthy: true,
+};
+
+const EMPTY_ACTION_ITEMS = {
+  overdueFollowUps: 0,
+  scraperFailures: 0,
+  newLeadsCount: 0,
+};
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<DashboardStats>({
-    scraperHealthy: true,
-    totalArticles: 0,
-    pendingLeads: 0,
-    reportsGenerated: 0,
-  });
-
-  useEffect(() => {
-    async function loadStats() {
-      try {
-        const res = await fetch('/api/admin/stats');
-        if (res.ok) setStats(await res.json());
-      } catch {
-        /* dashboard gracefully degrades */
-      }
-    }
-    loadStats();
-  }, []);
-
-  const cards = [
-    {
-      label: 'Scraper Status',
-      value: stats.scraperHealthy ? 'Healthy' : 'Degraded',
-      color: stats.scraperHealthy ? 'text-green-600' : 'text-red-600',
-    },
-    {
-      label: 'Threat Intel Articles',
-      value: stats.totalArticles.toString(),
-      color: 'text-slate-900',
-    },
-    {
-      label: 'Pending Enterprise Leads',
-      value: stats.pendingLeads.toString(),
-      color: 'text-amber-600',
-    },
-    {
-      label: 'Reports Generated',
-      value: stats.reportsGenerated.toString(),
-      color: 'text-slate-900',
-    },
-  ];
+  const { stats, actionItems, recentActivity, loading, error, refresh } = useDashboardData();
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Admin Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {cards.map((card) => (
-          <div key={card.label} className="bg-white rounded-lg border p-5">
-            <p className="text-sm text-gray-500">{card.label}</p>
-            <p className={`text-2xl font-bold mt-1 ${card.color}`}>{card.value}</p>
-          </div>
-        ))}
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+        <button
+          onClick={refresh}
+          disabled={loading}
+          className="text-sm text-blue-600 hover:text-blue-800 disabled:opacity-50 transition-colors"
+        >
+          {loading ? 'Refreshing...' : 'Refresh'}
+        </button>
+      </div>
+
+      {error && (
+        <p className="text-sm text-red-600 bg-red-50 rounded-md px-4 py-2">{error}</p>
+      )}
+      <KpiCards stats={stats ?? EMPTY_STATS} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section>
+          <h2 className="text-lg font-semibold text-slate-900 mb-3">
+            Action Items
+          </h2>
+          <ActionItems items={actionItems ?? EMPTY_ACTION_ITEMS} />
+        </section>
+        <section>
+          <h2 className="text-lg font-semibold text-slate-900 mb-3">
+            Recent Activity
+          </h2>
+          <RecentActivity actions={recentActivity} />
+        </section>
       </div>
     </div>
   );

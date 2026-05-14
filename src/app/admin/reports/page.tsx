@@ -1,95 +1,72 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+/**
+ * Report Management page — thin orchestrator.
+ * Data via useReportsData hook. Views: ReportsTable, DiffModal, RegenConfirmDialog.
+ */
 
-interface ReportEntry {
-  id: string;
-  sessionId: string;
-  track: string;
-  status: string;
-  createdAt: string;
-  unlocked: boolean;
-}
+import { useState } from 'react';
+import { useReportsData } from './_hooks/useReportsData';
+import { ReportsTable } from './_components/ReportsTable';
+import { DiffModal } from './_components/DiffModal';
+import { RegenConfirmDialog } from './_components/RegenConfirmDialog';
+import type { DiffResult } from '@/lib/admin/diff-engine';
 
 export default function ReportsPage() {
-  const [reports, setReports] = useState<ReportEntry[]>([]);
+  const data = useReportsData();
+  const [regenTarget, setRegenTarget] = useState<string | null>(null);
+  const [diffState, setDiffState] = useState<{ sessionId: string; diff: DiffResult } | null>(null);
 
-  useEffect(() => {
-    async function loadReports() {
-      try {
-        const res = await fetch('/api/admin/reports');
-        if (res.ok) setReports(await res.json());
-      } catch {
-        /* graceful degradation */
-      }
-    }
-    loadReports();
-  }, []);
+  async function handleRegenConfirm() {
+    if (!regenTarget) return;
+    await data.regenerate(regenTarget);
+    setRegenTarget(null);
+  }
+
+  async function handleViewDiff(sessionId: string) {
+    const diff = await data.fetchDiff(sessionId);
+    if (diff) setDiffState({ sessionId, diff });
+  }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Report Management</h1>
-
-      <div className="bg-white rounded-lg border overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="text-left px-4 py-3 font-medium">Report ID</th>
-              <th className="text-left px-4 py-3 font-medium">Track</th>
-              <th className="text-left px-4 py-3 font-medium">Status</th>
-              <th className="text-left px-4 py-3 font-medium">Unlocked</th>
-              <th className="text-left px-4 py-3 font-medium">Created</th>
-              <th className="text-left px-4 py-3 font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reports.map((report) => (
-              <tr key={report.id} className="border-b last:border-0">
-                <td className="px-4 py-3 font-mono text-xs">{report.id.slice(0, 8)}...</td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`px-2 py-0.5 rounded text-xs font-medium ${
-                      report.track === 'enterprise' ? 'bg-slate-100' : 'bg-emerald-100'
-                    }`}
-                  >
-                    {report.track}
-                  </span>
-                </td>
-                <td className="px-4 py-3">{report.status}</td>
-                <td className="px-4 py-3">{report.unlocked ? 'Yes' : 'No'}</td>
-                <td className="px-4 py-3 text-gray-500">
-                  {new Date(report.createdAt).toLocaleDateString()}
-                </td>
-                <td className="px-4 py-3">
-                  <button
-                    className="text-xs text-blue-600 hover:underline mr-2 disabled:opacity-50"
-                    title="Coming soon — requires DB integration"
-                    disabled
-                  >
-                    Regenerate
-                  </button>
-                  {!report.unlocked && report.track === 'enterprise' && (
-                    <button
-                      className="text-xs text-green-600 hover:underline disabled:opacity-50"
-                      title="Coming soon — requires DB integration"
-                      disabled
-                    >
-                      Unlock
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-            {reports.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
-                  No reports generated yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-slate-900">Report Management</h1>
+        <button
+          onClick={data.refresh}
+          disabled={data.loading}
+          className="text-sm text-blue-600 hover:text-blue-800 disabled:opacity-50 transition-colors"
+        >
+          {data.loading ? 'Loading...' : 'Refresh'}
+        </button>
       </div>
+
+      {data.error ? (
+        <p className="text-sm text-red-600">{data.error}</p>
+      ) : (
+        <ReportsTable
+          reports={data.reports}
+          onRegenerate={setRegenTarget}
+          onUnlock={(sid) => data.unlock(sid)}
+          onViewDiff={handleViewDiff}
+        />
+      )}
+
+      {regenTarget && (
+        <RegenConfirmDialog
+          sessionId={regenTarget}
+          onConfirm={handleRegenConfirm}
+          onCancel={() => setRegenTarget(null)}
+        />
+      )}
+
+      {diffState && (
+        <DiffModal
+          sessionId={diffState.sessionId}
+          diff={diffState.diff}
+          onClose={() => setDiffState(null)}
+        />
+      )}
     </div>
   );
 }

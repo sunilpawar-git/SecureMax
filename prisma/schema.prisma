@@ -29,6 +29,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   auditSessions AuditSession[]
+  adminActions  AdminAction[]
 
   @@map("users")
 }
@@ -174,6 +175,7 @@ model ThreatIntel {
   industryTags Json     @map("industry_tags")
   source         String   @default("unknown")
   relevanceScore Float    @default(0.0) @map("relevance_score")
+  usedInReports  Boolean  @default(false) @map("used_in_reports")
   softDeleted    Boolean  @default(false) @map("soft_deleted")
   scrapedAt      DateTime @default(now()) @map("scraped_at")
 
@@ -207,6 +209,8 @@ model ReportArtifact {
   peerBenchmarkPctile   Float    @map("peer_benchmark_percentile")
   complianceGapCount    Int?     @map("compliance_gap_count")
   findingsJson          Json?    @map("findings_json")
+  version               Int      @default(1)
+  previousId            String?  @map("previous_id")
   generatedAt           DateTime @default(now()) @map("generated_at")
 
   session AuditSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
@@ -240,13 +244,83 @@ model EnterpriseLead {
   facilitiesCount  Int?     @map("facilities_count")
   cities           String?
   preferredContact String?  @map("preferred_contact")
+  email            String?
   sourceSessionId  String?  @map("source_session_id")
   status           String   @default("new")
+  lastEmailSentAt  DateTime? @map("last_email_sent_at")
+  followUpDueAt    DateTime? @map("follow_up_due_at")
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
+  followUpReminders FollowUpReminder[]
+
   @@index([status])
   @@map("enterprise_leads")
+}
+
+// ========== ADMIN ACTIONS (immutable audit trail) ==========
+
+model AdminAction {
+  id         String   @id @default(cuid())
+  adminId    String   @map("admin_id")
+  actionType String   @map("action_type")
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  admin      User     @relation(fields: [adminId], references: [id], onDelete: Restrict)
+
+  @@index([adminId, createdAt])
+  @@index([entityType, entityId])
+  @@map("admin_actions")
+}
+
+// ========== SCRAPER RUNS (persistent execution history) ==========
+
+model ScraperRun {
+  id             String    @id @default(cuid())
+  source         String?
+  status         String    @default("running")
+  articlesFound  Int       @default(0) @map("articles_found")
+  articlesStored Int       @default(0) @map("articles_stored")
+  duplicates     Int       @default(0)
+  errors         Json?
+  startedAt      DateTime  @default(now()) @map("started_at")
+  completedAt    DateTime? @map("completed_at")
+
+  @@index([startedAt])
+  @@map("scraper_runs")
+}
+
+// ========== FOLLOW-UP REMINDERS ==========
+
+model FollowUpReminder {
+  id          String         @id @default(cuid())
+  leadId      String         @map("lead_id")
+  dueAt       DateTime       @map("due_at")
+  status      String         @default("pending")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  completedAt DateTime?      @map("completed_at")
+
+  lead        EnterpriseLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([status, dueAt])
+  @@map("follow_up_reminders")
+}
+
+// ========== WEBHOOK LOGS ==========
+
+model WebhookLog {
+  id        String   @id @default(cuid())
+  provider  String
+  eventType String   @map("event_type")
+  status    String   @default("success")
+  errorLog  String?  @map("error_log") @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([provider, createdAt])
+  @@map("webhook_logs")
 }
 
 // ========== API KEYS (Encrypted) ==========

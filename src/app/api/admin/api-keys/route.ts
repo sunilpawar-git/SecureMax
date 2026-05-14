@@ -5,7 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
+import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import {
   storeApiKey,
   getApiKey,
@@ -15,20 +15,22 @@ import {
 } from '@/lib/api-key-manager';
 
 export async function POST(request: NextRequest) {
-  // Verify admin access
-  const session = await auth();
-  if (!session?.user?.id || session.user.role !== 'admin') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const session = await verifyAdmin();
+  if (!session) return forbiddenResponse();
 
   const action = request.nextUrl.searchParams.get('action');
-  const body = await request.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+  }
 
   try {
     switch (action) {
       case 'store': {
-        // Store a new API key
-        if (!body.provider || !body.keyName || !body.keyValue) {
+        const { provider, keyName, keyValue } = body as { provider?: unknown; keyName?: unknown; keyValue?: unknown };
+        if (!provider || !keyName || !keyValue) {
           return NextResponse.json(
             { error: 'Missing provider, keyName, or keyValue' },
             { status: 400 },
@@ -36,45 +38,49 @@ export async function POST(request: NextRequest) {
         }
 
         const apiKey = await storeApiKey(
-          body.provider,
-          body.keyName,
-          body.keyValue,
+          String(provider),
+          String(keyName),
+          String(keyValue),
           session.user.email || 'admin',
         );
 
         return NextResponse.json({
           success: true,
-          message: `API key for ${body.provider} stored successfully`,
+          message: `API key for ${String(provider)} stored successfully`,
           keyId: apiKey.id,
         });
       }
 
       case 'rotate': {
-        // Rotate to a new API key
-        if (!body.provider || !body.newKeyValue) {
+        const { provider: rotProv, newKeyValue } = body as { provider?: unknown; newKeyValue?: unknown };
+        if (!rotProv || !newKeyValue) {
           return NextResponse.json({ error: 'Missing provider or newKeyValue' }, { status: 400 });
         }
 
-        const apiKey = await rotateApiKey(
-          body.provider,
-          body.newKeyValue,
+        const rotKey = await rotateApiKey(
+          String(rotProv),
+          String(newKeyValue),
           session.user.email || 'admin',
         );
 
         return NextResponse.json({
           success: true,
-          message: `API key for ${body.provider} rotated successfully`,
-          keyId: apiKey.id,
+          message: `API key for ${String(rotProv)} rotated successfully`,
+          keyId: rotKey.id,
         });
       }
 
       case 'revoke': {
-        // Revoke an API key
-        if (!body.keyId) {
+        const { keyId: revKeyId, reason } = body as { keyId?: unknown; reason?: unknown };
+        if (!revKeyId) {
           return NextResponse.json({ error: 'Missing keyId' }, { status: 400 });
         }
 
-        await revokeApiKey(body.keyId, session.user.email || 'admin', body.reason);
+        await revokeApiKey(
+          String(revKeyId),
+          session.user.email || 'admin',
+          reason != null ? String(reason) : undefined,
+        );
 
         return NextResponse.json({
           success: true,
@@ -83,12 +89,15 @@ export async function POST(request: NextRequest) {
       }
 
       case 'audit': {
-        // Get audit log for an API key
-        if (!body.keyId) {
+        const { keyId: audKeyId, limit: audLimit } = body as { keyId?: unknown; limit?: unknown };
+        if (!audKeyId) {
           return NextResponse.json({ error: 'Missing keyId' }, { status: 400 });
         }
 
-        const audits = await getApiKeyAuditLog(body.keyId, body.limit || 100);
+        const audits = await getApiKeyAuditLog(
+          String(audKeyId),
+          typeof audLimit === 'number' ? audLimit : 100,
+        );
 
         return NextResponse.json({
           success: true,
@@ -109,17 +118,13 @@ export async function POST(request: NextRequest) {
         );
     }
   } catch (error) {
-    console.error('API key management error:', error);
+    console.error('[admin-api-keys] Operation failed', { detail: String(error) });
     return NextResponse.json({ error: 'Failed to manage API key' }, { status: 500 });
   }
 }
 
 export async function GET(request: NextRequest) {
-  // Verify admin access
-  const session = await auth();
-  if (!session?.user?.id || session.user.role !== 'admin') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  if (!(await verifyAdmin())) return forbiddenResponse();
 
   const provider = request.nextUrl.searchParams.get('provider');
   if (!provider) {

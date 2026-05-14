@@ -128,3 +128,91 @@ async def get_artifact_by_session(
         session_id,
     )
     return dict(row) if row else None
+
+
+async def archive_and_create_versioned_artifact(
+    conn: asyncpg.Connection,
+    session_id: str,
+    *,
+    pdf_encrypted: bytes | None,
+    urgency_score: int,
+    peer_benchmark_percentile: float,
+    findings_json: dict,
+    compliance_gap_count: int | None = None,
+) -> tuple[str, int]:
+    """Archive existing artifact and insert a new version. Returns (new_id, new_version)."""
+    existing = await get_artifact_by_session(conn, session_id)
+
+    if existing:
+        old_id = existing["id"]
+        old_version = existing.get("version", 1)
+        new_version = old_version + 1
+
+        archive_id = str(uuid.uuid4())
+        await conn.execute(
+            """
+            INSERT INTO report_artifacts
+                (id, session_id, pdf_encrypted, audit_urgency_score,
+                 peer_benchmark_percentile, compliance_gap_count,
+                 findings_json, version, previous_id, generated_at)
+            SELECT $1, session_id || '_archived_' || $2::text,
+                   pdf_encrypted, audit_urgency_score,
+                   peer_benchmark_percentile, compliance_gap_count,
+                   findings_json, version, previous_id, generated_at
+            FROM report_artifacts WHERE id = $3
+            """,
+            archive_id,
+            old_version,
+            old_id,
+        )
+
+        await conn.execute(
+            """
+            UPDATE report_artifacts
+            SET pdf_encrypted = $1, audit_urgency_score = $2,
+                peer_benchmark_percentile = $3, compliance_gap_count = $4,
+                findings_json = $5, version = $6, previous_id = $7,
+                generated_at = NOW()
+            WHERE id = $8
+            """,
+            pdf_encrypted,
+            urgency_score,
+            peer_benchmark_percentile,
+            compliance_gap_count,
+            json.dumps(findings_json),
+            new_version,
+            archive_id,
+            old_id,
+        )
+        return old_id, new_version
+
+    artifact_id = await store_artifact(
+        conn,
+        session_id,
+        pdf_encrypted=pdf_encrypted,
+        urgency_score=urgency_score,
+        peer_benchmark_percentile=peer_benchmark_percentile,
+        findings_json=findings_json,
+        compliance_gap_count=compliance_gap_count,
+    )
+    return artifact_id, 1
+
+
+async def reset_job_for_regen(
+    conn: asyncpg.Connection,
+    session_id: str,
+) -> str:
+    """Reset existing job to pending or create a new one for regen. Returns job_id."""
+    existing = await get_job_by_session(conn, session_id)
+    if existing:
+        await conn.execute(
+            """
+            UPDATE report_jobs
+            SET status = $1, error_message = NULL, updated_at = NOW()
+            WHERE id = $2
+            """,
+            REPORT_JOB_PENDING,
+            existing["id"],
+        )
+        return existing["id"]
+    return await create_job(conn, session_id)

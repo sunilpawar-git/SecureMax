@@ -1,87 +1,101 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+/**
+ * Enterprise Leads page — thin orchestrator.
+ * Data via useLeadsData hook. Views: KanbanBoard, EmailModal, StatusConfirmDialog.
+ */
 
-interface Lead {
-  id: string;
-  companyName: string;
-  contactName: string;
-  contactEmail: string;
-  facilityCount: number;
-  status: string;
-  createdAt: string;
-}
+import { useState } from 'react';
+import { useLeadsData, type Lead } from './_hooks/useLeadsData';
+import { KanbanBoard } from './_components/KanbanBoard';
+import { EmailModal } from './_components/EmailModal';
+import { StatusConfirmDialog } from './_components/StatusConfirmDialog';
+import { LEAD_STATUS, LEAD_STATUS_LABEL } from '@/config/admin-strings';
 
-const STATUS_COLORS: Record<string, string> = {
-  new: 'bg-blue-100 text-blue-800',
-  contacted: 'bg-yellow-100 text-yellow-800',
-  qualified: 'bg-purple-100 text-purple-800',
-  proposal_sent: 'bg-indigo-100 text-indigo-800',
-  closed_won: 'bg-green-100 text-green-800',
-  closed_lost: 'bg-gray-100 text-gray-800',
-};
+const STATUS_OPTIONS = ['', ...Object.values(LEAD_STATUS)] as const;
 
 export default function LeadsPage() {
-  const [leads, setLeads] = useState<Lead[]>([]);
+  const data = useLeadsData();
+  const [emailTarget, setEmailTarget] = useState<Lead | null>(null);
+  const [confirmAction, setConfirmAction] = useState<{
+    leadId: string;
+    company: string;
+    currentStatus: string;
+    targetStatus: string;
+  } | null>(null);
 
-  useEffect(() => {
-    async function loadLeads() {
-      try {
-        const res = await fetch('/api/admin/leads');
-        if (res.ok) setLeads(await res.json());
-      } catch {
-        /* graceful degradation */
-      }
-    }
-    loadLeads();
-  }, []);
+  function handleStatusChange(leadId: string, newStatus: string) {
+    const lead = data.leads.find((l) => l.id === leadId);
+    if (!lead) return;
+    setConfirmAction({
+      leadId,
+      company: lead.company,
+      currentStatus: lead.status,
+      targetStatus: newStatus,
+    });
+  }
+
+  async function handleConfirm() {
+    if (!confirmAction) return;
+    await data.updateStatus(confirmAction.leadId, confirmAction.targetStatus);
+    setConfirmAction(null);
+  }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Enterprise Leads Pipeline</h1>
-
-      <div className="bg-white rounded-lg border overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="text-left px-4 py-3 font-medium">Company</th>
-              <th className="text-left px-4 py-3 font-medium">Contact</th>
-              <th className="text-left px-4 py-3 font-medium">Facilities</th>
-              <th className="text-left px-4 py-3 font-medium">Status</th>
-              <th className="text-left px-4 py-3 font-medium">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {leads.map((lead) => (
-              <tr key={lead.id} className="border-b last:border-0">
-                <td className="px-4 py-3 font-medium">{lead.companyName}</td>
-                <td className="px-4 py-3">
-                  <div>{lead.contactName}</div>
-                  <div className="text-gray-500 text-xs">{lead.contactEmail}</div>
-                </td>
-                <td className="px-4 py-3">{lead.facilityCount}</td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[lead.status] || ''}`}
-                  >
-                    {lead.status.replace('_', ' ')}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-gray-500">
-                  {new Date(lead.createdAt).toLocaleDateString()}
-                </td>
-              </tr>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <h1 className="text-2xl font-bold text-slate-900">Enterprise Leads</h1>
+        <div className="flex gap-3">
+          <select
+            value={data.statusFilter}
+            onChange={(e) => data.setStatusFilter(e.target.value)}
+            className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">All Statuses</option>
+            {STATUS_OPTIONS.filter(Boolean).map((s) => (
+              <option key={s} value={s}>{LEAD_STATUS_LABEL[s] ?? s.replace(/_/g, ' ')}</option>
             ))}
-            {leads.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
-                  No enterprise leads yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+          </select>
+          <input
+            type="text"
+            placeholder="Search company or name..."
+            value={data.searchQuery}
+            onChange={(e) => data.setSearchQuery(e.target.value)}
+            className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500 w-56"
+          />
+          <span className="text-sm text-slate-400 self-center">{data.total} leads</span>
+        </div>
       </div>
+
+      {data.loading ? (
+        <p className="text-sm text-slate-400">Loading leads...</p>
+      ) : data.error ? (
+        <p className="text-sm text-red-600">{data.error}</p>
+      ) : (
+        <KanbanBoard
+          leads={data.leads}
+          onStatusChange={handleStatusChange}
+          onEmail={setEmailTarget}
+        />
+      )}
+
+      {emailTarget && (
+        <EmailModal
+          lead={emailTarget}
+          onSend={data.sendEmail}
+          onClose={() => setEmailTarget(null)}
+        />
+      )}
+
+      {confirmAction && (
+        <StatusConfirmDialog
+          leadCompany={confirmAction.company}
+          currentStatus={confirmAction.currentStatus}
+          targetStatus={confirmAction.targetStatus}
+          onConfirm={handleConfirm}
+          onCancel={() => setConfirmAction(null)}
+        />
+      )}
     </div>
   );
 }

@@ -20,7 +20,6 @@ export default function LinkedInPage() {
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState<string | null>(null);
   const [generateError, setGenerateError] = useState<string | null>(null);
-  // C5 fix: derive charCount from live textarea value, never from stale API response
   const fullPost = draftPost + (hashtags.length ? '\n\n' + hashtags.join(' ') : '');
   const charCount = fullPost.length;
 
@@ -53,7 +52,6 @@ export default function LinkedInPage() {
   const generateDraft = async () => {
     if (selectedIds.size === 0) return;
     setIsGenerating(true);
-    // H1 fix: clear draftPost (falsy) while generating so Copy stays disabled
     setDraftPost('');
     setHashtags([]);
     setGenerateError(null);
@@ -177,7 +175,6 @@ export default function LinkedInPage() {
           {copyError && (
             <p className="text-xs text-red-600">{copyError}</p>
           )}
-          {/* H1 fix: disabled when isGenerating or no real draft content */}
           <button
             onClick={() => { void copyToClipboard(); }}
             disabled={isGenerating || !draftPost}

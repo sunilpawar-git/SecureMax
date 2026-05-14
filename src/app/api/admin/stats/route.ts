@@ -1,20 +1,21 @@
 /**
- * Admin dashboard stats endpoint.
+ * Admin dashboard stats endpoint — real Prisma queries via stats-service.
  */
 
 import { NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
+import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
+import { getDashboardStats } from '@/lib/admin/stats-service';
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user?.role || session.user.role !== 'admin') {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (!(await verifyAdmin())) {
+    return forbiddenResponse();
   }
 
-  return NextResponse.json({
-    scraperHealthy: true,
-    totalArticles: 0,
-    pendingLeads: 0,
-    reportsGenerated: 0,
-  });
+  try {
+    const stats = await getDashboardStats();
+    return NextResponse.json(stats);
+  } catch (err) {
+    console.error('[admin-stats] Query failed', { detail: String(err) });
+    return NextResponse.json({ error: 'Failed to load stats' }, { status: 500 });
+  }
 }
