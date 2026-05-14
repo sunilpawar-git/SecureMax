@@ -48,7 +48,13 @@ def generate_findings(events: list[dict]) -> list[dict]:
             }
         )
 
-    findings.sort(key=lambda f: SEVERITY_ORDER.index(f["severity"]))
+    findings.sort(
+        key=lambda f: (
+            SEVERITY_ORDER.index(f["severity"])
+            if f.get("severity") in SEVERITY_ORDER
+            else len(SEVERITY_ORDER)
+        )
+    )
     return findings
 
 
@@ -73,12 +79,13 @@ def compute_urgency_score(findings: list[dict]) -> int:
 
 
 def compute_peer_benchmark(urgency_score: int) -> dict:
-    """Synthetic peer benchmark until real data exists."""
+    """Synthetic peer benchmark until real aggregate data is available."""
     return {
         "user_score": urgency_score,
         "peer_average": 42,
         "percentile": max(1, min(99, 100 - urgency_score)),
         "interpretation": _benchmark_interpretation(urgency_score),
+        "data_source": "synthetic_v1",
     }
 
 
@@ -93,7 +100,7 @@ def _benchmark_interpretation(score: int) -> str:
 def split_free_paid(findings: list[dict]) -> tuple[list[dict], list[dict]]:
     """Split findings: free summary shows all domains but blurs details."""
     free_findings: list[dict] = []
-    paid_findings: list[dict] = findings
+    paid_findings: list[dict] = [dict(f) for f in findings]
 
     for finding in findings:
         free_findings.append(

@@ -1,34 +1,22 @@
 /**
  * Questionnaire API routes — proxies to FastAPI AI service.
  * POST /api/questionnaire?action=start|answer|resume|abandon
+ *
+ * Identity is sourced exclusively from the authenticated NextAuth session.
+ * Client-supplied X-User-Id headers are intentionally ignored to prevent
+ * user impersonation.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
 
-// Auth check (client sends user_id in session after login)
-// For testing purposes, optional auth - allow requests if no session
-
 export async function POST(request: NextRequest) {
-  let userId: string | undefined;
+  const session = await auth();
+  const userId = session?.user?.id;
 
-  // First, try to get X-User-Id from client request (test mode)
-  userId = request.headers.get('X-User-Id') ?? undefined;
-
-  // Otherwise, try to get from authenticated session
   if (!userId) {
-    try {
-      const session = await auth();
-      userId = session?.user?.id;
-    } catch {
-      // Auth may fail in dev/test mode
-    }
-  }
-
-  // Last resort: generate a test user ID
-  if (!userId) {
-    userId = 'test-user-' + Math.random().toString(36).substring(7);
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
   }
 
   const action = request.nextUrl.searchParams.get('action');

@@ -128,9 +128,9 @@ def _build_enterprise_report(
 
 
 def _group_by_severity(findings: list[dict]) -> dict:
-    groups: dict[str, list] = {"critical": [], "high": [], "medium": []}
+    groups: dict[str, list] = {"critical": [], "high": [], "medium": [], "low": []}
     for f in findings:
-        sev = f["severity"]
+        sev = f.get("severity", "low")
         if sev in groups:
             groups[sev].append(f)
     return groups

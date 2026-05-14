@@ -23,8 +23,13 @@ def load_graph_for_track(track: str) -> dict[str, Any]:
 
     filename = "hni.yaml" if track == TRACK_HNI else "enterprise.yaml"
     filepath = GRAPH_DIR / filename
-    with open(filepath) as f:
-        graph = yaml.safe_load(f)
+    try:
+        with open(filepath) as f:
+            graph = yaml.safe_load(f)
+    except FileNotFoundError as exc:
+        raise RuntimeError(f"Question graph not found: {filepath}") from exc
+    except yaml.YAMLError as exc:
+        raise RuntimeError(f"Invalid YAML in question graph: {filepath}") from exc
 
     _graph_cache[track] = graph
     return graph
@@ -85,12 +90,4 @@ def reset_graph_cache() -> None:
     _graph_cache.clear()
 
 
-def build_context_summary(events: list[dict], max_events: int = 5) -> str:
-    """Build a concise context summary from recent session events for AI branching."""
-    recent = events[-max_events:] if len(events) > max_events else events
-    lines: list[str] = []
-    for event in recent:
-        q = event.get("question_text", "")[:80]
-        a = event.get("answer", "")
-        lines.append(f"Q: {q}\nA: {a}")
-    return "\n---\n".join(lines)
+from context import build_context_summary as build_context_summary  # re-export for back-compat

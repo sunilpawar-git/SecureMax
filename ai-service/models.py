@@ -27,6 +27,8 @@ class SubmitAnswerResponse(BaseModel):
     radar_scores: dict[str, float]
     is_complete: bool
     ai_branched: bool = False
+    ai_reasoning: str | None = None
+    cpp_citations: list[str] = Field(default_factory=list)
 
 
 class ResumeSessionRequest(BaseModel):
@@ -47,32 +49,6 @@ class QuestionNode(BaseModel):
     question_type: str
     options: list[str] | None = None
     score_drop_trigger: bool = False
-
-
-class RadarScores(BaseModel):
-    """CPP domain scores for the radar chart (0-100 per domain)."""
-
-    scores: dict[str, float] = Field(
-        default_factory=lambda: {
-            "CPP-01": 100.0,
-            "CPP-02": 100.0,
-            "CPP-03": 100.0,
-            "CPP-04": 100.0,
-            "CPP-05": 100.0,
-            "CPP-06": 100.0,
-            "CPP-07": 100.0,
-        }
-    )
-
-    def apply_penalty(self, domain: str, amount: float) -> None:
-        if domain in self.scores:
-            self.scores[domain] = max(0.0, self.scores[domain] - amount)
-
-    def apply_minor_penalty(self, domain: str) -> None:
-        self.apply_penalty(domain, 5.0)
-
-    def apply_major_penalty(self, domain: str) -> None:
-        self.apply_penalty(domain, 15.0)
 
 
 StartSessionResponse.model_rebuild()

@@ -7,20 +7,25 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/raivan_global"
+    # Required — service will not function without these; fail loudly when missing.
+    database_url: str = ""
     gemini_api_key: str = ""
-    gemini_region: str = "asia-south1"
     encryption_key: str = ""
-    admin_email: str = "admin@raivanglobal.com"
+
+    gemini_region: str = "asia-south1"
+    admin_email: str = ""
     news_api_key: str = ""
 
     ai_rate_limit_seconds: int = 15
     max_sessions_per_user_per_month: int = 3
-    embedding_dimensions: int = 768
+    embedding_dimensions: int = 3072
     embedding_chunk_tokens: int = 400
     embedding_overlap_tokens: int = 50
+    embedding_model: str = "models/gemini-embedding-2"
+    cpp_retrieval_top_k: int = 3
 
-    model_config = {"env_file": "../.env", "extra": "ignore"}
+    # Load from local .env only; ../env.local is for development convenience only
+    model_config = {"env_file": ".env", "extra": "ignore"}
 
 
 def get_settings() -> Settings:

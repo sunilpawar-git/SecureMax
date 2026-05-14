@@ -1,9 +1,8 @@
 """Tests for report generation — Phase 5 verification."""
 
 import pytest
-from fastapi.testclient import TestClient
 
-from main import app
+import session_repository as repo
 from report.findings import (
     classify_severity,
     compute_peer_benchmark,
@@ -11,21 +10,24 @@ from report.findings import (
     generate_findings,
     split_free_paid,
 )
-from routers.questionnaire import store
 from routers.report import reset_report_store
-
-client = TestClient(app)
 
 
 @pytest.fixture(autouse=True)
-def reset_state() -> None:
-    store.reset()
+def _reset_reports():
     reset_report_store()
 
 
-def _create_completed_session(track: str = "hni") -> str:
-    resp = client.post(
-        "/questionnaire/start", json={"user_id": f"report-user-{track}", "track": track}
+def _user_id_for_track(track: str) -> str:
+    return f"report-user-{track}"
+
+
+def _create_completed_session(test_client, db_conn, track: str = "hni") -> str:
+    uid = _user_id_for_track(track)
+    resp = test_client.post(
+        "/questionnaire/start",
+        json={"user_id": uid, "track": track},
+        headers={"X-User-Id": uid},
     )
     session_id = resp.json()["session_id"]
 
@@ -43,23 +45,31 @@ def _create_completed_session(track: str = "hni") -> str:
         ]
 
     for qid, answer in answers:
-        client.post(
+        test_client.post(
             "/questionnaire/answer",
             json={
                 "session_id": session_id,
                 "question_id": qid,
                 "answer": answer,
             },
+            headers={"X-User-Id": uid},
         )
 
-    store.complete_session(session_id)
+    from tests.conftest import run_db
+
+    run_db(repo.complete_session(db_conn, session_id))
     return session_id
 
 
 class TestFindingsEngine:
     def test_generate_findings_from_negative_answers(self) -> None:
         events = [
-            {"domain": "CPP-01", "question_text": "Q1", "answer": "No", "score_drop_trigger": True},
+            {
+                "domain": "CPP-01",
+                "question_text": "Q1",
+                "answer": "No",
+                "score_drop_trigger": True,
+            },
             {
                 "domain": "CPP-05",
                 "question_text": "Q2",
@@ -130,86 +140,184 @@ class TestFindingsEngine:
         assert paid[0]["answer"] == "No"
 
 
+async def _unlock_report(db_conn, session_id: str) -> None:
+    """Set enterprise_report_unlocked=true on the session to simulate payment."""
+    await db_conn.execute(
+        "UPDATE audit_sessions SET enterprise_report_unlocked = TRUE WHERE id = $1",
+        session_id,
+    )
+
+
 class TestReportAPI:
-    def test_generate_hni_report(self) -> None:
-        session_id = _create_completed_session("hni")
-        resp = client.post("/report/generate", json={"session_id": session_id})
+    def test_generate_hni_report(self, test_client, db_conn) -> None:
+        uid = _user_id_for_track("hni")
+        session_id = _create_completed_session(test_client, db_conn, "hni")
+        resp = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": uid},
+        )
         assert resp.status_code == 200
         data = resp.json()
         assert data["status"] == "completed"
         assert "report_id" in data
 
-    def test_generate_enterprise_report(self) -> None:
-        session_id = _create_completed_session("enterprise")
-        resp = client.post("/report/generate", json={"session_id": session_id})
+    def test_generate_enterprise_report(self, test_client, db_conn) -> None:
+        uid = _user_id_for_track("enterprise")
+        session_id = _create_completed_session(test_client, db_conn, "enterprise")
+        resp = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": uid},
+        )
         assert resp.status_code == 200
         data = resp.json()
         assert data["status"] == "completed"
 
-    def test_generate_fails_for_active_session(self) -> None:
-        resp = client.post(
-            "/questionnaire/start", json={"user_id": "user-report-active", "track": "hni"}
-        )
-        session_id = resp.json()["session_id"]
-        resp = client.post("/report/generate", json={"session_id": session_id})
-        assert resp.status_code == 400
+    def test_generate_missing_auth_rejected(self, test_client, db_conn) -> None:
+        """Missing X-User-Id on generate must return 401."""
+        session_id = _create_completed_session(test_client, db_conn, "hni")
+        resp = test_client.post("/report/generate", json={"session_id": session_id})
+        assert resp.status_code == 401
 
-    def test_get_report_status(self) -> None:
-        session_id = _create_completed_session("hni")
-        resp = client.post("/report/generate", json={"session_id": session_id})
+    def test_generate_wrong_owner_rejected(self, test_client, db_conn) -> None:
+        """Wrong user cannot generate another user's report."""
+        session_id = _create_completed_session(test_client, db_conn, "hni")
+        resp = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": "attacker-rpt"},
+        )
+        assert resp.status_code == 403
+
+    def test_generate_fails_for_active_session(self, test_client) -> None:
+        uid = "user-report-active"
+        test_client.post(
+            "/questionnaire/start",
+            json={"user_id": uid, "track": "hni"},
+            headers={"X-User-Id": uid},
+        )
+        resp = test_client.post(
+            "/report/generate",
+            json={"session_id": "doesnt-matter"},
+            headers={"X-User-Id": uid},
+        )
+        assert resp.status_code in (400, 404)
+
+    def test_get_report_status(self, test_client, db_conn) -> None:
+        uid = _user_id_for_track("hni")
+        session_id = _create_completed_session(test_client, db_conn, "hni")
+        resp = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": uid},
+        )
         report_id = resp.json()["report_id"]
-        resp = client.get(f"/report/{report_id}/status")
+        resp = test_client.get(f"/report/{report_id}/status")
         assert resp.status_code == 200
         assert resp.json()["progress"] == 100
 
-    def test_get_free_summary(self) -> None:
-        session_id = _create_completed_session("hni")
-        resp = client.post("/report/generate", json={"session_id": session_id})
+    def test_get_free_summary(self, test_client, db_conn) -> None:
+        uid = _user_id_for_track("hni")
+        session_id = _create_completed_session(test_client, db_conn, "hni")
+        resp = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": uid},
+        )
         report_id = resp.json()["report_id"]
-        resp = client.get(f"/report/{report_id}/summary")
+        resp = test_client.get(f"/report/{report_id}/summary")
         assert resp.status_code == 200
         data = resp.json()
         assert "urgency_score" in data
         assert "findings_preview" in data
 
-    def test_full_report_requires_payment(self) -> None:
-        session_id = _create_completed_session("hni")
-        resp = client.post("/report/generate", json={"session_id": session_id})
+    def test_full_report_requires_payment(self, test_client, db_conn) -> None:
+        uid = _user_id_for_track("hni")
+        session_id = _create_completed_session(test_client, db_conn, "hni")
+        resp = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": uid},
+        )
         report_id = resp.json()["report_id"]
-        resp = client.get(f"/report/{report_id}/full")
+        resp = test_client.get(f"/report/{report_id}/full", headers={"X-User-Id": uid})
         assert resp.status_code == 402
 
-    def test_full_report_with_unlock(self) -> None:
-        session_id = _create_completed_session("hni")
-        resp = client.post("/report/generate", json={"session_id": session_id})
+    def test_full_report_missing_auth_rejected(self, test_client, db_conn) -> None:
+        uid = _user_id_for_track("hni")
+        session_id = _create_completed_session(test_client, db_conn, "hni")
+        resp = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": uid},
+        )
         report_id = resp.json()["report_id"]
-        resp = client.get(f"/report/{report_id}/full?unlocked=true")
+        resp = test_client.get(f"/report/{report_id}/full")
+        assert resp.status_code == 401
+
+    def test_full_report_with_db_unlock(self, test_client, db_conn) -> None:
+        """Full report is accessible only after enterprise_report_unlocked=true in DB."""
+        from tests.conftest import run_db
+
+        uid = _user_id_for_track("hni")
+        session_id = _create_completed_session(test_client, db_conn, "hni")
+        resp = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": uid},
+        )
+        report_id = resp.json()["report_id"]
+        run_db(_unlock_report(db_conn, session_id))
+        resp = test_client.get(f"/report/{report_id}/full", headers={"X-User-Id": uid})
         assert resp.status_code == 200
         data = resp.json()
         assert "radar_scores" in data
         assert "findings_by_severity" in data
 
-    def test_idempotent_report_generation(self) -> None:
-        session_id = _create_completed_session("hni")
-        resp1 = client.post("/report/generate", json={"session_id": session_id})
-        resp2 = client.post("/report/generate", json={"session_id": session_id})
+    def test_idempotent_report_generation(self, test_client, db_conn) -> None:
+        uid = _user_id_for_track("hni")
+        session_id = _create_completed_session(test_client, db_conn, "hni")
+        resp1 = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": uid},
+        )
+        resp2 = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": uid},
+        )
         assert resp1.json()["report_id"] == resp2.json()["report_id"]
 
 
 class TestEnterpriseReportStructure:
-    def test_enterprise_has_compliance_section(self) -> None:
-        session_id = _create_completed_session("enterprise")
-        resp = client.post("/report/generate", json={"session_id": session_id})
+    def test_enterprise_has_compliance_section(self, test_client, db_conn) -> None:
+        from tests.conftest import run_db
+
+        uid = _user_id_for_track("enterprise")
+        session_id = _create_completed_session(test_client, db_conn, "enterprise")
+        resp = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": uid},
+        )
         report_id = resp.json()["report_id"]
-        resp = client.get(f"/report/{report_id}/full?unlocked=true")
+        run_db(_unlock_report(db_conn, session_id))
+        resp = test_client.get(f"/report/{report_id}/full", headers={"X-User-Id": uid})
         data = resp.json()
         assert "compliance_gap_analysis" in data
         assert "board_executive_summary" in data
 
-    def test_enterprise_free_summary_has_compliance_gaps(self) -> None:
-        session_id = _create_completed_session("enterprise")
-        resp = client.post("/report/generate", json={"session_id": session_id})
+    def test_enterprise_free_summary_has_compliance_gaps(self, test_client, db_conn) -> None:
+        uid = _user_id_for_track("enterprise")
+        session_id = _create_completed_session(test_client, db_conn, "enterprise")
+        resp = test_client.post(
+            "/report/generate",
+            json={"session_id": session_id},
+            headers={"X-User-Id": uid},
+        )
         report_id = resp.json()["report_id"]
-        resp = client.get(f"/report/{report_id}/summary")
+        resp = test_client.get(f"/report/{report_id}/summary")
         data = resp.json()
         assert "compliance_gap_count" in data
