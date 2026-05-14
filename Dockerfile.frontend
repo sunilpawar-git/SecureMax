@@ -6,10 +6,10 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
+COPY prisma ./prisma
 
-# Install dependencies (skip postinstall which needs DATABASE_URL)
-RUN npm ci --ignore-scripts && \
-    npm run prisma:generate && \
+# Install dependencies (prisma:generate runs as postinstall)
+RUN npm ci && \
     npm cache clean --force
 
 # Copy source code
