@@ -19,6 +19,8 @@ _DSN = _settings.database_url.replace("+asyncpg", "").split("?")[0]
 TEST_SCHEMA = "test_ai"
 
 _DDL = f"""
+CREATE EXTENSION IF NOT EXISTS vector;
+
 CREATE SCHEMA IF NOT EXISTS {TEST_SCHEMA};
 
 SET search_path TO {TEST_SCHEMA};
