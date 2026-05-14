@@ -16,18 +16,24 @@ interface FetchOptions {
   method?: string;
   body?: unknown;
   headers?: Record<string, string>;
+  userId?: string;
 }
 
 export async function aiServiceFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
-  const { method = 'POST', body, headers: extraHeaders } = options;
+  const { method = 'POST', body, headers: extraHeaders, userId } = options;
+
+  const reqHeaders: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'X-Service-Key': AI_SERVICE_KEY,
+    ...extraHeaders,
+  };
+  if (userId) {
+    reqHeaders['X-User-Id'] = userId;
+  }
 
   const response = await fetch(`${BASE_URL}${path}`, {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Service-Key': AI_SERVICE_KEY,
-      ...extraHeaders,
-    },
+    headers: reqHeaders,
     body: body ? JSON.stringify(body) : undefined,
   });
 

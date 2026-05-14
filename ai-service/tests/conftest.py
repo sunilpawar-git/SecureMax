@@ -5,6 +5,9 @@ via TRUNCATE after completion. TestClient creates per-request connections.
 """
 
 import asyncio
+import os
+
+os.environ.setdefault("ALLOW_INSECURE_LOCAL", "true")
 
 import asyncpg
 import pytest
@@ -84,6 +87,48 @@ CREATE TABLE {TEST_SCHEMA}.cpp_chunks (
 
 CREATE INDEX IF NOT EXISTS idx_test_chunks_domain
     ON {TEST_SCHEMA}.cpp_chunks(domain);
+
+DROP TABLE IF EXISTS {TEST_SCHEMA}.report_artifacts CASCADE;
+DROP TABLE IF EXISTS {TEST_SCHEMA}.report_jobs CASCADE;
+DROP TABLE IF EXISTS {TEST_SCHEMA}.threat_intel CASCADE;
+
+CREATE TABLE {TEST_SCHEMA}.report_jobs (
+    id TEXT PRIMARY KEY,
+    session_id TEXT NOT NULL UNIQUE
+        REFERENCES {TEST_SCHEMA}.audit_sessions(id) ON DELETE CASCADE,
+    status TEXT NOT NULL DEFAULT 'pending',
+    error_message TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE {TEST_SCHEMA}.report_artifacts (
+    id TEXT PRIMARY KEY,
+    session_id TEXT NOT NULL UNIQUE
+        REFERENCES {TEST_SCHEMA}.audit_sessions(id) ON DELETE CASCADE,
+    pdf_encrypted BYTEA,
+    audit_urgency_score INTEGER NOT NULL,
+    peer_benchmark_percentile DOUBLE PRECISION NOT NULL,
+    compliance_gap_count INTEGER,
+    findings_json JSONB,
+    generated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE {TEST_SCHEMA}.threat_intel (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    url TEXT NOT NULL UNIQUE,
+    content_hash TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    domain_tags JSONB NOT NULL,
+    industry_tags JSONB NOT NULL,
+    source TEXT NOT NULL DEFAULT 'unknown',
+    soft_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    scraped_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_test_threat_intel_soft_deleted
+    ON {TEST_SCHEMA}.threat_intel(soft_deleted);
 """
 
 
@@ -140,6 +185,9 @@ def _cleanup_test_data():
     async def _truncate():
         conn = await asyncpg.connect(_DSN)
         try:
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.report_artifacts CASCADE")
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.report_jobs CASCADE")
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.threat_intel CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.session_events CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.audit_sessions CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.cpp_chunks CASCADE")
@@ -149,9 +197,42 @@ def _cleanup_test_data():
     _run(_truncate())
 
 
+class _TestPool:
+    """Lightweight pool substitute for tests. Creates a fresh connection on
+    each acquire(), bound to the caller's event loop (avoids the
+    cross-loop error that real asyncpg pools trigger in TestClient)."""
+
+    def __init__(self, dsn: str, schema: str) -> None:
+        self._dsn = dsn
+        self._schema = schema
+
+    class _AcquireCtx:
+        def __init__(self, dsn: str, schema: str) -> None:
+            self._dsn = dsn
+            self._schema = schema
+            self._conn: asyncpg.Connection | None = None
+
+        async def __aenter__(self) -> asyncpg.Connection:
+            self._conn = await asyncpg.connect(self._dsn)
+            await self._conn.execute(f"SET search_path TO {self._schema}, public")
+            return self._conn
+
+        async def __aexit__(self, *exc) -> None:
+            if self._conn:
+                await self._conn.close()
+
+    def acquire(self) -> "_TestPool._AcquireCtx":
+        return self._AcquireCtx(self._dsn, self._schema)
+
+    async def close(self) -> None:
+        pass
+
+
 @pytest.fixture()
 def test_client():
-    """TestClient with get_db overridden to connect to test schema."""
+    """TestClient with get_db overridden to connect to test schema.
+    Also provides a pool on app.state for BackgroundTasks that acquire
+    their own connections (e.g. report generation)."""
     from main import app
 
     async def _override_get_db():
@@ -162,6 +243,7 @@ def test_client():
         finally:
             await conn.close()
 
+    app.state.pool = _TestPool(_DSN, TEST_SCHEMA)
     app.dependency_overrides[get_db] = _override_get_db
     with TestClient(app, raise_server_exceptions=True) as client:
         yield client

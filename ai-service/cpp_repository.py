@@ -1,14 +1,14 @@
 """
 CPP chunk retrieval via pgvector cosine similarity.
-Embeds the query with Gemini, then searches cpp_chunks for nearest neighbours.
+Embeds the query via gemini_client, then searches cpp_chunks for nearest neighbours.
 """
 
 import logging
 
 import asyncpg
-from google import genai
 
 from config import Settings
+from gemini_client import GeminiClient, GeminiError
 from schemas import CppChunkResult
 
 logger = logging.getLogger(__name__)
@@ -19,13 +19,16 @@ async def get_relevant_chunks(
     conn: asyncpg.Connection,
     settings: Settings,
     top_k: int | None = None,
+    *,
+    gemini: GeminiClient | None = None,
 ) -> list[CppChunkResult]:
     """Embed *query* and return the top-k most similar CPP chunks."""
     k = top_k or settings.cpp_retrieval_top_k
 
     try:
-        embedding = await _embed_query(query, settings)
-    except Exception:
+        client = gemini or GeminiClient(settings)
+        embedding = await client.embed(query, model=settings.embedding_model)
+    except (GeminiError, ValueError):
         logger.warning("Gemini embedding failed for CPP retrieval", exc_info=True)
         return []
 
@@ -51,22 +54,3 @@ async def get_relevant_chunks(
         )
         for row in rows
     ]
-
-
-async def _embed_query(query: str, settings: Settings) -> list[float]:
-    """Generate embedding for a single query string via Gemini.
-
-    The underlying SDK call is synchronous; it is dispatched to a thread pool
-    via asyncio.to_thread so the event loop is never blocked.
-    """
-    import asyncio
-
-    def _sync_embed() -> list[float]:
-        client = genai.Client(api_key=settings.gemini_api_key)
-        result = client.models.embed_content(
-            model=settings.embedding_model,
-            contents=query,
-        )
-        return list(result.embeddings[0].values)
-
-    return await asyncio.to_thread(_sync_embed)

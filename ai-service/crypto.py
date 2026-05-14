@@ -54,3 +54,25 @@ def decrypt(ciphertext_b64: str, key: bytes) -> str:
     ct = raw[_NONCE_BYTES:]
     aesgcm = AESGCM(key)
     return aesgcm.decrypt(nonce, ct, None).decode("utf-8")
+
+
+def encrypt_bytes(plaintext: bytes, key: bytes) -> bytes:
+    """Encrypt raw bytes with AES-256-GCM. Returns nonce+ciphertext as raw
+    bytes — suitable for BYTEA columns (no base64 overhead)."""
+    nonce = os.urandom(_NONCE_BYTES)
+    aesgcm = AESGCM(key)
+    ct = aesgcm.encrypt(nonce, plaintext, None)
+    return nonce + ct
+
+
+def decrypt_bytes(ciphertext: bytes, key: bytes) -> bytes:
+    """Decrypt raw AES-256-GCM bytes (nonce prefix, no base64 wrapper)."""
+    if len(ciphertext) < _MIN_CIPHERTEXT_BYTES:
+        raise ValueError(
+            f"Malformed ciphertext: expected at least "
+            f"{_MIN_CIPHERTEXT_BYTES} bytes, got {len(ciphertext)}"
+        )
+    nonce = ciphertext[:_NONCE_BYTES]
+    ct = ciphertext[_NONCE_BYTES:]
+    aesgcm = AESGCM(key)
+    return aesgcm.decrypt(nonce, ct, None)

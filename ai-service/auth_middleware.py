@@ -5,8 +5,12 @@ The Next.js proxy sends X-Service-Key; direct external access is blocked.
 
 Fail-closed by default: if AI_SERVICE_KEY is not set, all non-public requests
 are rejected unless ALLOW_INSECURE_LOCAL=true (development only).
+
+Environment variables are read at request time (not import time) so that
+test fixtures can override them.
 """
 
+import hmac
 import logging
 import os
 from collections.abc import Awaitable, Callable
@@ -16,9 +20,6 @@ from fastapi.responses import JSONResponse, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 
 logger = logging.getLogger(__name__)
-
-SERVICE_KEY = os.environ.get("AI_SERVICE_KEY", "")
-ALLOW_INSECURE_LOCAL = os.environ.get("ALLOW_INSECURE_LOCAL", "").lower() == "true"
 
 PUBLIC_PATHS = {"/health"}
 
@@ -32,11 +33,11 @@ class ServiceAuthMiddleware(BaseHTTPMiddleware):
         if request.url.path in PUBLIC_PATHS:
             return await call_next(request)
 
-        if not SERVICE_KEY:
-            if ALLOW_INSECURE_LOCAL:
-                logger.warning(
-                    "AI_SERVICE_KEY not set — running insecure (ALLOW_INSECURE_LOCAL=true)"
-                )
+        service_key = os.environ.get("AI_SERVICE_KEY", "")
+        allow_insecure = os.environ.get("ALLOW_INSECURE_LOCAL", "").lower() == "true"
+
+        if not service_key:
+            if allow_insecure:
                 return await call_next(request)
             return JSONResponse(
                 status_code=403,
@@ -44,7 +45,7 @@ class ServiceAuthMiddleware(BaseHTTPMiddleware):
             )
 
         provided_key = request.headers.get("X-Service-Key", "")
-        if provided_key != SERVICE_KEY:
+        if not hmac.compare_digest(provided_key, service_key):
             return JSONResponse(
                 status_code=403,
                 content={"detail": "Invalid or missing service key"},

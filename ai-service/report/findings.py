@@ -31,7 +31,7 @@ def generate_findings(events: list[dict]) -> list[dict]:
             answer = ", ".join(answer)
 
         severity = classify_severity(answer, event.get("score_drop_trigger", False))
-        if severity in (SEVERITY_LOW,):
+        if severity == SEVERITY_LOW:
             continue
 
         domain = event.get("domain", "")
@@ -103,15 +103,14 @@ def split_free_paid(findings: list[dict]) -> tuple[list[dict], list[dict]]:
     paid_findings: list[dict] = [dict(f) for f in findings]
 
     for finding in findings:
+        question = finding.get("question", "")
         free_findings.append(
             {
-                "domain": finding["domain"],
-                "domain_name": finding["domain_name"],
-                "severity": finding["severity"],
+                "domain": finding.get("domain", ""),
+                "domain_name": finding.get("domain_name", ""),
+                "severity": finding.get("severity", "low"),
                 "question": (
-                    finding["question"][:60] + "..."
-                    if len(finding["question"]) > 60
-                    else finding["question"]
+                    question[:60] + "..." if len(question) > 60 else question
                 ),
                 "answer": "●●●●●●",
                 "recommendation": "Unlock full report for detailed recommendations.",

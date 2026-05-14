@@ -1,130 +1,183 @@
 """
 Report generation orchestrator.
-Builds structured report data for HNI (8 sections) and Enterprise (10 sections).
-Actual PDF rendering happens via Playwright HTML→PDF (separate service call).
+Builds structured ReportData for HNI (8 sections) and Enterprise (10 sections).
+Async — calls Gemini for narrative augmentation via report.narrative.
 """
 
-from config import CPP_DOMAINS, TRACK_ENTERPRISE, TRACK_HNI
+import asyncpg
+
+from config import CPP_DOMAINS, TRACK_ENTERPRISE, TRACK_HNI, Settings
+from gemini_client import GeminiClient
+from report.compliance import generate_compliance_appendix
+from report.constants import ENTERPRISE_SECTION_NAMES, HNI_SECTION_NAMES
+from report.enrichment import (
+    enrich_findings_with_cpp,
+    enrich_findings_with_threat_intel,
+)
 from report.findings import (
     compute_peer_benchmark,
     compute_urgency_score,
     generate_findings,
     split_free_paid,
 )
+from report.narrative import (
+    enhance_findings_with_ai,
+    generate_board_summary,
+    generate_executive_summary,
+)
+from report.schemas import Finding, FreeSummary, ReportData, ReportSection
 from scoring import compute_radar_scores
 
 
-def generate_report_data(session: dict) -> dict:
-    """Main entry point: session → complete report data structure."""
+async def generate_report_data(
+    session: dict,
+    *,
+    gemini: GeminiClient | None = None,
+    conn: asyncpg.Connection | None = None,
+    settings: Settings | None = None,
+) -> ReportData:
+    """Main entry point: session dict -> validated ReportData."""
     events = session.get("events", [])
     track = session.get("track", TRACK_HNI)
 
     radar_scores = compute_radar_scores(events)
-    findings = generate_findings(events)
-    urgency = compute_urgency_score(findings)
+    raw_findings = generate_findings(events)
+    urgency = compute_urgency_score(raw_findings)
     benchmark = compute_peer_benchmark(urgency)
-    free_findings, paid_findings = split_free_paid(findings)
 
-    compliance_gaps = _count_compliance_gaps(findings)
+    if gemini:
+        enhanced_raw = await enhance_findings_with_ai(
+            raw_findings, track, gemini=gemini
+        )
+    else:
+        enhanced_raw = raw_findings
+
+    threat_intel_articles: list[dict] = []
+    if conn and gemini and settings:
+        enhanced_raw = await enrich_findings_with_cpp(
+            enhanced_raw, conn, settings, gemini=gemini
+        )
+        threat_intel_articles = await enrich_findings_with_threat_intel(
+            enhanced_raw, conn
+        )
+
+    free_raw, paid_raw = split_free_paid(enhanced_raw)
+    findings = [Finding(**f) for f in enhanced_raw]
+
+    compliance_gaps = _count_compliance_gaps(enhanced_raw)
+
+    exec_summary = None
+    board_summary = None
+    if gemini:
+        exec_summary = await generate_executive_summary(
+            enhanced_raw, track, gemini=gemini
+        )
+        if track == TRACK_ENTERPRISE:
+            board_summary = await generate_board_summary(
+                enhanced_raw,
+                gemini=gemini,
+                compliance_gap_count=compliance_gaps,
+            )
+
+    compliance_mappings = []
+    if track == TRACK_ENTERPRISE and gemini:
+        compliance_mappings = await generate_compliance_appendix(
+            enhanced_raw, track, gemini=gemini
+        )
 
     if track == TRACK_ENTERPRISE:
-        return _build_enterprise_report(
-            session,
-            radar_scores,
-            findings,
-            paid_findings,
-            free_findings,
-            urgency,
-            benchmark,
-            compliance_gaps,
+        sections = _build_enterprise_sections(
+            radar_scores, enhanced_raw, paid_raw, urgency, benchmark, compliance_gaps
         )
-    return _build_hni_report(
-        session,
-        radar_scores,
-        findings,
-        paid_findings,
-        free_findings,
-        urgency,
-        benchmark,
+    else:
+        sections = _build_hni_sections(
+            radar_scores, enhanced_raw, paid_raw, urgency, benchmark
+        )
+
+    free_summary = FreeSummary(
+        urgency_score=urgency,
+        domains_with_gaps=sorted(
+            {f.get("domain", "") for f in enhanced_raw if f.get("domain")}
+        ),
+        findings_preview=free_raw[:5],
+        peer_benchmark=benchmark,
+        compliance_gap_count=compliance_gaps if track == TRACK_ENTERPRISE else None,
+    )
+
+    return ReportData(
+        track=track,
+        session_id=session.get("session_id", ""),
+        findings=findings,
+        sections=sections,
+        urgency_score=urgency,
+        peer_benchmark_percentile=benchmark.get("percentile", 50.0),
+        compliance_gap_count=compliance_gaps if track == TRACK_ENTERPRISE else None,
+        executive_summary=exec_summary,
+        board_summary=board_summary,
+        threat_intel_articles=threat_intel_articles,
+        compliance_mappings=compliance_mappings,
+        radar_scores=radar_scores,
+        free_summary=free_summary,
     )
 
 
-def _build_hni_report(
-    session: dict,
+def _build_hni_sections(
     radar_scores: dict,
     findings: list[dict],
     paid_findings: list[dict],
-    free_findings: list[dict],
     urgency: int,
     benchmark: dict,
-) -> dict:
-    """HNI report: 8 sections."""
-    return {
-        "type": "hni",
-        "session_id": session.get("session_id", ""),
-        "sections": {
-            "executive_summary": {
-                "urgency_score": urgency,
-                "total_findings": len(findings),
-                "critical_count": sum(1 for f in findings if f["severity"] == "critical"),
-                "domains_assessed": list(CPP_DOMAINS.keys()),
-            },
-            "radar_scores": radar_scores,
-            "peer_benchmark": benchmark,
-            "findings_by_severity": _group_by_severity(paid_findings),
-            "domain_breakdown": _group_by_domain(paid_findings),
-            "recommendations": [f["recommendation"] for f in paid_findings],
-            "next_steps": _hni_next_steps(urgency),
-            "methodology": _methodology_section(),
-        },
-        "free_summary": {
+) -> list[ReportSection]:
+    data_map = {
+        "executive_summary": {
             "urgency_score": urgency,
-            "findings_preview": free_findings[:5],
-            "domains_with_gaps": list({f["domain"] for f in findings}),
-            "peer_benchmark": benchmark,
+            "total_findings": len(findings),
+            "critical_count": sum(1 for f in findings if f["severity"] == "critical"),
+            "domains_assessed": list(CPP_DOMAINS.keys()),
         },
+        "radar_scores": radar_scores,
+        "peer_benchmark": benchmark,
+        "findings_by_severity": _group_by_severity(paid_findings),
+        "domain_breakdown": _group_by_domain(paid_findings),
+        "recommendations": {"items": [f["recommendation"] for f in paid_findings]},
+        "next_steps": {"items": _hni_next_steps(urgency)},
+        "methodology": _methodology_section(),
     }
+    return [
+        ReportSection(name=name, data=data_map.get(name, {}))
+        for name in HNI_SECTION_NAMES
+    ]
 
 
-def _build_enterprise_report(
-    session: dict,
+def _build_enterprise_sections(
     radar_scores: dict,
     findings: list[dict],
     paid_findings: list[dict],
-    free_findings: list[dict],
     urgency: int,
     benchmark: dict,
     compliance_gaps: int,
-) -> dict:
-    """Enterprise report: 10 sections (adds compliance + board summary)."""
-    return {
-        "type": "enterprise",
-        "session_id": session.get("session_id", ""),
-        "sections": {
-            "board_executive_summary": {
-                "urgency_score": urgency,
-                "compliance_gap_count": compliance_gaps,
-                "total_findings": len(findings),
-                "critical_count": sum(1 for f in findings if f["severity"] == "critical"),
-            },
-            "radar_scores": radar_scores,
-            "peer_benchmark": benchmark,
-            "compliance_gap_analysis": _compliance_section(findings),
-            "findings_by_severity": _group_by_severity(paid_findings),
-            "domain_breakdown": _group_by_domain(paid_findings),
-            "module_findings": _group_by_module(findings),
-            "recommendations": [f["recommendation"] for f in paid_findings],
-            "remediation_roadmap": _enterprise_roadmap(urgency, findings),
-            "methodology": _methodology_section(),
-        },
-        "free_summary": {
+) -> list[ReportSection]:
+    data_map = {
+        "board_executive_summary": {
             "urgency_score": urgency,
             "compliance_gap_count": compliance_gaps,
-            "findings_preview": free_findings[:5],
-            "domains_with_gaps": list({f["domain"] for f in findings}),
-            "peer_benchmark": benchmark,
+            "total_findings": len(findings),
+            "critical_count": sum(1 for f in findings if f["severity"] == "critical"),
         },
+        "radar_scores": radar_scores,
+        "peer_benchmark": benchmark,
+        "compliance_gap_analysis": _compliance_section(findings),
+        "findings_by_severity": _group_by_severity(paid_findings),
+        "domain_breakdown": _group_by_domain(paid_findings),
+        "module_findings": _group_by_module(findings),
+        "recommendations": {"items": [f["recommendation"] for f in paid_findings]},
+        "remediation_roadmap": _enterprise_roadmap(urgency, findings),
+        "methodology": _methodology_section(),
     }
+    return [
+        ReportSection(name=name, data=data_map.get(name, {}))
+        for name in ENTERPRISE_SECTION_NAMES
+    ]
 
 
 def _group_by_severity(findings: list[dict]) -> dict:

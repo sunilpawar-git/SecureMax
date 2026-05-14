@@ -100,6 +100,7 @@ model AuditSession {
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   events         SessionEvent[]
   reportArtifact ReportArtifact?
+  reportJob      ReportJob?
 
   @@index([userId, status])
   @@map("audit_sessions")
@@ -211,6 +212,22 @@ model ReportArtifact {
   session AuditSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@map("report_artifacts")
+}
+
+// ========== REPORT JOBS (async generation tracking) ==========
+
+model ReportJob {
+  id           String   @id @default(cuid())
+  sessionId    String   @unique @map("session_id")
+  status       String   @default("pending")
+  errorMessage String?  @map("error_message")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  session AuditSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("report_jobs")
 }
 
 // ========== ENTERPRISE LEADS ==========

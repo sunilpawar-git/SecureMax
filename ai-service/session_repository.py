@@ -11,10 +11,6 @@ from typing import Any
 
 import asyncpg
 
-from crypto import decrypt
-
-logger = logging.getLogger(__name__)
-
 from constants import (
     SESSION_ABANDONED,
     SESSION_COMPLETED,
@@ -22,7 +18,10 @@ from constants import (
     TABLE_AUDIT_SESSIONS,
     TABLE_SESSION_EVENTS,
 )
+from crypto import decrypt
 from scoring import compute_radar_scores
+
+logger = logging.getLogger(__name__)
 
 
 async def create_session(
@@ -175,6 +174,29 @@ async def abandon_session(
     )
 
 
+def _decrypt_event_row(row: Any, encryption_key: bytes, session_id: str) -> dict:
+    """Shared helper: decrypt one event row into a plain dict."""
+    answer = decrypt(row["answer_encrypted"], encryption_key)
+    try:
+        delta = (
+            json.loads(row["domain_score_delta"])
+            if row["domain_score_delta"]
+            else {}
+        )
+    except (json.JSONDecodeError, TypeError):
+        logger.warning(
+            "Corrupt domain_score_delta for session %s — skipping delta",
+            session_id[:8],
+        )
+        delta = {}
+    return {
+        "question_id": row["question_node_id"],
+        "answer": answer,
+        "domain": delta.get("domain", ""),
+        "score_drop_trigger": delta.get("score_drop_trigger", False),
+    }
+
+
 async def get_radar_scores(
     conn: asyncpg.Connection,
     session_id: str,
@@ -190,20 +212,5 @@ async def get_radar_scores(
         """,
         session_id,
     )
-    events: list[dict] = []
-    for row in rows:
-        answer = decrypt(row["answer_encrypted"], encryption_key)
-        try:
-            delta = json.loads(row["domain_score_delta"]) if row["domain_score_delta"] else {}
-        except (json.JSONDecodeError, TypeError):
-            logger.warning("Corrupt domain_score_delta for session %s — skipping delta", session_id)
-            delta = {}
-        events.append(
-            {
-                "question_id": row["question_node_id"],
-                "answer": answer,
-                "domain": delta.get("domain", ""),
-                "score_drop_trigger": delta.get("score_drop_trigger", False),
-            }
-        )
+    events = [_decrypt_event_row(row, encryption_key, session_id) for row in rows]
     return compute_radar_scores(events)

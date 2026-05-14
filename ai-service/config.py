@@ -3,11 +3,26 @@ SSOT configuration for FastAPI AI service.
 All environment variables and constants centralised here.
 """
 
+import os
+
 from pydantic_settings import BaseSettings
+
+_REQUIRED_IN_PROD = ("DATABASE_URL", "GEMINI_API_KEY", "ENCRYPTION_KEY")
+
+
+def _assert_prod_vars() -> None:
+    """Fail fast if any required credential is absent outside test environments."""
+    if os.environ.get("ALLOW_INSECURE_LOCAL", "").lower() == "true":
+        return
+    missing = [v for v in _REQUIRED_IN_PROD if not os.environ.get(v)]
+    if missing:
+        raise RuntimeError(
+            f"Missing required environment variables: {', '.join(missing)}. "
+            "Set ALLOW_INSECURE_LOCAL=true only for local development."
+        )
 
 
 class Settings(BaseSettings):
-    # Required — service will not function without these; fail loudly when missing.
     database_url: str = ""
     gemini_api_key: str = ""
     encryption_key: str = ""
@@ -24,11 +39,11 @@ class Settings(BaseSettings):
     embedding_model: str = "models/gemini-embedding-2"
     cpp_retrieval_top_k: int = 3
 
-    # Load from local .env only; ../env.local is for development convenience only
     model_config = {"env_file": ".env", "extra": "ignore"}
 
 
 def get_settings() -> Settings:
+    _assert_prod_vars()
     return Settings()
 
 

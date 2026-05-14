@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
     if (action === 'generate') {
       const result = await aiServiceFetch('/report/generate', {
         body: { session_id: body.session_id },
+        userId: session.user.id,
       });
       return NextResponse.json(result);
     }
@@ -51,27 +52,22 @@ export async function GET(request: NextRequest) {
       case 'status': {
         const result = await aiServiceFetch(`/report/${reportId}/status`, {
           method: 'GET',
+          userId: session.user.id,
         });
         return NextResponse.json(result);
       }
       case 'summary': {
         const result = await aiServiceFetch(`/report/${reportId}/summary`, {
           method: 'GET',
+          userId: session.user.id,
         });
         return NextResponse.json(result);
       }
       case 'full': {
-        const paid = request.nextUrl.searchParams.get('paid') === 'true';
-        if (!paid) {
-          return NextResponse.json(
-            { error: 'Payment required to access full report' },
-            { status: 402 },
-          );
-        }
-        const result = await aiServiceFetch(
-          `/report/${reportId}/full?unlocked=true&user_id=${session.user.id}`,
-          { method: 'GET' },
-        );
+        const result = await aiServiceFetch(`/report/${reportId}/full`, {
+          method: 'GET',
+          userId: session.user.id,
+        });
         return NextResponse.json(result);
       }
       default:
