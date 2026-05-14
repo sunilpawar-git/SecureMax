@@ -15,6 +15,20 @@ async function verifyAdmin() {
   return session;
 }
 
+function handleServiceError(error: unknown, fallbackMessage: string): NextResponse {
+  if (error instanceof AIServiceError) {
+    // Log the real detail server-side; never forward internal messages to browser
+    console.error('[scraper-route] AI service error', {
+      status: error.statusCode,
+      detail: error.message,
+    });
+    const clientStatus = error.statusCode >= 500 ? 503 : error.statusCode;
+    return NextResponse.json({ error: fallbackMessage }, { status: clientStatus });
+  }
+  console.error('[scraper-route] Unexpected error', error);
+  return NextResponse.json({ error: fallbackMessage }, { status: 503 });
+}
+
 export async function POST() {
   if (!(await verifyAdmin())) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -23,10 +37,7 @@ export async function POST() {
     const result = await aiServiceFetch('/scraper/run', { body: {} });
     return NextResponse.json(result);
   } catch (error) {
-    if (error instanceof AIServiceError) {
-      return NextResponse.json({ error: error.message }, { status: error.statusCode });
-    }
-    return NextResponse.json({ error: 'Scraper unavailable' }, { status: 503 });
+    return handleServiceError(error, 'Scraper unavailable — check service logs');
   }
 }
 
@@ -43,9 +54,6 @@ export async function GET(request: NextRequest) {
     const result = await aiServiceFetch('/scraper/articles', { method: 'GET' });
     return NextResponse.json(result);
   } catch (error) {
-    if (error instanceof AIServiceError) {
-      return NextResponse.json({ error: error.message }, { status: error.statusCode });
-    }
-    return NextResponse.json({ error: 'Service unavailable' }, { status: 503 });
+    return handleServiceError(error, 'Service unavailable — check service logs');
   }
 }

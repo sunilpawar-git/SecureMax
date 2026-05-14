@@ -3,6 +3,7 @@ Tiered source fetchers: News API (tier 1), RSS (tier 2), Playwright (tier 3).
 Each fetcher returns a list of RawArticle instances.
 """
 
+import logging
 from datetime import datetime
 from xml.etree.ElementTree import Element
 
@@ -12,9 +13,11 @@ from defusedxml.ElementTree import fromstring as safe_fromstring
 from config import get_settings
 from scraper.models import RawArticle
 
+logger = logging.getLogger(__name__)
+
 SECURITY_KEYWORDS = [
     "physical security",
-    "CCTV",
+    "cctv",
     "access control",
     "perimeter breach",
     "security audit",
@@ -24,6 +27,18 @@ SECURITY_KEYWORDS = [
     "guard patrol",
     "fire safety",
     "emergency response",
+    "security breach",
+    "security incident",
+    "security threat",
+    "security risk",
+    "security management",
+    "security officer",
+    "trespassing",
+    "break-in",
+    "burglary",
+    "workplace violence",
+    "insider threat",
+    "crisis management",
 ]
 
 
@@ -129,6 +144,119 @@ def _parse_rss_date(dt_str: str) -> datetime | None:
 
 
 RSS_FEEDS = [
-    {"url": "https://www.securitymagazine.com/rss/topic/2236", "name": "Security Magazine"},
-    {"url": "https://www.ifsecglobal.com/feed/", "name": "IFSEC Global"},
+    # Verified working feeds — no WAF/geo-block as of May 2026
+    {
+        "url": "https://feeds.feedburner.com/TheHackersNews",
+        "name": "The Hacker News",
+    },
+    {
+        "url": "https://www.bleepingcomputer.com/feed/",
+        "name": "Bleeping Computer",
+    },
+    {
+        "url": "https://www.helpnetsecurity.com/feed/",
+        "name": "Help Net Security",
+    },
+    {
+        "url": "https://www.csoonline.com/feed/",
+        "name": "CSO Online",
+    },
+    {
+        "url": "https://www.darkreading.com/rss.xml",
+        "name": "Dark Reading",
+    },
 ]
+
+
+PLAYWRIGHT_TARGETS = [
+    {
+        "name": "The Security Company Blog",
+        "url": "https://thesecuritycompany.com/the-latest/",
+        "selector_article": "article",
+        "selector_title": "h2",
+        "selector_link": "a",
+        "max_articles": 10,
+    },
+    {
+        "name": "Security Journal Americas",
+        "url": "https://www.securityjournalamericas.com/news/",
+        "selector_article": "article.post",
+        "selector_title": ".entry-title",
+        "selector_link": ".entry-title a",
+        "max_articles": 10,
+    },
+]
+
+
+async def fetch_playwright_tier() -> list[RawArticle]:
+    """Tier 3: Playwright — fragile, last resort for sites without RSS/API."""
+    articles: list[RawArticle] = []
+    try:
+        from playwright.async_api import async_playwright
+    except ImportError:
+        logger.warning("Playwright not installed — skipping tier 3")
+        return []
+
+    try:
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            for target in PLAYWRIGHT_TARGETS:
+                page = await browser.new_page()
+                try:
+                    await page.goto(
+                        target["url"],
+                        timeout=15000,
+                        wait_until="domcontentloaded",
+                    )
+                    containers = await page.query_selector_all(
+                        target["selector_article"]
+                    )
+                    for el in containers[: target["max_articles"]]:
+                        try:
+                            title_el = await el.query_selector(
+                                target["selector_title"]
+                            )
+                            link_el = await el.query_selector(
+                                target["selector_link"]
+                            )
+                            if not title_el or not link_el:
+                                continue
+                            title = (
+                                await title_el.text_content() or ""
+                            ).strip()
+                            href = await link_el.get_attribute("href") or ""
+                            if not href:
+                                continue
+                            if not href.startswith("http"):
+                                base = target["url"].rstrip("/")
+                                href = f"{base}/{href.lstrip('/')}"
+                            content = (
+                                await el.text_content() or ""
+                            ).strip()
+                            if title:
+                                articles.append(
+                                    RawArticle(
+                                        url=href,
+                                        title=title,
+                                        content=content[:500],
+                                        source_name=target["name"],
+                                        source_tier="playwright",
+                                    )
+                                )
+                        except Exception as e:
+                            logger.debug(
+                                "Skipping element in %s: %s",
+                                target["name"],
+                                e,
+                            )
+                except Exception as e:
+                    logger.warning(
+                        "Playwright failed for %s: %s", target["name"], e
+                    )
+                finally:
+                    await page.close()
+            await browser.close()
+    except Exception as e:
+        logger.error("Playwright browser launch failed: %s", e)
+
+    return articles

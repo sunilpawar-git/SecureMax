@@ -25,17 +25,18 @@ class RawArticle(BaseModel):
 
 
 class ProcessedArticle(BaseModel):
-    url: str
-    url_hash: str
-    content_hash: str
+    """Maps 1:1 to the threat_intel table columns (plus internal tracking fields)."""
+
     title: str
+    url: str
+    content_hash: str
     summary: str
-    tags: list[str]
+    domain_tags: list[str]
+    industry_tags: list[str]
+    source: str
     relevance_score: float = 0.0
-    source_name: str
-    source_tier: str
-    published_at: datetime | None = None
-    processed_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    # Not persisted to DB — used only to track whether Gemini actually ran
+    tagged_by_gemini: bool = False
 
 
 class SourceHealth(BaseModel):

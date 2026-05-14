@@ -7,12 +7,15 @@ import logging
 import os
 from contextlib import asynccontextmanager
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from auth_middleware import ServiceAuthMiddleware
 from config import get_settings
 from db import init_pool
+from gemini_client import GeminiClient
+from routers.linkedin import router as linkedin_router
 from routers.questionnaire import router as questionnaire_router
 from routers.report import router as report_router
 from routers.scraper import router as scraper_router
@@ -20,6 +23,8 @@ from routers.scraper import router as scraper_router
 logger = logging.getLogger(__name__)
 
 _ENABLE_OPENAPI = os.environ.get("ENABLE_OPENAPI", "").lower() == "true"
+
+scheduler = AsyncIOScheduler()
 
 
 def _get_allowed_origins() -> list[str]:
@@ -37,9 +42,40 @@ def _get_allowed_origins() -> list[str]:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = get_settings()
-    app.state.pool = await init_pool(settings)
+    pool = await init_pool(settings)
+    gemini = GeminiClient(settings) if settings.gemini_api_key else None
+    app.state.pool = pool
+    app.state.settings = settings
+    app.state.gemini = gemini
+
+    async def scheduled_scrape():
+        """Daily scraper run — accesses pool directly (no request context)."""
+        try:
+            from routers.scraper import _make_gemini_tagger
+            from scraper.pipeline import run_pipeline
+
+            process_fn = _make_gemini_tagger(gemini) if gemini else None
+            stats = await run_pipeline(pool, process_fn=process_fn)
+            logger.info("Scheduled scraper completed: %s", stats)
+        except Exception:
+            logger.exception("Scheduled scraper failed")
+
+    scheduler.add_job(
+        scheduled_scrape,
+        "cron",
+        hour=18,
+        minute=45,
+        id="daily_scraper",
+        replace_existing=True,
+    )
+    scheduler.start()
+    app.state.scheduler = scheduler
+    logger.info("APScheduler started — daily scraper at 18:45 UTC (00:15 IST)")
+
     yield
-    await app.state.pool.close()
+
+    scheduler.shutdown(wait=False)
+    await pool.close()
 
 
 app = FastAPI(
@@ -59,6 +95,7 @@ app.add_middleware(
     allow_headers=["Content-Type", "X-Service-Key", "X-User-Id"],
 )
 
+app.include_router(linkedin_router)
 app.include_router(questionnaire_router)
 app.include_router(report_router)
 app.include_router(scraper_router)

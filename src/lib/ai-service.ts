@@ -4,23 +4,33 @@
  */
 
 const AI_SERVICE_URL = process.env.AI_SERVICE_URL;
-const AI_SERVICE_KEY = process.env.AI_SERVICE_KEY || '';
+const AI_SERVICE_KEY = process.env.AI_SERVICE_KEY ?? '';
 
 if (!AI_SERVICE_URL) {
   console.warn('[ai-service] AI_SERVICE_URL not set — defaulting to localhost:8000');
 }
+if (!AI_SERVICE_KEY) {
+  console.error(
+    '[ai-service] AI_SERVICE_KEY not set — all FastAPI requests will be rejected (401). ' +
+      'Set AI_SERVICE_KEY in .env.local.',
+  );
+}
 
 const BASE_URL = AI_SERVICE_URL || 'http://localhost:8000';
+
+const AI_SERVICE_TIMEOUT_MS = 30_000;
 
 interface FetchOptions {
   method?: string;
   body?: unknown;
   headers?: Record<string, string>;
   userId?: string;
+  timeoutMs?: number;
 }
 
 export async function aiServiceFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
-  const { method = 'POST', body, headers: extraHeaders, userId } = options;
+  const { method = 'POST', body, headers: extraHeaders, userId, timeoutMs = AI_SERVICE_TIMEOUT_MS } =
+    options;
 
   const reqHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -31,11 +41,20 @@ export async function aiServiceFetch<T>(path: string, options: FetchOptions = {}
     reqHeaders['X-User-Id'] = userId;
   }
 
-  const response = await fetch(`${BASE_URL}${path}`, {
-    method,
-    headers: reqHeaders,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  const controller = new AbortController();
+  const timerId = setTimeout(() => controller.abort(), timeoutMs);
+
+  let response: Response;
+  try {
+    response = await fetch(`${BASE_URL}${path}`, {
+      method,
+      headers: reqHeaders,
+      body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timerId);
+  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));

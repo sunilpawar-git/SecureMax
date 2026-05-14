@@ -168,15 +168,15 @@ model ThreatIntel {
   id           String   @id @default(cuid())
   title        String
   url          String   @unique
-  contentHash  String   @map("content_hash")
+  contentHash  String   @unique @map("content_hash")
   summary      String   @db.Text
   domainTags   Json     @map("domain_tags")
   industryTags Json     @map("industry_tags")
-  source       String   @default("unknown")
-  softDeleted  Boolean  @default(false) @map("soft_deleted")
-  scrapedAt    DateTime @default(now()) @map("scraped_at")
+  source         String   @default("unknown")
+  relevanceScore Float    @default(0.0) @map("relevance_score")
+  softDeleted    Boolean  @default(false) @map("soft_deleted")
+  scrapedAt      DateTime @default(now()) @map("scraped_at")
 
-  @@unique([url, contentHash])
   @@index([softDeleted])
   @@map("threat_intel")
 }

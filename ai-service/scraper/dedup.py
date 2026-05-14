@@ -1,27 +1,40 @@
 """
 Deduplication engine for threat intel articles.
-Uses URL hash + content hash for idempotent ingestion.
+DB-backed: checks threat_intel table for existing URL or content_hash.
 """
 
+import asyncpg
 
-class DedupStore:
-    """In-memory dedup store for testing. Production uses DB lookups."""
+
+async def is_duplicate(url: str, content_hash: str, pool: asyncpg.Pool) -> bool:
+    """Check if an article with the same URL or content hash already exists."""
+    async with pool.acquire() as conn:
+        row = await conn.fetchval(
+            "SELECT 1 FROM threat_intel WHERE url = $1 OR content_hash = $2 LIMIT 1",
+            url,
+            content_hash,
+        )
+        return row is not None
+
+
+class InMemoryDedupStore:
+    """Fallback for tests that don't have a DB connection."""
 
     def __init__(self) -> None:
-        self._url_hashes: set[str] = set()
-        self._content_hashes: set[str] = set()
+        self._urls: set[str] = set()
+        self._hashes: set[str] = set()
 
-    def is_duplicate(self, url_hash: str, content_hash: str) -> bool:
-        return url_hash in self._url_hashes or content_hash in self._content_hashes
+    def is_duplicate(self, url: str, content_hash: str) -> bool:
+        return url in self._urls or content_hash in self._hashes
 
-    def mark_seen(self, url_hash: str, content_hash: str) -> None:
-        self._url_hashes.add(url_hash)
-        self._content_hashes.add(content_hash)
+    def mark_seen(self, url: str, content_hash: str) -> None:
+        self._urls.add(url)
+        self._hashes.add(content_hash)
 
     def reset(self) -> None:
-        self._url_hashes.clear()
-        self._content_hashes.clear()
+        self._urls.clear()
+        self._hashes.clear()
 
     @property
     def count(self) -> int:
-        return len(self._url_hashes)
+        return len(self._urls)

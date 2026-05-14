@@ -1,16 +1,13 @@
 """Tests for threat intel scraper — Phase 7 verification."""
 
-from unittest.mock import AsyncMock, patch
+import json
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from fastapi.testclient import TestClient
 
-from main import app
-from scraper.dedup import DedupStore
-from scraper.models import RawArticle, SourceHealth
-from scraper.pipeline import reset_pipeline
-
-client = TestClient(app)
+from scraper.dedup import InMemoryDedupStore, is_duplicate
+from scraper.models import ProcessedArticle, RawArticle, SourceHealth
+from scraper.pipeline import _fallback_process, _persist_article, reset_pipeline, run_pipeline
 
 
 @pytest.fixture(autouse=True)
@@ -18,31 +15,31 @@ def clean_state() -> None:
     reset_pipeline()
 
 
-class TestDedupStore:
+class TestInMemoryDedupStore:
     def test_new_article_not_duplicate(self) -> None:
-        store = DedupStore()
-        assert not store.is_duplicate("hash1", "chash1")
+        store = InMemoryDedupStore()
+        assert not store.is_duplicate("url1", "chash1")
 
     def test_seen_url_is_duplicate(self) -> None:
-        store = DedupStore()
-        store.mark_seen("hash1", "chash1")
-        assert store.is_duplicate("hash1", "different_content")
+        store = InMemoryDedupStore()
+        store.mark_seen("url1", "chash1")
+        assert store.is_duplicate("url1", "different_content")
 
     def test_seen_content_is_duplicate(self) -> None:
-        store = DedupStore()
-        store.mark_seen("hash1", "chash1")
+        store = InMemoryDedupStore()
+        store.mark_seen("url1", "chash1")
         assert store.is_duplicate("different_url", "chash1")
 
     def test_reset_clears_state(self) -> None:
-        store = DedupStore()
-        store.mark_seen("h1", "c1")
+        store = InMemoryDedupStore()
+        store.mark_seen("u1", "c1")
         store.reset()
-        assert not store.is_duplicate("h1", "c1")
+        assert not store.is_duplicate("u1", "c1")
 
     def test_count_tracks_urls(self) -> None:
-        store = DedupStore()
-        store.mark_seen("h1", "c1")
-        store.mark_seen("h2", "c2")
+        store = InMemoryDedupStore()
+        store.mark_seen("u1", "c1")
+        store.mark_seen("u2", "c2")
         assert store.count == 2
 
 
@@ -117,85 +114,301 @@ class TestRawArticle:
         assert a1.content_hash == a2.content_hash
 
 
-class TestScraperAPI:
-    @patch("scraper.pipeline.fetch_news_api", new_callable=AsyncMock)
-    @patch("scraper.pipeline.fetch_rss_feed", new_callable=AsyncMock)
-    def test_run_pipeline_with_mock_sources(
-        self, mock_rss: AsyncMock, mock_news: AsyncMock
-    ) -> None:
-        mock_news.return_value = [
-            RawArticle(
-                url="https://news.example.com/1",
-                title="CCTV breakthrough",
-                content="New CCTV surveillance technology released.",
-                source_name="News Source",
-                source_tier="news_api",
-            ),
-        ]
-        call_count = [0]
-
-        async def rss_side_effect(*args, **kwargs):
-            call_count[0] += 1
-            return [
-                RawArticle(
-                    url=f"https://rss.example.com/{call_count[0]}",
-                    title=f"RSS article {call_count[0]}",
-                    content=f"Unique content for RSS article {call_count[0]}.",
-                    source_name=args[1] if len(args) > 1 else "RSS",
-                    source_tier="rss",
-                )
-            ]
-
-        mock_rss.side_effect = rss_side_effect
-
-        resp = client.post("/scraper/run")
-        assert resp.status_code == 200
-        data = resp.json()
-        assert data["status"] == "completed"
-        assert data["stats"]["stored"] >= 2
-        assert data["stats"]["duplicates"] == 0
-
-    @patch("scraper.pipeline.fetch_news_api", new_callable=AsyncMock)
-    @patch("scraper.pipeline.fetch_rss_feed", new_callable=AsyncMock)
-    def test_dedup_prevents_double_insert(self, mock_rss: AsyncMock, mock_news: AsyncMock) -> None:
+class TestFallbackProcess:
+    def test_tags_cctv_as_cpp01(self) -> None:
         article = RawArticle(
-            url="https://news.example.com/same",
-            title="Same article",
-            content="Same content",
-            source_name="Source",
+            url="https://example.com/1",
+            title="CCTV breach",
+            content="CCTV surveillance was bypassed in a physical security incident.",
+            source_name="Test",
+            source_tier="rss",
+        )
+        processed = _fallback_process(article)
+        assert isinstance(processed, ProcessedArticle)
+        assert "CPP-01" in processed.domain_tags
+        assert isinstance(processed.industry_tags, list)
+        assert processed.source == "Test (rss)"
+
+    def test_unknown_content_gets_cpp07_default(self) -> None:
+        article = RawArticle(
+            url="https://example.com/2",
+            title="Generic news",
+            content="Something unrelated to security keywords.",
+            source_name="Test",
+            source_tier="rss",
+        )
+        processed = _fallback_process(article)
+        assert processed.domain_tags == ["CPP-07"]
+
+    def test_processed_article_has_required_fields(self) -> None:
+        article = RawArticle(
+            url="https://example.com/3",
+            title="Guard patrol incident",
+            content="Guard patrol schedule was exploited for theft prevention bypass.",
+            source_name="Src",
             source_tier="news_api",
         )
-        mock_news.return_value = [article]
-        mock_rss.return_value = []
+        processed = _fallback_process(article)
+        assert processed.title == "Guard patrol incident"
+        assert processed.url == "https://example.com/3"
+        assert processed.content_hash
+        assert processed.summary
+        assert processed.domain_tags
+        assert processed.industry_tags
+        assert processed.source
 
-        client.post("/scraper/run")
-        resp = client.post("/scraper/run")
-        data = resp.json()
-        assert data["stats"]["duplicates"] == 1
-        assert data["stats"]["stored"] == 0
+    def test_fallback_tagged_by_gemini_is_false(self) -> None:
+        """Fallback articles must not claim Gemini tagged them."""
+        article = RawArticle(
+            url="https://example.com/4",
+            title="Test",
+            content="cctv physical security",
+            source_name="S",
+            source_tier="rss",
+        )
+        processed = _fallback_process(article)
+        assert processed.tagged_by_gemini is False
 
-    def test_health_endpoint(self) -> None:
-        resp = client.get("/scraper/health")
-        assert resp.status_code == 200
-        assert "sources" in resp.json()
 
-    @patch("scraper.pipeline.fetch_news_api", new_callable=AsyncMock)
-    @patch("scraper.pipeline.fetch_rss_feed", new_callable=AsyncMock)
-    def test_articles_endpoint(self, mock_rss: AsyncMock, mock_news: AsyncMock) -> None:
-        mock_news.return_value = [
-            RawArticle(
-                url="https://example.com/art",
-                title="Security Article",
-                content="Physical security best practices.",
-                source_name="Source",
-                source_tier="news_api",
-            ),
-        ]
-        mock_rss.return_value = []
+class TestDbDedup:
+    @pytest.mark.asyncio
+    async def test_is_duplicate_returns_true_for_existing_url(self) -> None:
+        mock_conn = AsyncMock()
+        mock_conn.fetchval = AsyncMock(return_value=1)
+        mock_pool = MagicMock()
+        mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
 
-        client.post("/scraper/run")
-        resp = client.get("/scraper/articles")
-        assert resp.status_code == 200
-        data = resp.json()
-        assert data["total"] == 1
-        assert data["articles"][0]["title"] == "Security Article"
+        result = await is_duplicate("https://example.com", "hash123", mock_pool)
+
+        assert result is True
+        mock_conn.fetchval.assert_called_once()
+        call_args = mock_conn.fetchval.call_args
+        assert "https://example.com" in call_args.args
+        assert "hash123" in call_args.args
+
+    @pytest.mark.asyncio
+    async def test_is_duplicate_returns_false_for_new_article(self) -> None:
+        mock_conn = AsyncMock()
+        mock_conn.fetchval = AsyncMock(return_value=None)
+        mock_pool = MagicMock()
+        mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
+
+        result = await is_duplicate("https://new.com", "newhash", mock_pool)
+
+        assert result is False
+
+
+class TestPersistArticle:
+    @pytest.mark.asyncio
+    async def test_persist_returns_true_on_insert(self) -> None:
+        mock_conn = AsyncMock()
+        mock_conn.execute = AsyncMock(return_value="INSERT 0 1")
+        mock_pool = MagicMock()
+        mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
+
+        article = ProcessedArticle(
+            title="Test",
+            url="https://example.com/test",
+            content_hash="abc123",
+            summary="A test article.",
+            domain_tags=["CPP-01"],
+            industry_tags=["general"],
+            source="Test (rss)",
+        )
+
+        result = await _persist_article(article, mock_pool)
+
+        assert result is True
+        mock_conn.execute.assert_called_once()
+        call_sql = mock_conn.execute.call_args.args[0]
+        assert "INSERT INTO threat_intel" in call_sql
+        assert "relevance_score" in call_sql
+
+    @pytest.mark.asyncio
+    async def test_persist_returns_false_on_conflict(self) -> None:
+        mock_conn = AsyncMock()
+        mock_conn.execute = AsyncMock(return_value="INSERT 0 0")
+        mock_pool = MagicMock()
+        mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
+
+        article = ProcessedArticle(
+            title="Dup",
+            url="https://already-exists.com",
+            content_hash="dupchash",
+            summary="Duplicate.",
+            domain_tags=["CPP-07"],
+            industry_tags=["general"],
+            source="Test (rss)",
+        )
+
+        result = await _persist_article(article, mock_pool)
+
+        assert result is False
+
+    @pytest.mark.asyncio
+    async def test_persist_stores_domain_tags_as_json(self) -> None:
+        mock_conn = AsyncMock()
+        mock_conn.execute = AsyncMock(return_value="INSERT 0 1")
+        mock_pool = MagicMock()
+        mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
+
+        article = ProcessedArticle(
+            title="T",
+            url="https://x.com/1",
+            content_hash="h1",
+            summary="S",
+            domain_tags=["CPP-01", "CPP-05"],
+            industry_tags=["retail"],
+            source="Test (news_api)",
+        )
+
+        await _persist_article(article, mock_pool)
+
+        call_args = mock_conn.execute.call_args.args
+        # domain_tags must be serialized JSON string
+        domain_tags_arg = call_args[5]
+        parsed = json.loads(domain_tags_arg)
+        assert parsed == ["CPP-01", "CPP-05"]
+
+
+class TestGeminiTagger:
+    @pytest.mark.asyncio
+    async def test_successful_gemini_tag_sets_tagged_by_gemini(self) -> None:
+        from routers.scraper import _make_gemini_tagger
+
+        gemini_response = json.dumps({
+            "summary": "A physical security breach occurred.",
+            "domain_tags": ["CPP-01"],
+            "industry_tags": ["corporate"],
+            "relevance_score": 0.8,
+        })
+        mock_gemini = MagicMock()
+        mock_gemini.generate = AsyncMock(return_value=gemini_response)
+
+        tagger = _make_gemini_tagger(mock_gemini)
+        article = RawArticle(
+            url="https://example.com/breach",
+            title="Security Breach",
+            content="A major physical security breach was reported.",
+            source_name="Test",
+            source_tier="rss",
+        )
+
+        result = await tagger(article)
+
+        assert result.tagged_by_gemini is True
+        assert result.domain_tags == ["CPP-01"]
+        assert result.industry_tags == ["corporate"]
+        assert result.relevance_score == 0.8
+
+    @pytest.mark.asyncio
+    async def test_gemini_failure_falls_back_and_not_tagged_by_gemini(self) -> None:
+        from routers.scraper import _make_gemini_tagger
+
+        mock_gemini = MagicMock()
+        mock_gemini.generate = AsyncMock(side_effect=RuntimeError("Gemini unavailable"))
+
+        tagger = _make_gemini_tagger(mock_gemini)
+        article = RawArticle(
+            url="https://example.com/fallback",
+            title="CCTV incident",
+            content="CCTV surveillance was bypassed.",
+            source_name="Test",
+            source_tier="rss",
+        )
+
+        result = await tagger(article)
+
+        assert result.tagged_by_gemini is False
+        assert "CPP-01" in result.domain_tags
+
+    @pytest.mark.asyncio
+    async def test_gemini_invalid_json_falls_back(self) -> None:
+        from routers.scraper import _make_gemini_tagger
+
+        mock_gemini = MagicMock()
+        mock_gemini.generate = AsyncMock(return_value="not valid json at all")
+
+        tagger = _make_gemini_tagger(mock_gemini)
+        article = RawArticle(
+            url="https://example.com/badjson",
+            title="Test",
+            content="access control system failure.",
+            source_name="Test",
+            source_tier="news_api",
+        )
+
+        result = await tagger(article)
+
+        assert result.tagged_by_gemini is False
+
+
+class TestPipelineLock:
+    @pytest.mark.asyncio
+    async def test_lock_busy_returns_complete_stats_shape(self) -> None:
+        """When pipeline is already running, the early-return must include all stat keys."""
+        mock_pool = MagicMock()
+        # Acquire the lock externally to simulate a running pipeline
+        from scraper.pipeline import _pipeline_lock
+
+        async with _pipeline_lock:
+            result = await run_pipeline(mock_pool)
+
+        assert "error" in result
+        assert result["fetched"] == 0
+        assert result["stored"] == 0
+        assert result["duplicates"] == 0
+        assert result["gemini_tagged"] == 0
+        assert result["errors"] == []
+
+    @pytest.mark.asyncio
+    async def test_reset_pipeline_releases_lock(self) -> None:
+        """reset_pipeline() must create a fresh unlocked Lock."""
+        from scraper import pipeline as p
+
+        # Acquire old lock and then reset
+        await p._pipeline_lock.acquire()
+        reset_pipeline()
+
+        # New lock should be acquirable
+        assert not p._pipeline_lock.locked()
+
+    @pytest.mark.asyncio
+    async def test_gemini_tagged_counter_accurate(self) -> None:
+        """gemini_tagged increments only when Gemini actually ran (tagged_by_gemini=True)."""
+        mock_pool = MagicMock()
+
+        # Dedup always returns False (new article)
+        mock_conn = AsyncMock()
+        mock_conn.fetchval = AsyncMock(return_value=None)
+        mock_conn.execute = AsyncMock(return_value="INSERT 0 1")
+        mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
+
+        fallback_article = RawArticle(
+            url="https://example.com/test-counter",
+            title="Test",
+            content="physical security breach cctv",
+            source_name="Test",
+            source_tier="rss",
+        )
+
+        async def process_fn_fallback(article: RawArticle) -> ProcessedArticle:
+            """Simulates _make_gemini_tagger when Gemini fails (tagged_by_gemini=False)."""
+            return _fallback_process(article)
+
+        with (
+            patch("scraper.pipeline.fetch_news_api", AsyncMock(return_value=[])),
+            patch("scraper.pipeline.fetch_rss_feed", AsyncMock(return_value=[fallback_article])),
+            patch("scraper.pipeline.fetch_playwright_tier", AsyncMock(return_value=[])),
+            patch("scraper.pipeline.RSS_FEEDS", [{"url": "x", "name": "TestFeed"}]),
+        ):
+            stats = await run_pipeline(mock_pool, process_fn=process_fn_fallback)
+
+        assert stats["gemini_tagged"] == 0
+        assert stats["stored"] == 1
