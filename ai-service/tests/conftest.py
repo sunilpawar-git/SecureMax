@@ -119,10 +119,10 @@ def _setup_test_schema():
             # Execute the entire DDL script as a single transaction
             await conn.execute(_DDL)
             # Verify the tables were created
-            result = await conn.fetch(f"""
-                SELECT table_name FROM information_schema.tables
-                WHERE table_schema = '{TEST_SCHEMA}'
-            """)
+            result = await conn.fetch(
+                "SELECT table_name FROM information_schema.tables WHERE table_schema = $1",
+                TEST_SCHEMA,
+            )
             if not result:
                 raise RuntimeError(f"Test schema {TEST_SCHEMA} tables were not created")
         finally:

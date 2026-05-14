@@ -152,8 +152,8 @@ describe('Schema — QuestionNode model', () => {
 });
 
 describe('Schema — CppChunk model', () => {
-  it('has vector(768) embedding for Gemini text-embedding-004', () => {
-    expect(getModelBlock('CppChunk')).toContain('vector(768)');
+  it('has vector(3072) embedding for Gemini text-embedding-004', () => {
+    expect(getModelBlock('CppChunk')).toContain('vector(3072)');
   });
 
   it('has content hash for idempotent seeding', () => {
