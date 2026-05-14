@@ -116,11 +116,20 @@ def _setup_test_schema():
     async def _setup():
         conn = await asyncpg.connect(_DSN)
         try:
+            # Execute the entire DDL script as a single transaction
             await conn.execute(_DDL)
+            # Verify the tables were created
+            result = await conn.fetch(f"""
+                SELECT table_name FROM information_schema.tables 
+                WHERE table_schema = '{TEST_SCHEMA}'
+            """)
+            if not result:
+                raise RuntimeError(f"Test schema {TEST_SCHEMA} tables were not created")
         finally:
             await conn.close()
 
     _run(_setup())
+    yield  # Ensure fixture stays active during all tests
 
 
 @pytest.fixture(autouse=True)
