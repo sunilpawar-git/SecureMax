@@ -25,6 +25,44 @@ export interface AnswerResult {
   cppCitations: string[];
 }
 
+function getStoredSessionId(track: string): string | null {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return localStorage.getItem(`questionnaire_session_${track}`);
+    }
+    if (typeof global !== 'undefined' && (global as any).localStorage) {
+      return (global as any).localStorage.getItem(`questionnaire_session_${track}`);
+    }
+  } catch {
+    // localStorage might be unavailable
+  }
+  return null;
+}
+
+function storeSessionId(track: string, sessionId: string): void {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem(`questionnaire_session_${track}`, sessionId);
+    } else if (typeof global !== 'undefined' && (global as any).localStorage) {
+      (global as any).localStorage.setItem(`questionnaire_session_${track}`, sessionId);
+    }
+  } catch {
+    // localStorage might be unavailable
+  }
+}
+
+function clearStoredSessionId(track: string): void {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.removeItem(`questionnaire_session_${track}`);
+    } else if (typeof global !== 'undefined' && (global as any).localStorage) {
+      (global as any).localStorage.removeItem(`questionnaire_session_${track}`);
+    }
+  } catch {
+    // localStorage might be unavailable
+  }
+}
+
 async function apiFetch(url: string, body: object): Promise<unknown> {
   const res = await fetch(url, {
     method: 'POST',
@@ -50,24 +88,31 @@ export async function startSession(track: string): Promise<ActiveSession> {
   } catch (err) {
     // 409 means an active session already exists — try to resume it transparently.
     if (err instanceof Error && (err as Record<string, unknown>).statusCode === 409) {
-      // The backend will return the session_id in the error response or we fetch a new session
-      // For now, try to resume with a dummy session ID; backend will handle it
-      try {
-        return await resumeSession('current', track);
-      } catch (resumeErr) {
-        // If resume fails, throw the original error
-        throw err;
+      const cachedSessionId = getStoredSessionId(track);
+      if (cachedSessionId) {
+        try {
+          return await resumeSession(cachedSessionId);
+        } catch (resumeErr) {
+          // If cached session is stale, clear it and throw original error
+          clearStoredSessionId(track);
+          throw err;
+        }
       }
     }
     throw err;
   }
   const d = data as { session_id: string; first_question: QuestionNode; radar_scores: RadarScores };
-  return {
+  const session = {
     sessionId: d.session_id,
     currentQuestion: d.first_question,
     radarScores: d.radar_scores,
     questionsAnswered: 0,
   };
+  
+  // Cache the session ID for recovery on reload
+  storeSessionId(track, d.session_id);
+  
+  return session;
 }
 
 export async function resumeSession(sessionId: string | null, _track?: string): Promise<ActiveSession> {

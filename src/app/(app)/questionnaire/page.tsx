@@ -24,10 +24,12 @@ export default function QuestionnairePage() {
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentTrack, setCurrentTrack] = useState<string | null>(null);
 
   const handleStart = useCallback(async (track: string) => {
     setIsLoading(true);
     setError(null);
+    setCurrentTrack(track);
     try {
       const session = await startSession(track);
       setSessionId(session.sessionId);
@@ -110,7 +112,7 @@ export default function QuestionnairePage() {
           {error && (
             <div className="space-y-2">
               <p className="text-red-600 text-sm">{error}</p>
-              {sessionId && (
+              {sessionId && currentTrack && (
                 <button
                   onClick={() => handleResume(sessionId)}
                   className="text-sm text-emerald-700 underline"
