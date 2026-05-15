@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { RadarChart } from './radar-chart';
 import { QuestionCard } from './question-card';
 import { APP, CTA } from '@/config/strings';
+import { startSession, resumeSession, submitAnswer } from './questionnaire-service';
 import type { QuestionNode, RadarScores, SessionState } from './types';
 
 export default function QuestionnairePage() {
@@ -15,20 +16,15 @@ export default function QuestionnairePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const startSession = useCallback(async (track: string) => {
+  const handleStart = useCallback(async (track: string) => {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/questionnaire?action=start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ track }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setSessionId(data.session_id);
-      setCurrentQuestion(data.first_question);
-      setRadarScores(data.radar_scores);
+      const session = await startSession(track);
+      setSessionId(session.sessionId);
+      setCurrentQuestion(session.currentQuestion);
+      setRadarScores(session.radarScores);
+      setQuestionsAnswered(session.questionsAnswered);
       setSessionState('active');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to start session');
@@ -37,30 +33,37 @@ export default function QuestionnairePage() {
     }
   }, []);
 
-  const submitAnswer = useCallback(
+  const handleResume = useCallback(async (sid: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const session = await resumeSession(sid);
+      setSessionId(session.sessionId);
+      setCurrentQuestion(session.currentQuestion);
+      setRadarScores(session.radarScores);
+      setQuestionsAnswered(session.questionsAnswered);
+      setSessionState('active');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to resume session');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const handleAnswer = useCallback(
     async (answer: string | string[]) => {
       if (!sessionId || !currentQuestion) return;
       setIsLoading(true);
       setError(null);
       try {
-        const res = await fetch('/api/questionnaire?action=answer', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            session_id: sessionId,
-            question_id: currentQuestion.id,
-            answer,
-          }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-        setRadarScores(data.radar_scores);
+        const result = await submitAnswer(sessionId, currentQuestion.id, answer);
+        setRadarScores(result.radarScores);
         setQuestionsAnswered((prev) => prev + 1);
-        if (data.is_complete) {
+        if (result.isComplete) {
           setSessionState('completed');
-          setCurrentQuestion(data.next_question || null);
+          setCurrentQuestion(result.nextQuestion);
         } else {
-          setCurrentQuestion(data.next_question);
+          setCurrentQuestion(result.nextQuestion);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to submit answer');
@@ -79,7 +82,7 @@ export default function QuestionnairePage() {
           <p className="text-gray-600">Select your audit track to begin the security assessment.</p>
           <div className="grid gap-4">
             <button
-              onClick={() => startSession('hni')}
+              onClick={() => handleStart('hni')}
               disabled={isLoading}
               className="w-full py-4 px-6 bg-emerald-700 text-white rounded-lg font-semibold
                 hover:bg-emerald-800 transition-colors disabled:opacity-50"
@@ -87,7 +90,7 @@ export default function QuestionnairePage() {
               {CTA.HNI}
             </button>
             <button
-              onClick={() => startSession('enterprise')}
+              onClick={() => handleStart('enterprise')}
               disabled={isLoading}
               className="w-full py-4 px-6 bg-slate-800 text-white rounded-lg font-semibold
                 hover:bg-slate-900 transition-colors disabled:opacity-50"
@@ -95,7 +98,19 @@ export default function QuestionnairePage() {
               {CTA.ENTERPRISE}
             </button>
           </div>
-          {error && <p className="text-red-600 text-sm">{error}</p>}
+          {error && (
+            <div className="space-y-2">
+              <p className="text-red-600 text-sm">{error}</p>
+              {sessionId && (
+                <button
+                  onClick={() => handleResume(sessionId)}
+                  className="text-sm text-emerald-700 underline"
+                >
+                  Resume existing session
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -122,7 +137,7 @@ export default function QuestionnairePage() {
           {currentQuestion && (
             <QuestionCard
               question={currentQuestion}
-              onSubmit={submitAnswer}
+              onSubmit={handleAnswer}
               isLoading={isLoading}
               questionNumber={questionsAnswered + 1}
             />
