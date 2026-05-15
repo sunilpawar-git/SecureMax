@@ -69,7 +69,18 @@ async def start_session(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=ERR_ACCESS_DENIED)
     active = await repo.get_active_session(conn, req.user_id)
     if active:
-        raise HTTPException(status_code=409, detail=ERR_SESSION_ALREADY_EXISTS)
+        if _settings.dev_bypass_session_check:
+            logging.warning(
+                "DEV_BYPASS_SESSION_CHECK is enabled — abandoning existing session %s "
+                "to allow a fresh start. Disable in production.",
+                active["id"],
+            )
+            await repo.abandon_session(conn, active["id"])
+        else:
+            raise HTTPException(
+                status_code=409,
+                detail={"message": ERR_SESSION_ALREADY_EXISTS, "session_id": str(active["id"])},
+            )
 
     entry_id = get_entry_node_id(req.track)
     node_map = get_node_map(req.track)

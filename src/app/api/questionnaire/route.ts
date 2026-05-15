@@ -67,7 +67,9 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     if (error instanceof AIServiceError) {
-      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+      const body: Record<string, unknown> = { error: error.message };
+      if (error.sessionId) body.session_id = error.sessionId;
+      return NextResponse.json(body, { status: error.statusCode });
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

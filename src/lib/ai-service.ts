@@ -58,10 +58,18 @@ export async function aiServiceFetch<T>(path: string, options: FetchOptions = {}
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new AIServiceError(
-      error.detail || `AI service error: ${response.status}`,
-      response.status,
-    );
+    const detail = error.detail;
+    const message =
+      typeof detail === 'string'
+        ? detail
+        : typeof detail === 'object' && detail !== null && 'message' in detail
+          ? String((detail as Record<string, unknown>).message)
+          : `AI service error: ${response.status}`;
+    const sessionId =
+      typeof detail === 'object' && detail !== null && 'session_id' in detail
+        ? String((detail as Record<string, unknown>).session_id)
+        : undefined;
+    throw new AIServiceError(message, response.status, sessionId);
   }
 
   return response.json() as Promise<T>;
@@ -71,6 +79,7 @@ export class AIServiceError extends Error {
   constructor(
     message: string,
     public statusCode: number,
+    public sessionId?: string,
   ) {
     super(message);
     this.name = 'AIServiceError';

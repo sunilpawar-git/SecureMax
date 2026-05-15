@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     encryption_key: str = ""
     allow_insecure_local: bool = False
+    dev_bypass_session_check: bool = False
 
     gemini_region: str = "asia-south1"
     admin_email: str = ""

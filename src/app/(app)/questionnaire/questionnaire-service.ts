@@ -74,8 +74,11 @@ async function apiFetch(url: string, body: object): Promise<unknown> {
     const errorMsg = typeof data === 'object' && data !== null && 'error' in data
       ? String((data as Record<string, unknown>).error)
       : 'Request failed';
-    const err = new Error(errorMsg);
-    (err as Record<string, number>).statusCode = res.status;
+    const err = new Error(errorMsg) as Error & Record<string, unknown>;
+    err.statusCode = res.status;
+    if (typeof data === 'object' && data !== null && 'session_id' in data) {
+      err.sessionId = String((data as Record<string, unknown>).session_id);
+    }
     throw err;
   }
   return data;
@@ -87,13 +90,15 @@ export async function startSession(track: string): Promise<ActiveSession> {
     data = await apiFetch('/api/questionnaire?action=start', { track });
   } catch (err) {
     // 409 means an active session already exists — try to resume it transparently.
-    if (err instanceof Error && (err as Record<string, unknown>).statusCode === 409) {
-      const cachedSessionId = getStoredSessionId(track);
+    if (err instanceof Error && (err as unknown as Record<string, unknown>).statusCode === 409) {
+      const serverSessionId = (err as unknown as Record<string, unknown>).sessionId as string | undefined;
+      const cachedSessionId = serverSessionId || getStoredSessionId(track);
       if (cachedSessionId) {
         try {
-          return await resumeSession(cachedSessionId);
+          const resumed = await resumeSession(cachedSessionId);
+          storeSessionId(track, resumed.sessionId);
+          return resumed;
         } catch (resumeErr) {
-          // If cached session is stale, clear it and throw original error
           clearStoredSessionId(track);
           throw err;
         }
