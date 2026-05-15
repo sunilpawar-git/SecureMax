@@ -7,6 +7,15 @@ import { APP, CTA } from '@/config/strings';
 import { startSession, resumeSession, submitAnswer } from './questionnaire-service';
 import type { QuestionNode, RadarScores, SessionState } from './types';
 
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'string') return err;
+  if (typeof err === 'object' && err !== null && 'message' in err) {
+    return String((err as Record<string, unknown>).message);
+  }
+  return 'An unexpected error occurred';
+}
+
 export default function QuestionnairePage() {
   const [sessionState, setSessionState] = useState<SessionState>('idle');
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -27,7 +36,7 @@ export default function QuestionnairePage() {
       setQuestionsAnswered(session.questionsAnswered);
       setSessionState('active');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to start session');
+      setError(getErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -44,7 +53,7 @@ export default function QuestionnairePage() {
       setQuestionsAnswered(session.questionsAnswered);
       setSessionState('active');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to resume session');
+      setError(getErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +75,7 @@ export default function QuestionnairePage() {
           setCurrentQuestion(result.nextQuestion);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to submit answer');
+        setError(getErrorMessage(err));
       } finally {
         setIsLoading(false);
       }

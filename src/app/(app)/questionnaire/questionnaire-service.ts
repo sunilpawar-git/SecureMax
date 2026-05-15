@@ -32,7 +32,14 @@ async function apiFetch(url: string, body: object): Promise<unknown> {
     body: JSON.stringify(body),
   });
   const data = await res.json();
-  if (!res.ok) throw new Error((data as { error?: string }).error ?? 'Request failed');
+  if (!res.ok) {
+    const errorMsg = typeof data === 'object' && data !== null && 'error' in data
+      ? String((data as Record<string, unknown>).error)
+      : 'Request failed';
+    const err = new Error(errorMsg);
+    (err as Record<string, number>).statusCode = res.status;
+    throw err;
+  }
   return data;
 }
 
@@ -41,9 +48,16 @@ export async function startSession(track: string): Promise<ActiveSession> {
   try {
     data = await apiFetch('/api/questionnaire?action=start', { track });
   } catch (err) {
-    // 409 means an active session already exists — resume it transparently.
-    if (err instanceof Error && err.message.includes('Active session already exists')) {
-      return resumeSession(null, track);
+    // 409 means an active session already exists — try to resume it transparently.
+    if (err instanceof Error && (err as Record<string, unknown>).statusCode === 409) {
+      // The backend will return the session_id in the error response or we fetch a new session
+      // For now, try to resume with a dummy session ID; backend will handle it
+      try {
+        return await resumeSession('current', track);
+      } catch (resumeErr) {
+        // If resume fails, throw the original error
+        throw err;
+      }
     }
     throw err;
   }
