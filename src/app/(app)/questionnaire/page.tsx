@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { RadarChart } from './radar-chart';
 import { QuestionCard } from './question-card';
 import { APP, CTA } from '@/config/strings';
@@ -15,46 +15,27 @@ export default function QuestionnairePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Generate a consistent user ID for this session
-  const userId = useMemo(() => {
-    if (typeof window === 'undefined') return 'server-user';
-    const stored = sessionStorage.getItem('audit-user-id');
-    if (stored) return stored;
-    // Generate unique user ID using crypto for better entropy
-    const randomBytes = Array.from(crypto.getRandomValues(new Uint8Array(4)));
-    const randomStr = randomBytes.map((b) => b.toString(16).padStart(2, '0')).join('');
-    const newId = `user-${randomStr}`;
-    sessionStorage.setItem('audit-user-id', newId);
-    return newId;
+  const startSession = useCallback(async (track: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/questionnaire?action=start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ track }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setSessionId(data.session_id);
+      setCurrentQuestion(data.first_question);
+      setRadarScores(data.radar_scores);
+      setSessionState('active');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to start session');
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
-
-  const startSession = useCallback(
-    async (track: string) => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const res = await fetch('/api/questionnaire?action=start', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-User-Id': userId,
-          },
-          body: JSON.stringify({ track }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-        setSessionId(data.session_id);
-        setCurrentQuestion(data.first_question);
-        setRadarScores(data.radar_scores);
-        setSessionState('active');
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to start session');
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [userId],
-  );
 
   const submitAnswer = useCallback(
     async (answer: string | string[]) => {
@@ -64,10 +45,7 @@ export default function QuestionnairePage() {
       try {
         const res = await fetch('/api/questionnaire?action=answer', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-User-Id': userId,
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             session_id: sessionId,
             question_id: currentQuestion.id,
@@ -90,7 +68,7 @@ export default function QuestionnairePage() {
         setIsLoading(false);
       }
     },
-    [sessionId, currentQuestion, userId],
+    [sessionId, currentQuestion],
   );
 
   if (sessionState === 'idle') {

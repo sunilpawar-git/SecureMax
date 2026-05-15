@@ -3,29 +3,16 @@ SSOT configuration for FastAPI AI service.
 All environment variables and constants centralised here.
 """
 
-import os
-
 from pydantic_settings import BaseSettings
 
-_REQUIRED_IN_PROD = ("DATABASE_URL", "GEMINI_API_KEY", "ENCRYPTION_KEY")
-
-
-def _assert_prod_vars() -> None:
-    """Fail fast if any required credential is absent outside test environments."""
-    if os.environ.get("ALLOW_INSECURE_LOCAL", "").lower() == "true":
-        return
-    missing = [v for v in _REQUIRED_IN_PROD if not os.environ.get(v)]
-    if missing:
-        raise RuntimeError(
-            f"Missing required environment variables: {', '.join(missing)}. "
-            "Set ALLOW_INSECURE_LOCAL=true only for local development."
-        )
+_REQUIRED_IN_PROD = ("database_url", "gemini_api_key", "encryption_key")
 
 
 class Settings(BaseSettings):
     database_url: str = ""
     gemini_api_key: str = ""
     encryption_key: str = ""
+    allow_insecure_local: bool = False
 
     gemini_region: str = "asia-south1"
     admin_email: str = ""
@@ -43,8 +30,15 @@ class Settings(BaseSettings):
 
 
 def get_settings() -> Settings:
-    _assert_prod_vars()
-    return Settings()
+    settings = Settings()
+    if not settings.allow_insecure_local:
+        missing = [v.upper() for v in _REQUIRED_IN_PROD if not getattr(settings, v)]
+        if missing:
+            raise RuntimeError(
+                f"Missing required environment variables: {', '.join(missing)}. "
+                "Set ALLOW_INSECURE_LOCAL=true only for local development."
+            )
+    return settings
 
 
 # CPP Domain constants — SSOT, shared with frontend via API

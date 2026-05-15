@@ -13,7 +13,8 @@ import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
 
 export async function POST(request: NextRequest) {
   const session = await auth();
-  const userId = session?.user?.id;
+  const isDev = process.env.NODE_ENV !== 'production';
+  const userId = session?.user?.id ?? (isDev ? 'dev-guest' : null);
 
   if (!userId) {
     return NextResponse.json({ error: 'Authentication required' }, { status: 401 });

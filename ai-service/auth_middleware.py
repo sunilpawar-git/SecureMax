@@ -24,6 +24,15 @@ logger = logging.getLogger(__name__)
 PUBLIC_PATHS = {"/health"}
 
 
+def _allow_insecure() -> bool:
+    """Check ALLOW_INSECURE_LOCAL from .env via pydantic, with os.environ fallback."""
+    try:
+        from config import get_settings
+        return get_settings().allow_insecure_local
+    except Exception:
+        return os.environ.get("ALLOW_INSECURE_LOCAL", "").lower() == "true"
+
+
 class ServiceAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(
         self,
@@ -34,10 +43,9 @@ class ServiceAuthMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         service_key = os.environ.get("AI_SERVICE_KEY", "")
-        allow_insecure = os.environ.get("ALLOW_INSECURE_LOCAL", "").lower() == "true"
 
         if not service_key:
-            if allow_insecure:
+            if _allow_insecure():
                 return await call_next(request)
             return JSONResponse(
                 status_code=403,
