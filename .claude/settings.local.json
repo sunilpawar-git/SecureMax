@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(echo \"Dev server starting in background, PID: $!\")",
+      "Bash(lsof -ti:3000)",
+      "Bash(python3 -m json.tool)",
+      "WebSearch",
+      "Bash(xargs ls)",
+      "Bash(curl *)",
+      "Bash(lsof -i :8000 -sTCP:LISTEN)",
+      "Bash(lsof -i :5432 -sTCP:LISTEN)",
+      "Bash(psql postgresql://postgres:postgres@localhost:5432/raivan_global -c \"\\\\dt\")",
+      "Bash(psql *)",
+      "Bash(xargs cat)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(claude mcp *)"
+    ]
+  }
+}
