@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { RadarChart } from './radar-chart';
 import { QuestionCard } from './question-card';
 import { APP, CTA } from '@/config/strings';
 import { startSession, resumeSession, submitAnswer } from './questionnaire-service';
+import { useReportTrigger } from './use-report-trigger';
 import type { QuestionNode, RadarScores, SessionState } from './types';
 
 function getErrorMessage(err: unknown): string {
@@ -17,6 +19,7 @@ function getErrorMessage(err: unknown): string {
 }
 
 export default function QuestionnairePage() {
+  const router = useRouter();
   const [sessionState, setSessionState] = useState<SessionState>('idle');
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<QuestionNode | null>(null);
@@ -25,6 +28,8 @@ export default function QuestionnairePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentTrack, setCurrentTrack] = useState<string | null>(null);
+
+  const reportTrigger = useReportTrigger(sessionId, sessionState === 'completed');
 
   const handleStart = useCallback(async (track: string) => {
     setIsLoading(true);
@@ -133,9 +138,22 @@ export default function QuestionnairePage() {
         <div className="max-w-2xl w-full space-y-8 text-center">
           <h2 className="text-2xl font-bold text-gray-900">Assessment Complete</h2>
           <p className="text-gray-600">
-            You answered {questionsAnswered} questions. Your report is being generated.
+            You answered {questionsAnswered} questions.
+            {reportTrigger.triggered
+              ? reportTrigger.error
+                ? ` ${reportTrigger.error}`
+                : ' Your report is being generated.'
+              : ' Initiating report generation...'}
           </p>
           <RadarChart scores={radarScores} />
+          {reportTrigger.triggered && !reportTrigger.error && (
+            <button
+              onClick={() => router.push(`/report/${reportTrigger.reportId ?? sessionId}/status`)}
+              className="inline-block rounded-lg bg-emerald-700 px-6 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
+            >
+              View Report Status
+            </button>
+          )}
         </div>
       </div>
     );

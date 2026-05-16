@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { RATE_LIMITS } from '@/config/security';
+import { auth } from '@/lib/auth';
 
 function getClientIp(request: NextRequest): string {
   return (
@@ -11,7 +12,18 @@ function getClientIp(request: NextRequest): string {
   );
 }
 
-export function middleware(request: NextRequest) {
+const PROTECTED_PAGE_PREFIXES = ['/questionnaire', '/dashboard', '/admin', '/payment', '/report', '/enterprise'];
+const CONSENT_REQUIRED_PREFIXES = ['/questionnaire'];
+
+function isProtectedPage(pathname: string): boolean {
+  return PROTECTED_PAGE_PREFIXES.some((p) => pathname.startsWith(p));
+}
+
+function requiresConsent(pathname: string): boolean {
+  return CONSENT_REQUIRED_PREFIXES.some((p) => pathname.startsWith(p));
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const ip = getClientIp(request);
 
@@ -40,11 +52,39 @@ export function middleware(request: NextRequest) {
         },
       );
     }
+
+    return NextResponse.next();
+  }
+
+  if (isProtectedPage(pathname)) {
+    const session = await auth();
+
+    if (!session?.user) {
+      const signInUrl = new URL('/auth/signin', request.url);
+      signInUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(signInUrl);
+    }
+
+    if (pathname.startsWith('/admin') && (session.user as { role?: string }).role !== 'admin') {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+
+    if (requiresConsent(pathname) && !(session.user as { consentAt?: string | null }).consentAt) {
+      return NextResponse.redirect(new URL('/onboarding/consent', request.url));
+    }
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/questionnaire/:path*', '/dashboard/:path*', '/api/:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/questionnaire/:path*',
+    '/dashboard/:path*',
+    '/payment/:path*',
+    '/report/:path*',
+    '/enterprise/:path*',
+    '/api/:path*',
+  ],
 };
