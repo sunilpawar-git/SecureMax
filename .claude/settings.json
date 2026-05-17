@@ -4,5 +4,36 @@
       "command": "npx",
       "args": ["@playwright/mcp@latest"]
     }
+  },
+  "hooks": {
+    "post-tool:edit": [
+      {
+        "matcher": ".*\\.(ts|tsx|js|jsx)$",
+        "command": "npx prettier --write '{file}' 2>/dev/null || true",
+        "description": "Auto-format TypeScript/JavaScript files"
+      },
+      {
+        "matcher": ".*\\.py$",
+        "command": "cd ai-service && python -m black '{file}' 2>/dev/null || true",
+        "description": "Auto-format Python files"
+      }
+    ],
+    "pre-tool:bash": [
+      {
+        "matcher": "git commit",
+        "command": "bash scripts/pre-commit-check.sh",
+        "description": "Lint, type-check, and verify before commit (exit code 2 = block)"
+      },
+      {
+        "matcher": "git commit",
+        "command": "bash scripts/check-secrets.sh",
+        "description": "Detect API keys, tokens, credentials before commit (blocks on secrets found)"
+      },
+      {
+        "matcher": "git commit",
+        "command": "bash scripts/validate-yaml.sh",
+        "description": "Validate question graph YAML for orphans, dead ends, missing refs"
+      }
+    ]
   }
 }
