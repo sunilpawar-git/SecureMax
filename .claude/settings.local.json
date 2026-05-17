@@ -16,7 +16,9 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
-      "Bash(claude mcp *)"
+      "Bash(claude mcp *)",
+      "Bash(cat)",
+      "Bash(bash /tmp/verify-hooks.sh)"
     ]
   }
 }
