@@ -46,3 +46,9 @@ next-env.d.ts
 **/__pycache__/
 *.pyc
 *.pyo
+
+# Generated debt sweep reports (keep locally for reference)
+DEBT-SWEEP-*.md
+
+# Test files for hook demos
+src/test-auto-format.ts
