@@ -1,0 +1,15 @@
+[     159ms] [ERROR] eval() is not supported in this environment. If this page was served with a `Content-Security-Policy` header, make sure that `unsafe-eval` is included. React requires eval() in development mode for various debugging features like reconstructing callstacks from a different environment.
+React will never use eval() in production mode @ http://localhost:3000/_next/static/chunks/004v_next_dist_0jbz580._.js:3318
+[   36219ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/questionnaire:0
+[   36293ms] [ERROR] Refused to execute script from 'http://localhost:3000/_next/static/development/_clientMiddlewareManifest.js' because its MIME type ('application/json') is not executable, and strict MIME type checking is enabled. @ http://localhost:3000/questionnaire:0
+[   36296ms] Error: Failed to load external module node:process: TypeError: Native module not found: node:process
+    at DevContext.externalRequire [as x] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_060r4nn.js:1981:15)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0doo7.z._.js:631:79)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_060r4nn.js:1307:27)
+    at runModuleExecutionHooks (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_060r4nn.js:1649:9)
+    at instantiateModuleShared (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_060r4nn.js:1305:9)
+    at instantiateModule (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_060r4nn.js:1621:12)
+    at getOrInstantiateModuleFromParent (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_060r4nn.js:1604:12)
+    at DevContext.esmImport [as i] (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_060r4nn.js:278:20)
+    at module evaluation (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/[root-of-the-server]__0doo7.z._.js:662:220)
+    at <unknown> (file:///Users/sunil/Downloads/Security Crawler/.next/dev/server/edge/chunks/0xdv_next_dist_esm_build_templates_edge-wrapper_060r4nn.js:1307:27)
