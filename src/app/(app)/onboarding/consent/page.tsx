@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { APP, DPDPA, TRUST_STACK } from '@/config/strings';
 
 export default function ConsentPage() {
   const router = useRouter();
+  const { update: updateSession } = useSession();
   const [agreed, setAgreed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,6 +23,9 @@ export default function ConsentPage() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || 'Failed to record consent');
       }
+      const data = await res.json();
+      // Refresh the JWT so the proxy sees consentAt on the very next request.
+      await updateSession({ consentAt: data.consentAt });
       router.push('/questionnaire');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');

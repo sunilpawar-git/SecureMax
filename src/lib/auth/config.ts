@@ -1,24 +1,41 @@
 /**
- * NextAuth.js configuration — Google + Microsoft + generic OIDC.
+ * NextAuth.js configuration — Google + optionally Microsoft Entra ID.
+ * A provider is only registered when its credentials are present and non-placeholder.
  * Email is the canonical identity across all providers.
  */
 
 import type { NextAuthConfig } from 'next-auth';
+import type { Provider } from '@auth/core/providers';
 import Google from 'next-auth/providers/google';
 import MicrosoftEntraID from 'next-auth/providers/microsoft-entra-id';
 import { handleJwt, handleSession, isAuthorized } from './callbacks';
 
-export const authConfig: NextAuthConfig = {
-  providers: [
+function isRealValue(val: string | undefined): val is string {
+  return !!val && !val.startsWith('your-');
+}
+
+const providers: Provider[] = [];
+
+if (isRealValue(process.env.GOOGLE_CLIENT_ID) && isRealValue(process.env.GOOGLE_CLIENT_SECRET)) {
+  providers.push(
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
+  );
+}
+
+if (isRealValue(process.env.AZURE_AD_CLIENT_ID) && isRealValue(process.env.AZURE_AD_CLIENT_SECRET)) {
+  providers.push(
     MicrosoftEntraID({
-      clientId: process.env.AZURE_AD_CLIENT_ID ?? '',
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET ?? '',
+      clientId: process.env.AZURE_AD_CLIENT_ID,
+      clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
     }),
-  ],
+  );
+}
+
+export const authConfig: NextAuthConfig = {
+  providers,
   pages: {
     signIn: '/auth/signin',
     error: '/auth/error',

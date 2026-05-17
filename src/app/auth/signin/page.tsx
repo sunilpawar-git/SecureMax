@@ -6,6 +6,10 @@ function sanitizeTrack(raw: string | undefined): string {
   return TRACK.HNI;
 }
 
+function isRealValue(val: string | undefined): boolean {
+  return !!val && !val.startsWith('your-');
+}
+
 export default async function SignInPage({
   searchParams,
 }: {
@@ -15,6 +19,11 @@ export default async function SignInPage({
   const track = sanitizeTrack(params.track);
   const redirectTo = `/questionnaire?track=${track}`;
 
+  const googleEnabled =
+    isRealValue(process.env.GOOGLE_CLIENT_ID) && isRealValue(process.env.GOOGLE_CLIENT_SECRET);
+  const microsoftEnabled =
+    isRealValue(process.env.AZURE_AD_CLIENT_ID) && isRealValue(process.env.AZURE_AD_CLIENT_SECRET);
+
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
@@ -23,35 +32,39 @@ export default async function SignInPage({
         </h2>
 
         <div className="space-y-3">
-          <form
-            action={async () => {
-              'use server';
-              await signIn('google', { redirectTo });
-            }}
-          >
-            <button
-              type="submit"
-              className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+          {googleEnabled && (
+            <form
+              action={async () => {
+                'use server';
+                await signIn('google', { redirectTo });
+              }}
             >
-              <GoogleIcon />
-              Continue with Google
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                <GoogleIcon />
+                Continue with Google
+              </button>
+            </form>
+          )}
 
-          <form
-            action={async () => {
-              'use server';
-              await signIn('microsoft-entra-id', { redirectTo });
-            }}
-          >
-            <button
-              type="submit"
-              className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+          {microsoftEnabled && (
+            <form
+              action={async () => {
+                'use server';
+                await signIn('microsoft-entra-id', { redirectTo });
+              }}
             >
-              <MicrosoftIcon />
-              Continue with Microsoft
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                <MicrosoftIcon />
+                Continue with Microsoft
+              </button>
+            </form>
+          )}
         </div>
       </div>
 

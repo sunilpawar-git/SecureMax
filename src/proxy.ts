@@ -13,17 +13,12 @@ function getClientIp(request: NextRequest): string {
 }
 
 const PROTECTED_PAGE_PREFIXES = ['/questionnaire', '/dashboard', '/admin', '/payment', '/report', '/enterprise'];
-const CONSENT_REQUIRED_PREFIXES = ['/questionnaire', '/dashboard', '/payment', '/report', '/enterprise'];
 
 function isProtectedPage(pathname: string): boolean {
   return PROTECTED_PAGE_PREFIXES.some((p) => pathname.startsWith(p));
 }
 
-function requiresConsent(pathname: string): boolean {
-  return CONSENT_REQUIRED_PREFIXES.some((p) => pathname.startsWith(p));
-}
-
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const ip = getClientIp(request);
 
@@ -68,11 +63,8 @@ export async function middleware(request: NextRequest) {
     if (pathname.startsWith('/admin') && (session.user as { role?: string }).role !== 'admin') {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
-
-    const isConsentPage = pathname === '/onboarding/consent';
-    if (!isConsentPage && requiresConsent(pathname) && !(session.user as { consentAt?: string | null }).consentAt) {
-      return NextResponse.redirect(new URL('/onboarding/consent', request.url));
-    }
+    // Note: DPDPA consent gate is enforced at the page/layout level (server components),
+    // not here — the JWT consentAt field can be stale until the next re-login.
   }
 
   return NextResponse.next();

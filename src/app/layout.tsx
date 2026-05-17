@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { APP } from '@/config/strings';
+import SessionProvider from '@/components/SessionProvider';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -43,7 +44,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
       </head>
       <body className="min-h-full flex flex-col bg-white text-slate-900">
-        {children}
+        <SessionProvider>{children}</SessionProvider>
         <script
           dangerouslySetInnerHTML={{
             __html: `if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}`,
