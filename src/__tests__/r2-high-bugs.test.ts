@@ -49,9 +49,7 @@ const mockPrisma = {
   adminAction: { create: jest.fn() },
 };
 jest.mock('@/lib/prisma', () => ({ prisma: mockPrisma }));
-jest.mock('@/lib/admin/email', () => ({
-  sendLeadEmail: jest.fn().mockResolvedValue({ success: true }),
-}));
+jest.mock('@/lib/admin/email', () => ({ sendLeadEmail: jest.fn().mockResolvedValue({ success: true }) }));
 
 import { updateLeadStatus } from '@/lib/admin/leads-service';
 import { LEAD_STATUS } from '@/config/admin-strings';
@@ -71,10 +69,7 @@ describe('updateLeadStatus — proposal_sent side effects (sourceSessionId field
       sourceSessionId: 'sess-abc', // ← correct field name
     };
     mockPrisma.enterpriseLead.findUnique.mockResolvedValue(lead);
-    mockPrisma.enterpriseLead.update.mockResolvedValue({
-      ...lead,
-      status: LEAD_STATUS.PROPOSAL_SENT,
-    });
+    mockPrisma.enterpriseLead.update.mockResolvedValue({ ...lead, status: LEAD_STATUS.PROPOSAL_SENT });
     mockPrisma.auditSession.update.mockResolvedValue({});
 
     await updateLeadStatus('l-1', LEAD_STATUS.PROPOSAL_SENT, 'admin-1');
@@ -92,10 +87,7 @@ describe('updateLeadStatus — proposal_sent side effects (sourceSessionId field
       sourceSessionId: null,
     };
     mockPrisma.enterpriseLead.findUnique.mockResolvedValue(lead);
-    mockPrisma.enterpriseLead.update.mockResolvedValue({
-      ...lead,
-      status: LEAD_STATUS.PROPOSAL_SENT,
-    });
+    mockPrisma.enterpriseLead.update.mockResolvedValue({ ...lead, status: LEAD_STATUS.PROPOSAL_SENT });
 
     await updateLeadStatus('l-2', LEAD_STATUS.PROPOSAL_SENT, 'admin-1');
 

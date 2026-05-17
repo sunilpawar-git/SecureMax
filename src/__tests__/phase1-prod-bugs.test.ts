@@ -62,17 +62,17 @@ describe('Sign-in page reads track from searchParams', () => {
 // ─── Fix 3b: Questionnaire page reads ?track= from URL ───────────────────────
 
 describe('Questionnaire page pre-selects track from URL', () => {
-  const clientContent = fs.readFileSync(
-    path.join(process.cwd(), 'src', 'app', '(app)', 'questionnaire', 'questionnaire-client.tsx'),
+  const content = fs.readFileSync(
+    path.join(process.cwd(), 'src', 'app', '(app)', 'questionnaire', 'page.tsx'),
     'utf-8',
   );
 
   it('reads track from URL search params', () => {
-    expect(clientContent).toContain('useSearchParams');
+    expect(content).toContain('useSearchParams');
   });
 
   it('uses TRACK constant for validation', () => {
-    expect(clientContent).toContain('TRACK');
+    expect(content).toContain('TRACK');
   });
 });
 

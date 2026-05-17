@@ -14,16 +14,29 @@ import path from 'path';
 // ─── 2.1: Middleware consent enforcement covers all protected routes ──────────
 
 describe('Middleware consent enforcement scope', () => {
-  it.skip('consent is required for all protected page prefixes', () => {
-    // middleware.ts no longer exists; consent enforced at route level via redirect
+  const content = fs.readFileSync(
+    path.join(process.cwd(), 'src', 'middleware.ts'),
+    'utf-8',
+  );
+
+  it('consent is required for all protected page prefixes', () => {
+    expect(content).toContain('/questionnaire');
+    expect(content).toContain('/dashboard');
+    expect(content).toContain('/payment');
+    expect(content).toContain('/report');
+    expect(content).toContain('/enterprise');
   });
 
-  it.skip('CONSENT_REQUIRED_PREFIXES covers more than just /questionnaire', () => {
-    // middleware.ts no longer exists
+  it('CONSENT_REQUIRED_PREFIXES covers more than just /questionnaire', () => {
+    const match = content.match(/CONSENT_REQUIRED_PREFIXES\s*=\s*\[([^\]]+)\]/);
+    expect(match).toBeTruthy();
+    const prefixes = match![1];
+    expect(prefixes).toContain('/dashboard');
+    expect(prefixes).toContain('/payment');
   });
 
-  it.skip('excludes /onboarding/consent from consent check to avoid redirect loop', () => {
-    // middleware.ts no longer exists
+  it('excludes /onboarding/consent from consent check to avoid redirect loop', () => {
+    expect(content).toContain('/onboarding/consent');
   });
 });
 

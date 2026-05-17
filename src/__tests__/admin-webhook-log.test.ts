@@ -2,7 +2,10 @@
  * Tests for webhook logging — success, failure, PII sanitization.
  */
 
-import { logWebhookSuccess, logWebhookFailure } from '@/lib/admin/webhook-service';
+import {
+  logWebhookSuccess,
+  logWebhookFailure,
+} from '@/lib/admin/webhook-service';
 import { WEBHOOK_STATUS } from '@/config/admin-strings';
 
 const mockCreate = jest.fn();

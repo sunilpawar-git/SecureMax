@@ -18,23 +18,11 @@ import { parseBody } from '@/lib/api/validate';
 // ─── Mock auth ─────────────────────────────────────────────────────────────────
 
 const mockAdminSession = {
-  user: {
-    id: 'admin-1',
-    email: 'admin@raivan.com',
-    role: 'admin',
-    track: 'hni',
-    consentAt: '2026-01-01',
-  },
+  user: { id: 'admin-1', email: 'admin@raivan.com', role: 'admin', track: 'hni', consentAt: '2026-01-01' },
 };
 
 const mockUserSession = {
-  user: {
-    id: 'user-1',
-    email: 'user@test.com',
-    role: 'user',
-    track: 'hni',
-    consentAt: '2026-01-01',
-  },
+  user: { id: 'user-1', email: 'user@test.com', role: 'user', track: 'hni', consentAt: '2026-01-01' },
 };
 
 jest.mock('@/lib/auth', () => ({

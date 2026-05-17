@@ -62,16 +62,7 @@ describe('admin guard unification', () => {
 describe('client-side URL encoding', () => {
   it('report status page uses encodeURIComponent or URLSearchParams', () => {
     const content = fs.readFileSync(
-      path.join(
-        process.cwd(),
-        'src',
-        'app',
-        '(app)',
-        'report',
-        '[sessionId]',
-        'status',
-        'page.tsx',
-      ),
+      path.join(process.cwd(), 'src', 'app', '(app)', 'report', '[sessionId]', 'status', 'page.tsx'),
       'utf-8',
     );
     expect(content).toMatch(/encodeURIComponent|URLSearchParams/);
@@ -79,16 +70,7 @@ describe('client-side URL encoding', () => {
 
   it('report download page uses encodeURIComponent or URLSearchParams', () => {
     const content = fs.readFileSync(
-      path.join(
-        process.cwd(),
-        'src',
-        'app',
-        '(app)',
-        'report',
-        '[sessionId]',
-        'download',
-        'page.tsx',
-      ),
+      path.join(process.cwd(), 'src', 'app', '(app)', 'report', '[sessionId]', 'download', 'page.tsx'),
       'utf-8',
     );
     expect(content).toMatch(/encodeURIComponent|URLSearchParams/);
@@ -96,16 +78,7 @@ describe('client-side URL encoding', () => {
 
   it('report summary page uses encodeURIComponent or URLSearchParams', () => {
     const content = fs.readFileSync(
-      path.join(
-        process.cwd(),
-        'src',
-        'app',
-        '(app)',
-        'report',
-        '[sessionId]',
-        'summary',
-        'page.tsx',
-      ),
+      path.join(process.cwd(), 'src', 'app', '(app)', 'report', '[sessionId]', 'summary', 'page.tsx'),
       'utf-8',
     );
     expect(content).toMatch(/encodeURIComponent|URLSearchParams/);
@@ -142,9 +115,7 @@ describe('useRazorpay script safety', () => {
       path.join(process.cwd(), 'src', 'hooks', 'use-razorpay.ts'),
       'utf-8',
     );
-    expect(content).toMatch(
-      /typeof\s+window\.Razorpay|window\.Razorpay\s*===\s*undefined|!window\.Razorpay/,
-    );
+    expect(content).toMatch(/typeof\s+window\.Razorpay|window\.Razorpay\s*===\s*undefined|!window\.Razorpay/);
   });
 });
 

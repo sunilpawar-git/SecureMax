@@ -54,16 +54,7 @@ describe('L-4: No unsafe `as string` cast for params.sessionId', () => {
   const pagePaths = [
     path.join(process.cwd(), 'src', 'app', '(app)', 'payment', '[sessionId]', 'page.tsx'),
     path.join(process.cwd(), 'src', 'app', '(app)', 'report', '[sessionId]', 'status', 'page.tsx'),
-    path.join(
-      process.cwd(),
-      'src',
-      'app',
-      '(app)',
-      'report',
-      '[sessionId]',
-      'download',
-      'page.tsx',
-    ),
+    path.join(process.cwd(), 'src', 'app', '(app)', 'report', '[sessionId]', 'download', 'page.tsx'),
     path.join(process.cwd(), 'src', 'app', '(app)', 'report', '[sessionId]', 'summary', 'page.tsx'),
   ];
 

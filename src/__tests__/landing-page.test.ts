@@ -25,7 +25,10 @@ describe('Trust stack components export correctly', () => {
 
 describe('Landing page integrates trust stack components', () => {
   it('page.tsx imports HeroSection, TrustSignals, HowItWorks', () => {
-    const content = fs.readFileSync(path.join(process.cwd(), 'src', 'app', 'page.tsx'), 'utf-8');
+    const content = fs.readFileSync(
+      path.join(process.cwd(), 'src', 'app', 'page.tsx'),
+      'utf-8',
+    );
     expect(content).toContain('HeroSection');
     expect(content).toContain('TrustSignals');
     expect(content).toContain('HowItWorks');

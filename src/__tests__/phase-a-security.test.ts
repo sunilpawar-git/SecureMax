@@ -95,13 +95,7 @@ describe('DPDPA erasure completeness', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockAuth.mockResolvedValue({
-      user: {
-        id: 'user-1',
-        email: 'test@test.com',
-        role: 'user',
-        track: 'hni',
-        consentAt: '2026-01-01',
-      },
+      user: { id: 'user-1', email: 'test@test.com', role: 'user', track: 'hni', consentAt: '2026-01-01' },
     });
   });
 
@@ -112,9 +106,9 @@ describe('DPDPA erasure completeness', () => {
     const tx = (prisma.$transaction as jest.Mock).mock.calls[0][0];
     const mockTx = {
       auditSession: prisma.auditSession,
-      sessionEvent: prisma.sessionEvent as jest.Mocked<typeof prisma.sessionEvent>,
-      reportArtifact: prisma.reportArtifact as jest.Mocked<typeof prisma.reportArtifact>,
-      user: prisma.user as jest.Mocked<typeof prisma.user>,
+      sessionEvent: prisma.sessionEvent as any,
+      reportArtifact: prisma.reportArtifact as any,
+      user: prisma.user as any,
     };
 
     await tx(mockTx);
@@ -136,9 +130,9 @@ describe('DPDPA erasure completeness', () => {
     const tx = (prisma.$transaction as jest.Mock).mock.calls[0][0];
     const mockTx = {
       auditSession: prisma.auditSession,
-      sessionEvent: prisma.sessionEvent as jest.Mocked<typeof prisma.sessionEvent>,
-      reportArtifact: prisma.reportArtifact as jest.Mocked<typeof prisma.reportArtifact>,
-      user: prisma.user as jest.Mocked<typeof prisma.user>,
+      sessionEvent: prisma.sessionEvent as any,
+      reportArtifact: prisma.reportArtifact as any,
+      user: prisma.user as any,
     };
 
     await tx(mockTx);
@@ -150,12 +144,22 @@ describe('DPDPA erasure completeness', () => {
 // ─── C-3: Middleware does NOT set security headers ───────────────────────────────
 
 describe('middleware security header SSOT', () => {
-  it.skip('middleware.ts does NOT contain a SECURITY_HEADERS loop', () => {
-    // middleware.ts no longer exists; headers are configured in next.config.ts only
+  it('middleware.ts does NOT contain a SECURITY_HEADERS loop', () => {
+    const fs = require('fs');
+    const content = fs.readFileSync(
+      require('path').join(process.cwd(), 'src', 'middleware.ts'),
+      'utf-8',
+    );
+    expect(content).not.toContain('Object.entries(SECURITY_HEADERS)');
+    expect(content).not.toContain('response.headers.set');
   });
 
   it('next.config.ts remains the SSOT for headers', () => {
-    const content = fs.readFileSync(path.join(process.cwd(), 'next.config.ts'), 'utf-8');
+    const fs = require('fs');
+    const content = fs.readFileSync(
+      require('path').join(process.cwd(), 'next.config.ts'),
+      'utf-8',
+    );
     expect(content).toContain('SECURITY_HEADERS');
     expect(content).toContain('headers()');
   });
