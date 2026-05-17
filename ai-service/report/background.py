@@ -9,11 +9,9 @@ import logging
 import asyncpg
 
 import report_repository as rpt_repo
-import session_repository as repo
 from config import get_settings
 from crypto import decrypt, derive_key, encrypt_bytes
 from gemini_client import GeminiClient
-from questionnaire import get_node_map
 from report.constants import (
     REPORT_JOB_COMPLETED,
     REPORT_JOB_FAILED,

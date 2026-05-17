@@ -30,8 +30,11 @@ function getStoredSessionId(track: string): string | null {
     if (typeof window !== 'undefined' && window.localStorage) {
       return localStorage.getItem(`questionnaire_session_${track}`);
     }
-    if (typeof global !== 'undefined' && (global as any).localStorage) {
-      return (global as any).localStorage.getItem(`questionnaire_session_${track}`);
+    if (typeof global !== 'undefined') {
+      const globalWithStorage = global as typeof globalThis & { localStorage?: Storage };
+      if (globalWithStorage.localStorage) {
+        return globalWithStorage.localStorage.getItem(`questionnaire_session_${track}`);
+      }
     }
   } catch {
     // localStorage might be unavailable
@@ -43,8 +46,11 @@ function storeSessionId(track: string, sessionId: string): void {
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem(`questionnaire_session_${track}`, sessionId);
-    } else if (typeof global !== 'undefined' && (global as any).localStorage) {
-      (global as any).localStorage.setItem(`questionnaire_session_${track}`, sessionId);
+    } else if (typeof global !== 'undefined') {
+      const globalWithStorage = global as typeof globalThis & { localStorage?: Storage };
+      if (globalWithStorage.localStorage) {
+        globalWithStorage.localStorage.setItem(`questionnaire_session_${track}`, sessionId);
+      }
     }
   } catch {
     // localStorage might be unavailable
@@ -55,8 +61,11 @@ function clearStoredSessionId(track: string): void {
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.removeItem(`questionnaire_session_${track}`);
-    } else if (typeof global !== 'undefined' && (global as any).localStorage) {
-      (global as any).localStorage.removeItem(`questionnaire_session_${track}`);
+    } else if (typeof global !== 'undefined') {
+      const globalWithStorage = global as typeof globalThis & { localStorage?: Storage };
+      if (globalWithStorage.localStorage) {
+        globalWithStorage.localStorage.removeItem(`questionnaire_session_${track}`);
+      }
     }
   } catch {
     // localStorage might be unavailable
@@ -98,7 +107,7 @@ export async function startSession(track: string): Promise<ActiveSession> {
           const resumed = await resumeSession(cachedSessionId);
           storeSessionId(track, resumed.sessionId);
           return resumed;
-        } catch (resumeErr) {
+        } catch {
           clearStoredSessionId(track);
           throw err;
         }
@@ -120,7 +129,7 @@ export async function startSession(track: string): Promise<ActiveSession> {
   return session;
 }
 
-export async function resumeSession(sessionId: string | null, _track?: string): Promise<ActiveSession> {
+export async function resumeSession(sessionId: string | null): Promise<ActiveSession> {
   const data = await apiFetch('/api/questionnaire?action=resume', { session_id: sessionId });
   const d = data as {
     session_id: string;

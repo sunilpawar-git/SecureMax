@@ -9,7 +9,7 @@ export default function PaymentPage() {
   const router = useRouter();
   const sessionId = Array.isArray(params.sessionId) ? params.sessionId[0] : (params.sessionId ?? '');
 
-  const { initiatePayment, state, error } = useRazorpay({
+  const { initiatePayment, state, error, scriptReady } = useRazorpay({
     sessionId,
     onSuccess: () => router.push(`/report/${sessionId}/download`),
   });
@@ -21,6 +21,7 @@ export default function PaymentPage() {
   });
 
   const isProcessing = state === 'creating_order' || state === 'checkout_open' || state === 'verifying';
+  const isDisabled = isProcessing || !scriptReady;
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
@@ -46,7 +47,7 @@ export default function PaymentPage() {
 
           <button
             onClick={initiatePayment}
-            disabled={isProcessing}
+            disabled={isDisabled}
             className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white
               hover:bg-emerald-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >

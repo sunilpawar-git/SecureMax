@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { APP, TRUST_STACK } from '@/config/strings';
+import { APP, DPDPA, TRUST_STACK } from '@/config/strings';
 
 export default function ConsentPage() {
   const router = useRouter();
@@ -39,6 +39,9 @@ export default function ConsentPage() {
 
         <div className="rounded-xl border border-slate-200 bg-white p-6 space-y-4">
           <h2 className="font-semibold text-slate-900">Before we begin</h2>
+          <p className="text-xs text-slate-500">
+            Purpose: {DPDPA.CONSENT_DESCRIPTION} (Consent {DPDPA.CONSENT_VERSION})
+          </p>
 
           <div className="space-y-3 text-sm text-slate-600 leading-relaxed">
             <p>{TRUST_STACK.HNI_PRIVACY}</p>

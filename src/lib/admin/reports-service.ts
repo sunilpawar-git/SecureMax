@@ -13,7 +13,6 @@ import {
   ADMIN_ERR,
   REPORT_JOB_STATUS,
 } from '@/config/admin-strings';
-import type { Prisma } from '@/generated/prisma/client';
 
 export async function getReports() {
   const reports = await prisma.reportArtifact.findMany({

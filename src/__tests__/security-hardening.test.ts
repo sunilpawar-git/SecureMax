@@ -102,7 +102,7 @@ describe('PWA Manifest', () => {
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
     expect(manifest.name).toBeDefined();
     expect(manifest.short_name).toBeDefined();
-    expect(manifest.start_url).toBe('/');
+    expect(manifest.start_url).toMatch(/^\//); // allows /?source=pwa for install tracking
     expect(manifest.display).toBe('standalone');
     expect(manifest.icons).toHaveLength(3);
   });

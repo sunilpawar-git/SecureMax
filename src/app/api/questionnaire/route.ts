@@ -10,6 +10,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth, unauthorizedResponse, apiSuccess, apiError } from '@/lib/api';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
+import { prisma } from '@/lib/prisma';
+import { LIMITS, LIMITS_ERR } from '@/config/strings';
 
 export async function POST(request: NextRequest) {
   const session = await requireAuth();
@@ -30,6 +32,18 @@ export async function POST(request: NextRequest) {
   try {
     switch (action) {
       case 'start': {
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+
+        const sessionCount = await prisma.auditSession.count({
+          where: { userId, createdAt: { gte: startOfMonth } },
+        });
+
+        if (sessionCount >= LIMITS.MAX_SESSIONS_PER_USER_PER_MONTH) {
+          return apiError(LIMITS_ERR.SESSION_CAP_REACHED, 429);
+        }
+
         const result = await aiServiceFetch('/questionnaire/start', {
           body: { user_id: userId, track: body.track },
           headers: userHeaders,

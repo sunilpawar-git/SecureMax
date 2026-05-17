@@ -2,11 +2,10 @@
  * Dashboard sessions endpoint — returns all audit sessions for the current user.
  */
 
-import { NextRequest } from 'next/server';
 import { requireAuth, unauthorizedResponse, apiSuccess, apiError } from '@/lib/api';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   const session = await requireAuth();
   if (!session) return unauthorizedResponse();
 

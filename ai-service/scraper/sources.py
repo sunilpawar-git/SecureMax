@@ -143,49 +143,11 @@ def _parse_rss_date(dt_str: str) -> datetime | None:
         return None
 
 
-RSS_FEEDS = [
-    # Verified working feeds — no WAF/geo-block as of May 2026
-    {
-        "url": "https://feeds.feedburner.com/TheHackersNews",
-        "name": "The Hacker News",
-    },
-    {
-        "url": "https://www.bleepingcomputer.com/feed/",
-        "name": "Bleeping Computer",
-    },
-    {
-        "url": "https://www.helpnetsecurity.com/feed/",
-        "name": "Help Net Security",
-    },
-    {
-        "url": "https://www.csoonline.com/feed/",
-        "name": "CSO Online",
-    },
-    {
-        "url": "https://www.darkreading.com/rss.xml",
-        "name": "Dark Reading",
-    },
-]
+from scraper.source_loader import get_playwright_targets, get_rss_feeds
 
+RSS_FEEDS = get_rss_feeds()
 
-PLAYWRIGHT_TARGETS = [
-    {
-        "name": "The Security Company Blog",
-        "url": "https://thesecuritycompany.com/the-latest/",
-        "selector_article": "article",
-        "selector_title": "h2",
-        "selector_link": "a",
-        "max_articles": 10,
-    },
-    {
-        "name": "Security Journal Americas",
-        "url": "https://www.securityjournalamericas.com/news/",
-        "selector_article": "article.post",
-        "selector_title": ".entry-title",
-        "selector_link": ".entry-title a",
-        "max_articles": 10,
-    },
-]
+PLAYWRIGHT_TARGETS = get_playwright_targets()
 
 
 async def fetch_playwright_tier() -> list[RawArticle]:

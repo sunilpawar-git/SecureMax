@@ -1,7 +1,20 @@
 import { signIn } from '@/lib/auth';
-import { APP, TRUST_STACK } from '@/config/strings';
+import { APP, TRACK, TRUST_STACK, VALID_TRACKS } from '@/config/strings';
 
-export default function SignInPage() {
+function sanitizeTrack(raw: string | undefined): string {
+  if (raw && (VALID_TRACKS as readonly string[]).includes(raw)) return raw;
+  return TRACK.HNI;
+}
+
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ track?: string }>;
+}) {
+  const params = await searchParams;
+  const track = sanitizeTrack(params.track);
+  const redirectTo = `/questionnaire?track=${track}`;
+
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
@@ -13,7 +26,7 @@ export default function SignInPage() {
           <form
             action={async () => {
               'use server';
-              await signIn('google', { redirectTo: '/questionnaire' });
+              await signIn('google', { redirectTo });
             }}
           >
             <button
@@ -28,7 +41,7 @@ export default function SignInPage() {
           <form
             action={async () => {
               'use server';
-              await signIn('microsoft-entra-id', { redirectTo: '/questionnaire' });
+              await signIn('microsoft-entra-id', { redirectTo });
             }}
           >
             <button
@@ -57,7 +70,7 @@ export default function SignInPage() {
 
 function GoogleIcon() {
   return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24">
+    <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
       <path
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
         fill="#4285F4"
@@ -80,7 +93,7 @@ function GoogleIcon() {
 
 function MicrosoftIcon() {
   return (
-    <svg className="h-5 w-5" viewBox="0 0 21 21">
+    <svg className="h-5 w-5" viewBox="0 0 21 21" aria-hidden="true">
       <rect x="1" y="1" width="9" height="9" fill="#F25022" />
       <rect x="1" y="11" width="9" height="9" fill="#00A4EF" />
       <rect x="11" y="1" width="9" height="9" fill="#7FBA00" />

@@ -3,44 +3,45 @@
  * Verifies modules export valid defaults and components have correct shapes.
  */
 
+import * as reportStatusMod from '@/app/(app)/report/[sessionId]/status/page';
+import * as reportSummaryMod from '@/app/(app)/report/[sessionId]/summary/page';
+import * as reportDownloadMod from '@/app/(app)/report/[sessionId]/download/page';
+import * as freeSummaryMod from '@/components/report/FreeSummaryView';
+import * as findingCardMod from '@/components/report/FindingCard';
+import * as useReportTriggerMod from '@/app/(app)/questionnaire/use-report-trigger';
+
 describe('Report viewer pages export valid modules', () => {
   it('report status page exports a default function', () => {
-    const mod = require('@/app/(app)/report/[sessionId]/status/page');
-    expect(typeof mod.default).toBe('function');
+    expect(typeof reportStatusMod.default).toBe('function');
   });
 
   it('report summary page exports a default function', () => {
-    const mod = require('@/app/(app)/report/[sessionId]/summary/page');
-    expect(typeof mod.default).toBe('function');
+    expect(typeof reportSummaryMod.default).toBe('function');
   });
 
   it('report download page exports a default function', () => {
-    const mod = require('@/app/(app)/report/[sessionId]/download/page');
-    expect(typeof mod.default).toBe('function');
+    expect(typeof reportDownloadMod.default).toBe('function');
   });
 });
 
 describe('Report components export correctly', () => {
   it('FreeSummaryView is a named export function', () => {
-    const mod = require('@/components/report/FreeSummaryView');
-    expect(typeof mod.FreeSummaryView).toBe('function');
+    expect(typeof (freeSummaryMod as Record<string, unknown>).FreeSummaryView).toBe('function');
   });
 
   it('FindingCard is a named export function', () => {
-    const mod = require('@/components/report/FindingCard');
-    expect(typeof mod.FindingCard).toBe('function');
+    expect(typeof (findingCardMod as Record<string, unknown>).FindingCard).toBe('function');
   });
 
   it('FindingCard exports REDACTED_PLACEHOLDER constant', () => {
-    const mod = require('@/components/report/FindingCard');
-    expect(typeof mod.REDACTED_PLACEHOLDER).toBe('string');
-    expect(mod.REDACTED_PLACEHOLDER.length).toBeGreaterThan(0);
+    const placeholder = (findingCardMod as Record<string, unknown>).REDACTED_PLACEHOLDER;
+    expect(typeof placeholder).toBe('string');
+    expect((placeholder as string).length).toBeGreaterThan(0);
   });
 });
 
 describe('Report trigger hook', () => {
   it('useReportTrigger is a named export function', () => {
-    const mod = require('@/app/(app)/questionnaire/use-report-trigger');
-    expect(typeof mod.useReportTrigger).toBe('function');
+    expect(typeof (useReportTriggerMod as Record<string, unknown>).useReportTrigger).toBe('function');
   });
 });

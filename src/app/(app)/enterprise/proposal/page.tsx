@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { APP, CTA, TRUST_STACK } from '@/config/strings';
 
@@ -22,18 +22,53 @@ const INITIAL: FormData = {
   notes: '',
 };
 
+interface ProposalFormProps {
+  defaultName?: string;
+  defaultEmail?: string;
+}
+
 export default function EnterpriseProposalPage() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><p className="text-sm text-slate-400">Loading...</p></div>}>
-      <ProposalForm />
+      <ProposalFormWrapper />
     </Suspense>
   );
 }
 
-function ProposalForm() {
+function ProposalFormWrapper() {
+  const [defaults, setDefaults] = useState<{ name?: string; email?: string }>({});
+
+  useEffect(() => {
+    async function fetchSession() {
+      try {
+        const res = await fetch('/api/auth/session');
+        if (res.ok) {
+          const data = await res.json();
+          setDefaults({
+            name: data?.user?.name ?? undefined,
+            email: data?.user?.email ?? undefined,
+          });
+        }
+      } catch {
+        /* auth session fetch is best-effort for pre-fill */
+      }
+    }
+    fetchSession();
+  }, []);
+
+  return (
+    <ProposalForm defaultName={defaults.name} defaultEmail={defaults.email} />
+  );
+}
+
+function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session') ?? '';
-  const [form, setForm] = useState<FormData>(INITIAL);
+  const [form, setForm] = useState<FormData>({
+    ...INITIAL,
+    contactName: defaultName ?? '',
+    contactEmail: defaultEmail ?? '',
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -108,8 +143,9 @@ function ProposalForm() {
           <Field label="Number of Facilities" name="facilityCount" value={form.facilityCount} onChange={handleChange} type="number" required />
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Notes (optional)</label>
+            <label htmlFor="field-notes" className="block text-sm font-medium text-slate-700 mb-1">Notes (optional)</label>
             <textarea
+              id="field-notes"
               name="notes"
               value={form.notes}
               onChange={handleChange}

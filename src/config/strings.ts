@@ -101,3 +101,21 @@ export const RADAR_THRESHOLDS = {
   GREEN_MIN: 70,
   AMBER_MIN: 40,
 } as const;
+
+export const VALID_TRACKS = [TRACK.HNI, TRACK.ENTERPRISE] as const;
+
+export const LIMITS_ERR = {
+  SESSION_CAP_REACHED:
+    'You have reached the maximum number of sessions this month. Please try again next month.',
+} as const;
+
+export const PAYMENT_ERR = {
+  GATEWAY_LOADING: 'Payment gateway is loading. Please try again in a moment.',
+} as const;
+
+export const DPDPA = {
+  CONSENT_VERSION: 'v1',
+  CONSENT_PURPOSE: 'security_audit_processing',
+  CONSENT_DESCRIPTION:
+    'Processing of personal data for AI-driven physical security audit, report generation, and threat intelligence enrichment under DPDPA 2023.',
+} as const;

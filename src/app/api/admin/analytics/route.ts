@@ -3,14 +3,13 @@
  * Uses Prisma aggregate/groupBy for scalable queries instead of loading all rows.
  */
 
-import { NextRequest } from 'next/server';
 import { Prisma } from '@/generated/prisma/client';
 import { requireAdmin, forbiddenResponse, apiSuccess, apiError } from '@/lib/api';
 import { prisma } from '@/lib/prisma';
 
 const AMOUNT_PER_REPORT_PAISE = 4999_00;
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   const admin = await requireAdmin();
   if (!admin) return forbiddenResponse();
 

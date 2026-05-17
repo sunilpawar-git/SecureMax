@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { APP, CTA, TRUST_STACK } from '@/config/strings';
+import { APP, CTA, TRACK, TRUST_STACK } from '@/config/strings';
 
 export function HeroSection() {
   return (
@@ -19,14 +19,14 @@ export function HeroSection() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/auth/signin"
+            href={`/auth/signin?track=${TRACK.HNI}`}
             className="rounded-lg bg-emerald-600 px-8 py-4 text-sm font-semibold text-white
               shadow-lg shadow-emerald-600/25 hover:bg-emerald-500 transition-colors"
           >
             {CTA.HNI}
           </Link>
           <Link
-            href="/auth/signin"
+            href={`/auth/signin?track=${TRACK.ENTERPRISE}`}
             className="rounded-lg border border-slate-500 px-8 py-4 text-sm font-semibold text-white
               hover:bg-white/10 transition-colors"
           >

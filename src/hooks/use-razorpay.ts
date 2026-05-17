@@ -6,6 +6,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { PAYMENT_ERR } from '@/config/strings';
 
 declare global {
   interface Window {
@@ -28,22 +29,31 @@ export function useRazorpay({ sessionId, onSuccess, onFailure }: UseRazorpayOpti
   const [state, setState] = useState<CheckoutState>('idle');
   const [error, setError] = useState<string | null>(null);
   const [scriptReady, setScriptReady] = useState(false);
+  const scriptReadyRef = useRef(false);
   const onSuccessRef = useRef(onSuccess);
   const onFailureRef = useRef(onFailure);
 
-  onSuccessRef.current = onSuccess;
-  onFailureRef.current = onFailure;
+  useEffect(() => {
+    onSuccessRef.current = onSuccess;
+    onFailureRef.current = onFailure;
+  }, [onSuccess, onFailure]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (typeof window.Razorpay !== 'undefined') {
+
+    function markReady() {
+      scriptReadyRef.current = true;
       setScriptReady(true);
+    }
+
+    if (typeof window.Razorpay !== 'undefined') {
+      markReady();
       return;
     }
     if (document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
       const check = setInterval(() => {
         if (typeof window.Razorpay !== 'undefined') {
-          setScriptReady(true);
+          markReady();
           clearInterval(check);
         }
       }, 100);
@@ -52,13 +62,13 @@ export function useRazorpay({ sessionId, onSuccess, onFailure }: UseRazorpayOpti
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
     script.async = true;
-    script.onload = () => { setScriptReady(true); };
+    script.onload = () => { markReady(); };
     document.body.appendChild(script);
   }, []);
 
   const initiatePayment = useCallback(async () => {
-    if (typeof window.Razorpay === 'undefined') {
-      setError('Payment gateway is loading. Please try again in a moment.');
+    if (!scriptReadyRef.current || typeof window.Razorpay === 'undefined') {
+      setError(PAYMENT_ERR.GATEWAY_LOADING);
       setState('error');
       return;
     }

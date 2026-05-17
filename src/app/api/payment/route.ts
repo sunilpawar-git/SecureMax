@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     case 'verify':
       return handleVerify(request);
     case 'enterprise-proposal':
-      return handleEnterpriseProposal(request, userId);
+      return handleEnterpriseProposal(request);
     default:
       return apiError('Invalid action. Use: create-order, verify, enterprise-proposal');
   }
@@ -93,7 +93,7 @@ async function handleVerify(request: Request) {
   return apiSuccess({ verified: true, report_unlocked: unlocked });
 }
 
-async function handleEnterpriseProposal(request: Request, userId: string) {
+async function handleEnterpriseProposal(request: Request) {
   const parsed = await parseBody(request, EnterpriseProposalSchema);
   if (!parsed.success) return apiValidationError(parsed.errors);
 

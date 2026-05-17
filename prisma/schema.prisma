@@ -21,8 +21,10 @@ model User {
   track         String   @default("hni")
   orgName       String?  @map("org_name")
   logoUrl       String?  @map("logo_url")
-  consentAt     DateTime? @map("consent_at")
-  anonymisedAt  DateTime? @map("anonymised_at")
+  consentAt      DateTime? @map("consent_at")
+  consentVersion String?   @map("consent_version")
+  consentPurpose String?   @map("consent_purpose")
+  anonymisedAt   DateTime? @map("anonymised_at")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 

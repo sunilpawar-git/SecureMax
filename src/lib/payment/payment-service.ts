@@ -30,7 +30,7 @@ export async function isWebhookProcessed(razorpayOrderId: string): Promise<boole
       provider: 'razorpay',
       eventType: 'payment.verified',
       status: 'success',
-      errorLog: { contains: razorpayOrderId },
+      errorLog: { contains: `"order_id":"${razorpayOrderId}"` },
     },
   });
 

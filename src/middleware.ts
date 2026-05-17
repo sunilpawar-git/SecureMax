@@ -13,7 +13,7 @@ function getClientIp(request: NextRequest): string {
 }
 
 const PROTECTED_PAGE_PREFIXES = ['/questionnaire', '/dashboard', '/admin', '/payment', '/report', '/enterprise'];
-const CONSENT_REQUIRED_PREFIXES = ['/questionnaire'];
+const CONSENT_REQUIRED_PREFIXES = ['/questionnaire', '/dashboard', '/payment', '/report', '/enterprise'];
 
 function isProtectedPage(pathname: string): boolean {
   return PROTECTED_PAGE_PREFIXES.some((p) => pathname.startsWith(p));
@@ -69,7 +69,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
 
-    if (requiresConsent(pathname) && !(session.user as { consentAt?: string | null }).consentAt) {
+    const isConsentPage = pathname === '/onboarding/consent';
+    if (!isConsentPage && requiresConsent(pathname) && !(session.user as { consentAt?: string | null }).consentAt) {
       return NextResponse.redirect(new URL('/onboarding/consent', request.url));
     }
   }

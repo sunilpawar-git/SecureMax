@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useCallback, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { RadarChart } from './radar-chart';
 import { QuestionCard } from './question-card';
-import { APP, CTA } from '@/config/strings';
+import { APP, CTA, TRACK, VALID_TRACKS } from '@/config/strings';
 import { startSession, resumeSession, submitAnswer } from './questionnaire-service';
 import { useReportTrigger } from './use-report-trigger';
 import type { QuestionNode, RadarScores, SessionState } from './types';
@@ -19,7 +19,23 @@ function getErrorMessage(err: unknown): string {
 }
 
 export default function QuestionnairePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><p className="text-sm text-slate-400">Loading...</p></div>}>
+      <QuestionnaireContent />
+    </Suspense>
+  );
+}
+
+function getTrackFromParams(raw: string | null): string | null {
+  if (raw && (VALID_TRACKS as readonly string[]).includes(raw)) return raw;
+  return null;
+}
+
+function QuestionnaireContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlTrack = getTrackFromParams(searchParams.get('track'));
+
   const [sessionState, setSessionState] = useState<SessionState>('idle');
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<QuestionNode | null>(null);
@@ -27,7 +43,7 @@ export default function QuestionnairePage() {
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentTrack, setCurrentTrack] = useState<string | null>(null);
+  const [currentTrack, setCurrentTrack] = useState<string | null>(urlTrack);
 
   const reportTrigger = useReportTrigger(sessionId, sessionState === 'completed');
 
@@ -98,18 +114,24 @@ export default function QuestionnairePage() {
           <p className="text-gray-600">Select your audit track to begin the security assessment.</p>
           <div className="grid gap-4">
             <button
-              onClick={() => handleStart('hni')}
+              onClick={() => handleStart(TRACK.HNI)}
               disabled={isLoading}
-              className="w-full py-4 px-6 bg-emerald-700 text-white rounded-lg font-semibold
-                hover:bg-emerald-800 transition-colors disabled:opacity-50"
+              className={`w-full py-4 px-6 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 ${
+                currentTrack === TRACK.HNI
+                  ? 'bg-emerald-800 ring-2 ring-emerald-400'
+                  : 'bg-emerald-700 hover:bg-emerald-800'
+              }`}
             >
               {CTA.HNI}
             </button>
             <button
-              onClick={() => handleStart('enterprise')}
+              onClick={() => handleStart(TRACK.ENTERPRISE)}
               disabled={isLoading}
-              className="w-full py-4 px-6 bg-slate-800 text-white rounded-lg font-semibold
-                hover:bg-slate-900 transition-colors disabled:opacity-50"
+              className={`w-full py-4 px-6 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 ${
+                currentTrack === TRACK.ENTERPRISE
+                  ? 'bg-slate-900 ring-2 ring-slate-400'
+                  : 'bg-slate-800 hover:bg-slate-900'
+              }`}
             >
               {CTA.ENTERPRISE}
             </button>

@@ -59,6 +59,7 @@ class ReportStatusResponse(BaseModel):
     report_id: str
     status: str
     progress: int = 0
+    downloadable: bool = False
 
 
 class AdminRegenerateRequest(BaseModel):
@@ -171,6 +172,7 @@ async def get_report_status(
         report_id=report_id,
         status=job["status"],
         progress=_job_progress(job["status"]),
+        downloadable=_is_report_unlocked(session),
     )
 
 

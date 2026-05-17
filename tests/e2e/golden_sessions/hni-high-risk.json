@@ -1,0 +1,45 @@
+{
+  "_comment": "HNI worst-case session — all score_drop_trigger answers chosen. Asserts critical/high findings appear for CPP-01, CPP-05, CPP-06, CPP-03.",
+  "track": "hni",
+  "session_id": "golden-hni-high-risk",
+  "answers": [
+    { "question_id": "hni_q1_property_type",       "answer": "Villa" },
+    { "question_id": "hni_q2_existing_vendor",       "answer": "No" },
+    { "question_id": "hni_q3_incident_history",      "answer": "Yes" },
+    { "question_id": "hni_cpp01_perimeter",          "answer": "None" },
+    { "question_id": "hni_cpp01_cctv",               "answer": "No CCTV" },
+    { "question_id": "hni_cpp01_gate_code",          "answer": "Yes" },
+    { "question_id": "hni_cpp01_lighting",           "answer": "Not lit" },
+    { "question_id": "hni_cpp06_staff_count",        "answer": "8+" },
+    { "question_id": "hni_cpp06_background_checks",  "answer": "No" },
+    { "question_id": "hni_cpp06_access_zones",       "answer": "Yes — all areas" },
+    { "question_id": "hni_cpp05_smart_home",         "answer": "Yes — multiple devices" },
+    { "question_id": "hni_cpp05_cctv_cloud",         "answer": "Yes — default settings" },
+    { "question_id": "hni_cpp05_wifi",               "answer": "No — same network" },
+    { "question_id": "hni_cpp03_emergency_plan",     "answer": "No plan exists" },
+    { "question_id": "hni_cpp03_safe_room",          "answer": "Neither" },
+    { "question_id": "hni_cpp03_family_training",    "answer": "No" },
+    { "question_id": "hni_cpp02_risk_assessment",    "answer": "Never" },
+    { "question_id": "hni_cpp02_review_trigger",     "answer": "Never" },
+    { "question_id": "hni_cpp07_accountability",     "answer": "No one specifically" },
+    { "question_id": "hni_cpp07_review_cycle",       "answer": "No recurring schedule" },
+    { "question_id": "hni_cpp04_incident_reporting", "answer": "Not logged" },
+    { "question_id": "hni_cpp04_corrective_actions", "answer": "No follow-up" },
+    { "question_id": "hni_travel_module_entry",      "answer": "Yes — frequently" },
+    { "question_id": "hni_travel_key_holder",        "answer": "No one — property empty" },
+    { "question_id": "hni_visitor_delivery",         "answer": "Yes — unrestricted" },
+    { "question_id": "hni_visitor_log",              "answer": "No" }
+  ],
+  "expected_findings": {
+    "min_critical_count": 3,
+    "min_high_count": 2,
+    "domains_with_findings": ["CPP-01", "CPP-05", "CPP-06", "CPP-03"],
+    "max_urgency_score": 40,
+    "score_drop_triggers_fired": [
+      "hni_cpp01_gate_code",
+      "hni_cpp06_background_checks",
+      "hni_cpp05_cctv_cloud",
+      "hni_cpp03_emergency_plan"
+    ]
+  }
+}
