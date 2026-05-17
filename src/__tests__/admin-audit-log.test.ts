@@ -91,9 +91,7 @@ describe('getAuditLog', () => {
 
     expect(result.page).toBe(3);
     expect(result.limit).toBe(20);
-    expect(mockFindMany).toHaveBeenCalledWith(
-      expect.objectContaining({ skip: 40, take: 20 }),
-    );
+    expect(mockFindMany).toHaveBeenCalledWith(expect.objectContaining({ skip: 40, take: 20 }));
   });
 });
 

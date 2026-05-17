@@ -2,7 +2,12 @@
  * Tests for admin reports service — list, regen concurrency guard, unlock.
  */
 
-import { getReports, regenerateReport, unlockReport, getReportDiff } from '@/lib/admin/reports-service';
+import {
+  getReports,
+  regenerateReport,
+  unlockReport,
+  getReportDiff,
+} from '@/lib/admin/reports-service';
 import { REPORT_JOB_STATUS, ADMIN_ACTION_TYPE, ADMIN_ERR } from '@/config/admin-strings';
 
 const mockFindMany = jest.fn();
@@ -186,7 +191,10 @@ describe('getReportDiff', () => {
       .mockResolvedValueOnce({
         previousId: 'prev-1',
         findingsJson: {
-          findings: [{ domain: 'CPP-01', title: 'A' }, { domain: 'CPP-02', title: 'B' }],
+          findings: [
+            { domain: 'CPP-01', title: 'A' },
+            { domain: 'CPP-02', title: 'B' },
+          ],
           urgency_score: 80,
         },
       })

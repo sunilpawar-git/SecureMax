@@ -42,8 +42,10 @@ describe('getDashboardStats', () => {
 
   it('returns real counts from Prisma', async () => {
     mockCount.mockImplementation((model: string, where?: { where?: { status?: string } }) => {
-      if (model === 'auditSession' && where?.where?.status === 'in_progress') return Promise.resolve(3);
-      if (model === 'auditSession' && where?.where?.status === 'completed') return Promise.resolve(12);
+      if (model === 'auditSession' && where?.where?.status === 'in_progress')
+        return Promise.resolve(3);
+      if (model === 'auditSession' && where?.where?.status === 'completed')
+        return Promise.resolve(12);
       if (model === 'enterpriseLead' && where?.where?.status === 'new') return Promise.resolve(5);
       if (model === 'enterpriseLead' && !where?.where?.status) return Promise.resolve(20);
       if (model === 'reportArtifact') return Promise.resolve(8);

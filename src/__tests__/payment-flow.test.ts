@@ -10,10 +10,7 @@
  */
 
 import { z } from 'zod';
-import {
-  CreateOrderSchema,
-  VerifyPaymentSchema,
-} from '@/lib/payment/schemas';
+import { CreateOrderSchema, VerifyPaymentSchema } from '@/lib/payment/schemas';
 
 // ─── Zod schema tests (pure, no mocks) ────────────────────────────────────────
 
@@ -95,10 +92,7 @@ jest.mock('@/lib/prisma', () => ({
 }));
 
 import { prisma } from '@/lib/prisma';
-import {
-  persistPaymentUnlock,
-  isWebhookProcessed,
-} from '@/lib/payment/payment-service';
+import { persistPaymentUnlock, isWebhookProcessed } from '@/lib/payment/payment-service';
 
 const mockUpdateMany = prisma.auditSession.updateMany as jest.MockedFunction<
   typeof prisma.auditSession.updateMany
