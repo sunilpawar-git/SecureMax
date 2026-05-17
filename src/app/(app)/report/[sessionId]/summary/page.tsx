@@ -13,6 +13,7 @@ interface SummaryData {
   urgency_score: number;
   compliance_gap_count?: number;
   track: string;
+  session_id?: string; // audit session CUID for payment URL (may differ from URL job ID)
 }
 
 export default function ReportSummaryPage() {
@@ -105,7 +106,7 @@ export default function ReportSummaryPage() {
                 Get detailed findings, action roadmap, and threat intelligence.
               </p>
               <button
-                onClick={() => router.push(`/payment/${sessionId}`)}
+                onClick={() => router.push(`/payment/${data.session_id ?? sessionId}`)}
                 className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
               >
                 Unlock Full Report

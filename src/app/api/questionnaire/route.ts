@@ -40,7 +40,9 @@ export async function POST(request: NextRequest) {
           where: { userId, createdAt: { gte: startOfMonth } },
         });
 
-        if (sessionCount >= LIMITS.MAX_SESSIONS_PER_USER_PER_MONTH) {
+        // Dev mode bypass: ignore session cap in development
+        const isDev = process.env.NODE_ENV !== 'production';
+        if (!isDev && sessionCount >= LIMITS.MAX_SESSIONS_PER_USER_PER_MONTH) {
           return apiError(LIMITS_ERR.SESSION_CAP_REACHED, 429);
         }
 

@@ -223,7 +223,7 @@ model ReportArtifact {
 // ========== REPORT JOBS (async generation tracking) ==========
 
 model ReportJob {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid())
   sessionId    String   @unique @map("session_id")
   status       String   @default("pending")
   errorMessage String?  @map("error_message")

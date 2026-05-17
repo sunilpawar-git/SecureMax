@@ -7,7 +7,8 @@ import { useEffect, useRef, useState } from 'react';
 
 interface ReportTriggerState {
   triggered: boolean;
-  reportId: string | null;
+  reportId: string | null;  // job UUID — used for /report/[id]/status|summary|download
+  sessionId: string | null; // audit session CUID — used for /payment/[id]
   error: string | null;
 }
 
@@ -15,6 +16,7 @@ export function useReportTrigger(sessionId: string | null, isComplete: boolean):
   const [state, setState] = useState<ReportTriggerState>({
     triggered: false,
     reportId: null,
+    sessionId: null,
     error: null,
   });
   const hasTriggered = useRef(false);
@@ -36,13 +38,13 @@ export function useReportTrigger(sessionId: string | null, isComplete: boolean):
         const data = await res.json();
         if (controller.signal.aborted) return;
         if (!res.ok) {
-          setState({ triggered: true, reportId: null, error: data.error || 'Failed to start report generation' });
+          setState({ triggered: true, reportId: null, sessionId, error: data.error || 'Failed to start report generation' });
           return;
         }
-        setState({ triggered: true, reportId: data.report_id ?? sessionId, error: null });
+        setState({ triggered: true, reportId: data.report_id ?? sessionId, sessionId, error: null });
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') return;
-        setState({ triggered: true, reportId: null, error: 'Network error — report generation may still proceed' });
+        setState({ triggered: true, reportId: null, sessionId, error: 'Network error — report generation may still proceed' });
       }
     }
 

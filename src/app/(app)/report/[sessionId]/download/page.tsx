@@ -11,6 +11,7 @@ export default function ReportDownloadPage() {
   const sessionId = Array.isArray(params.sessionId) ? params.sessionId[0] : (params.sessionId ?? '');
   const [state, setState] = useState<DownloadState>('loading');
   const [error, setError] = useState<string | null>(null);
+  const [auditSessionId, setAuditSessionId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -31,6 +32,8 @@ export default function ReportDownloadPage() {
           }
           return;
         }
+
+        if (data.session_id) setAuditSessionId(data.session_id);
 
         if (data.status === 'completed' && data.downloadable) {
           setState('ready');
@@ -60,7 +63,30 @@ export default function ReportDownloadPage() {
         return;
       }
 
-      const blob = await res.blob();
+      const contentType = res.headers.get('Content-Type') ?? '';
+      if (!contentType.includes('application/pdf')) {
+        setState('error');
+        setError('Unexpected response from server. Please retry.');
+        return;
+      }
+
+      const arrayBuffer = await res.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+
+      // Validate PDF magic bytes (%PDF) before saving
+      const isPdf =
+        bytes[0] === 0x25 && // %
+        bytes[1] === 0x50 && // P
+        bytes[2] === 0x44 && // D
+        bytes[3] === 0x46;   // F
+
+      if (!isPdf) {
+        setState('error');
+        setError('Received an invalid PDF file. Please contact support.');
+        return;
+      }
+
+      const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -110,7 +136,7 @@ export default function ReportDownloadPage() {
           <div className="space-y-4">
             <p className="text-sm text-slate-600">Payment required to access the full report.</p>
             <a
-              href={`/payment/${sessionId}`}
+              href={`/payment/${auditSessionId ?? sessionId}`}
               className="block w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
             >
               Unlock Full Report

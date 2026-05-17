@@ -1,5 +1,5 @@
 /**
- * RazorPay checkout hook — loads the Razorpay script and handles payment flow.
+ * Razorpay checkout hook — loads the Razorpay script and handles payment flow.
  * Encapsulates the entire create-order → checkout → verify cycle.
  */
 
@@ -38,32 +38,56 @@ export function useRazorpay({ sessionId, onSuccess, onFailure }: UseRazorpayOpti
     onFailureRef.current = onFailure;
   }, [onSuccess, onFailure]);
 
+  // If Razorpay was already loaded (e.g. navigating back), mark ready immediately.
+  // Otherwise, unconditionally enable the button after a timeout so that if the
+  // script is blocked at the browser level (MIME type check, CSP, network error)
+  // and neither onReady nor onError fires, the user still gets a clickable button
+  // that surfaces a clear error message rather than being silently disabled.
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    function markReady() {
+    if (typeof window !== 'undefined' && typeof window.Razorpay !== 'undefined') {
       scriptReadyRef.current = true;
       setScriptReady(true);
-    }
-
-    if (typeof window.Razorpay !== 'undefined') {
-      markReady();
       return;
     }
-    if (document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
-      const check = setInterval(() => {
-        if (typeof window.Razorpay !== 'undefined') {
-          markReady();
-          clearInterval(check);
-        }
-      }, 100);
-      return () => clearInterval(check);
+    const fallback = setTimeout(() => {
+      if (!scriptReadyRef.current) {
+        scriptReadyRef.current = true;
+        setScriptReady(true);
+      }
+    }, 5000);
+    return () => clearTimeout(fallback);
+  }, []);
+
+  const onScriptLoad = useCallback(() => {
+    // next/script onReady fires after the script executes.
+    // Poll briefly in case the JS runtime hasn't registered window.Razorpay yet.
+    if (typeof window.Razorpay !== 'undefined') {
+      scriptReadyRef.current = true;
+      setScriptReady(true);
+      return;
     }
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-    script.onload = () => { markReady(); };
-    document.body.appendChild(script);
+    const check = setInterval(() => {
+      if (typeof window.Razorpay !== 'undefined') {
+        scriptReadyRef.current = true;
+        setScriptReady(true);
+        clearInterval(check);
+      }
+    }, 100);
+    // Give up after 5 s and enable the button — initiatePayment will show a clear error.
+    setTimeout(() => {
+      clearInterval(check);
+      if (!scriptReadyRef.current) {
+        scriptReadyRef.current = true;
+        setScriptReady(true);
+      }
+    }, 5000);
+  }, []);
+
+  const onScriptError = useCallback(() => {
+    // Script failed to load (network error, CDN block, etc.).
+    // Enable the button so the user gets a clear error message on click.
+    scriptReadyRef.current = true;
+    setScriptReady(true);
   }, []);
 
   const initiatePayment = useCallback(async () => {
@@ -138,5 +162,5 @@ export function useRazorpay({ sessionId, onSuccess, onFailure }: UseRazorpayOpti
     }
   }, [sessionId]);
 
-  return { initiatePayment, state, error, scriptReady };
+  return { initiatePayment, state, error, scriptReady, onScriptLoad, onScriptError };
 }

@@ -17,10 +17,12 @@ from fastapi import (
     Request,
     status,
 )
+from fastapi.responses import Response
 from pydantic import BaseModel
 
 import report_repository as rpt_repo
 import session_repository as repo
+from config import get_settings
 from constants import (
     ERR_ACCESS_DENIED,
     ERR_PAYMENT_REQUIRED,
@@ -30,6 +32,7 @@ from constants import (
     ERR_SESSION_NOT_FOUND,
     SESSION_COMPLETED,
 )
+from crypto import decrypt_bytes, derive_key
 from db import get_db
 from questionnaire import get_node_map
 from report.background import (
@@ -41,6 +44,9 @@ from report.constants import (
     REPORT_JOB_PENDING,
     REPORT_JOB_PROCESSING,
 )
+
+_settings = get_settings()
+_enc_key = derive_key(_settings.encryption_key) if _settings.encryption_key else None
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/report", tags=["report"])
@@ -57,6 +63,7 @@ class GenerateReportResponse(BaseModel):
 
 class ReportStatusResponse(BaseModel):
     report_id: str
+    session_id: str = ""  # audit session CUID — needed for payment URL
     status: str
     progress: int = 0
     downloadable: bool = False
@@ -170,6 +177,7 @@ async def get_report_status(
         )
     return ReportStatusResponse(
         report_id=report_id,
+        session_id=job["session_id"],
         status=job["status"],
         progress=_job_progress(job["status"]),
         downloadable=_is_report_unlocked(session),
@@ -199,8 +207,21 @@ async def get_free_summary(
     artifact = await rpt_repo.get_artifact_by_session(conn, job["session_id"])
     if not artifact:
         raise HTTPException(status_code=404, detail=ERR_REPORT_NOT_FOUND)
-    findings = json.loads(artifact["findings_json"])
-    return findings.get("free_summary", {})
+    full = json.loads(artifact["findings_json"])
+    free = full.get("free_summary") or {}
+    # Shape the response to match the frontend SummaryData interface:
+    # findings_preview (Python) → findings (frontend)
+    # radar_scores (full report) → domain_scores (frontend)
+    return {
+        "findings": free.get("findings_preview", []),
+        "urgency_score": free.get("urgency_score", 0),
+        "domains_with_gaps": free.get("domains_with_gaps", []),
+        "peer_benchmark": free.get("peer_benchmark", {}),
+        "compliance_gap_count": free.get("compliance_gap_count"),
+        "domain_scores": full.get("radar_scores", {}),
+        "track": full.get("track", "hni"),
+        "session_id": job["session_id"],  # audit session CUID — needed for payment URL
+    }
 
 
 @router.get("/{report_id}/full")
@@ -208,11 +229,15 @@ async def get_full_report(
     report_id: str,
     x_user_id: str | None = Header(None),
     conn: asyncpg.Connection = Depends(get_db),  # noqa: B008
-) -> dict:
-    """Full paid report — gated on DB payment flag, never a client param."""
+) -> Response:
+    """Full paid report — decrypts and streams the PDF. Gated on DB payment flag."""
     if not x_user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail=ERR_ACCESS_DENIED
+        )
+    if not _enc_key:
+        raise HTTPException(
+            status_code=500, detail="Encryption not configured on server"
         )
     job = await rpt_repo.get_job(conn, report_id)
     if not job:
@@ -229,7 +254,23 @@ async def get_full_report(
     artifact = await rpt_repo.get_artifact_by_session(conn, job["session_id"])
     if not artifact:
         raise HTTPException(status_code=404, detail=ERR_REPORT_NOT_FOUND)
-    return json.loads(artifact["findings_json"])
+    if not artifact.get("pdf_encrypted"):
+        raise HTTPException(status_code=404, detail="PDF not available for this report")
+    pdf_bytes = decrypt_bytes(bytes(artifact["pdf_encrypted"]), _enc_key)
+
+    # Validate PDF magic bytes before serving — catches encryption key mismatch or corruption
+    if not pdf_bytes[:4] == b"%PDF":
+        logger.error(
+            "Decrypted artifact for session %s does not start with %%PDF — likely key mismatch",
+            job["session_id"][:8],
+        )
+        raise HTTPException(status_code=500, detail="PDF data is corrupt. Please contact support.")
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="audit_report_{report_id}.pdf"'},
+    )
 
 
 def _job_progress(job_status: str) -> int:

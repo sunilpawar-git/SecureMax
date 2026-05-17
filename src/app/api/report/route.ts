@@ -115,6 +115,7 @@ export async function GET(request: NextRequest) {
           headers: {
             'Content-Type': 'application/pdf',
             'Content-Disposition': `attachment; filename="audit_report_${reportId}.pdf"`,
+            'Cache-Control': 'no-store',
           },
         });
       }

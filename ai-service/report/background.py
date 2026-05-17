@@ -9,6 +9,7 @@ import logging
 import asyncpg
 
 import report_repository as rpt_repo
+import session_repository as repo
 from config import get_settings
 from crypto import decrypt, derive_key, encrypt_bytes
 from gemini_client import GeminiClient
@@ -74,9 +75,18 @@ def build_report_events(raw_events: list[dict], node_map: dict) -> list[dict]:
 async def render_pdf_safe(report_data: ReportData) -> bytes | None:
     """Render PDF via Playwright. Returns None on failure — caller stores NULL."""
     try:
-        return await render_pdf(report_data)
+        pdf_bytes = await render_pdf(report_data)
+        if not pdf_bytes or not pdf_bytes[:4] == b"%PDF":
+            logger.error(
+                "PDF rendering returned invalid bytes for session %s (got %d bytes, header: %s)",
+                report_data.session_id[:8],
+                len(pdf_bytes) if pdf_bytes else 0,
+                (pdf_bytes[:8].hex() if pdf_bytes else "empty"),
+            )
+            return None
+        return pdf_bytes
     except Exception:
-        logger.warning(
+        logger.exception(
             "PDF rendering failed for session %s", report_data.session_id[:8]
         )
         return None
@@ -144,6 +154,7 @@ async def generate_report_background(
                     compliance_gap_count=report_data.compliance_gap_count,
                 )
             await rpt_repo.update_job_status(conn, job_id, REPORT_JOB_COMPLETED)
+            await repo.mark_report_ready(conn, session_id)
 
         except Exception:
             logger.exception(

@@ -1,5 +1,7 @@
 'use client';
 
+import Script from 'next/script';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useRazorpay } from '@/hooks/use-razorpay';
 import { APP, PAYMENT, TRUST_STACK } from '@/config/strings';
@@ -9,10 +11,41 @@ export default function PaymentPage() {
   const router = useRouter();
   const sessionId = Array.isArray(params.sessionId) ? params.sessionId[0] : (params.sessionId ?? '');
 
-  const { initiatePayment, state, error, scriptReady } = useRazorpay({
+  const { initiatePayment, state, error, scriptReady, onScriptLoad, onScriptError } = useRazorpay({
     sessionId,
     onSuccess: () => router.push(`/report/${sessionId}/download`),
   });
+
+  // Client-side only to prevent SSR/hydration mismatch on NODE_ENV check
+  const [isDev, setIsDev] = useState(false);
+  useEffect(() => { setIsDev(process.env.NODE_ENV === 'development'); }, []);
+
+  const [devBypassing, setDevBypassing] = useState(false);
+  const [devError, setDevError] = useState<string | null>(null);
+
+  const handleDevBypass = useCallback(async () => {
+    setDevBypassing(true);
+    setDevError(null);
+    try {
+      const res = await fetch('/api/dev/unlock-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setDevError(data.error || 'Dev bypass failed');
+        setDevBypassing(false);
+        return;
+      }
+      // Redirect to the report job ID for download (not the audit session ID)
+      const reportId = data.report_job_id ?? sessionId;
+      router.push(`/report/${reportId}/download`);
+    } catch {
+      setDevError('Network error during dev bypass');
+      setDevBypassing(false);
+    }
+  }, [sessionId, router]);
 
   const amount = (PAYMENT.AMOUNT_PAISE / 100).toLocaleString('en-IN', {
     style: 'currency',
@@ -25,6 +58,12 @@ export default function PaymentPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <Script
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        strategy="afterInteractive"
+        onReady={onScriptLoad}
+        onError={onScriptError}
+      />
       <div className="max-w-md w-full space-y-6">
         <div className="text-center">
           <h1 className="text-xl font-bold text-slate-900">{APP.NAME}</h1>
@@ -59,6 +98,24 @@ export default function PaymentPage() {
           </button>
 
           {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+
+          {isDev && (
+            <div className="border-t border-dashed border-amber-300 pt-4 space-y-2">
+              <p className="text-xs text-amber-600 text-center font-medium">
+                ⚙ Dev mode — skip real payment
+              </p>
+              <button
+                onClick={handleDevBypass}
+                disabled={devBypassing}
+                className="w-full rounded-lg border border-amber-400 bg-amber-50 px-4 py-2 text-sm
+                  font-medium text-amber-800 hover:bg-amber-100 transition-colors
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {devBypassing ? 'Unlocking...' : 'Bypass Payment (Dev)'}
+              </button>
+              {devError && <p className="text-xs text-red-600 text-center">{devError}</p>}
+            </div>
+          )}
         </div>
 
         <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4">

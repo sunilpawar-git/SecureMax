@@ -45,10 +45,10 @@ export function FreeSummaryView({
 
       <div>
         <h3 className="text-sm font-semibold text-slate-700 mb-3">
-          Findings ({findings.length})
+          Findings ({(findings ?? []).length})
         </h3>
         <div className="space-y-3">
-          {findings.map((f, i) => (
+          {(findings ?? []).map((f, i) => (
             <FindingCard key={`${f.domain}-${i}`} finding={f} locked={true} />
           ))}
         </div>
