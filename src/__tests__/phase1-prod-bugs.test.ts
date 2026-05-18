@@ -62,8 +62,10 @@ describe('Sign-in page reads track from searchParams', () => {
 // ─── Fix 3b: Questionnaire page reads ?track= from URL ───────────────────────
 
 describe('Questionnaire page pre-selects track from URL', () => {
+  // page.tsx is a Server Component (auth + DB); URL params are read in the
+  // client component which can use the useSearchParams hook.
   const content = fs.readFileSync(
-    path.join(process.cwd(), 'src', 'app', '(app)', 'questionnaire', 'page.tsx'),
+    path.join(process.cwd(), 'src', 'app', '(app)', 'questionnaire', 'questionnaire-client.tsx'),
     'utf-8',
   );
 
