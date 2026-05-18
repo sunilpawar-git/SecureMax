@@ -38,26 +38,26 @@ describe('requireAuth', () => {
   afterEach(() => jest.resetAllMocks());
 
   it('returns session when user is authenticated', async () => {
-    mockAuth.mockResolvedValue(mockUserSession as any);
+    mockAuth.mockResolvedValue(mockUserSession);
     const result = await requireAuth();
     expect(result).not.toBeNull();
     expect(result!.user.id).toBe('user-1');
   });
 
   it('returns null when no session exists', async () => {
-    mockAuth.mockResolvedValue(null as any);
+    mockAuth.mockResolvedValue(null);
     const result = await requireAuth();
     expect(result).toBeNull();
   });
 
   it('returns null when session has no user', async () => {
-    mockAuth.mockResolvedValue({} as any);
+    mockAuth.mockResolvedValue({});
     const result = await requireAuth();
     expect(result).toBeNull();
   });
 
   it('returns null when user has no id', async () => {
-    mockAuth.mockResolvedValue({ user: { email: 'test@test.com' } } as any);
+    mockAuth.mockResolvedValue({ user: { email: 'test@test.com' } });
     const result = await requireAuth();
     expect(result).toBeNull();
   });
@@ -67,20 +67,20 @@ describe('requireAdmin', () => {
   afterEach(() => jest.resetAllMocks());
 
   it('returns session when user is admin', async () => {
-    mockAuth.mockResolvedValue(mockAdminSession as any);
+    mockAuth.mockResolvedValue(mockAdminSession);
     const result = await requireAdmin();
     expect(result).not.toBeNull();
     expect(result!.user.role).toBe('admin');
   });
 
   it('returns null when user is not admin', async () => {
-    mockAuth.mockResolvedValue(mockUserSession as any);
+    mockAuth.mockResolvedValue(mockUserSession);
     const result = await requireAdmin();
     expect(result).toBeNull();
   });
 
   it('returns null when not authenticated', async () => {
-    mockAuth.mockResolvedValue(null as any);
+    mockAuth.mockResolvedValue(null);
     const result = await requireAdmin();
     expect(result).toBeNull();
   });

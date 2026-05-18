@@ -1,7 +1,7 @@
 'use client';
 
 import Script from 'next/script';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useRazorpay } from '@/hooks/use-razorpay';
 import { APP, PAYMENT, TRUST_STACK } from '@/config/strings';
@@ -16,9 +16,8 @@ export default function PaymentPage() {
     onSuccess: () => router.push(`/report/${sessionId}/download`),
   });
 
-  // Client-side only to prevent SSR/hydration mismatch on NODE_ENV check
-  const [isDev, setIsDev] = useState(false);
-  useEffect(() => { setIsDev(process.env.NODE_ENV === 'development'); }, []);
+  // process.env.NODE_ENV is inlined at build time by Next.js — no hydration mismatch risk
+  const isDev = process.env.NODE_ENV === 'development';
 
   const [devBypassing, setDevBypassing] = useState(false);
   const [devError, setDevError] = useState<string | null>(null);

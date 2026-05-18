@@ -5,11 +5,11 @@
 
 import fs from 'fs';
 import path from 'path';
+import * as AnalyticsPageModule from '@/app/admin/analytics/page';
 
 describe('Admin analytics page', () => {
   it('analytics/page.tsx exports a default function', () => {
-    const mod = require('@/app/admin/analytics/page');
-    expect(typeof mod.default).toBe('function');
+    expect(typeof AnalyticsPageModule.default).toBe('function');
   });
 
   it('admin nav includes analytics link', () => {

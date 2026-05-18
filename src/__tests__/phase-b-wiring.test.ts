@@ -94,10 +94,10 @@ describe('verifySignature safe failure', () => {
     process.env.RAZORPAY_SECRET = originalEnv;
   });
 
-  it('returns false instead of throwing when RAZORPAY_SECRET is empty', () => {
+  it('returns false instead of throwing when RAZORPAY_SECRET is empty', async () => {
     process.env.RAZORPAY_SECRET = '';
     jest.resetModules();
-    const { verifySignature } = require('@/lib/payment/razorpay');
+    const { verifySignature } = await import('@/lib/payment/razorpay');
     const result = verifySignature({
       razorpay_order_id: 'order_123',
       razorpay_payment_id: 'pay_456',

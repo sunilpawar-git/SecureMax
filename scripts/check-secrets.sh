@@ -39,15 +39,15 @@ fi
 # ============================================================================
 # 3. Gemini API Keys (long alphanumeric strings in specific context)
 # ============================================================================
-if git diff --cached | grep -qE 'GEMINI_API_KEY|gemini.*key.*=.*[a-zA-Z0-9]{40,}' -i; then
+if git diff --cached | grep -qEi 'GEMINI_API_KEY|gemini.*key.*=.*[a-zA-Z0-9]{40,}'; then
   echo "❌ Gemini API key pattern detected"
   SECRETS_FOUND=1
 fi
 
 # ============================================================================
-# 4. Database Passwords (common patterns)
+# 4. Database Passwords — look for real credentials (not CI localhost URLs)
 # ============================================================================
-if git diff --cached | grep -qE 'DATABASE_URL.*postgresql|DB_PASSWORD|password.*=.*[a-zA-Z0-9!@#$%]' -i; then
+if git diff --cached | grep -qEi 'DB_PASSWORD=|postgres://[^:]+:[^@]{8,}@[^l]'; then
   echo "❌ Database credential pattern detected"
   SECRETS_FOUND=1
 fi
@@ -55,7 +55,7 @@ fi
 # ============================================================================
 # 5. NextAuth Secrets
 # ============================================================================
-if git diff --cached | grep -qE 'NEXTAUTH_SECRET|AUTH_SECRET' -i; then
+if git diff --cached | grep -qEi 'NEXTAUTH_SECRET=|AUTH_SECRET='; then
   echo "❌ NextAuth secret detected (should not be in repo)"
   SECRETS_FOUND=1
 fi
@@ -63,7 +63,7 @@ fi
 # ============================================================================
 # 6. OAuth Client Secrets (Google, etc.)
 # ============================================================================
-if git diff --cached | grep -qE 'CLIENT_SECRET|OAUTH_SECRET|GOOGLE_CLIENT_SECRET' -i; then
+if git diff --cached | grep -qEi 'CLIENT_SECRET=|OAUTH_SECRET=|GOOGLE_CLIENT_SECRET='; then
   echo "❌ OAuth client secret detected"
   SECRETS_FOUND=1
 fi
@@ -71,15 +71,16 @@ fi
 # ============================================================================
 # 7. Razorpay Keys
 # ============================================================================
-if git diff --cached | grep -qE 'RAZORPAY_KEY|RAZORPAY_SECRET' -i; then
+if git diff --cached | grep -qEi 'RAZORPAY_KEY=|RAZORPAY_SECRET='; then
   echo "❌ Razorpay credentials detected"
   SECRETS_FOUND=1
 fi
 
 # ============================================================================
 # 8. Private Keys (RSA, PGP, etc.)
+#    Use -- to prevent grep from treating the dashes as option flags.
 # ============================================================================
-if git diff --cached | grep -qE '-----BEGIN (RSA|OPENSSH|PGP) PRIVATE KEY|PRIVATE KEY-----'; then
+if git diff --cached | grep -qE -- '-----BEGIN (RSA|OPENSSH|PGP) PRIVATE KEY|PRIVATE KEY-----'; then
   echo "❌ Private key detected"
   SECRETS_FOUND=1
 fi

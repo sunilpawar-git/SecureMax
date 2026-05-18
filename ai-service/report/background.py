@@ -76,7 +76,7 @@ async def render_pdf_safe(report_data: ReportData) -> bytes | None:
     """Render PDF via Playwright. Returns None on failure — caller stores NULL."""
     try:
         pdf_bytes = await render_pdf(report_data)
-        if not pdf_bytes or not pdf_bytes[:4] == b"%PDF":
+        if not pdf_bytes or pdf_bytes[:4] != b"%PDF":
             logger.error(
                 "PDF rendering returned invalid bytes for session %s (got %d bytes, header: %s)",
                 report_data.session_id[:8],

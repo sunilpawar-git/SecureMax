@@ -5,6 +5,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { EnterpriseProposalSchema } from '@/lib/payment/schemas';
 
 describe('M-7: Landing CTAs include track query params', () => {
   it('HNI CTA links to /auth/signin?track=hni', () => {
@@ -80,7 +81,6 @@ describe('L-5: Form fields have htmlFor/id association', () => {
 
 describe('L-6: Zod trim before min in EnterpriseProposalSchema', () => {
   it('trims whitespace-only inputs before min(1) validation', () => {
-    const { EnterpriseProposalSchema } = require('@/lib/payment/schemas');
     const result = EnterpriseProposalSchema.safeParse({
       companyName: '   ',
       contactName: 'Alice',

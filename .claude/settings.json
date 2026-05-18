@@ -8,31 +8,51 @@
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Edit.*\\.(ts|tsx|js|jsx)$",
-        "command": "npx prettier --write '{file}' 2>/dev/null || true",
-        "description": "Auto-format TypeScript/JavaScript files"
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx prettier --write '{file}' 2>/dev/null || true"
+          }
+        ]
       },
       {
-        "matcher": "Edit.*\\.py$",
-        "command": "cd ai-service && python -m black '{file}' 2>/dev/null || true",
-        "description": "Auto-format Python files"
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd ai-service && python -m black '{file}' 2>/dev/null || true"
+          }
+        ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash.*git commit",
-        "command": "bash scripts/pre-commit-check.sh",
-        "description": "Lint, type-check, and verify before commit (exit code 2 = block)"
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/pre-commit-check.sh"
+          }
+        ]
       },
       {
-        "matcher": "Bash.*git commit",
-        "command": "bash scripts/check-secrets.sh",
-        "description": "Detect API keys, tokens, credentials before commit (blocks on secrets found)"
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/check-secrets.sh"
+          }
+        ]
       },
       {
-        "matcher": "Bash.*git commit",
-        "command": "bash scripts/validate-yaml.sh",
-        "description": "Validate question graph YAML for orphans, dead ends, missing refs"
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/validate-yaml.sh"
+          }
+        ]
       }
     ]
   }

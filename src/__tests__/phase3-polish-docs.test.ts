@@ -5,7 +5,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { DPDPA, VALID_TRACKS } from '@/config/strings';
+import { DPDPA } from '@/config/strings';
 
 // ─── 3.1: CLAUDE.md auth policy updated ───────────────────────────────────────
 

@@ -6,8 +6,6 @@ import { getReports, regenerateReport, unlockReport, getReportDiff } from '@/lib
 import { REPORT_JOB_STATUS, ADMIN_ACTION_TYPE, ADMIN_ERR } from '@/config/admin-strings';
 
 const mockFindMany = jest.fn();
-const mockFindUnique = jest.fn();
-const mockUpdate = jest.fn();
 const mockAdminCreate = jest.fn();
 const mockJobFindUnique = jest.fn();
 const mockSessionFindUnique = jest.fn();

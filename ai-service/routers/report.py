@@ -259,7 +259,7 @@ async def get_full_report(
     pdf_bytes = decrypt_bytes(bytes(artifact["pdf_encrypted"]), _enc_key)
 
     # Validate PDF magic bytes before serving — catches encryption key mismatch or corruption
-    if not pdf_bytes[:4] == b"%PDF":
+    if pdf_bytes[:4] != b"%PDF":
         logger.error(
             "Decrypted artifact for session %s does not start with %%PDF — likely key mismatch",
             job["session_id"][:8],

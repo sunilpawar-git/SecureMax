@@ -11,6 +11,8 @@
  * H-2: middleware enforces DPDPA consent for /questionnaire
  */
 
+import fs from 'fs';
+import path from 'path';
 import { validateCuid } from '@/lib/api/validate';
 
 // ─── C-1: CUID validation ──────────────────────────────────────────────────────
@@ -106,9 +108,9 @@ describe('DPDPA erasure completeness', () => {
     const tx = (prisma.$transaction as jest.Mock).mock.calls[0][0];
     const mockTx = {
       auditSession: prisma.auditSession,
-      sessionEvent: prisma.sessionEvent as any,
-      reportArtifact: prisma.reportArtifact as any,
-      user: prisma.user as any,
+      sessionEvent: prisma.sessionEvent,
+      reportArtifact: prisma.reportArtifact,
+      user: prisma.user,
     };
 
     await tx(mockTx);
@@ -130,9 +132,9 @@ describe('DPDPA erasure completeness', () => {
     const tx = (prisma.$transaction as jest.Mock).mock.calls[0][0];
     const mockTx = {
       auditSession: prisma.auditSession,
-      sessionEvent: prisma.sessionEvent as any,
-      reportArtifact: prisma.reportArtifact as any,
-      user: prisma.user as any,
+      sessionEvent: prisma.sessionEvent,
+      reportArtifact: prisma.reportArtifact,
+      user: prisma.user,
     };
 
     await tx(mockTx);
@@ -145,9 +147,8 @@ describe('DPDPA erasure completeness', () => {
 
 describe('middleware security header SSOT', () => {
   it('middleware.ts does NOT contain a SECURITY_HEADERS loop', () => {
-    const fs = require('fs');
     const content = fs.readFileSync(
-      require('path').join(process.cwd(), 'src', 'middleware.ts'),
+      path.join(process.cwd(), 'src', 'middleware.ts'),
       'utf-8',
     );
     expect(content).not.toContain('Object.entries(SECURITY_HEADERS)');
@@ -155,9 +156,8 @@ describe('middleware security header SSOT', () => {
   });
 
   it('next.config.ts remains the SSOT for headers', () => {
-    const fs = require('fs');
     const content = fs.readFileSync(
-      require('path').join(process.cwd(), 'next.config.ts'),
+      path.join(process.cwd(), 'next.config.ts'),
       'utf-8',
     );
     expect(content).toContain('SECURITY_HEADERS');

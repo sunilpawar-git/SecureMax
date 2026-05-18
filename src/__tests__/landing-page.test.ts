@@ -5,21 +5,22 @@
 
 import fs from 'fs';
 import path from 'path';
+import * as HeroSectionModule from '@/components/landing/HeroSection';
+import * as TrustSignalsModule from '@/components/landing/TrustSignals';
+import * as HowItWorksModule from '@/components/landing/HowItWorks';
+import * as LandingPageModule from '@/app/page';
 
 describe('Trust stack components export correctly', () => {
   it('HeroSection is a named export function', () => {
-    const mod = require('@/components/landing/HeroSection');
-    expect(typeof mod.HeroSection).toBe('function');
+    expect(typeof HeroSectionModule.HeroSection).toBe('function');
   });
 
   it('TrustSignals is a named export function', () => {
-    const mod = require('@/components/landing/TrustSignals');
-    expect(typeof mod.TrustSignals).toBe('function');
+    expect(typeof TrustSignalsModule.TrustSignals).toBe('function');
   });
 
   it('HowItWorks is a named export function', () => {
-    const mod = require('@/components/landing/HowItWorks');
-    expect(typeof mod.HowItWorks).toBe('function');
+    expect(typeof HowItWorksModule.HowItWorks).toBe('function');
   });
 });
 
@@ -35,7 +36,6 @@ describe('Landing page integrates trust stack components', () => {
   });
 
   it('landing page exports a default function', () => {
-    const mod = require('@/app/page');
-    expect(typeof mod.default).toBe('function');
+    expect(typeof LandingPageModule.default).toBe('function');
   });
 });

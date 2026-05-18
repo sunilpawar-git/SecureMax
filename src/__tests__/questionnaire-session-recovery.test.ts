@@ -62,15 +62,22 @@ afterEach(() => jest.restoreAllMocks());
 // ─── 1. 409 on start → auto-resume ───────────────────────────────────────────
 
 describe('startSession — 409 triggers automatic resume', () => {
+  let mockLocalStorage: {
+    getItem(key: string): string | null;
+    setItem(key: string, value: string): void;
+    removeItem(key: string): void;
+    clear(): void;
+  };
+
   beforeEach(() => {
-    // Mock localStorage for Node.js test environment
     const store: Record<string, string> = {};
-    (global as any).localStorage = {
+    mockLocalStorage = {
       getItem: (key: string) => store[key] ?? null,
       setItem: (key: string, value: string) => { store[key] = value; },
       removeItem: (key: string) => { delete store[key]; },
       clear: () => { Object.keys(store).forEach(k => delete store[k]); },
     };
+    Object.defineProperty(global, 'localStorage', { value: mockLocalStorage, writable: true, configurable: true });
   });
 
   it('returns a valid ActiveSession when start gets 409 followed by successful resume', async () => {
@@ -92,7 +99,7 @@ describe('startSession — 409 triggers automatic resume', () => {
     );
 
     // Pre-populate localStorage with a session ID (simulating a previous session)
-    (global as any).localStorage.setItem(`questionnaire_session_hni`, SESSION_ID);
+    mockLocalStorage.setItem(`questionnaire_session_hni`, SESSION_ID);
 
     const result: ActiveSession = await startSession('hni');
 
@@ -109,7 +116,7 @@ describe('startSession — 409 triggers automatic resume', () => {
       { ok: true, body: { session_id: SESSION_ID, current_question: Q1, radar_scores: RADAR, questions_answered: 0 } },
     );
 
-    (global as any).localStorage.setItem(`questionnaire_session_hni`, SESSION_ID);
+    mockLocalStorage.setItem(`questionnaire_session_hni`, SESSION_ID);
     await startSession('hni');
 
     const resumeCall = (global.fetch as jest.Mock).mock.calls[1];

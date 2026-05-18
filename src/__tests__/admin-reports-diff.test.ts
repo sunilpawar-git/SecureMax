@@ -2,7 +2,7 @@
  * Tests for the report diff engine — pure function, no mocks needed.
  */
 
-import { compareReports, type DiffResult } from '@/lib/admin/diff-engine';
+import { compareReports } from '@/lib/admin/diff-engine';
 
 describe('compareReports', () => {
   it('returns empty diff for identical reports', () => {

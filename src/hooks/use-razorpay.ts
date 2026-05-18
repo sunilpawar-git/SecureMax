@@ -28,8 +28,11 @@ type CheckoutState = 'idle' | 'creating_order' | 'checkout_open' | 'verifying' |
 export function useRazorpay({ sessionId, onSuccess, onFailure }: UseRazorpayOptions) {
   const [state, setState] = useState<CheckoutState>('idle');
   const [error, setError] = useState<string | null>(null);
-  const [scriptReady, setScriptReady] = useState(false);
-  const scriptReadyRef = useRef(false);
+  // Initialise synchronously: if Razorpay is already on the page (e.g. after a
+  // client-side navigation), start ready so the button is not briefly disabled.
+  const alreadyLoaded = typeof window !== 'undefined' && typeof window.Razorpay !== 'undefined';
+  const scriptReadyRef = useRef(alreadyLoaded);
+  const [scriptReady, setScriptReady] = useState(alreadyLoaded);
   const onSuccessRef = useRef(onSuccess);
   const onFailureRef = useRef(onFailure);
 
@@ -38,17 +41,13 @@ export function useRazorpay({ sessionId, onSuccess, onFailure }: UseRazorpayOpti
     onFailureRef.current = onFailure;
   }, [onSuccess, onFailure]);
 
-  // If Razorpay was already loaded (e.g. navigating back), mark ready immediately.
+  // If Razorpay was already loaded the initial state is already true (above).
   // Otherwise, unconditionally enable the button after a timeout so that if the
   // script is blocked at the browser level (MIME type check, CSP, network error)
   // and neither onReady nor onError fires, the user still gets a clickable button
   // that surfaces a clear error message rather than being silently disabled.
   useEffect(() => {
-    if (typeof window !== 'undefined' && typeof window.Razorpay !== 'undefined') {
-      scriptReadyRef.current = true;
-      setScriptReady(true);
-      return;
-    }
+    if (scriptReadyRef.current) return;
     const fallback = setTimeout(() => {
       if (!scriptReadyRef.current) {
         scriptReadyRef.current = true;

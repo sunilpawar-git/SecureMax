@@ -18,7 +18,15 @@
       "Bash(git push *)",
       "Bash(claude mcp *)",
       "Bash(cat)",
-      "Bash(bash /tmp/verify-hooks.sh)"
+      "Bash(bash /tmp/verify-hooks.sh)",
+      "Bash(npm test *)",
+      "Bash(git commit -m 'fix: address test file failures for refactored middleware *)",
+      "Bash(git pull *)",
+      "Bash(git reset *)",
+      "Bash(gh pr *)",
+      "Bash(git revert *)",
+      "Bash(gh run *)",
+      "Bash(xargs -I {} gh run view {} --log)"
     ]
   }
 }

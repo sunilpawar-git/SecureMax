@@ -2,7 +2,7 @@
  * Tests for admin global search service — cross-entity parallel queries.
  */
 
-import { globalSearch, type SearchResults } from '@/lib/admin/search-service';
+import { globalSearch } from '@/lib/admin/search-service';
 
 const mockUserFind = jest.fn();
 const mockSessionFind = jest.fn();
