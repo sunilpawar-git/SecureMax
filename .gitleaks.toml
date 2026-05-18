@@ -1,0 +1,7 @@
+title = "SecureMax Gitleaks Config"
+
+[allowlist]
+  description = "Ignore example/documentation strings in tool config directories"
+  paths = [
+    '''.cursor/''',
+  ]
