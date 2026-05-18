@@ -73,11 +73,21 @@ describe('startSession — 409 triggers automatic resume', () => {
     const store: Record<string, string> = {};
     mockLocalStorage = {
       getItem: (key: string) => store[key] ?? null,
-      setItem: (key: string, value: string) => { store[key] = value; },
-      removeItem: (key: string) => { delete store[key]; },
-      clear: () => { Object.keys(store).forEach(k => delete store[k]); },
+      setItem: (key: string, value: string) => {
+        store[key] = value;
+      },
+      removeItem: (key: string) => {
+        delete store[key];
+      },
+      clear: () => {
+        Object.keys(store).forEach((k) => delete store[k]);
+      },
     };
-    Object.defineProperty(global, 'localStorage', { value: mockLocalStorage, writable: true, configurable: true });
+    Object.defineProperty(global, 'localStorage', {
+      value: mockLocalStorage,
+      writable: true,
+      configurable: true,
+    });
   });
 
   it('returns a valid ActiveSession when start gets 409 followed by successful resume', async () => {
@@ -112,8 +122,20 @@ describe('startSession — 409 triggers automatic resume', () => {
 
   it('makes the second call to the resume endpoint', async () => {
     mockFetch(
-      { ok: false, status: 409, body: { error: 'Active session already exists. Resume or abandon it first.' } },
-      { ok: true, body: { session_id: SESSION_ID, current_question: Q1, radar_scores: RADAR, questions_answered: 0 } },
+      {
+        ok: false,
+        status: 409,
+        body: { error: 'Active session already exists. Resume or abandon it first.' },
+      },
+      {
+        ok: true,
+        body: {
+          session_id: SESSION_ID,
+          current_question: Q1,
+          radar_scores: RADAR,
+          questions_answered: 0,
+        },
+      },
     );
 
     mockLocalStorage.setItem(`questionnaire_session_hni`, SESSION_ID);
@@ -194,7 +216,14 @@ describe('submitAnswer', () => {
   it('sends session_id, question_id, and answer in the request body', async () => {
     mockFetch({
       ok: true,
-      body: { next_question: Q2, radar_scores: RADAR, is_complete: false, ai_branched: false, ai_reasoning: null, cpp_citations: [] },
+      body: {
+        next_question: Q2,
+        radar_scores: RADAR,
+        is_complete: false,
+        ai_branched: false,
+        ai_reasoning: null,
+        cpp_citations: [],
+      },
     });
 
     await submitAnswer(SESSION_ID, Q1.id, 'Villa');
@@ -229,7 +258,11 @@ describe('submitAnswer — completion', () => {
   });
 
   it('throws when server returns an error on answer submission', async () => {
-    mockFetch({ ok: false, status: 400, body: { error: 'Expected answer for hni_q3_incident_history, got hni_q3_guard_count' } });
+    mockFetch({
+      ok: false,
+      status: 400,
+      body: { error: 'Expected answer for hni_q3_incident_history, got hni_q3_guard_count' },
+    });
 
     await expect(submitAnswer(SESSION_ID, 'hni_q3_guard_count', 'Yes')).rejects.toThrow(
       'Expected answer for hni_q3_incident_history, got hni_q3_guard_count',

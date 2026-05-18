@@ -97,7 +97,13 @@ describe('DPDPA erasure completeness', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockAuth.mockResolvedValue({
-      user: { id: 'user-1', email: 'test@test.com', role: 'user', track: 'hni', consentAt: '2026-01-01' },
+      user: {
+        id: 'user-1',
+        email: 'test@test.com',
+        role: 'user',
+        track: 'hni',
+        consentAt: '2026-01-01',
+      },
     });
   });
 
@@ -147,19 +153,13 @@ describe('DPDPA erasure completeness', () => {
 
 describe('middleware security header SSOT', () => {
   it('middleware.ts does NOT contain a SECURITY_HEADERS loop', () => {
-    const content = fs.readFileSync(
-      path.join(process.cwd(), 'src', 'middleware.ts'),
-      'utf-8',
-    );
+    const content = fs.readFileSync(path.join(process.cwd(), 'src', 'middleware.ts'), 'utf-8');
     expect(content).not.toContain('Object.entries(SECURITY_HEADERS)');
     expect(content).not.toContain('response.headers.set');
   });
 
   it('next.config.ts remains the SSOT for headers', () => {
-    const content = fs.readFileSync(
-      path.join(process.cwd(), 'next.config.ts'),
-      'utf-8',
-    );
+    const content = fs.readFileSync(path.join(process.cwd(), 'next.config.ts'), 'utf-8');
     expect(content).toContain('SECURITY_HEADERS');
     expect(content).toContain('headers()');
   });

@@ -22,7 +22,11 @@ export function FreeSummaryView({
   const riskLevel =
     urgencyScore >= 70 ? 'HIGH RISK' : urgencyScore >= 40 ? 'MODERATE RISK' : 'LOW RISK';
   const riskColor =
-    urgencyScore >= 70 ? 'text-red-600' : urgencyScore >= 40 ? 'text-orange-600' : 'text-emerald-600';
+    urgencyScore >= 70
+      ? 'text-red-600'
+      : urgencyScore >= 40
+        ? 'text-orange-600'
+        : 'text-emerald-600';
 
   return (
     <div className="space-y-8">

@@ -52,17 +52,13 @@ class TestGetRelevantChunks:
 
     def test_handles_embed_failure_gracefully(self, db_conn):
         mock_gemini = _make_mock_gemini(embed_side_effect=GeminiError("API down"))
-        results = run_db(
-            get_relevant_chunks("test", db_conn, _settings, gemini=mock_gemini)
-        )
+        results = run_db(get_relevant_chunks("test", db_conn, _settings, gemini=mock_gemini))
         assert results == []
 
     def test_empty_db_returns_empty(self, db_conn):
         """When the test schema has no cpp_chunks, returns empty list."""
         mock_gemini = _make_mock_gemini()
-        results = run_db(
-            get_relevant_chunks("test", db_conn, _settings, gemini=mock_gemini)
-        )
+        results = run_db(get_relevant_chunks("test", db_conn, _settings, gemini=mock_gemini))
         assert results == []
 
 

@@ -29,7 +29,13 @@ interface ProposalFormProps {
 
 export default function EnterpriseProposalPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><p className="text-sm text-slate-400">Loading...</p></div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+          <p className="text-sm text-slate-400">Loading...</p>
+        </div>
+      }
+    >
       <ProposalFormWrapper />
     </Suspense>
   );
@@ -56,9 +62,7 @@ function ProposalFormWrapper() {
     fetchSession();
   }, []);
 
-  return (
-    <ProposalForm defaultName={defaults.name} defaultEmail={defaults.email} />
-  );
+  return <ProposalForm defaultName={defaults.name} defaultEmail={defaults.email} />;
 }
 
 function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
@@ -113,8 +117,19 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full text-center space-y-4">
           <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 flex items-center justify-center">
-            <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            <svg
+              className="w-8 h-8 text-emerald-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
             </svg>
           </div>
           <h2 className="text-xl font-bold text-slate-900">Proposal Received</h2>
@@ -135,15 +150,52 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
           <p className="text-sm text-slate-500 mt-1">{CTA.ENTERPRISE_PROPOSAL}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-xl border border-slate-200 bg-white p-6 space-y-4">
-          <Field label="Company Name" name="companyName" value={form.companyName} onChange={handleChange} required />
-          <Field label="Your Name" name="contactName" value={form.contactName} onChange={handleChange} required />
-          <Field label="Email" name="contactEmail" value={form.contactEmail} onChange={handleChange} type="email" required />
-          <Field label="Phone (optional)" name="contactPhone" value={form.contactPhone} onChange={handleChange} type="tel" />
-          <Field label="Number of Facilities" name="facilityCount" value={form.facilityCount} onChange={handleChange} type="number" required />
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-xl border border-slate-200 bg-white p-6 space-y-4"
+        >
+          <Field
+            label="Company Name"
+            name="companyName"
+            value={form.companyName}
+            onChange={handleChange}
+            required
+          />
+          <Field
+            label="Your Name"
+            name="contactName"
+            value={form.contactName}
+            onChange={handleChange}
+            required
+          />
+          <Field
+            label="Email"
+            name="contactEmail"
+            value={form.contactEmail}
+            onChange={handleChange}
+            type="email"
+            required
+          />
+          <Field
+            label="Phone (optional)"
+            name="contactPhone"
+            value={form.contactPhone}
+            onChange={handleChange}
+            type="tel"
+          />
+          <Field
+            label="Number of Facilities"
+            name="facilityCount"
+            value={form.facilityCount}
+            onChange={handleChange}
+            type="number"
+            required
+          />
 
           <div>
-            <label htmlFor="field-notes" className="block text-sm font-medium text-slate-700 mb-1">Notes (optional)</label>
+            <label htmlFor="field-notes" className="block text-sm font-medium text-slate-700 mb-1">
+              Notes (optional)
+            </label>
             <textarea
               id="field-notes"
               name="notes"
@@ -191,7 +243,9 @@ function Field({
   const inputId = `field-${name}`;
   return (
     <div>
-      <label htmlFor={inputId} className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
+      <label htmlFor={inputId} className="block text-sm font-medium text-slate-700 mb-1">
+        {label}
+      </label>
       <input
         id={inputId}
         type={type}

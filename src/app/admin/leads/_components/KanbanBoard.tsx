@@ -68,7 +68,9 @@ export function KanbanBoard({ leads, onStatusChange, onEmail }: KanbanBoardProps
           <div
             key={status}
             className={`rounded-lg p-3 min-h-[200px] transition-colors ${
-              isDragTarget ? 'bg-blue-50 border-2 border-blue-300' : 'bg-slate-50 border border-slate-200'
+              isDragTarget
+                ? 'bg-blue-50 border-2 border-blue-300'
+                : 'bg-slate-50 border border-slate-200'
             }`}
             onDragOver={(e) => handleDragOver(e, status)}
             onDragLeave={() => setDragOver(null)}
@@ -89,11 +91,7 @@ export function KanbanBoard({ leads, onStatusChange, onEmail }: KanbanBoardProps
                   onDragEnd={handleDragEnd}
                   className="cursor-grab active:cursor-grabbing"
                 >
-                  <LeadCard
-                    lead={lead}
-                    onStatusChange={onStatusChange}
-                    onEmail={onEmail}
-                  />
+                  <LeadCard lead={lead} onStatusChange={onStatusChange} onEmail={onEmail} />
                 </div>
               ))}
             </div>

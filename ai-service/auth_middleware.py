@@ -28,6 +28,7 @@ def _allow_insecure() -> bool:
     """Check ALLOW_INSECURE_LOCAL from .env via pydantic, with os.environ fallback."""
     try:
         from config import get_settings
+
         return get_settings().allow_insecure_local
     except Exception:
         return os.environ.get("ALLOW_INSECURE_LOCAL", "").lower() == "true"

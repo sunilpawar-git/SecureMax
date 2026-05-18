@@ -4,11 +4,19 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { APP } from '@/config/strings';
 
-type DownloadState = 'loading' | 'ready' | 'downloading' | 'error' | 'payment_required' | 'pending_approval';
+type DownloadState =
+  | 'loading'
+  | 'ready'
+  | 'downloading'
+  | 'error'
+  | 'payment_required'
+  | 'pending_approval';
 
 export default function ReportDownloadPage() {
   const params = useParams();
-  const sessionId = Array.isArray(params.sessionId) ? params.sessionId[0] : (params.sessionId ?? '');
+  const sessionId = Array.isArray(params.sessionId)
+    ? params.sessionId[0]
+    : (params.sessionId ?? '');
   const [state, setState] = useState<DownloadState>('loading');
   const [error, setError] = useState<string | null>(null);
   const [auditSessionId, setAuditSessionId] = useState<string | null>(null);
@@ -18,7 +26,9 @@ export default function ReportDownloadPage() {
 
     async function checkAccess() {
       try {
-        const res = await fetch(`/api/report?action=status&report_id=${encodeURIComponent(sessionId)}`);
+        const res = await fetch(
+          `/api/report?action=status&report_id=${encodeURIComponent(sessionId)}`,
+        );
         const data = await res.json();
 
         if (!res.ok) {
@@ -78,7 +88,7 @@ export default function ReportDownloadPage() {
         bytes[0] === 0x25 && // %
         bytes[1] === 0x50 && // P
         bytes[2] === 0x44 && // D
-        bytes[3] === 0x46;   // F
+        bytes[3] === 0x46; // F
 
       if (!isPdf) {
         setState('error');
@@ -114,8 +124,18 @@ export default function ReportDownloadPage() {
         {state === 'ready' && (
           <div className="space-y-4">
             <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 flex items-center justify-center">
-              <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              <svg
+                className="w-8 h-8 text-emerald-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
               </svg>
             </div>
             <p className="text-sm text-slate-600">Your report is ready.</p>
@@ -147,16 +167,22 @@ export default function ReportDownloadPage() {
         {state === 'pending_approval' && (
           <div className="space-y-3">
             <p className="text-sm text-slate-600">
-              Your enterprise report is pending approval. Our team will unlock it after your proposal is processed.
+              Your enterprise report is pending approval. Our team will unlock it after your
+              proposal is processed.
             </p>
-            <p className="text-xs text-slate-400">You will be notified when the report is ready for download.</p>
+            <p className="text-xs text-slate-400">
+              You will be notified when the report is ready for download.
+            </p>
           </div>
         )}
 
         {state === 'error' && (
           <div className="space-y-3">
             <p className="text-sm text-red-600">{error}</p>
-            <button onClick={() => window.location.reload()} className="text-sm text-emerald-700 underline">
+            <button
+              onClick={() => window.location.reload()}
+              className="text-sm text-emerald-700 underline"
+            >
               Retry
             </button>
           </div>

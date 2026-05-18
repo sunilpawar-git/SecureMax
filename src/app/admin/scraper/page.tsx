@@ -63,10 +63,7 @@ export default function ScraperPage() {
       />
 
       {showAddModal && (
-        <ManualAddModal
-          onAdd={data.addArticle}
-          onClose={() => setShowAddModal(false)}
-        />
+        <ManualAddModal onAdd={data.addArticle} onClose={() => setShowAddModal(false)} />
       )}
     </div>
   );

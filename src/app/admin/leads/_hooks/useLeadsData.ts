@@ -73,30 +73,49 @@ export function useLeadsData(): LeadsData {
     void load();
   }, [load]);
 
-  const updateStatus = useCallback(async (leadId: string, newStatus: string) => {
-    const res = await fetch('/api/admin/leads', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ leadId, newStatus }),
-    });
-    if (res.ok) { await load(); return true; }
-    return false;
-  }, [load]);
+  const updateStatus = useCallback(
+    async (leadId: string, newStatus: string) => {
+      const res = await fetch('/api/admin/leads', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId, newStatus }),
+      });
+      if (res.ok) {
+        await load();
+        return true;
+      }
+      return false;
+    },
+    [load],
+  );
 
-  const sendEmail = useCallback(async (leadId: string, subject: string, body: string) => {
-    const res = await fetch('/api/admin/leads/email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ leadId, subject, body }),
-    });
-    if (res.ok) { await load(); return true; }
-    return false;
-  }, [load]);
+  const sendEmail = useCallback(
+    async (leadId: string, subject: string, body: string) => {
+      const res = await fetch('/api/admin/leads/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId, subject, body }),
+      });
+      if (res.ok) {
+        await load();
+        return true;
+      }
+      return false;
+    },
+    [load],
+  );
 
   return {
-    leads, total, loading, error,
-    statusFilter, searchQuery,
-    setStatusFilter, setSearchQuery,
-    updateStatus, sendEmail, refresh: load,
+    leads,
+    total,
+    loading,
+    error,
+    statusFilter,
+    searchQuery,
+    setStatusFilter,
+    setSearchQuery,
+    updateStatus,
+    sendEmail,
+    refresh: load,
   };
 }

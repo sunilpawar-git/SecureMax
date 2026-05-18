@@ -37,9 +37,7 @@ class TestHNITrackReturnsEmpty:
     @pytest.mark.asyncio
     async def test_hni_returns_empty_list(self) -> None:
         gemini = _mock_gemini()
-        result = await generate_compliance_appendix(
-            _sample_findings(), "hni", gemini=gemini
-        )
+        result = await generate_compliance_appendix(_sample_findings(), "hni", gemini=gemini)
         assert result == []
         gemini.generate.assert_not_called()
 
@@ -54,9 +52,7 @@ class TestEnterpriseCompliance:
         )
         gemini = _mock_gemini(response)
         findings = _sample_findings(["CPP-01", "CPP-03", "CPP-05"])
-        result = await generate_compliance_appendix(
-            findings, "enterprise", gemini=gemini
-        )
+        result = await generate_compliance_appendix(findings, "enterprise", gemini=gemini)
         assert len(result) == 3
 
     @pytest.mark.asyncio
@@ -82,9 +78,7 @@ class TestEnterpriseCompliance:
         gemini = MagicMock(spec=GeminiClient)
         gemini.generate = AsyncMock(side_effect=GeminiError("down"))
         findings = _sample_findings(["CPP-01", "CPP-07"])
-        result = await generate_compliance_appendix(
-            findings, "enterprise", gemini=gemini
-        )
+        result = await generate_compliance_appendix(findings, "enterprise", gemini=gemini)
         assert len(result) == 2
         for m in result:
             assert isinstance(m, ComplianceMapping)
@@ -106,17 +100,20 @@ class TestEnterpriseCompliance:
     @pytest.mark.asyncio
     async def test_empty_findings_returns_empty(self) -> None:
         gemini = _mock_gemini()
-        result = await generate_compliance_appendix(
-            [], "enterprise", gemini=gemini
-        )
+        result = await generate_compliance_appendix([], "enterprise", gemini=gemini)
         assert result == []
 
 
 class TestFallbackMap:
     def test_covers_all_seven_cpp_domains(self) -> None:
         expected = {
-            "CPP-01", "CPP-02", "CPP-03", "CPP-04",
-            "CPP-05", "CPP-06", "CPP-07",
+            "CPP-01",
+            "CPP-02",
+            "CPP-03",
+            "CPP-04",
+            "CPP-05",
+            "CPP-06",
+            "CPP-07",
         }
         assert set(COMPLIANCE_FALLBACK_MAP.keys()) == expected
 
@@ -124,6 +121,4 @@ class TestFallbackMap:
         for domain, entry in COMPLIANCE_FALLBACK_MAP.items():
             assert "iso_clause" in entry, f"{domain} missing iso_clause"
             assert "psara_section" in entry, f"{domain} missing psara_section"
-            assert "remediation_owner_role" in entry, (
-                f"{domain} missing remediation_owner_role"
-            )
+            assert "remediation_owner_role" in entry, f"{domain} missing remediation_owner_role"

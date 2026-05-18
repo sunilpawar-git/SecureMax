@@ -16,10 +16,7 @@ export async function GET(
   try {
     const diff = await getReportDiff(sessionId);
     if (!diff) {
-      return NextResponse.json(
-        { error: 'No previous version for comparison' },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: 'No previous version for comparison' }, { status: 404 });
     }
     return NextResponse.json(diff);
   } catch (err) {

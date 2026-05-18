@@ -80,9 +80,10 @@ async function apiFetch(url: string, body: object): Promise<unknown> {
   });
   const data = await res.json();
   if (!res.ok) {
-    const errorMsg = typeof data === 'object' && data !== null && 'error' in data
-      ? String((data as Record<string, unknown>).error)
-      : 'Request failed';
+    const errorMsg =
+      typeof data === 'object' && data !== null && 'error' in data
+        ? String((data as Record<string, unknown>).error)
+        : 'Request failed';
     const err = new Error(errorMsg) as Error & Record<string, unknown>;
     err.statusCode = res.status;
     if (typeof data === 'object' && data !== null && 'session_id' in data) {
@@ -100,7 +101,9 @@ export async function startSession(track: string): Promise<ActiveSession> {
   } catch (err) {
     // 409 means an active session already exists — try to resume it transparently.
     if (err instanceof Error && (err as unknown as Record<string, unknown>).statusCode === 409) {
-      const serverSessionId = (err as unknown as Record<string, unknown>).sessionId as string | undefined;
+      const serverSessionId = (err as unknown as Record<string, unknown>).sessionId as
+        | string
+        | undefined;
       const cachedSessionId = serverSessionId || getStoredSessionId(track);
       if (cachedSessionId) {
         try {
@@ -122,10 +125,10 @@ export async function startSession(track: string): Promise<ActiveSession> {
     radarScores: d.radar_scores,
     questionsAnswered: 0,
   };
-  
+
   // Cache the session ID for recovery on reload
   storeSessionId(track, d.session_id);
-  
+
   return session;
 }
 

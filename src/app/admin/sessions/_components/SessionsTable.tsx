@@ -41,12 +41,16 @@ export function SessionsTable({ sessions, onForceClose }: SessionsTableProps) {
                 {s.userEmail ?? '—'}
               </td>
               <td className="px-4 py-3">
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${TRACK_BADGE_STYLES[s.track] ?? ''}`}>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${TRACK_BADGE_STYLES[s.track] ?? ''}`}
+                >
                   {s.track}
                 </span>
               </td>
               <td className="px-4 py-3">
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${SESSION_STATUS_STYLES[s.status] ?? ''}`}>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${SESSION_STATUS_STYLES[s.status] ?? ''}`}
+                >
                   {s.status.replace(/_/g, ' ')}
                 </span>
               </td>

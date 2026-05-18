@@ -29,19 +29,16 @@ class TestEncryptionFailOpen:
         mock_conn = AsyncMock()
         mock_conn.fetchrow = AsyncMock(return_value=None)
         mock_pool = MagicMock()
-        mock_pool.acquire.return_value.__aenter__ = AsyncMock(
-            return_value=mock_conn
-        )
+        mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
         mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
 
         # Patch _enc_key to None inside the background module
         import report.background as bg_module
+
         original = bg_module._enc_key
         bg_module._enc_key = None
         try:
-            await generate_report_background(
-                mock_pool, "job-1", "sess-1", {"track": "hni"}, []
-            )
+            await generate_report_background(mock_pool, "job-1", "sess-1", {"track": "hni"}, [])
         finally:
             bg_module._enc_key = original
 
@@ -66,18 +63,22 @@ class TestPaymentGate:
 
     def test_hni_paid_flag_grants_access(self) -> None:
         from routers.report import _is_report_unlocked
+
         assert _is_report_unlocked(self._make_session(True, False)) is True
 
     def test_enterprise_unlock_flag_grants_access(self) -> None:
         from routers.report import _is_report_unlocked
+
         assert _is_report_unlocked(self._make_session(False, True)) is True
 
     def test_both_false_denies_access(self) -> None:
         from routers.report import _is_report_unlocked
+
         assert _is_report_unlocked(self._make_session(False, False)) is False
 
     def test_both_true_grants_access(self) -> None:
         from routers.report import _is_report_unlocked
+
         assert _is_report_unlocked(self._make_session(True, True)) is True
 
 
@@ -90,6 +91,7 @@ class TestTimingSafeKeyComparison:
         import inspect
 
         import auth_middleware
+
         source = inspect.getsource(auth_middleware)
         assert "compare_digest" in source, (
             "auth_middleware must use hmac.compare_digest for constant-time comparison"
@@ -135,11 +137,17 @@ class TestStatusSummaryAuth:
         from tests.conftest import run_db
 
         sid = str(uuid.uuid4())
-        run_db(db_conn.execute(
-            "INSERT INTO audit_sessions (id, user_id, track, status) "
-            "VALUES ($1, $2, $3, 'completed')", sid, "owner-user", "hni"
-        ))
+        run_db(
+            db_conn.execute(
+                "INSERT INTO audit_sessions (id, user_id, track, status) "
+                "VALUES ($1, $2, $3, 'completed')",
+                sid,
+                "owner-user",
+                "hni",
+            )
+        )
         import report_repository as rpt_repo
+
         job_id = run_db(rpt_repo.create_job(db_conn, sid))
 
         resp = test_client.get(
@@ -157,20 +165,28 @@ class TestStatusSummaryAuth:
         from tests.conftest import run_db
 
         sid = str(uuid.uuid4())
-        run_db(db_conn.execute(
-            "INSERT INTO audit_sessions (id, user_id, track, status) "
-            "VALUES ($1, $2, $3, 'completed')", sid, "owner-user", "hni"
-        ))
+        run_db(
+            db_conn.execute(
+                "INSERT INTO audit_sessions (id, user_id, track, status) "
+                "VALUES ($1, $2, $3, 'completed')",
+                sid,
+                "owner-user",
+                "hni",
+            )
+        )
         job_id = run_db(rpt_repo.create_job(db_conn, sid))
         run_db(rpt_repo.update_job_status(db_conn, job_id, REPORT_JOB_COMPLETED))
         key = derive_key("test-key")
-        run_db(rpt_repo.store_artifact(
-            db_conn, sid,
-            pdf_encrypted=encrypt_bytes(b"pdf", key),
-            urgency_score=50,
-            peer_benchmark_percentile=50.0,
-            findings_json={"free_summary": {"urgency_score": 50}},
-        ))
+        run_db(
+            rpt_repo.store_artifact(
+                db_conn,
+                sid,
+                pdf_encrypted=encrypt_bytes(b"pdf", key),
+                urgency_score=50,
+                peer_benchmark_percentile=50.0,
+                findings_json={"free_summary": {"urgency_score": 50}},
+            )
+        )
 
         resp = test_client.get(
             f"/report/{job_id}/summary",
@@ -198,14 +214,16 @@ class TestSplitFreePaidSafety:
         assert paid == []
 
     def test_question_truncated_at_60_chars(self) -> None:
-        findings = [{
-            "domain": "CPP-01",
-            "domain_name": "Physical Security",
-            "severity": "high",
-            "question": "A" * 80,
-            "answer": "No",
-            "recommendation": "Fix it.",
-        }]
+        findings = [
+            {
+                "domain": "CPP-01",
+                "domain_name": "Physical Security",
+                "severity": "high",
+                "question": "A" * 80,
+                "answer": "No",
+                "recommendation": "Fix it.",
+            }
+        ]
         free, _ = split_free_paid(findings)
         assert len(free[0]["question"]) <= 63  # 60 + "..."
 
@@ -237,6 +255,7 @@ class TestGeminiResponseValidation:
     @patch("gemini_client.genai.Client")
     def test_none_text_raises_gemini_error(self, mock_cls) -> None:
         from config import Settings
+
         mock_client = MagicMock()
         response = MagicMock()
         response.text = None
@@ -251,6 +270,7 @@ class TestGeminiResponseValidation:
     @patch("gemini_client.genai.Client")
     def test_empty_embeddings_raises_gemini_error(self, mock_cls) -> None:
         from config import Settings
+
         mock_client = MagicMock()
         result = MagicMock()
         result.embeddings = []
@@ -272,6 +292,7 @@ class TestModelDumpMode:
         import inspect
 
         import routers.report as rpt
+
         source = inspect.getsource(rpt)
         # Check that router uses either model_dump(mode="json") or json.loads/dumps
         has_serialization = any(
@@ -296,6 +317,7 @@ class TestBoardPromptComplianceCount:
     async def test_board_summary_receives_compliance_gap_count(self) -> None:
         """generate_board_summary must accept explicit compliance_gap_count."""
         import inspect
+
         sig = inspect.signature(generate_board_summary)
         assert "compliance_gap_count" in sig.parameters, (
             "generate_board_summary must accept compliance_gap_count parameter"
@@ -315,9 +337,7 @@ class TestBoardPromptComplianceCount:
             {"severity": "critical", "domain": "CPP-01", "domain_name": "Physical Security"},
         ]
         # Pass explicit compliance_gap_count = 99 (should appear in prompt)
-        await generate_board_summary(
-            findings, gemini=mock_gemini, compliance_gap_count=99
-        )
+        await generate_board_summary(findings, gemini=mock_gemini, compliance_gap_count=99)
         assert captured_prompt, "Gemini generate should have been called"
         assert "99" in captured_prompt[0], (
             "Prompt must use the passed compliance_gap_count, not recompute"
@@ -332,6 +352,7 @@ class TestRendererUsesConstant:
         import inspect
 
         import report.renderer as renderer
+
         source = inspect.getsource(renderer)
         assert "TRACK_ENTERPRISE" in source, (
             "renderer must use TRACK_ENTERPRISE constant, not hardcoded 'enterprise'"
@@ -346,8 +367,7 @@ class TestPlaywrightWaitUntil:
         import inspect
 
         import report.renderer as renderer
+
         source = inspect.getsource(renderer)
-        assert "networkidle" not in source, (
-            "renderer must use wait_until='load', not 'networkidle'"
-        )
+        assert "networkidle" not in source, "renderer must use wait_until='load', not 'networkidle'"
         assert "wait_until" in source

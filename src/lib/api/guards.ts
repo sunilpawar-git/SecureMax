@@ -30,15 +30,9 @@ export async function requireAdmin(): Promise<AuthenticatedSession | null> {
 }
 
 export function unauthorizedResponse(): NextResponse {
-  return NextResponse.json(
-    { error: 'Authentication required' },
-    { status: 401 },
-  );
+  return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
 }
 
 export function forbiddenResponse(): NextResponse {
-  return NextResponse.json(
-    { error: 'Forbidden' },
-    { status: 403 },
-  );
+  return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 }

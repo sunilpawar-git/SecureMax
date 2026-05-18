@@ -10,11 +10,7 @@ const CONSENT_REQUIRED_PREFIXES = [
   '/enterprise',
 ];
 
-export default async function AppLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 

@@ -13,9 +13,7 @@ export function HeroSection() {
           {APP.TAGLINE}
         </h1>
 
-        <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-          {APP.DESCRIPTION}
-        </p>
+        <p className="text-lg text-slate-300 max-w-2xl mx-auto">{APP.DESCRIPTION}</p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
@@ -34,7 +32,9 @@ export function HeroSection() {
           </Link>
         </div>
 
-        <p className="text-xs text-slate-400">{TRUST_STACK.ESTIMATED_TIME} &middot; Free executive summary</p>
+        <p className="text-xs text-slate-400">
+          {TRUST_STACK.ESTIMATED_TIME} &middot; Free executive summary
+        </p>
       </div>
     </section>
   );

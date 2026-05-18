@@ -49,15 +49,9 @@ def build_report_events(raw_events: list[dict], node_map: dict) -> list[dict]:
             answer = decrypt(ev["answer_encrypted"], _enc_key)
         except (ValueError, Exception) as exc:
             node_id = ev.get("question_node_id")
-            raise ValueError(
-                f"Cannot decrypt answer for event {node_id}"
-            ) from exc
+            raise ValueError(f"Cannot decrypt answer for event {node_id}") from exc
         try:
-            delta = (
-                json.loads(ev["domain_score_delta"])
-                if ev.get("domain_score_delta")
-                else {}
-            )
+            delta = json.loads(ev["domain_score_delta"]) if ev.get("domain_score_delta") else {}
         except (json.JSONDecodeError, TypeError):
             delta = {}
         node = node_map.get(ev["question_node_id"], {})
@@ -86,9 +80,7 @@ async def render_pdf_safe(report_data: ReportData) -> bytes | None:
             return None
         return pdf_bytes
     except Exception:
-        logger.exception(
-            "PDF rendering failed for session %s", report_data.session_id[:8]
-        )
+        logger.exception("PDF rendering failed for session %s", report_data.session_id[:8])
         return None
 
 
@@ -109,7 +101,9 @@ async def generate_report_background(
         )
         async with pool.acquire() as conn:
             await rpt_repo.update_job_status(
-                conn, job_id, REPORT_JOB_FAILED,
+                conn,
+                job_id,
+                REPORT_JOB_FAILED,
                 error_message=ERR_ENCRYPTION_NOT_CONFIGURED,
             )
         return

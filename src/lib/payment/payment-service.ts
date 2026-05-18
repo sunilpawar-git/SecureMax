@@ -13,9 +13,7 @@ export interface PaymentUnlockResult {
   unlocked: boolean;
 }
 
-export async function persistPaymentUnlock(
-  razorpayOrderId: string,
-): Promise<PaymentUnlockResult> {
+export async function persistPaymentUnlock(razorpayOrderId: string): Promise<PaymentUnlockResult> {
   const result = await prisma.auditSession.updateMany({
     where: { razorpayOrderId },
     data: { paid: true },

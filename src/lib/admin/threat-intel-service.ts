@@ -86,7 +86,13 @@ export interface AddArticleResult {
 }
 
 export async function addManualArticle(
-  data: { title: string; url: string; summary: string; domainTags: string[]; industryTags: string[] },
+  data: {
+    title: string;
+    url: string;
+    summary: string;
+    domainTags: string[];
+    industryTags: string[];
+  },
   adminId: string,
 ): Promise<AddArticleResult> {
   const existing = await prisma.threatIntel.findUnique({ where: { url: data.url } });

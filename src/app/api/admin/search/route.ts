@@ -15,9 +15,7 @@ export async function GET(request: NextRequest) {
     if (q && q.length > 200) {
       return NextResponse.json({ error: ADMIN_ERR.INVALID_REQUEST }, { status: 400 });
     }
-    return NextResponse.json(
-      { users: [], sessions: [], leads: [], threatIntel: [] },
-    );
+    return NextResponse.json({ users: [], sessions: [], leads: [], threatIntel: [] });
   }
 
   try {

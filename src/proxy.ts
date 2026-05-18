@@ -12,7 +12,14 @@ function getClientIp(request: NextRequest): string {
   );
 }
 
-const PROTECTED_PAGE_PREFIXES = ['/questionnaire', '/dashboard', '/admin', '/payment', '/report', '/enterprise'];
+const PROTECTED_PAGE_PREFIXES = [
+  '/questionnaire',
+  '/dashboard',
+  '/admin',
+  '/payment',
+  '/report',
+  '/enterprise',
+];
 
 function isProtectedPage(pathname: string): boolean {
   return PROTECTED_PAGE_PREFIXES.some((p) => pathname.startsWith(p));

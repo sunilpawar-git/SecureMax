@@ -13,9 +13,7 @@ export default function LandingPage() {
 
       <section className="py-20 px-6 bg-white">
         <div className="mx-auto max-w-2xl text-center space-y-6">
-          <h2 className="text-2xl font-bold text-slate-900">
-            Start Your Free Security Assessment
-          </h2>
+          <h2 className="text-2xl font-bold text-slate-900">Start Your Free Security Assessment</h2>
           <p className="text-sm text-slate-500">{TRUST_STACK.HNI_PRIVACY}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -38,9 +36,14 @@ export default function LandingPage() {
 
       <footer className="py-8 px-6 border-t border-slate-100">
         <div className="mx-auto max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p suppressHydrationWarning>&copy; {new Date().getFullYear()} {APP.NAME}. All rights reserved.</p>
+          <p suppressHydrationWarning>
+            &copy; {new Date().getFullYear()} {APP.NAME}. All rights reserved.
+          </p>
           <div className="flex gap-4">
-            <a href={`mailto:${APP.SUPPORT_EMAIL}`} className="hover:text-slate-600 transition-colors">
+            <a
+              href={`mailto:${APP.SUPPORT_EMAIL}`}
+              className="hover:text-slate-600 transition-colors"
+            >
               {APP.SUPPORT_EMAIL}
             </a>
             <span>{TRUST_STACK.CREDENTIAL}</span>

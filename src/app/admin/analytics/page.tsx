@@ -50,13 +50,19 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard label="Total Sessions" value={data.sessions.total} />
         <KpiCard label="Completed" value={data.sessions.completed} />
-        <KpiCard label="Completion Rate" value={`${data.sessions.total ? Math.round((data.sessions.completed / data.sessions.total) * 100) : 0}%`} />
+        <KpiCard
+          label="Completion Rate"
+          value={`${data.sessions.total ? Math.round((data.sessions.completed / data.sessions.total) * 100) : 0}%`}
+        />
         <KpiCard label="Avg Questions / Session" value={data.sessions.avgQuestionsPerSession} />
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <KpiCard label="Paid Reports" value={data.revenue.totalPaid} />
-        <KpiCard label="Revenue (INR)" value={`₹${(data.revenue.amountCollected / 100).toLocaleString()}`} />
+        <KpiCard
+          label="Revenue (INR)"
+          value={`₹${(data.revenue.amountCollected / 100).toLocaleString()}`}
+        />
         <KpiCard label="Conversion Rate" value={`${data.revenue.conversionRate}%`} />
       </div>
 
@@ -89,14 +95,20 @@ export default function AnalyticsPage() {
 
       {data.trends.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">Session Trends (Last 30 Days)</h2>
+          <h2 className="text-lg font-semibold text-slate-900 mb-4">
+            Session Trends (Last 30 Days)
+          </h2>
           <div className="rounded-lg border border-slate-200 bg-white p-4 overflow-x-auto">
             <div className="flex items-end gap-1 h-40">
               {data.trends.map((t) => {
                 const maxSessions = Math.max(...data.trends.map((d) => d.sessions), 1);
                 const height = (t.sessions / maxSessions) * 100;
                 return (
-                  <div key={t.date} className="flex flex-col items-center flex-1 min-w-[12px]" title={`${t.date}: ${t.sessions} sessions`}>
+                  <div
+                    key={t.date}
+                    className="flex flex-col items-center flex-1 min-w-[12px]"
+                    title={`${t.date}: ${t.sessions} sessions`}
+                  >
                     <div
                       className="w-full bg-emerald-500 rounded-t"
                       style={{ height: `${Math.max(height, 2)}%` }}

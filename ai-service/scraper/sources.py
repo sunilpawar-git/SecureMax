@@ -170,31 +170,21 @@ async def fetch_playwright_tier() -> list[RawArticle]:
                         timeout=15000,
                         wait_until="domcontentloaded",
                     )
-                    containers = await page.query_selector_all(
-                        target["selector_article"]
-                    )
+                    containers = await page.query_selector_all(target["selector_article"])
                     for el in containers[: target["max_articles"]]:
                         try:
-                            title_el = await el.query_selector(
-                                target["selector_title"]
-                            )
-                            link_el = await el.query_selector(
-                                target["selector_link"]
-                            )
+                            title_el = await el.query_selector(target["selector_title"])
+                            link_el = await el.query_selector(target["selector_link"])
                             if not title_el or not link_el:
                                 continue
-                            title = (
-                                await title_el.text_content() or ""
-                            ).strip()
+                            title = (await title_el.text_content() or "").strip()
                             href = await link_el.get_attribute("href") or ""
                             if not href:
                                 continue
                             if not href.startswith("http"):
                                 base = target["url"].rstrip("/")
                                 href = f"{base}/{href.lstrip('/')}"
-                            content = (
-                                await el.text_content() or ""
-                            ).strip()
+                            content = (await el.text_content() or "").strip()
                             if title:
                                 articles.append(
                                     RawArticle(
@@ -212,9 +202,7 @@ async def fetch_playwright_tier() -> list[RawArticle]:
                                 e,
                             )
                 except Exception as e:
-                    logger.warning(
-                        "Playwright failed for %s: %s", target["name"], e
-                    )
+                    logger.warning("Playwright failed for %s: %s", target["name"], e)
                 finally:
                     await page.close()
             await browser.close()

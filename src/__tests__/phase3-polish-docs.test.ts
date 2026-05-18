@@ -10,10 +10,7 @@ import { DPDPA } from '@/config/strings';
 // ─── 3.1: CLAUDE.md auth policy updated ───────────────────────────────────────
 
 describe('CLAUDE.md documents both auth providers', () => {
-  const content = fs.readFileSync(
-    path.join(process.cwd(), 'CLAUDE.md'),
-    'utf-8',
-  );
+  const content = fs.readFileSync(path.join(process.cwd(), 'CLAUDE.md'), 'utf-8');
 
   it('mentions Google OAuth', () => {
     expect(content).toContain('Google OAuth');
@@ -80,10 +77,7 @@ describe('Consent page displays purpose text', () => {
 // ─── 3.3b: Prisma schema has consent version fields ──────────────────────────
 
 describe('Prisma schema includes consent version fields', () => {
-  const content = fs.readFileSync(
-    path.join(process.cwd(), 'prisma', 'schema.prisma'),
-    'utf-8',
-  );
+  const content = fs.readFileSync(path.join(process.cwd(), 'prisma', 'schema.prisma'), 'utf-8');
 
   it('User model has consentVersion field', () => {
     expect(content).toContain('consentVersion');

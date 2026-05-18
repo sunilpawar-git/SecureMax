@@ -9,7 +9,9 @@ import { APP, PAYMENT, TRUST_STACK } from '@/config/strings';
 export default function PaymentPage() {
   const params = useParams();
   const router = useRouter();
-  const sessionId = Array.isArray(params.sessionId) ? params.sessionId[0] : (params.sessionId ?? '');
+  const sessionId = Array.isArray(params.sessionId)
+    ? params.sessionId[0]
+    : (params.sessionId ?? '');
 
   const { initiatePayment, state, error, scriptReady, onScriptLoad, onScriptError } = useRazorpay({
     sessionId,
@@ -52,7 +54,8 @@ export default function PaymentPage() {
     minimumFractionDigits: 0,
   });
 
-  const isProcessing = state === 'creating_order' || state === 'checkout_open' || state === 'verifying';
+  const isProcessing =
+    state === 'creating_order' || state === 'checkout_open' || state === 'verifying';
   const isDisabled = isProcessing || !scriptReady;
 
   return (
@@ -132,7 +135,13 @@ export default function PaymentPage() {
 function Feature({ text }: { text: string }) {
   return (
     <div className="flex items-start gap-2">
-      <svg className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+      <svg
+        className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={2}
+        stroke="currentColor"
+      >
         <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
       </svg>
       <span className="text-sm text-slate-600">{text}</span>

@@ -28,18 +28,28 @@ export default function SessionsPage() {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <h1 className="text-2xl font-bold text-slate-900">Sessions</h1>
         <div className="flex gap-3">
-          <select value={data.statusFilter} onChange={(e) => data.setStatusFilter(e.target.value)}
-            className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500">
+          <select
+            value={data.statusFilter}
+            onChange={(e) => data.setStatusFilter(e.target.value)}
+            className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500"
+          >
             <option value="">All Statuses</option>
             {STATUSES.filter(Boolean).map((s) => (
-              <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
+              <option key={s} value={s}>
+                {s.replace(/_/g, ' ')}
+              </option>
             ))}
           </select>
-          <select value={data.trackFilter} onChange={(e) => data.setTrackFilter(e.target.value)}
-            className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500">
+          <select
+            value={data.trackFilter}
+            onChange={(e) => data.setTrackFilter(e.target.value)}
+            className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500"
+          >
             <option value="">All Tracks</option>
             {TRACKS.filter(Boolean).map((t) => (
-              <option key={t} value={t}>{t}</option>
+              <option key={t} value={t}>
+                {t}
+              </option>
             ))}
           </select>
           <span className="text-sm text-slate-400 self-center">{data.total} sessions</span>

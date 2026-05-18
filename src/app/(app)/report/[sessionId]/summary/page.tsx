@@ -19,7 +19,9 @@ interface SummaryData {
 export default function ReportSummaryPage() {
   const params = useParams();
   const router = useRouter();
-  const sessionId = Array.isArray(params.sessionId) ? params.sessionId[0] : (params.sessionId ?? '');
+  const sessionId = Array.isArray(params.sessionId)
+    ? params.sessionId[0]
+    : (params.sessionId ?? '');
   const [data, setData] = useState<SummaryData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -29,7 +31,9 @@ export default function ReportSummaryPage() {
 
     async function fetchSummary() {
       try {
-        const res = await fetch(`/api/report?action=summary&report_id=${encodeURIComponent(sessionId)}`);
+        const res = await fetch(
+          `/api/report?action=summary&report_id=${encodeURIComponent(sessionId)}`,
+        );
         const json = await res.json();
         if (!res.ok) {
           setError(json.error || 'Failed to load summary');
@@ -59,7 +63,10 @@ export default function ReportSummaryPage() {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
         <div className="text-center space-y-3">
           <p className="text-sm text-red-600">{error || 'Failed to load summary'}</p>
-          <button onClick={() => window.location.reload()} className="text-sm text-emerald-700 underline">
+          <button
+            onClick={() => window.location.reload()}
+            className="text-sm text-emerald-700 underline"
+          >
             Retry
           </button>
         </div>

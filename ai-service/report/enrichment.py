@@ -35,9 +35,7 @@ async def _enrich_single_finding_with_cpp(
     query = f"{finding.get('question', '')} {finding.get('answer', '')}"
     async with sem:
         try:
-            chunks = await get_relevant_chunks(
-                query, conn, settings, top_k=1, gemini=gemini
-            )
+            chunks = await get_relevant_chunks(query, conn, settings, top_k=1, gemini=gemini)
             if chunks:
                 chunk = chunks[0]
                 copy["cpp_citation"] = {
@@ -66,10 +64,7 @@ async def enrich_findings_with_cpp(
     if not findings:
         return []
     sem = asyncio.Semaphore(_CPP_EMBED_CONCURRENCY)
-    tasks = [
-        _enrich_single_finding_with_cpp(f, conn, settings, gemini, sem)
-        for f in findings
-    ]
+    tasks = [_enrich_single_finding_with_cpp(f, conn, settings, gemini, sem) for f in findings]
     return list(await asyncio.gather(*tasks))
 
 
@@ -111,14 +106,16 @@ async def enrich_findings_with_threat_intel(
             continue
 
         seen_urls.add(row["url"])
-        articles.append({
-            "id": row["id"],
-            "title": row["title"],
-            "url": row["url"],
-            "summary": row["summary"],
-            "domain_tags": tags,
-            "source": row["source"],
-        })
+        articles.append(
+            {
+                "id": row["id"],
+                "title": row["title"],
+                "url": row["url"],
+                "summary": row["summary"],
+                "domain_tags": tags,
+                "source": row["source"],
+            }
+        )
 
         if len(articles) >= max_articles:
             break

@@ -42,6 +42,8 @@ describe('Report components export correctly', () => {
 
 describe('Report trigger hook', () => {
   it('useReportTrigger is a named export function', () => {
-    expect(typeof (useReportTriggerMod as Record<string, unknown>).useReportTrigger).toBe('function');
+    expect(typeof (useReportTriggerMod as Record<string, unknown>).useReportTrigger).toBe(
+      'function',
+    );
   });
 });

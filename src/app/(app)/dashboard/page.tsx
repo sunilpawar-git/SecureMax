@@ -69,19 +69,21 @@ export default function DashboardPage() {
 }
 
 function SessionCard({ session }: { session: SessionSummary }) {
-  const statusColor = {
-    completed: 'bg-emerald-100 text-emerald-800',
-    in_progress: 'bg-yellow-100 text-yellow-800',
-    abandoned: 'bg-slate-100 text-slate-600',
-  }[session.status] ?? 'bg-slate-100 text-slate-600';
+  const statusColor =
+    {
+      completed: 'bg-emerald-100 text-emerald-800',
+      in_progress: 'bg-yellow-100 text-yellow-800',
+      abandoned: 'bg-slate-100 text-slate-600',
+    }[session.status] ?? 'bg-slate-100 text-slate-600';
 
-  const href = session.paid && session.reportReady
-    ? `/report/${session.id}/download`
-    : session.reportReady
-      ? `/report/${session.id}/summary`
-      : session.status === 'in_progress'
-        ? `/questionnaire?session=${encodeURIComponent(session.id)}&track=${encodeURIComponent(session.track)}`
-        : `/report/${session.id}/status`;
+  const href =
+    session.paid && session.reportReady
+      ? `/report/${session.id}/download`
+      : session.reportReady
+        ? `/report/${session.id}/summary`
+        : session.status === 'in_progress'
+          ? `/questionnaire?session=${encodeURIComponent(session.id)}&track=${encodeURIComponent(session.track)}`
+          : `/report/${session.id}/status`;
 
   return (
     <Link
@@ -101,7 +103,14 @@ function SessionCard({ session }: { session: SessionSummary }) {
             {new Date(session.createdAt).toLocaleDateString()}
           </p>
         </div>
-        <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
+        <svg
+          className="w-5 h-5 text-slate-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          aria-hidden="true"
+        >
           <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
         </svg>
       </div>

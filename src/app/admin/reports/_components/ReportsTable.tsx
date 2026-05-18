@@ -16,9 +16,7 @@ interface ReportsTableProps {
 
 export function ReportsTable({ reports, onRegenerate, onUnlock, onViewDiff }: ReportsTableProps) {
   if (reports.length === 0) {
-    return (
-      <p className="text-sm text-slate-400 text-center py-8">No reports generated yet.</p>
-    );
+    return <p className="text-sm text-slate-400 text-center py-8">No reports generated yet.</p>;
   }
 
   return (
@@ -47,7 +45,9 @@ export function ReportsTable({ reports, onRegenerate, onUnlock, onViewDiff }: Re
                 {r.userEmail ?? '—'}
               </td>
               <td className="px-4 py-3">
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${TRACK_BADGE_STYLES[r.track] ?? ''}`}>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${TRACK_BADGE_STYLES[r.track] ?? ''}`}
+                >
                   {r.track}
                 </span>
               </td>

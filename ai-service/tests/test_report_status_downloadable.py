@@ -72,7 +72,9 @@ class TestReportStatusDownloadable:
 
     def test_enterprise_unlocked_is_downloadable(self, test_client, db_conn) -> None:
         session_id = _create_session(
-            db_conn, track="enterprise", enterprise_unlocked=True,
+            db_conn,
+            track="enterprise",
+            enterprise_unlocked=True,
         )
         job_id = run_db(rpt_repo.create_job(db_conn, session_id))
         resp = test_client.get(

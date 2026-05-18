@@ -33,7 +33,10 @@ export const ThreatIntelAddSchema = z.object({
   title: z.string().min(1).max(500),
   url: z.string().url().max(2000),
   summary: z.string().min(10).max(5000),
-  domainTags: z.array(z.string().refine((v) => cppDomainCodes.includes(v))).min(1).max(7),
+  domainTags: z
+    .array(z.string().refine((v) => cppDomainCodes.includes(v)))
+    .min(1)
+    .max(7),
   industryTags: z.array(z.string().min(1).max(50)).max(10).default([]),
 });
 
@@ -42,15 +45,22 @@ export const ThreatIntelDeleteSchema = z.object({
 });
 
 export const ThreatIntelFilterSchema = z.object({
-  domains: z.string().optional().transform((v) => v ? v.split(',') : undefined),
-  industries: z.string().optional().transform((v) => v ? v.split(',') : undefined),
+  domains: z
+    .string()
+    .optional()
+    .transform((v) => (v ? v.split(',') : undefined)),
+  industries: z
+    .string()
+    .optional()
+    .transform((v) => (v ? v.split(',') : undefined)),
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
   search: z.string().max(200).optional(),
   source: z.string().optional(),
-  usedInReports: z.string().optional().transform((v) =>
-    v === 'true' ? true : v === 'false' ? false : undefined,
-  ),
+  usedInReports: z
+    .string()
+    .optional()
+    .transform((v) => (v === 'true' ? true : v === 'false' ? false : undefined)),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(50),
 });

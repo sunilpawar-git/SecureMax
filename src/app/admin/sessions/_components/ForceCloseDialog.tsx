@@ -17,8 +17,8 @@ export function ForceCloseDialog({ sessionId, onConfirm, onCancel }: ForceCloseD
         <h2 className="text-lg font-semibold text-slate-900 mb-2">Force Close Session</h2>
         <p className="text-sm text-slate-600 mb-4">
           This will mark session{' '}
-          <span className="font-mono text-xs">{sessionId.slice(0, 8)}...</span>{' '}
-          as abandoned. This cannot be undone.
+          <span className="font-mono text-xs">{sessionId.slice(0, 8)}...</span> as abandoned. This
+          cannot be undone.
         </p>
         <div className="flex justify-end gap-3">
           <button

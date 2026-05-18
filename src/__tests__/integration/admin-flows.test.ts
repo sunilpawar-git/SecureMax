@@ -11,14 +11,27 @@ const mockPrisma = {
   followUpReminder: { create: jest.fn() },
   adminAction: { create: jest.fn(), findMany: jest.fn(), count: jest.fn() },
   auditSession: { findUnique: jest.fn(), update: jest.fn(), findMany: jest.fn(), count: jest.fn() },
-  reportArtifact: { findFirst: jest.fn(), findMany: jest.fn(), update: jest.fn(), create: jest.fn() },
-  threatIntel: { findUnique: jest.fn(), create: jest.fn(), update: jest.fn(), findMany: jest.fn(), count: jest.fn() },
+  reportArtifact: {
+    findFirst: jest.fn(),
+    findMany: jest.fn(),
+    update: jest.fn(),
+    create: jest.fn(),
+  },
+  threatIntel: {
+    findUnique: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    findMany: jest.fn(),
+    count: jest.fn(),
+  },
   webhookLog: { create: jest.fn() },
   user: { findMany: jest.fn() },
 };
 
 jest.mock('@/lib/prisma', () => ({ prisma: mockPrisma }));
-jest.mock('@/lib/admin/email', () => ({ sendLeadEmail: jest.fn().mockResolvedValue({ success: true }) }));
+jest.mock('@/lib/admin/email', () => ({
+  sendLeadEmail: jest.fn().mockResolvedValue({ success: true }),
+}));
 
 import { updateLeadStatus } from '@/lib/admin/leads-service';
 import { forceCloseSession } from '@/lib/admin/sessions-service';
@@ -35,7 +48,13 @@ beforeEach(() => {
 
 describe('Lead lifecycle flow', () => {
   it('transitions new → contacted → proposal_sent with side effects', async () => {
-    const lead = { id: 'l-1', status: LEAD_STATUS.NEW, email: 'lead@acme.com', company: 'Acme', sourceSessionId: 'sess-1' };
+    const lead = {
+      id: 'l-1',
+      status: LEAD_STATUS.NEW,
+      email: 'lead@acme.com',
+      company: 'Acme',
+      sourceSessionId: 'sess-1',
+    };
     mockPrisma.enterpriseLead.findUnique.mockResolvedValue(lead);
     mockPrisma.enterpriseLead.update.mockResolvedValue({ ...lead, status: LEAD_STATUS.CONTACTED });
 
@@ -49,7 +68,10 @@ describe('Lead lifecycle flow', () => {
 
     const contactedLead = { ...lead, status: LEAD_STATUS.CONTACTED };
     mockPrisma.enterpriseLead.findUnique.mockResolvedValue(contactedLead);
-    mockPrisma.enterpriseLead.update.mockResolvedValue({ ...contactedLead, status: LEAD_STATUS.PROPOSAL_SENT });
+    mockPrisma.enterpriseLead.update.mockResolvedValue({
+      ...contactedLead,
+      status: LEAD_STATUS.PROPOSAL_SENT,
+    });
     mockPrisma.auditSession.update.mockResolvedValue({});
 
     const r2 = await updateLeadStatus('l-1', LEAD_STATUS.PROPOSAL_SENT, 'admin-1');
@@ -101,7 +123,9 @@ describe('Session force-close flow', () => {
 describe('Threat intel deletion protection', () => {
   it('blocks deletion of article used in reports', async () => {
     mockPrisma.threatIntel.findUnique.mockResolvedValue({
-      id: 'ti-1', softDeleted: false, usedInReports: true,
+      id: 'ti-1',
+      softDeleted: false,
+      usedInReports: true,
     });
 
     const result = await deleteArticle('ti-1', 'admin-1');
@@ -111,7 +135,9 @@ describe('Threat intel deletion protection', () => {
 
   it('allows deletion of unused article and logs action', async () => {
     mockPrisma.threatIntel.findUnique.mockResolvedValue({
-      id: 'ti-2', softDeleted: false, usedInReports: false,
+      id: 'ti-2',
+      softDeleted: false,
+      usedInReports: false,
     });
     mockPrisma.threatIntel.update.mockResolvedValue({});
 
@@ -127,11 +153,17 @@ describe('Threat intel deletion protection', () => {
 
 describe('Audit log querying', () => {
   it('returns actions with admin email resolved from user table', async () => {
-    mockPrisma.adminAction.findMany.mockResolvedValue([{
-      id: 'act-1', adminId: 'adm-1', actionType: 'session_killed',
-      entityType: 'session', entityId: 's-1', metadata: null,
-      createdAt: new Date(),
-    }]);
+    mockPrisma.adminAction.findMany.mockResolvedValue([
+      {
+        id: 'act-1',
+        adminId: 'adm-1',
+        actionType: 'session_killed',
+        entityType: 'session',
+        entityId: 's-1',
+        metadata: null,
+        createdAt: new Date(),
+      },
+    ]);
     mockPrisma.adminAction.count.mockResolvedValue(1);
     mockPrisma.user.findMany.mockResolvedValue([{ id: 'adm-1', email: 'admin@raivan.com' }]);
 

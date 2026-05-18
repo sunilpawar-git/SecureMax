@@ -4,11 +4,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { logAdminAction } from './actions';
-import {
-  ADMIN_ACTION_TYPE,
-  ADMIN_ENTITY_TYPE,
-  ADMIN_ERR,
-} from '@/config/admin-strings';
+import { ADMIN_ACTION_TYPE, ADMIN_ENTITY_TYPE, ADMIN_ERR } from '@/config/admin-strings';
 import { SESSION_STATUS } from '@/config/strings';
 
 export interface SessionFilters {

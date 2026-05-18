@@ -281,12 +281,14 @@ class TestGeminiTagger:
     async def test_successful_gemini_tag_sets_tagged_by_gemini(self) -> None:
         from routers.scraper import _make_gemini_tagger
 
-        gemini_response = json.dumps({
-            "summary": "A physical security breach occurred.",
-            "domain_tags": ["CPP-01"],
-            "industry_tags": ["corporate"],
-            "relevance_score": 0.8,
-        })
+        gemini_response = json.dumps(
+            {
+                "summary": "A physical security breach occurred.",
+                "domain_tags": ["CPP-01"],
+                "industry_tags": ["corporate"],
+                "relevance_score": 0.8,
+            }
+        )
         mock_gemini = MagicMock()
         mock_gemini.generate = AsyncMock(return_value=gemini_response)
 

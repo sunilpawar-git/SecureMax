@@ -47,8 +47,11 @@ export function useAuditData(): AuditData {
         setEntries(data.entries);
         setTotal(data.total);
       }
-    } catch { /* graceful */ }
-    finally { setLoading(false); }
+    } catch {
+      /* graceful */
+    } finally {
+      setLoading(false);
+    }
   }, [actionFilter, startDate, endDate]);
 
   useEffect(() => {
@@ -65,9 +68,16 @@ export function useAuditData(): AuditData {
   }, [actionFilter, startDate, endDate]);
 
   return {
-    entries, total, loading,
-    actionFilter, startDate, endDate,
-    setActionFilter, setStartDate, setEndDate,
-    exportCsv, refresh: load,
+    entries,
+    total,
+    loading,
+    actionFilter,
+    startDate,
+    endDate,
+    setActionFilter,
+    setStartDate,
+    setEndDate,
+    exportCsv,
+    refresh: load,
   };
 }

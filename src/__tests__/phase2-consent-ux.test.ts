@@ -14,10 +14,7 @@ import path from 'path';
 // ─── 2.1: Middleware consent enforcement covers all protected routes ──────────
 
 describe('Middleware consent enforcement scope', () => {
-  const content = fs.readFileSync(
-    path.join(process.cwd(), 'src', 'middleware.ts'),
-    'utf-8',
-  );
+  const content = fs.readFileSync(path.join(process.cwd(), 'src', 'middleware.ts'), 'utf-8');
 
   it('consent is required for all protected page prefixes', () => {
     expect(content).toContain('/questionnaire');

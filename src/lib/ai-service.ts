@@ -29,8 +29,13 @@ interface FetchOptions {
 }
 
 export async function aiServiceFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
-  const { method = 'POST', body, headers: extraHeaders, userId, timeoutMs = AI_SERVICE_TIMEOUT_MS } =
-    options;
+  const {
+    method = 'POST',
+    body,
+    headers: extraHeaders,
+    userId,
+    timeoutMs = AI_SERVICE_TIMEOUT_MS,
+  } = options;
 
   const reqHeaders: Record<string, string> = {
     'Content-Type': 'application/json',

@@ -80,14 +80,12 @@ export default function ConsentPage() {
               className="mt-0.5 h-4 w-4 rounded border-slate-300 text-emerald-700 focus:ring-emerald-600"
             />
             <span className="text-sm text-slate-700">
-              I understand and consent to the processing of my data as described above,
-              in accordance with the Digital Personal Data Protection Act, 2023.
+              I understand and consent to the processing of my data as described above, in
+              accordance with the Digital Personal Data Protection Act, 2023.
             </span>
           </label>
 
-          {error && (
-            <p className="text-sm text-red-600">{error}</p>
-          )}
+          {error && <p className="text-sm text-red-600">{error}</p>}
 
           <button
             onClick={handleConsent}
@@ -99,9 +97,7 @@ export default function ConsentPage() {
           </button>
         </div>
 
-        <p className="text-center text-xs text-slate-400">
-          {TRUST_STACK.CREDENTIAL}
-        </p>
+        <p className="text-center text-xs text-slate-400">{TRUST_STACK.CREDENTIAL}</p>
       </div>
     </div>
   );

@@ -44,9 +44,11 @@ export async function POST(request: NextRequest) {
     const result = await regenerateReport(parsed.data.sessionId, session.user.id);
     if (!result.success) {
       const code =
-        result.error === ADMIN_ERR.REPORT_REGEN_IN_PROGRESS ? 409
-        : result.error === ADMIN_ERR.REPORT_REGEN_FAILED ? 503
-        : 404;
+        result.error === ADMIN_ERR.REPORT_REGEN_IN_PROGRESS
+          ? 409
+          : result.error === ADMIN_ERR.REPORT_REGEN_FAILED
+            ? 503
+            : 404;
       return NextResponse.json({ error: result.error }, { status: code });
     }
     return NextResponse.json({ jobId: result.jobId });

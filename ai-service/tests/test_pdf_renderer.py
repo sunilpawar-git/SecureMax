@@ -111,15 +111,9 @@ class TestRenderPDF:
         mock_pw = AsyncMock()
         mock_pw.chromium.launch = AsyncMock(return_value=mock_browser)
 
-        with patch(
-            "report.renderer.async_playwright"
-        ) as mock_pw_ctx:
-            mock_pw_ctx.return_value.__aenter__ = AsyncMock(
-                return_value=mock_pw
-            )
-            mock_pw_ctx.return_value.__aexit__ = AsyncMock(
-                return_value=False
-            )
+        with patch("report.renderer.async_playwright") as mock_pw_ctx:
+            mock_pw_ctx.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
+            mock_pw_ctx.return_value.__aexit__ = AsyncMock(return_value=False)
             result = await render_pdf(_sample_report_data())
 
         assert isinstance(result, bytes)
@@ -139,15 +133,9 @@ class TestRenderPDF:
         mock_pw = AsyncMock()
         mock_pw.chromium.launch = AsyncMock(return_value=mock_browser)
 
-        with patch(
-            "report.renderer.async_playwright"
-        ) as mock_pw_ctx:
-            mock_pw_ctx.return_value.__aenter__ = AsyncMock(
-                return_value=mock_pw
-            )
-            mock_pw_ctx.return_value.__aexit__ = AsyncMock(
-                return_value=False
-            )
+        with patch("report.renderer.async_playwright") as mock_pw_ctx:
+            mock_pw_ctx.return_value.__aenter__ = AsyncMock(return_value=mock_pw)
+            mock_pw_ctx.return_value.__aexit__ = AsyncMock(return_value=False)
             await render_pdf(_sample_report_data())
 
         call_kwargs = mock_page.pdf.call_args

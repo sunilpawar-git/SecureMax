@@ -18,7 +18,11 @@ export type { RegenResult, UnlockResult } from './reports-service';
 export { compareReports } from './diff-engine';
 export type { DiffResult } from './diff-engine';
 export { getArticles, addManualArticle, deleteArticle } from './threat-intel-service';
-export type { ThreatIntelFilters, AddArticleResult, DeleteArticleResult } from './threat-intel-service';
+export type {
+  ThreatIntelFilters,
+  AddArticleResult,
+  DeleteArticleResult,
+} from './threat-intel-service';
 export { getSessions, forceCloseSession } from './sessions-service';
 export type { SessionFilters, ForceCloseResult } from './sessions-service';
 export { globalSearch } from './search-service';

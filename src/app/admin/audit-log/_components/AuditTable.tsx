@@ -32,13 +32,19 @@ export function AuditTable({ entries }: AuditTableProps) {
           {entries.map((e) => (
             <tr key={e.id} className="border-b last:border-0 hover:bg-slate-50">
               <td className="px-4 py-3">
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${ACTION_TYPE_STYLES[e.actionType] ?? 'bg-gray-100 text-gray-800'}`}>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${ACTION_TYPE_STYLES[e.actionType] ?? 'bg-gray-100 text-gray-800'}`}
+                >
                   {e.actionType.replace(/_/g, ' ')}
                 </span>
               </td>
               <td className="px-4 py-3 text-xs text-slate-500">{e.entityType}</td>
-              <td className="px-4 py-3 font-mono text-xs text-slate-600">{e.entityId.slice(0, 12)}</td>
-              <td className="px-4 py-3 text-xs text-slate-500 truncate max-w-[140px]">{e.adminEmail ?? '—'}</td>
+              <td className="px-4 py-3 font-mono text-xs text-slate-600">
+                {e.entityId.slice(0, 12)}
+              </td>
+              <td className="px-4 py-3 text-xs text-slate-500 truncate max-w-[140px]">
+                {e.adminEmail ?? '—'}
+              </td>
               <td className="px-4 py-3 text-xs text-slate-400">
                 {new Date(e.createdAt).toLocaleString()}
               </td>

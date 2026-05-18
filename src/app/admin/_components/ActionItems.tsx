@@ -23,7 +23,6 @@ interface AlertItem {
   urgency: 'critical' | 'warning' | 'info';
 }
 
-
 export function ActionItems({ items }: ActionItemsProps) {
   const alerts: AlertItem[] = [];
 

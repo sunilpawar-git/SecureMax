@@ -46,20 +46,14 @@ async def generate_report_data(
     benchmark = compute_peer_benchmark(urgency)
 
     if gemini:
-        enhanced_raw = await enhance_findings_with_ai(
-            raw_findings, track, gemini=gemini
-        )
+        enhanced_raw = await enhance_findings_with_ai(raw_findings, track, gemini=gemini)
     else:
         enhanced_raw = raw_findings
 
     threat_intel_articles: list[dict] = []
     if conn and gemini and settings:
-        enhanced_raw = await enrich_findings_with_cpp(
-            enhanced_raw, conn, settings, gemini=gemini
-        )
-        threat_intel_articles = await enrich_findings_with_threat_intel(
-            enhanced_raw, conn
-        )
+        enhanced_raw = await enrich_findings_with_cpp(enhanced_raw, conn, settings, gemini=gemini)
+        threat_intel_articles = await enrich_findings_with_threat_intel(enhanced_raw, conn)
 
     free_raw, paid_raw = split_free_paid(enhanced_raw)
     findings = [Finding(**f) for f in enhanced_raw]
@@ -69,9 +63,7 @@ async def generate_report_data(
     exec_summary = None
     board_summary = None
     if gemini:
-        exec_summary = await generate_executive_summary(
-            enhanced_raw, track, gemini=gemini
-        )
+        exec_summary = await generate_executive_summary(enhanced_raw, track, gemini=gemini)
         if track == TRACK_ENTERPRISE:
             board_summary = await generate_board_summary(
                 enhanced_raw,
@@ -81,24 +73,18 @@ async def generate_report_data(
 
     compliance_mappings = []
     if track == TRACK_ENTERPRISE and gemini:
-        compliance_mappings = await generate_compliance_appendix(
-            enhanced_raw, track, gemini=gemini
-        )
+        compliance_mappings = await generate_compliance_appendix(enhanced_raw, track, gemini=gemini)
 
     if track == TRACK_ENTERPRISE:
         sections = _build_enterprise_sections(
             radar_scores, enhanced_raw, paid_raw, urgency, benchmark, compliance_gaps
         )
     else:
-        sections = _build_hni_sections(
-            radar_scores, enhanced_raw, paid_raw, urgency, benchmark
-        )
+        sections = _build_hni_sections(radar_scores, enhanced_raw, paid_raw, urgency, benchmark)
 
     free_summary = FreeSummary(
         urgency_score=urgency,
-        domains_with_gaps=sorted(
-            {f.get("domain", "") for f in enhanced_raw if f.get("domain")}
-        ),
+        domains_with_gaps=sorted({f.get("domain", "") for f in enhanced_raw if f.get("domain")}),
         findings_preview=free_raw[:5],
         peer_benchmark=benchmark,
         compliance_gap_count=compliance_gaps if track == TRACK_ENTERPRISE else None,
@@ -143,10 +129,7 @@ def _build_hni_sections(
         "next_steps": {"items": _hni_next_steps(urgency)},
         "methodology": _methodology_section(),
     }
-    return [
-        ReportSection(name=name, data=data_map.get(name, {}))
-        for name in HNI_SECTION_NAMES
-    ]
+    return [ReportSection(name=name, data=data_map.get(name, {})) for name in HNI_SECTION_NAMES]
 
 
 def _build_enterprise_sections(
@@ -175,8 +158,7 @@ def _build_enterprise_sections(
         "methodology": _methodology_section(),
     }
     return [
-        ReportSection(name=name, data=data_map.get(name, {}))
-        for name in ENTERPRISE_SECTION_NAMES
+        ReportSection(name=name, data=data_map.get(name, {})) for name in ENTERPRISE_SECTION_NAMES
     ]
 
 

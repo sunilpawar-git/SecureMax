@@ -9,10 +9,7 @@
  *  4. Missing fields return structured 422 errors
  */
 
-import {
-  CreateOrderSchema,
-  VerifyPaymentSchema,
-} from '@/lib/payment/schemas';
+import { CreateOrderSchema, VerifyPaymentSchema } from '@/lib/payment/schemas';
 
 // ─── Zod schema tests (pure, no mocks) ────────────────────────────────────────
 
@@ -94,10 +91,7 @@ jest.mock('@/lib/prisma', () => ({
 }));
 
 import { prisma } from '@/lib/prisma';
-import {
-  persistPaymentUnlock,
-  isWebhookProcessed,
-} from '@/lib/payment/payment-service';
+import { persistPaymentUnlock, isWebhookProcessed } from '@/lib/payment/payment-service';
 
 const mockUpdateMany = prisma.auditSession.updateMany as jest.MockedFunction<
   typeof prisma.auditSession.updateMany
@@ -130,7 +124,9 @@ describe('isWebhookProcessed (idempotency)', () => {
   afterEach(() => jest.resetAllMocks());
 
   it('returns true when webhook log exists for the order', async () => {
-    mockFindFirst.mockResolvedValue({ id: 'wh-1' } as unknown as Awaited<ReturnType<typeof prisma.webhookLog.findFirst>>);
+    mockFindFirst.mockResolvedValue({ id: 'wh-1' } as unknown as Awaited<
+      ReturnType<typeof prisma.webhookLog.findFirst>
+    >);
     const result = await isWebhookProcessed('order_123');
     expect(result).toBe(true);
   });

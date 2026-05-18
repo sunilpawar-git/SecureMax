@@ -29,7 +29,8 @@ export function DiffModal({ diff, sessionId, onClose }: DiffModalProps) {
           <div className="mb-4 p-3 rounded-lg bg-slate-50 border text-sm">
             <span className="font-medium text-slate-700">Urgency score change: </span>
             <span className={diff.urgencyDelta > 0 ? 'text-red-600' : 'text-green-600'}>
-              {diff.urgencyDelta > 0 ? '+' : ''}{diff.urgencyDelta}
+              {diff.urgencyDelta > 0 ? '+' : ''}
+              {diff.urgencyDelta}
             </span>
           </div>
         )}

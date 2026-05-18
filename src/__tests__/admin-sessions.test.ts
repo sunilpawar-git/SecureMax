@@ -33,8 +33,13 @@ describe('getSessions', () => {
   it('returns sessions with user info and pagination', async () => {
     mockFindMany.mockResolvedValue([
       {
-        id: 'sess-1', track: 'hni', status: 'in_progress', paid: false,
-        reportReady: false, createdAt: new Date(), updatedAt: new Date(),
+        id: 'sess-1',
+        track: 'hni',
+        status: 'in_progress',
+        paid: false,
+        reportReady: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
         user: { email: 'user@test.com', name: 'Test User' },
       },
     ]);

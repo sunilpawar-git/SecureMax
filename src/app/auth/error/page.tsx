@@ -23,8 +23,18 @@ export default async function AuthErrorPage({ searchParams }: ErrorPageProps) {
   return (
     <div className="rounded-xl border border-red-200 bg-white p-8 shadow-sm text-center space-y-4">
       <div className="mx-auto w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
-        <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+        <svg
+          className="w-6 h-6 text-red-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+          />
         </svg>
       </div>
 

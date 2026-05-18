@@ -8,10 +8,25 @@
  */
 
 import { NextRequest } from 'next/server';
-import { requireAuth, unauthorizedResponse, apiSuccess, apiError, apiValidationError, parseBody } from '@/lib/api';
+import {
+  requireAuth,
+  unauthorizedResponse,
+  apiSuccess,
+  apiError,
+  apiValidationError,
+  parseBody,
+} from '@/lib/api';
 import { createOrder, verifySignature, getKeyId } from '@/lib/payment/razorpay';
-import { CreateOrderSchema, VerifyPaymentSchema, EnterpriseProposalSchema } from '@/lib/payment/schemas';
-import { persistPaymentUnlock, isWebhookProcessed, logPaymentVerification } from '@/lib/payment/payment-service';
+import {
+  CreateOrderSchema,
+  VerifyPaymentSchema,
+  EnterpriseProposalSchema,
+} from '@/lib/payment/schemas';
+import {
+  persistPaymentUnlock,
+  isWebhookProcessed,
+  logPaymentVerification,
+} from '@/lib/payment/payment-service';
 import { PAYMENT } from '@/config/strings';
 import { prisma } from '@/lib/prisma';
 
@@ -78,7 +93,12 @@ async function handleVerify(request: Request) {
 
   const isValid = verifySignature({ razorpay_order_id, razorpay_payment_id, razorpay_signature });
   if (!isValid) {
-    await logPaymentVerification(razorpay_order_id, razorpay_payment_id, 'failed', 'Invalid signature');
+    await logPaymentVerification(
+      razorpay_order_id,
+      razorpay_payment_id,
+      'failed',
+      'Invalid signature',
+    );
     return apiError('Invalid payment signature', 400);
   }
 
@@ -97,7 +117,8 @@ async function handleEnterpriseProposal(request: Request) {
   const parsed = await parseBody(request, EnterpriseProposalSchema);
   if (!parsed.success) return apiValidationError(parsed.errors);
 
-  const { companyName, contactName, contactEmail, contactPhone, facilityCount, reportId } = parsed.data;
+  const { companyName, contactName, contactEmail, contactPhone, facilityCount, reportId } =
+    parsed.data;
 
   try {
     const lead = await prisma.enterpriseLead.create({
@@ -112,11 +133,14 @@ async function handleEnterpriseProposal(request: Request) {
       },
     });
 
-    return apiSuccess({
-      status: 'submitted',
-      message: 'Proposal received. Our team will contact you within 24 hours.',
-      lead_id: lead.id,
-    }, 201);
+    return apiSuccess(
+      {
+        status: 'submitted',
+        message: 'Proposal received. Our team will contact you within 24 hours.',
+        lead_id: lead.id,
+      },
+      201,
+    );
   } catch {
     return apiError('Failed to submit proposal', 500);
   }

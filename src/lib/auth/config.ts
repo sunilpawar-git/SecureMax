@@ -25,7 +25,10 @@ if (isRealValue(process.env.GOOGLE_CLIENT_ID) && isRealValue(process.env.GOOGLE_
   );
 }
 
-if (isRealValue(process.env.AZURE_AD_CLIENT_ID) && isRealValue(process.env.AZURE_AD_CLIENT_SECRET)) {
+if (
+  isRealValue(process.env.AZURE_AD_CLIENT_ID) &&
+  isRealValue(process.env.AZURE_AD_CLIENT_SECRET)
+) {
   providers.push(
     MicrosoftEntraID({
       clientId: process.env.AZURE_AD_CLIENT_ID,

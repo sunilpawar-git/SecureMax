@@ -4,17 +4,20 @@ const STEPS = [
   {
     step: '1',
     title: 'Answer the Assessment',
-    description: 'AI-guided questionnaire based on CPP Seven Precis methodology. Takes about 12 minutes.',
+    description:
+      'AI-guided questionnaire based on CPP Seven Precis methodology. Takes about 12 minutes.',
   },
   {
     step: '2',
     title: 'Get Your Free Summary',
-    description: 'Instant executive summary with a security posture score and risk radar across 7 domains.',
+    description:
+      'Instant executive summary with a security posture score and risk radar across 7 domains.',
   },
   {
     step: '3',
     title: 'Unlock Full Report',
-    description: 'Detailed findings, compliance gaps, remediation roadmap, and current threat intelligence.',
+    description:
+      'Detailed findings, compliance gaps, remediation roadmap, and current threat intelligence.',
   },
   {
     step: '4',

@@ -47,16 +47,18 @@ async def get_stored_articles(pool: asyncpg.Pool, limit: int = 50) -> list[dict]
     for r in rows:
         dt = r["domain_tags"]
         it = r["industry_tags"]
-        articles.append({
-            "id": str(r["id"]),
-            "title": r["title"],
-            "url": r["url"],
-            "summary": r["summary"],
-            "domain_tags": json.loads(dt) if isinstance(dt, str) else dt,
-            "industry_tags": json.loads(it) if isinstance(it, str) else it,
-            "source": r["source"],
-            "scraped_at": r["scraped_at"].isoformat() if r["scraped_at"] else None,
-        })
+        articles.append(
+            {
+                "id": str(r["id"]),
+                "title": r["title"],
+                "url": r["url"],
+                "summary": r["summary"],
+                "domain_tags": json.loads(dt) if isinstance(dt, str) else dt,
+                "industry_tags": json.loads(it) if isinstance(it, str) else it,
+                "source": r["source"],
+                "scraped_at": r["scraped_at"].isoformat() if r["scraped_at"] else None,
+            }
+        )
     return articles
 
 

@@ -6,10 +6,7 @@
 
 const IS_PROD = process.env.NODE_ENV === 'production';
 
-const PII_PATTERNS = [
-  /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
-  /\b\d{10,12}\b/g,
-];
+const PII_PATTERNS = [/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, /\b\d{10,12}\b/g];
 
 function sanitize(msg: string): string {
   let clean = msg;

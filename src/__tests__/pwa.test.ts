@@ -30,9 +30,7 @@ describe('PWA manifest', () => {
   });
 
   it('has a maskable icon', () => {
-    const maskable = manifest.icons.find(
-      (i: { purpose?: string }) => i.purpose === 'maskable',
-    );
+    const maskable = manifest.icons.find((i: { purpose?: string }) => i.purpose === 'maskable');
     expect(maskable).toBeTruthy();
   });
 
@@ -87,10 +85,7 @@ describe('Offline fallback page', () => {
 });
 
 describe('Layout registers service worker', () => {
-  const layout = fs.readFileSync(
-    path.join(process.cwd(), 'src', 'app', 'layout.tsx'),
-    'utf-8',
-  );
+  const layout = fs.readFileSync(path.join(process.cwd(), 'src', 'app', 'layout.tsx'), 'utf-8');
 
   it('registers sw.js', () => {
     expect(layout).toContain('sw.js');

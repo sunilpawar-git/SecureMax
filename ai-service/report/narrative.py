@@ -107,9 +107,7 @@ async def enhance_findings_with_ai(
         copy["recommendation"] = await generate_finding_recommendation(
             finding, track, gemini=gemini
         )
-        copy["requires_physical_verification"] = (
-            finding.get("domain", "") in _PHYSICAL_DOMAINS
-        )
+        copy["requires_physical_verification"] = finding.get("domain", "") in _PHYSICAL_DOMAINS
         enhanced.append(copy)
     return enhanced
 

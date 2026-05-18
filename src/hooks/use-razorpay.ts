@@ -23,7 +23,13 @@ interface UseRazorpayOptions {
   onFailure?: (error: string) => void;
 }
 
-type CheckoutState = 'idle' | 'creating_order' | 'checkout_open' | 'verifying' | 'success' | 'error';
+type CheckoutState =
+  | 'idle'
+  | 'creating_order'
+  | 'checkout_open'
+  | 'verifying'
+  | 'success'
+  | 'error';
 
 export function useRazorpay({ sessionId, onSuccess, onFailure }: UseRazorpayOptions) {
   const [state, setState] = useState<CheckoutState>('idle');

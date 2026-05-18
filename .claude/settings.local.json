@@ -26,7 +26,15 @@
       "Bash(gh pr *)",
       "Bash(git revert *)",
       "Bash(gh run *)",
-      "Bash(xargs -I {} gh run view {} --log)"
+      "Bash(xargs -I {} gh run view {} --log)",
+      "Bash(cat eslint.config.mjs)",
+      "Bash(cat .eslintrc*)",
+      "Bash(ruff check *)",
+      "Bash(python3 -m ruff check ai-service/)",
+      "Bash(pip3 show *)",
+      "Bash(pip3 install *)",
+      "Bash(ruff format *)",
+      "Bash(npx prettier *)"
     ]
   }
 }

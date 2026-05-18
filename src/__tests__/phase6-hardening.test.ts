@@ -37,19 +37,13 @@ describe('PWA service worker', () => {
 
 describe('Security headers are set via next.config.ts (SSOT)', () => {
   it('next.config.ts imports SECURITY_HEADERS and sets headers()', () => {
-    const content = fs.readFileSync(
-      path.join(process.cwd(), 'next.config.ts'),
-      'utf-8',
-    );
+    const content = fs.readFileSync(path.join(process.cwd(), 'next.config.ts'), 'utf-8');
     expect(content).toContain('SECURITY_HEADERS');
     expect(content).toContain('headers()');
   });
 
   it('middleware.ts does NOT duplicate header setting', () => {
-    const content = fs.readFileSync(
-      path.join(process.cwd(), 'src', 'middleware.ts'),
-      'utf-8',
-    );
+    const content = fs.readFileSync(path.join(process.cwd(), 'src', 'middleware.ts'), 'utf-8');
     expect(content).not.toContain('Object.entries(SECURITY_HEADERS)');
   });
 
