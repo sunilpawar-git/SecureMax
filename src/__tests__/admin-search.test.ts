@@ -2,7 +2,7 @@
  * Tests for admin global search service — cross-entity parallel queries.
  */
 
-import { globalSearch, type SearchResults } from '@/lib/admin/search-service';
+import { globalSearch } from '@/lib/admin/search-service';
 
 const mockUserFind = jest.fn();
 const mockSessionFind = jest.fn();
@@ -24,7 +24,9 @@ describe('globalSearch', () => {
   it('returns correct shape with all entity types', async () => {
     mockUserFind.mockResolvedValue([{ id: 'u1', email: 'acme@test.com', name: 'Acme' }]);
     mockSessionFind.mockResolvedValue([]);
-    mockLeadFind.mockResolvedValue([{ id: 'l1', company: 'Acme Corp', name: 'John', status: 'new' }]);
+    mockLeadFind.mockResolvedValue([
+      { id: 'l1', company: 'Acme Corp', name: 'John', status: 'new' },
+    ]);
     mockThreatFind.mockResolvedValue([]);
 
     const result = await globalSearch('acme');

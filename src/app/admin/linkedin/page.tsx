@@ -37,7 +37,9 @@ export default function LinkedInPage() {
       .then((data: { articles?: Article[] } | null) => {
         if (data) setArticles(data.articles ?? []);
       })
-      .catch(() => { /* non-critical */ });
+      .catch(() => {
+        /* non-critical */
+      });
   }, []);
 
   const toggleArticle = (id: string) => {
@@ -70,9 +72,7 @@ export default function LinkedInPage() {
         setHashtags(data.hashtags ?? []);
       } else {
         const errData = await res.json().catch(() => ({}));
-        setGenerateError(
-          (errData as { error?: string }).error ?? `Draft failed (${res.status})`,
-        );
+        setGenerateError((errData as { error?: string }).error ?? `Draft failed (${res.status})`);
       }
     } catch {
       setGenerateError('Network error. Is the AI service running?');
@@ -137,16 +137,16 @@ export default function LinkedInPage() {
             )}
           </div>
           <button
-            onClick={() => { void generateDraft(); }}
+            onClick={() => {
+              void generateDraft();
+            }}
             disabled={selectedIds.size === 0 || isGenerating}
             className="px-4 py-2 bg-slate-800 text-white rounded-lg text-sm
               font-medium hover:bg-slate-900 disabled:opacity-50"
           >
             {isGenerating ? 'Generating...' : 'Generate Draft'}
           </button>
-          {generateError && (
-            <p className="text-xs text-red-600 mt-1">{generateError}</p>
-          )}
+          {generateError && <p className="text-xs text-red-600 mt-1">{generateError}</p>}
         </div>
 
         <div className="bg-white rounded-lg border p-4 space-y-3">
@@ -172,11 +172,11 @@ export default function LinkedInPage() {
             <span>{charCount > 0 ? `${charCount} / 1,300 chars` : ''}</span>
             {charCount > 1300 && <span className="text-red-600 font-medium">Over limit!</span>}
           </div>
-          {copyError && (
-            <p className="text-xs text-red-600">{copyError}</p>
-          )}
+          {copyError && <p className="text-xs text-red-600">{copyError}</p>}
           <button
-            onClick={() => { void copyToClipboard(); }}
+            onClick={() => {
+              void copyToClipboard();
+            }}
             disabled={isGenerating || !draftPost}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm
               font-medium hover:bg-blue-700 disabled:opacity-50"

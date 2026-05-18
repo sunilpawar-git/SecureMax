@@ -62,20 +62,14 @@ class TestReportJobRepository:
     def test_update_job_status(self, db_conn) -> None:
         session_id = _create_session(db_conn)
         job_id = run_db(rpt_repo.create_job(db_conn, session_id))
-        run_db(
-            rpt_repo.update_job_status(db_conn, job_id, REPORT_JOB_PROCESSING)
-        )
+        run_db(rpt_repo.update_job_status(db_conn, job_id, REPORT_JOB_PROCESSING))
         job = run_db(rpt_repo.get_job(db_conn, job_id))
         assert job["status"] == REPORT_JOB_PROCESSING
 
     def test_update_job_failed_with_error(self, db_conn) -> None:
         session_id = _create_session(db_conn)
         job_id = run_db(rpt_repo.create_job(db_conn, session_id))
-        run_db(
-            rpt_repo.update_job_status(
-                db_conn, job_id, REPORT_JOB_FAILED, error_message="boom"
-            )
-        )
+        run_db(rpt_repo.update_job_status(db_conn, job_id, REPORT_JOB_FAILED, error_message="boom"))
         job = run_db(rpt_repo.get_job(db_conn, job_id))
         assert job["status"] == REPORT_JOB_FAILED
         assert job["error_message"] == "boom"
@@ -84,9 +78,7 @@ class TestReportJobRepository:
         session_id = _create_session(db_conn)
         job_id = run_db(rpt_repo.create_job(db_conn, session_id))
         with pytest.raises(ValueError, match="Invalid job status"):
-            run_db(
-                rpt_repo.update_job_status(db_conn, job_id, "invalid")
-            )
+            run_db(rpt_repo.update_job_status(db_conn, job_id, "invalid"))
 
     def test_idempotent_session_unique(self, db_conn) -> None:
         """Only one job per session — unique constraint."""
@@ -172,9 +164,7 @@ class TestReportArtifactRepository:
         assert art["compliance_gap_count"] == 5
 
     def test_nonexistent_session_returns_none(self, db_conn) -> None:
-        result = run_db(
-            rpt_repo.get_artifact_by_session(db_conn, "no-session")
-        )
+        result = run_db(rpt_repo.get_artifact_by_session(db_conn, "no-session"))
         assert result is None
 
 
@@ -190,11 +180,7 @@ class TestReportJobLifecycle:
         job = run_db(rpt_repo.get_job(db_conn, job_id))
         assert job["status"] == REPORT_JOB_PENDING
 
-        run_db(
-            rpt_repo.update_job_status(
-                db_conn, job_id, REPORT_JOB_PROCESSING
-            )
-        )
+        run_db(rpt_repo.update_job_status(db_conn, job_id, REPORT_JOB_PROCESSING))
 
         pdf_enc = encrypt_bytes(b"final-pdf", self._TEST_KEY)
         run_db(
@@ -208,11 +194,7 @@ class TestReportJobLifecycle:
             )
         )
 
-        run_db(
-            rpt_repo.update_job_status(
-                db_conn, job_id, REPORT_JOB_COMPLETED
-            )
-        )
+        run_db(rpt_repo.update_job_status(db_conn, job_id, REPORT_JOB_COMPLETED))
 
         job = run_db(rpt_repo.get_job(db_conn, job_id))
         assert job["status"] == REPORT_JOB_COMPLETED

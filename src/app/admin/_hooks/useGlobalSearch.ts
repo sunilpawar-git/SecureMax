@@ -32,25 +32,33 @@ export function useGlobalSearch(): GlobalSearchData {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const search = useCallback(async (q: string) => {
-    if (!q.trim()) { setResults(EMPTY); return; }
+    if (!q.trim()) {
+      setResults(EMPTY);
+      return;
+    }
     try {
       const res = await fetch(`/api/admin/search?q=${encodeURIComponent(q)}`);
       if (res.ok) setResults(await res.json());
-    } catch { /* non-critical */ }
+    } catch {
+      /* non-critical */
+    }
   }, []);
 
   useEffect(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
     if (!query.trim()) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- clear on empty query
-      setResults(EMPTY); setIsOpen(false);
+      setResults(EMPTY);
+      setIsOpen(false);
       return;
     }
     timerRef.current = setTimeout(() => {
       search(query);
       setIsOpen(true);
     }, SEARCH_DEBOUNCE_MS);
-    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, [query, search]);
 
   const hasResults =

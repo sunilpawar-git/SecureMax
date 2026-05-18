@@ -5,7 +5,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { getArticles, addManualArticle, deleteArticle } from '@/lib/admin/threat-intel-service';
-import { ThreatIntelAddSchema, ThreatIntelDeleteSchema, ThreatIntelFilterSchema } from '@/lib/admin/validators';
+import {
+  ThreatIntelAddSchema,
+  ThreatIntelDeleteSchema,
+  ThreatIntelFilterSchema,
+} from '@/lib/admin/validators';
 import { ADMIN_ERR } from '@/config/admin-strings';
 
 export async function GET(request: NextRequest) {
@@ -31,13 +35,18 @@ export async function POST(request: NextRequest) {
   if (!session) return forbiddenResponse();
 
   let body: unknown;
-  try { body = await request.json(); } catch {
+  try {
+    body = await request.json();
+  } catch {
     return NextResponse.json({ error: ADMIN_ERR.INVALID_REQUEST }, { status: 400 });
   }
 
   const parsed = ThreatIntelAddSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: ADMIN_ERR.INVALID_REQUEST, details: parsed.error.flatten() }, { status: 400 });
+    return NextResponse.json(
+      { error: ADMIN_ERR.INVALID_REQUEST, details: parsed.error.flatten() },
+      { status: 400 },
+    );
   }
 
   try {
@@ -57,7 +66,9 @@ export async function DELETE(request: NextRequest) {
   if (!session) return forbiddenResponse();
 
   let body: unknown;
-  try { body = await request.json(); } catch {
+  try {
+    body = await request.json();
+  } catch {
     return NextResponse.json({ error: ADMIN_ERR.INVALID_REQUEST }, { status: 400 });
   }
 

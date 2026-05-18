@@ -143,49 +143,11 @@ def _parse_rss_date(dt_str: str) -> datetime | None:
         return None
 
 
-RSS_FEEDS = [
-    # Verified working feeds — no WAF/geo-block as of May 2026
-    {
-        "url": "https://feeds.feedburner.com/TheHackersNews",
-        "name": "The Hacker News",
-    },
-    {
-        "url": "https://www.bleepingcomputer.com/feed/",
-        "name": "Bleeping Computer",
-    },
-    {
-        "url": "https://www.helpnetsecurity.com/feed/",
-        "name": "Help Net Security",
-    },
-    {
-        "url": "https://www.csoonline.com/feed/",
-        "name": "CSO Online",
-    },
-    {
-        "url": "https://www.darkreading.com/rss.xml",
-        "name": "Dark Reading",
-    },
-]
+from scraper.source_loader import get_playwright_targets, get_rss_feeds
 
+RSS_FEEDS = get_rss_feeds()
 
-PLAYWRIGHT_TARGETS = [
-    {
-        "name": "The Security Company Blog",
-        "url": "https://thesecuritycompany.com/the-latest/",
-        "selector_article": "article",
-        "selector_title": "h2",
-        "selector_link": "a",
-        "max_articles": 10,
-    },
-    {
-        "name": "Security Journal Americas",
-        "url": "https://www.securityjournalamericas.com/news/",
-        "selector_article": "article.post",
-        "selector_title": ".entry-title",
-        "selector_link": ".entry-title a",
-        "max_articles": 10,
-    },
-]
+PLAYWRIGHT_TARGETS = get_playwright_targets()
 
 
 async def fetch_playwright_tier() -> list[RawArticle]:
@@ -208,31 +170,21 @@ async def fetch_playwright_tier() -> list[RawArticle]:
                         timeout=15000,
                         wait_until="domcontentloaded",
                     )
-                    containers = await page.query_selector_all(
-                        target["selector_article"]
-                    )
+                    containers = await page.query_selector_all(target["selector_article"])
                     for el in containers[: target["max_articles"]]:
                         try:
-                            title_el = await el.query_selector(
-                                target["selector_title"]
-                            )
-                            link_el = await el.query_selector(
-                                target["selector_link"]
-                            )
+                            title_el = await el.query_selector(target["selector_title"])
+                            link_el = await el.query_selector(target["selector_link"])
                             if not title_el or not link_el:
                                 continue
-                            title = (
-                                await title_el.text_content() or ""
-                            ).strip()
+                            title = (await title_el.text_content() or "").strip()
                             href = await link_el.get_attribute("href") or ""
                             if not href:
                                 continue
                             if not href.startswith("http"):
                                 base = target["url"].rstrip("/")
                                 href = f"{base}/{href.lstrip('/')}"
-                            content = (
-                                await el.text_content() or ""
-                            ).strip()
+                            content = (await el.text_content() or "").strip()
                             if title:
                                 articles.append(
                                     RawArticle(
@@ -250,9 +202,7 @@ async def fetch_playwright_tier() -> list[RawArticle]:
                                 e,
                             )
                 except Exception as e:
-                    logger.warning(
-                        "Playwright failed for %s: %s", target["name"], e
-                    )
+                    logger.warning("Playwright failed for %s: %s", target["name"], e)
                 finally:
                     await page.close()
             await browser.close()

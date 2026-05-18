@@ -29,7 +29,11 @@ export async function POST(request: NextRequest) {
   try {
     switch (action) {
       case 'store': {
-        const { provider, keyName, keyValue } = body as { provider?: unknown; keyName?: unknown; keyValue?: unknown };
+        const { provider, keyName, keyValue } = body as {
+          provider?: unknown;
+          keyName?: unknown;
+          keyValue?: unknown;
+        };
         if (!provider || !keyName || !keyValue) {
           return NextResponse.json(
             { error: 'Missing provider, keyName, or keyValue' },
@@ -52,7 +56,10 @@ export async function POST(request: NextRequest) {
       }
 
       case 'rotate': {
-        const { provider: rotProv, newKeyValue } = body as { provider?: unknown; newKeyValue?: unknown };
+        const { provider: rotProv, newKeyValue } = body as {
+          provider?: unknown;
+          newKeyValue?: unknown;
+        };
         if (!rotProv || !newKeyValue) {
           return NextResponse.json({ error: 'Missing provider or newKeyValue' }, { status: 400 });
         }

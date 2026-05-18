@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files — .env.example is committed as a template; all real env files are excluded
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -46,3 +47,9 @@ next-env.d.ts
 **/__pycache__/
 *.pyc
 *.pyo
+
+# Generated debt sweep reports (keep locally for reference)
+DEBT-SWEEP-*.md
+
+# Test files for hook demos
+src/test-auto-format.ts

@@ -56,21 +56,33 @@ export function useReportsData(): ReportsData {
     void load();
   }, [load]);
 
-  const regenerate = useCallback(async (sessionId: string) => {
-    const res = await fetch('/api/admin/reports', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId }),
-    });
-    if (res.ok) { await load(); return true; }
-    return false;
-  }, [load]);
+  const regenerate = useCallback(
+    async (sessionId: string) => {
+      const res = await fetch('/api/admin/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId }),
+      });
+      if (res.ok) {
+        await load();
+        return true;
+      }
+      return false;
+    },
+    [load],
+  );
 
-  const unlock = useCallback(async (sessionId: string) => {
-    const res = await fetch(`/api/admin/reports/${sessionId}/unlock`, { method: 'POST' });
-    if (res.ok) { await load(); return true; }
-    return false;
-  }, [load]);
+  const unlock = useCallback(
+    async (sessionId: string) => {
+      const res = await fetch(`/api/admin/reports/${sessionId}/unlock`, { method: 'POST' });
+      if (res.ok) {
+        await load();
+        return true;
+      }
+      return false;
+    },
+    [load],
+  );
 
   const fetchDiff = useCallback(async (sessionId: string): Promise<DiffResult | null> => {
     const res = await fetch(`/api/admin/reports/${sessionId}/diff`);

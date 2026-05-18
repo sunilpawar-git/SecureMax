@@ -54,7 +54,7 @@ export async function createOrder(reportId: string, amountInPaise: number): Prom
 export function verifySignature(payment: PaymentVerification): boolean {
   const secret = getSecret();
   if (!secret) {
-    throw new Error('RAZORPAY_SECRET is not configured');
+    return false;
   }
 
   const body = `${payment.razorpay_order_id}|${payment.razorpay_payment_id}`;

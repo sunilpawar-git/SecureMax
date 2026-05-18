@@ -35,9 +35,6 @@ export async function POST(request: NextRequest) {
       );
     }
     console.error('[linkedin-route] Unexpected error');
-    return NextResponse.json(
-      { error: 'LinkedIn draft service unavailable' },
-      { status: 503 },
-    );
+    return NextResponse.json({ error: 'LinkedIn draft service unavailable' }, { status: 503 });
   }
 }

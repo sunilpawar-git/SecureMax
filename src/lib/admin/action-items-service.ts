@@ -4,7 +4,12 @@
  */
 
 import { prisma } from '@/lib/prisma';
-import { FOLLOW_UP_STATUS, FOLLOW_UP_WINDOW_DAYS, LEAD_STATUS, SCRAPER_RUN_STATUS } from '@/config/admin-strings';
+import {
+  FOLLOW_UP_STATUS,
+  FOLLOW_UP_WINDOW_DAYS,
+  LEAD_STATUS,
+  SCRAPER_RUN_STATUS,
+} from '@/config/admin-strings';
 
 export interface ActionItems {
   overdueFollowUps: number;

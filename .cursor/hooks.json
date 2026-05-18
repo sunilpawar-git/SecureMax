@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/format-edited-files.sh",
+        "matcher": "\\.(ts|tsx|css|py)$",
+        "timeout": 15
+      },
+      {
+        "command": ".cursor/hooks/validate-question-graph.sh",
+        "matcher": "question-graph/.*\\.yaml$",
+        "timeout": 10
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": ".cursor/hooks/block-dangerous-commands.sh",
+        "timeout": 5,
+        "failClosed": true
+      }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "command": ".cursor/hooks/detect-secrets-in-prompt.sh",
+        "timeout": 10
+      }
+    ]
+  }
+}

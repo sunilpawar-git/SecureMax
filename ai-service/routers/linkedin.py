@@ -56,9 +56,7 @@ async def draft_post(req: DraftRequest, request: Request) -> dict:
             "character_count": 0,
         }
 
-    article_text = "\n".join(
-        f"- {r['title']}: {r['summary']}" for r in rows
-    )
+    article_text = "\n".join(f"- {r['title']}: {r['summary']}" for r in rows)
 
     prompt = (
         "Draft a LinkedIn post for Raivan Global Security Consulting.\n\n"

@@ -8,31 +8,49 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
+import { requireAuth, unauthorizedResponse, apiSuccess, apiError } from '@/lib/api';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
+import { prisma } from '@/lib/prisma';
+import { LIMITS, LIMITS_ERR } from '@/config/strings';
 
 export async function POST(request: NextRequest) {
-  const session = await auth();
-  const isDev = process.env.NODE_ENV !== 'production';
-  const userId = session?.user?.id ?? (isDev ? 'dev-guest' : null);
+  const session = await requireAuth();
+  if (!session) return unauthorizedResponse();
 
-  if (!userId) {
-    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
-  }
-
+  const userId = session.user.id;
   const action = request.nextUrl.searchParams.get('action');
-  const body = await request.json();
+
+  let body: Record<string, unknown>;
+  try {
+    body = await request.json();
+  } catch {
+    return apiError('Invalid or missing JSON body');
+  }
 
   const userHeaders = { 'X-User-Id': userId };
 
   try {
     switch (action) {
       case 'start': {
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+
+        const sessionCount = await prisma.auditSession.count({
+          where: { userId, createdAt: { gte: startOfMonth } },
+        });
+
+        // Dev mode bypass: ignore session cap in development
+        const isDev = process.env.NODE_ENV !== 'production';
+        if (!isDev && sessionCount >= LIMITS.MAX_SESSIONS_PER_USER_PER_MONTH) {
+          return apiError(LIMITS_ERR.SESSION_CAP_REACHED, 429);
+        }
+
         const result = await aiServiceFetch('/questionnaire/start', {
           body: { user_id: userId, track: body.track },
           headers: userHeaders,
         });
-        return NextResponse.json(result);
+        return apiSuccess(result);
       }
       case 'answer': {
         const result = await aiServiceFetch('/questionnaire/answer', {
@@ -43,34 +61,31 @@ export async function POST(request: NextRequest) {
           },
           headers: userHeaders,
         });
-        return NextResponse.json(result);
+        return apiSuccess(result);
       }
       case 'resume': {
         const result = await aiServiceFetch('/questionnaire/resume', {
           body: { session_id: body.session_id },
           headers: userHeaders,
         });
-        return NextResponse.json(result);
+        return apiSuccess(result);
       }
       case 'abandon': {
         const result = await aiServiceFetch(`/questionnaire/${body.session_id}/abandon`, {
           body: {},
           headers: userHeaders,
         });
-        return NextResponse.json(result);
+        return apiSuccess(result);
       }
       default:
-        return NextResponse.json(
-          { error: 'Invalid action. Use: start, answer, resume, abandon' },
-          { status: 400 },
-        );
+        return apiError('Invalid action. Use: start, answer, resume, abandon');
     }
   } catch (error) {
     if (error instanceof AIServiceError) {
-      const body: Record<string, unknown> = { error: error.message };
-      if (error.sessionId) body.session_id = error.sessionId;
-      return NextResponse.json(body, { status: error.statusCode });
+      const payload: Record<string, unknown> = { error: error.message };
+      if (error.sessionId) payload.session_id = error.sessionId;
+      return NextResponse.json(payload, { status: error.statusCode });
     }
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return apiError('Internal server error', 500);
   }
 }

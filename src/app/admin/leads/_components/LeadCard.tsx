@@ -5,10 +5,7 @@
  */
 
 import { LEAD_STATUS_STYLES } from '@/config/admin-colors';
-import {
-  LEAD_STATUS_LABEL,
-  VALID_LEAD_TRANSITIONS,
-} from '@/config/admin-strings';
+import { LEAD_STATUS_LABEL, VALID_LEAD_TRANSITIONS } from '@/config/admin-strings';
 import type { Lead } from '../_hooks/useLeadsData';
 
 interface LeadCardProps {
@@ -43,13 +40,9 @@ export function LeadCard({ lead, onStatusChange, onEmail }: LeadCardProps) {
         </span>
       </div>
 
-      {lead.email && (
-        <p className="text-xs text-slate-400 truncate">{lead.email}</p>
-      )}
+      {lead.email && <p className="text-xs text-slate-400 truncate">{lead.email}</p>}
 
-      {overdue && (
-        <p className="text-xs text-red-600 font-medium">Follow-up overdue</p>
-      )}
+      {overdue && <p className="text-xs text-red-600 font-medium">Follow-up overdue</p>}
 
       <div className="flex flex-wrap gap-2">
         {transitions.map((target) => (

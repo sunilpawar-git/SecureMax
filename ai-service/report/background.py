@@ -13,7 +13,6 @@ import session_repository as repo
 from config import get_settings
 from crypto import decrypt, derive_key, encrypt_bytes
 from gemini_client import GeminiClient
-from questionnaire import get_node_map
 from report.constants import (
     REPORT_JOB_COMPLETED,
     REPORT_JOB_FAILED,
@@ -50,15 +49,9 @@ def build_report_events(raw_events: list[dict], node_map: dict) -> list[dict]:
             answer = decrypt(ev["answer_encrypted"], _enc_key)
         except (ValueError, Exception) as exc:
             node_id = ev.get("question_node_id")
-            raise ValueError(
-                f"Cannot decrypt answer for event {node_id}"
-            ) from exc
+            raise ValueError(f"Cannot decrypt answer for event {node_id}") from exc
         try:
-            delta = (
-                json.loads(ev["domain_score_delta"])
-                if ev.get("domain_score_delta")
-                else {}
-            )
+            delta = json.loads(ev["domain_score_delta"]) if ev.get("domain_score_delta") else {}
         except (json.JSONDecodeError, TypeError):
             delta = {}
         node = node_map.get(ev["question_node_id"], {})
@@ -76,11 +69,18 @@ def build_report_events(raw_events: list[dict], node_map: dict) -> list[dict]:
 async def render_pdf_safe(report_data: ReportData) -> bytes | None:
     """Render PDF via Playwright. Returns None on failure — caller stores NULL."""
     try:
-        return await render_pdf(report_data)
+        pdf_bytes = await render_pdf(report_data)
+        if not pdf_bytes or pdf_bytes[:4] != b"%PDF":
+            logger.error(
+                "PDF rendering returned invalid bytes for session %s (got %d bytes, header: %s)",
+                report_data.session_id[:8],
+                len(pdf_bytes) if pdf_bytes else 0,
+                (pdf_bytes[:8].hex() if pdf_bytes else "empty"),
+            )
+            return None
+        return pdf_bytes
     except Exception:
-        logger.warning(
-            "PDF rendering failed for session %s", report_data.session_id[:8]
-        )
+        logger.exception("PDF rendering failed for session %s", report_data.session_id[:8])
         return None
 
 
@@ -101,7 +101,9 @@ async def generate_report_background(
         )
         async with pool.acquire() as conn:
             await rpt_repo.update_job_status(
-                conn, job_id, REPORT_JOB_FAILED,
+                conn,
+                job_id,
+                REPORT_JOB_FAILED,
                 error_message=ERR_ENCRYPTION_NOT_CONFIGURED,
             )
         return
@@ -146,6 +148,7 @@ async def generate_report_background(
                     compliance_gap_count=report_data.compliance_gap_count,
                 )
             await rpt_repo.update_job_status(conn, job_id, REPORT_JOB_COMPLETED)
+            await repo.mark_report_ready(conn, session_id)
 
         except Exception:
             logger.exception(

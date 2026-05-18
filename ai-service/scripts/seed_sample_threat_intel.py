@@ -131,9 +131,7 @@ async def seed(dsn: str) -> None:
     try:
         inserted = 0
         for i, article in enumerate(SAMPLE_ARTICLES):
-            content_hash = hashlib.sha256(
-                article["title"].encode()
-            ).hexdigest()
+            content_hash = hashlib.sha256(article["title"].encode()).hexdigest()
             url = f"https://sample-threat-intel.example.com/article-{i:03d}"
             aid = f"sample-ti-{i:03d}"
             result = await conn.execute(
@@ -157,8 +155,7 @@ async def seed(dsn: str) -> None:
                 inserted += 1
         total = len(SAMPLE_ARTICLES)
         print(
-            f"Seeded {inserted} sample threat intel articles "
-            f"({total} total, skipped duplicates)."
+            f"Seeded {inserted} sample threat intel articles ({total} total, skipped duplicates)."
         )
     finally:
         await conn.close()

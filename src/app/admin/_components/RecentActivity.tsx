@@ -43,9 +43,7 @@ function formatRelativeTime(iso: string): string {
 
 export function RecentActivity({ actions }: RecentActivityProps) {
   if (actions.length === 0) {
-    return (
-      <p className="text-sm text-slate-400 italic">No recent activity.</p>
-    );
+    return <p className="text-sm text-slate-400 italic">No recent activity.</p>;
   }
 
   return (
@@ -63,9 +61,7 @@ export function RecentActivity({ actions }: RecentActivityProps) {
             </span>
             <span className="text-slate-700 flex-1 truncate">
               {label}
-              <span className="text-slate-400 ml-1">
-                #{action.entityId.slice(-6)}
-              </span>
+              <span className="text-slate-400 ml-1">#{action.entityId.slice(-6)}</span>
             </span>
             <span className="text-slate-400 text-xs whitespace-nowrap">
               {formatRelativeTime(action.createdAt)}

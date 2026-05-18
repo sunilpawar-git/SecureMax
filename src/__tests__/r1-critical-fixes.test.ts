@@ -5,7 +5,6 @@
 
 import { forbiddenResponse } from '@/lib/admin/auth';
 import { getArticles } from '@/lib/admin/threat-intel-service';
-import { maskEmail } from '@/lib/admin/csv-export';
 
 // ─── C2: forbiddenResponse must return a new instance each call ───────────────
 

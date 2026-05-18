@@ -44,12 +44,18 @@ export function ArticleList({ articles, total, onDelete }: ArticleListProps) {
               <p className="text-xs text-slate-500 mt-1 line-clamp-2">{a.summary}</p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {tags.map((tag) => (
-                  <span key={`d-${tag}`} className="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded">
+                  <span
+                    key={`d-${tag}`}
+                    className="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded"
+                  >
                     {tag}
                   </span>
                 ))}
                 {iTags.map((tag) => (
-                  <span key={`i-${tag}`} className="px-1.5 py-0.5 bg-slate-100 text-slate-600 text-xs rounded">
+                  <span
+                    key={`i-${tag}`}
+                    className="px-1.5 py-0.5 bg-slate-100 text-slate-600 text-xs rounded"
+                  >
                     {tag}
                   </span>
                 ))}
@@ -57,14 +63,14 @@ export function ArticleList({ articles, total, onDelete }: ArticleListProps) {
               <p className="text-xs text-slate-400 mt-1">
                 {a.source}
                 {a.scrapedAt ? ` · ${new Date(a.scrapedAt).toLocaleDateString()}` : ''}
-                {a.usedInReports && <span className="ml-2 text-amber-600 font-medium">Used in reports</span>}
+                {a.usedInReports && (
+                  <span className="ml-2 text-amber-600 font-medium">Used in reports</span>
+                )}
               </p>
             </div>
           );
         })}
-        {articles.length === 0 && (
-          <p className="text-sm text-slate-400">No articles found.</p>
-        )}
+        {articles.length === 0 && <p className="text-sm text-slate-400">No articles found.</p>}
       </div>
     </div>
   );

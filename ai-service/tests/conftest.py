@@ -8,6 +8,7 @@ import asyncio
 import os
 
 os.environ.setdefault("ALLOW_INSECURE_LOCAL", "true")
+os.environ.setdefault("DEV_BYPASS_SESSION_CHECK", "false")
 
 import asyncpg
 import pytest

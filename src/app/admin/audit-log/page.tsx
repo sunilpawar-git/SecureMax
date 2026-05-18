@@ -27,11 +27,16 @@ export default function AuditLogPage() {
       </div>
 
       <div className="flex flex-wrap gap-4 items-center">
-        <select value={data.actionFilter} onChange={(e) => data.setActionFilter(e.target.value)}
-          className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500">
+        <select
+          value={data.actionFilter}
+          onChange={(e) => data.setActionFilter(e.target.value)}
+          className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500"
+        >
           <option value="">All Actions</option>
           {ACTION_TYPES.filter(Boolean).map((t) => (
-            <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>
+            <option key={t} value={t}>
+              {t.replace(/_/g, ' ')}
+            </option>
           ))}
         </select>
         <DateRangeFilter

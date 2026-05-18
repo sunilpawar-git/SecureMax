@@ -47,12 +47,13 @@ export async function getAuditLog(filters: AuditLogFilters = {}) {
   ]);
 
   const adminIds = [...new Set(actions.map((a) => a.adminId))];
-  const admins = adminIds.length > 0
-    ? await prisma.user.findMany({
-        where: { id: { in: adminIds } },
-        select: { id: true, email: true },
-      })
-    : [];
+  const admins =
+    adminIds.length > 0
+      ? await prisma.user.findMany({
+          where: { id: { in: adminIds } },
+          select: { id: true, email: true },
+        })
+      : [];
   const emailMap = new Map(admins.map((u) => [u.id, u.email]));
 
   const entries: AuditLogEntry[] = actions.map((a) => ({

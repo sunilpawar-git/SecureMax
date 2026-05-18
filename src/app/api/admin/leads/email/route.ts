@@ -36,9 +36,11 @@ export async function POST(request: NextRequest) {
     );
     if (!result.success) {
       const status =
-        result.error === ADMIN_ERR.LEAD_NOT_FOUND ? 404
-        : result.error === ADMIN_ERR.LEAD_NO_EMAIL ? 422
-        : 500;
+        result.error === ADMIN_ERR.LEAD_NOT_FOUND
+          ? 404
+          : result.error === ADMIN_ERR.LEAD_NO_EMAIL
+            ? 422
+            : 500;
       return NextResponse.json({ error: result.error }, { status });
     }
     return NextResponse.json({ success: true });

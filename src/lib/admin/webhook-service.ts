@@ -12,11 +12,7 @@ export async function logWebhookSuccess(provider: string, eventType: string) {
   });
 }
 
-export async function logWebhookFailure(
-  provider: string,
-  eventType: string,
-  errorMessage: string,
-) {
+export async function logWebhookFailure(provider: string, eventType: string, errorMessage: string) {
   const sanitized = sanitizeError(errorMessage);
   return prisma.webhookLog.create({
     data: {

@@ -174,15 +174,26 @@ async def abandon_session(
     )
 
 
+async def mark_report_ready(
+    conn: asyncpg.Connection,
+    session_id: str,
+) -> None:
+    """Set report_ready = true on the audit session after PDF generation succeeds."""
+    await conn.execute(
+        f"""
+        UPDATE {TABLE_AUDIT_SESSIONS}
+        SET report_ready = TRUE, updated_at = NOW()
+        WHERE id = $1
+        """,
+        session_id,
+    )
+
+
 def _decrypt_event_row(row: Any, encryption_key: bytes, session_id: str) -> dict:
     """Shared helper: decrypt one event row into a plain dict."""
     answer = decrypt(row["answer_encrypted"], encryption_key)
     try:
-        delta = (
-            json.loads(row["domain_score_delta"])
-            if row["domain_score_delta"]
-            else {}
-        )
+        delta = json.loads(row["domain_score_delta"]) if row["domain_score_delta"] else {}
     except (json.JSONDecodeError, TypeError):
         logger.warning(
             "Corrupt domain_score_delta for session %s — skipping delta",

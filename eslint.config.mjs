@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated and vendored directories that should never be linted:
+    "src/generated/**",
+    "ai-service/**",
+    "coverage/**",
   ]),
 ]);
 

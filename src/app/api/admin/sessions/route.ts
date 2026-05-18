@@ -34,7 +34,9 @@ export async function PATCH(request: NextRequest) {
   if (!session) return forbiddenResponse();
 
   let body: unknown;
-  try { body = await request.json(); } catch {
+  try {
+    body = await request.json();
+  } catch {
     return NextResponse.json({ error: ADMIN_ERR.INVALID_REQUEST }, { status: 400 });
   }
 

@@ -42,7 +42,13 @@ export function compareReports(
 ): DiffResult {
   // Both null means no data to compare — not a meaningful change.
   if (!previous && !current) {
-    return { addedFindings: [], removedFindings: [], scoreChanges: [], urgencyDelta: 0, hasChanges: false };
+    return {
+      addedFindings: [],
+      removedFindings: [],
+      scoreChanges: [],
+      urgencyDelta: 0,
+      hasChanges: false,
+    };
   }
   // One side missing — treat all current findings as added (or all previous as removed).
   if (!previous || !current) {
@@ -63,12 +69,8 @@ export function compareReports(
   const addedFindings = currFindings.filter((f) => !prevKeys.has(findingKey(f)));
   const removedFindings = prevFindings.filter((f) => !currKeys.has(findingKey(f)));
 
-  const prevScoreMap = new Map(
-    (previous.domain_scores ?? []).map((d) => [d.domain, d.score]),
-  );
-  const currScoreMap = new Map(
-    (current.domain_scores ?? []).map((d) => [d.domain, d.score]),
-  );
+  const prevScoreMap = new Map((previous.domain_scores ?? []).map((d) => [d.domain, d.score]));
+  const currScoreMap = new Map((current.domain_scores ?? []).map((d) => [d.domain, d.score]));
   const allDomains = new Set([...prevScoreMap.keys(), ...currScoreMap.keys()]);
 
   const scoreChanges: DiffResult['scoreChanges'] = [];
@@ -80,8 +82,7 @@ export function compareReports(
     }
   }
 
-  const urgencyDelta =
-    (current.urgency_score ?? 0) - (previous.urgency_score ?? 0);
+  const urgencyDelta = (current.urgency_score ?? 0) - (previous.urgency_score ?? 0);
 
   const hasChanges =
     addedFindings.length > 0 ||

@@ -17,8 +17,8 @@ export function RegenConfirmDialog({ sessionId, onConfirm, onCancel }: RegenConf
         <h2 className="text-lg font-semibold text-slate-900 mb-2">Regenerate Report</h2>
         <p className="text-sm text-slate-600 mb-4">
           This will create a new version of the report for session{' '}
-          <span className="font-mono text-xs">{sessionId.slice(0, 8)}...</span>.
-          The previous version will be preserved for comparison.
+          <span className="font-mono text-xs">{sessionId.slice(0, 8)}...</span>. The previous
+          version will be preserved for comparison.
         </p>
         <div className="flex justify-end gap-3">
           <button

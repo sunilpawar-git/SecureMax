@@ -30,8 +30,11 @@ function getStoredSessionId(track: string): string | null {
     if (typeof window !== 'undefined' && window.localStorage) {
       return localStorage.getItem(`questionnaire_session_${track}`);
     }
-    if (typeof global !== 'undefined' && (global as any).localStorage) {
-      return (global as any).localStorage.getItem(`questionnaire_session_${track}`);
+    if (typeof global !== 'undefined') {
+      const globalWithStorage = global as typeof globalThis & { localStorage?: Storage };
+      if (globalWithStorage.localStorage) {
+        return globalWithStorage.localStorage.getItem(`questionnaire_session_${track}`);
+      }
     }
   } catch {
     // localStorage might be unavailable
@@ -43,8 +46,11 @@ function storeSessionId(track: string, sessionId: string): void {
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.setItem(`questionnaire_session_${track}`, sessionId);
-    } else if (typeof global !== 'undefined' && (global as any).localStorage) {
-      (global as any).localStorage.setItem(`questionnaire_session_${track}`, sessionId);
+    } else if (typeof global !== 'undefined') {
+      const globalWithStorage = global as typeof globalThis & { localStorage?: Storage };
+      if (globalWithStorage.localStorage) {
+        globalWithStorage.localStorage.setItem(`questionnaire_session_${track}`, sessionId);
+      }
     }
   } catch {
     // localStorage might be unavailable
@@ -55,8 +61,11 @@ function clearStoredSessionId(track: string): void {
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.removeItem(`questionnaire_session_${track}`);
-    } else if (typeof global !== 'undefined' && (global as any).localStorage) {
-      (global as any).localStorage.removeItem(`questionnaire_session_${track}`);
+    } else if (typeof global !== 'undefined') {
+      const globalWithStorage = global as typeof globalThis & { localStorage?: Storage };
+      if (globalWithStorage.localStorage) {
+        globalWithStorage.localStorage.removeItem(`questionnaire_session_${track}`);
+      }
     }
   } catch {
     // localStorage might be unavailable
@@ -71,9 +80,10 @@ async function apiFetch(url: string, body: object): Promise<unknown> {
   });
   const data = await res.json();
   if (!res.ok) {
-    const errorMsg = typeof data === 'object' && data !== null && 'error' in data
-      ? String((data as Record<string, unknown>).error)
-      : 'Request failed';
+    const errorMsg =
+      typeof data === 'object' && data !== null && 'error' in data
+        ? String((data as Record<string, unknown>).error)
+        : 'Request failed';
     const err = new Error(errorMsg) as Error & Record<string, unknown>;
     err.statusCode = res.status;
     if (typeof data === 'object' && data !== null && 'session_id' in data) {
@@ -91,14 +101,16 @@ export async function startSession(track: string): Promise<ActiveSession> {
   } catch (err) {
     // 409 means an active session already exists — try to resume it transparently.
     if (err instanceof Error && (err as unknown as Record<string, unknown>).statusCode === 409) {
-      const serverSessionId = (err as unknown as Record<string, unknown>).sessionId as string | undefined;
+      const serverSessionId = (err as unknown as Record<string, unknown>).sessionId as
+        | string
+        | undefined;
       const cachedSessionId = serverSessionId || getStoredSessionId(track);
       if (cachedSessionId) {
         try {
           const resumed = await resumeSession(cachedSessionId);
           storeSessionId(track, resumed.sessionId);
           return resumed;
-        } catch (resumeErr) {
+        } catch {
           clearStoredSessionId(track);
           throw err;
         }
@@ -113,14 +125,14 @@ export async function startSession(track: string): Promise<ActiveSession> {
     radarScores: d.radar_scores,
     questionsAnswered: 0,
   };
-  
+
   // Cache the session ID for recovery on reload
   storeSessionId(track, d.session_id);
-  
+
   return session;
 }
 
-export async function resumeSession(sessionId: string | null, _track?: string): Promise<ActiveSession> {
+export async function resumeSession(sessionId: string | null): Promise<ActiveSession> {
   const data = await apiFetch('/api/questionnaire?action=resume', { session_id: sessionId });
   const d = data as {
     session_id: string;

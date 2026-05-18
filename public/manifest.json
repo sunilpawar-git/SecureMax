@@ -1,12 +1,14 @@
 {
   "name": "Raivan Global Security Audit",
   "short_name": "Raivan Global",
-  "description": "AI-driven physical security audit for HNIs and enterprises",
-  "start_url": "/",
+  "description": "AI-driven physical security audit for HNIs and enterprises, grounded in CPP Seven Precis methodology.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#f9fafb",
+  "background_color": "#f8fafc",
   "theme_color": "#047857",
   "orientation": "portrait-primary",
+  "lang": "en",
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -25,5 +27,19 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["security", "business"]
+  "shortcuts": [
+    {
+      "name": "Audit My Residence",
+      "short_name": "HNI Audit",
+      "url": "/auth/signin?track=hni",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Audit My Facility",
+      "short_name": "Enterprise Audit",
+      "url": "/auth/signin?track=enterprise",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "categories": ["security", "business", "productivity"]
 }

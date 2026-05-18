@@ -20,8 +20,12 @@ const DOMAIN_OPTIONS = Object.values(CPP_DOMAINS).map((d) => d.code);
 const SOURCE_OPTIONS = ['', ...SCRAPER_SOURCE_OPTIONS];
 
 export function FilterPanel({
-  search, domains, source,
-  onSearchChange, onDomainsChange, onSourceChange,
+  search,
+  domains,
+  source,
+  onSearchChange,
+  onDomainsChange,
+  onSourceChange,
 }: FilterPanelProps) {
   function toggleDomain(code: string) {
     if (domains.includes(code)) {
@@ -49,7 +53,9 @@ export function FilterPanel({
         >
           <option value="">All Sources</option>
           {SOURCE_OPTIONS.filter(Boolean).map((s) => (
-            <option key={s} value={s}>{s}</option>
+            <option key={s} value={s}>
+              {s}
+            </option>
           ))}
         </select>
       </div>

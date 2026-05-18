@@ -13,7 +13,7 @@ Admins run a web scraper that enriches the knowledge base and auto-posts to Link
 - **Frontend + API routes**: Next.js 16 (App Router), PWA-compliant
 - **AI/LLM microservice**: Python FastAPI — handles Gemini API calls and pgvector similarity search
 - **Database**: PostgreSQL + pgvector (embeddings of CPP Seven Precis)
-- **Auth**: NextAuth.js v5 with Google OAuth only
+- **Auth**: NextAuth.js v5 with Google OAuth (primary) and Microsoft Entra ID (enterprise SSO)
 - **Report generation**: react-pdf
 - **Web crawler**: Playwright (security news ingestion)
 - **Social posting**: LinkedIn API (admin panel)
@@ -154,7 +154,7 @@ This product audits others' security — our own must be exemplary.
 - Data encrypted at rest (AES-256) and in transit (TLS 1.3)
 - OWASP Top 10 addressed before any feature ships
 - No PII in logs; no secrets in code or git
-- Google OAuth only — no custom password auth, ever
+- Google OAuth (primary) and Microsoft Entra ID (enterprise SSO) — no custom password auth, ever
 - Audit session data is per-user isolated; no cross-tenant leakage
 - Web crawler must not scrape behind authentication
 

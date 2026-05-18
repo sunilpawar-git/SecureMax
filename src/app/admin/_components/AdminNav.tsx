@@ -47,7 +47,9 @@ export function AdminNav() {
             type="text"
             value={search.query}
             onChange={(e) => search.setQuery(e.target.value)}
-            onFocus={() => { if (search.hasResults) search.setIsOpen(true); }}
+            onFocus={() => {
+              if (search.hasResults) search.setIsOpen(true);
+            }}
             placeholder="Search..."
             className="w-full text-sm rounded-md bg-slate-800 border border-slate-700 text-white px-3 py-1.5 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />

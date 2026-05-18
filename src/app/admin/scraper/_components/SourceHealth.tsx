@@ -33,7 +33,10 @@ export function SourceHealth({ sources, nextRun }: SourceHealthProps) {
         {entries.map(([name, h]) => {
           const healthKey = h.is_healthy ? 'healthy' : 'failed';
           return (
-            <div key={name} className="flex items-center justify-between text-sm border-b border-slate-100 pb-2 last:border-0">
+            <div
+              key={name}
+              className="flex items-center justify-between text-sm border-b border-slate-100 pb-2 last:border-0"
+            >
               <span className="font-medium text-slate-700">{name}</span>
               <div className="flex items-center gap-3">
                 <span className="text-slate-400">{h.total_articles} articles</span>
@@ -42,7 +45,9 @@ export function SourceHealth({ sources, nextRun }: SourceHealthProps) {
                     Last: {new Date(h.last_success).toLocaleDateString()}
                   </span>
                 )}
-                <span className={`px-2 py-0.5 rounded text-xs font-medium ${SCRAPER_HEALTH_STYLES[healthKey]}`}>
+                <span
+                  className={`px-2 py-0.5 rounded text-xs font-medium ${SCRAPER_HEALTH_STYLES[healthKey]}`}
+                >
                   {h.is_healthy ? 'Healthy' : `Failed x${h.consecutive_failures}`}
                 </span>
               </div>

@@ -65,7 +65,9 @@ export function useScraperData(): ScraperData {
     try {
       const res = await fetch('/api/admin/scraper?action=health');
       if (res.ok) setHealth(await res.json());
-    } catch { /* non-critical */ }
+    } catch {
+      /* non-critical */
+    }
   }, []);
 
   const loadArticles = useCallback(async () => {
@@ -80,10 +82,15 @@ export function useScraperData(): ScraperData {
         setArticles(data.articles ?? []);
         setTotalArticles(data.total ?? 0);
       }
-    } catch { /* non-critical */ }
+    } catch {
+      /* non-critical */
+    }
   }, [search, domains, source]);
 
-  const refresh = useCallback(() => { loadHealth(); loadArticles(); }, [loadHealth, loadArticles]);
+  const refresh = useCallback(() => {
+    loadHealth();
+    loadArticles();
+  }, [loadHealth, loadArticles]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
@@ -99,34 +106,59 @@ export function useScraperData(): ScraperData {
         const d = await res.json().catch(() => ({}));
         setError((d as { error?: string }).error ?? 'Scraper failed');
       }
-    } catch (e) { setError(`Network error: ${String(e)}`); }
-    finally { setIsRunning(false); refresh(); }
+    } catch (e) {
+      setError(`Network error: ${String(e)}`);
+    } finally {
+      setIsRunning(false);
+      refresh();
+    }
   }, [refresh]);
 
-  const addArticle = useCallback(async (data: Record<string, unknown>) => {
-    const res = await fetch('/api/admin/threat-intel', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (res.ok) { await loadArticles(); return true; }
-    return false;
-  }, [loadArticles]);
+  const addArticle = useCallback(
+    async (data: Record<string, unknown>) => {
+      const res = await fetch('/api/admin/threat-intel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        await loadArticles();
+        return true;
+      }
+      return false;
+    },
+    [loadArticles],
+  );
 
-  const deleteArticleFn = useCallback(async (id: string) => {
-    const res = await fetch('/api/admin/threat-intel', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ articleId: id }),
-    });
-    if (res.ok) { await loadArticles(); return true; }
-    return false;
-  }, [loadArticles]);
+  const deleteArticleFn = useCallback(
+    async (id: string) => {
+      const res = await fetch('/api/admin/threat-intel', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articleId: id }),
+      });
+      if (res.ok) {
+        await loadArticles();
+        return true;
+      }
+      return false;
+    },
+    [loadArticles],
+  );
 
   return {
-    health, articles, totalArticles, isRunning, error,
+    health,
+    articles,
+    totalArticles,
+    isRunning,
+    error,
     filters: { search, domains, source },
-    setSearch, setDomains, setSource,
-    runScraper, addArticle, deleteArticle: deleteArticleFn, refresh,
+    setSearch,
+    setDomains,
+    setSource,
+    runScraper,
+    addArticle,
+    deleteArticle: deleteArticleFn,
+    refresh,
   };
 }

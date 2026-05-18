@@ -100,6 +100,7 @@ export const ADMIN_NAV_ITEMS = [
   { href: '/admin/reports', label: 'Reports' },
   { href: '/admin/sessions', label: 'Sessions' },
   { href: '/admin/linkedin', label: 'LinkedIn' },
+  { href: '/admin/analytics', label: 'Analytics' },
   { href: '/admin/audit-log', label: 'Audit Log' },
 ] as const;
 

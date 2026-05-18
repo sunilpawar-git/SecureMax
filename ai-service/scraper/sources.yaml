@@ -1,0 +1,42 @@
+# SSOT for scraper data sources — edit here, not in Python code.
+# Tiers: newsapi (tier 1), rss (tier 2), playwright (tier 3).
+
+newsapi:
+  - name: "News API — Physical Security"
+    type: newsapi
+    query: "physical security"
+    api_key_env: NEWS_API_KEY
+    page_size: 20
+
+rss:
+  - name: "The Hacker News"
+    type: rss
+    url: "https://feeds.feedburner.com/TheHackersNews"
+  - name: "Bleeping Computer"
+    type: rss
+    url: "https://www.bleepingcomputer.com/feed/"
+  - name: "Help Net Security"
+    type: rss
+    url: "https://www.helpnetsecurity.com/feed/"
+  - name: "CSO Online"
+    type: rss
+    url: "https://www.csoonline.com/feed/"
+  - name: "Dark Reading"
+    type: rss
+    url: "https://www.darkreading.com/rss.xml"
+
+playwright:
+  - name: "The Security Company Blog"
+    type: playwright
+    url: "https://thesecuritycompany.com/the-latest/"
+    selector_article: "article"
+    selector_title: "h2"
+    selector_link: "a"
+    max_articles: 10
+  - name: "Security Journal Americas"
+    type: playwright
+    url: "https://www.securityjournalamericas.com/news/"
+    selector_article: "article.post"
+    selector_title: ".entry-title"
+    selector_link: ".entry-title a"
+    max_articles: 10

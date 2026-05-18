@@ -53,7 +53,9 @@ export default function LeadsPage() {
           >
             <option value="">All Statuses</option>
             {STATUS_OPTIONS.filter(Boolean).map((s) => (
-              <option key={s} value={s}>{LEAD_STATUS_LABEL[s] ?? s.replace(/_/g, ' ')}</option>
+              <option key={s} value={s}>
+                {LEAD_STATUS_LABEL[s] ?? s.replace(/_/g, ' ')}
+              </option>
             ))}
           </select>
           <input

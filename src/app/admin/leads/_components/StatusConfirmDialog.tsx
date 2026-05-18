@@ -24,9 +24,7 @@ export function StatusConfirmDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4 p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-2">
-          Confirm Status Change
-        </h2>
+        <h2 className="text-lg font-semibold text-slate-900 mb-2">Confirm Status Change</h2>
         <p className="text-sm text-slate-600 mb-4">
           Move <span className="font-medium">{leadCompany}</span> from{' '}
           <span className="font-medium">{LEAD_STATUS_LABEL[currentStatus]}</span> to{' '}

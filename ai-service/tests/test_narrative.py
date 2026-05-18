@@ -36,18 +36,14 @@ class TestGenerateExecutiveSummary:
     @pytest.mark.asyncio
     async def test_returns_string(self) -> None:
         gemini = _mock_gemini("Your property has critical vulnerabilities.")
-        result = await generate_executive_summary(
-            _sample_findings(), "hni", gemini=gemini
-        )
+        result = await generate_executive_summary(_sample_findings(), "hni", gemini=gemini)
         assert isinstance(result, str)
         assert len(result) > 0
 
     @pytest.mark.asyncio
     async def test_calls_gemini_with_prompt(self) -> None:
         gemini = _mock_gemini("Summary text.")
-        await generate_executive_summary(
-            _sample_findings(), "hni", gemini=gemini
-        )
+        await generate_executive_summary(_sample_findings(), "hni", gemini=gemini)
         gemini.generate.assert_called_once()
         prompt_arg = gemini.generate.call_args[0][0]
         assert "CPP-01" in prompt_arg or "Physical Security" in prompt_arg
@@ -64,9 +60,7 @@ class TestGenerateExecutiveSummary:
     async def test_fallback_on_gemini_failure(self) -> None:
         gemini = MagicMock(spec=GeminiClient)
         gemini.generate = AsyncMock(side_effect=GeminiError("API down"))
-        result = await generate_executive_summary(
-            _sample_findings(), "hni", gemini=gemini
-        )
+        result = await generate_executive_summary(_sample_findings(), "hni", gemini=gemini)
         assert "critical" in result.lower() or "finding" in result.lower()
 
     @pytest.mark.asyncio
@@ -80,9 +74,7 @@ class TestGenerateBoardSummary:
     @pytest.mark.asyncio
     async def test_returns_string(self) -> None:
         gemini = _mock_gemini("Board-level risk exposure summary.")
-        result = await generate_board_summary(
-            _sample_findings(), gemini=gemini
-        )
+        result = await generate_board_summary(_sample_findings(), gemini=gemini)
         assert isinstance(result, str)
 
     @pytest.mark.asyncio
@@ -106,9 +98,7 @@ class TestGenerateFindingRecommendation:
     async def test_returns_recommendation_string(self) -> None:
         gemini = _mock_gemini("Install perimeter fencing with CCTV.")
         finding = _sample_findings()[0]
-        result = await generate_finding_recommendation(
-            finding, "hni", gemini=gemini
-        )
+        result = await generate_finding_recommendation(finding, "hni", gemini=gemini)
         assert isinstance(result, str)
         assert len(result) > 0
 
@@ -125,9 +115,7 @@ class TestGenerateFindingRecommendation:
         gemini = MagicMock(spec=GeminiClient)
         gemini.generate = AsyncMock(side_effect=GeminiError("down"))
         finding = _sample_findings()[0]
-        result = await generate_finding_recommendation(
-            finding, "hni", gemini=gemini
-        )
+        result = await generate_finding_recommendation(finding, "hni", gemini=gemini)
         assert "CPP-01" in result or "Physical Security" in result
 
     @pytest.mark.asyncio
@@ -136,9 +124,7 @@ class TestGenerateFindingRecommendation:
         gemini = _mock_gemini("Recommendation text.")
         finding = _sample_findings()[0]
         finding["answer"] = "We use {firewall} rules and {VPN}"
-        result = await generate_finding_recommendation(
-            finding, "hni", gemini=gemini
-        )
+        result = await generate_finding_recommendation(finding, "hni", gemini=gemini)
         assert isinstance(result, str)
 
 
@@ -148,9 +134,7 @@ class TestInputSanitization:
         gemini = _mock_gemini("Clean response.")
         finding = _sample_findings()[0]
         finding["answer"] = "No\x00\x01\x02 access"
-        await generate_finding_recommendation(
-            finding, "hni", gemini=gemini
-        )
+        await generate_finding_recommendation(finding, "hni", gemini=gemini)
         prompt_arg = gemini.generate.call_args[0][0]
         assert "\x00" not in prompt_arg
         assert "\x01" not in prompt_arg
@@ -160,8 +144,6 @@ class TestInputSanitization:
         gemini = _mock_gemini("Response.")
         finding = _sample_findings()[0]
         finding["answer"] = "x" * 1000
-        await generate_finding_recommendation(
-            finding, "hni", gemini=gemini
-        )
+        await generate_finding_recommendation(finding, "hni", gemini=gemini)
         prompt_arg = gemini.generate.call_args[0][0]
         assert "x" * 600 not in prompt_arg

@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { auth } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { RATE_LIMITS } from '@/config/security';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 function getClientIp(request: NextRequest): string {
   return (
@@ -11,10 +12,26 @@ function getClientIp(request: NextRequest): string {
   );
 }
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  const ip = getClientIp(request);
+const PROTECTED_PAGE_PREFIXES = [
+  '/questionnaire',
+  '/dashboard',
+  '/admin',
+  '/payment',
+  '/report',
+  '/enterprise',
+  '/onboarding',
+];
 
+function isProtectedPage(pathname: string): boolean {
+  return PROTECTED_PAGE_PREFIXES.some((p) => pathname.startsWith(p));
+}
+
+export default auth(async (req) => {
+  const { nextUrl } = req;
+  const { pathname } = nextUrl;
+  const ip = getClientIp(req);
+
+  // Rate-limit API routes before auth checks.
   if (pathname.startsWith('/api/')) {
     const isAiEndpoint = pathname.includes('/questionnaire') || pathname.includes('/report');
     const isAdminEndpoint = pathname.startsWith('/api/admin');
@@ -40,11 +57,60 @@ export function middleware(request: NextRequest) {
         },
       );
     }
+
+    return NextResponse.next();
+  }
+
+  const session = req.auth;
+  const isLoggedIn = !!session?.user?.id;
+
+  // H-1: Redirect unauthenticated users away from protected page routes.
+  if (isProtectedPage(pathname) && !isLoggedIn) {
+    const signInUrl = new URL('/auth/signin', nextUrl);
+    signInUrl.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  // H-2: Require DPDPA consent before accessing any protected app route.
+  // Excludes /onboarding/consent itself to avoid redirect loop.
+  // Security headers are set in next.config.ts (SSOT) — not here.
+  const CONSENT_REQUIRED_PREFIXES = [
+    '/questionnaire',
+    '/dashboard',
+    '/payment',
+    '/report',
+    '/enterprise',
+    '/admin',
+  ];
+
+  if (isLoggedIn) {
+    // Guard admin pages to admin-role users only.
+    if (pathname.startsWith('/admin') && (session.user as { role?: string }).role !== 'admin') {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
+    }
+
+    const requiresConsent = CONSENT_REQUIRED_PREFIXES.some((p) => pathname.startsWith(p));
+    const isConsentPage = pathname.startsWith('/onboarding/consent');
+    if (requiresConsent && !isConsentPage) {
+      const consentAt = (session as { user: { consentAt?: string } }).user.consentAt;
+      if (!consentAt) {
+        return NextResponse.redirect(new URL('/onboarding/consent', nextUrl));
+      }
+    }
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: ['/admin/:path*', '/questionnaire/:path*', '/dashboard/:path*', '/api/:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/questionnaire/:path*',
+    '/dashboard/:path*',
+    '/payment/:path*',
+    '/report/:path*',
+    '/enterprise/:path*',
+    '/onboarding/:path*',
+    '/api/:path*',
+  ],
 };

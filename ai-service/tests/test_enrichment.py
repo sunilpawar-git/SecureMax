@@ -47,9 +47,7 @@ class TestEnrichFindingsWithCpp:
         _seed_test_chunk(db_conn, "CPP-01", "Perimeter", "Perimeter fencing is essential.")
         gemini = _mock_gemini()
         findings = _sample_findings()
-        enriched = run_db(
-            enrich_findings_with_cpp(findings, db_conn, _settings, gemini=gemini)
-        )
+        enriched = run_db(enrich_findings_with_cpp(findings, db_conn, _settings, gemini=gemini))
         cpp01_finding = next(f for f in enriched if f["domain"] == "CPP-01")
         assert cpp01_finding.get("cpp_citation") is not None
         assert cpp01_finding["cpp_citation"]["domain"] == "CPP-01"
@@ -58,9 +56,7 @@ class TestEnrichFindingsWithCpp:
     def test_empty_db_returns_findings_without_citations(self, db_conn) -> None:
         gemini = _mock_gemini()
         findings = _sample_findings()
-        enriched = run_db(
-            enrich_findings_with_cpp(findings, db_conn, _settings, gemini=gemini)
-        )
+        enriched = run_db(enrich_findings_with_cpp(findings, db_conn, _settings, gemini=gemini))
         for f in enriched:
             assert f.get("cpp_citation") is None
 
@@ -75,9 +71,7 @@ class TestEnrichFindingsWithCpp:
         gemini = MagicMock(spec=GeminiClient)
         gemini.embed = AsyncMock(side_effect=RuntimeError("API down"))
         findings = _sample_findings()
-        enriched = run_db(
-            enrich_findings_with_cpp(findings, db_conn, _settings, gemini=gemini)
-        )
+        enriched = run_db(enrich_findings_with_cpp(findings, db_conn, _settings, gemini=gemini))
         assert len(enriched) == len(findings)
         for f in enriched:
             assert f.get("cpp_citation") is None
@@ -97,9 +91,7 @@ class TestEnrichFindingsWithThreatIntel:
         assert articles == []
 
     def test_soft_deleted_articles_excluded(self, db_conn) -> None:
-        _seed_test_threat_intel(
-            db_conn, "CPP-01", "Deleted article", soft_deleted=True
-        )
+        _seed_test_threat_intel(db_conn, "CPP-01", "Deleted article", soft_deleted=True)
         findings = _sample_findings()
         articles = run_db(enrich_findings_with_threat_intel(findings, db_conn))
         assert articles == []
@@ -113,13 +105,9 @@ class TestEnrichFindingsWithThreatIntel:
 
     def test_limits_articles(self, db_conn) -> None:
         for i in range(10):
-            _seed_test_threat_intel(
-                db_conn, "CPP-01", f"Article {i}", article_id=f"art-{i}"
-            )
+            _seed_test_threat_intel(db_conn, "CPP-01", f"Article {i}", article_id=f"art-{i}")
         findings = _sample_findings()
-        articles = run_db(
-            enrich_findings_with_threat_intel(findings, db_conn, max_articles=5)
-        )
+        articles = run_db(enrich_findings_with_threat_intel(findings, db_conn, max_articles=5))
         assert len(articles) <= 5
 
 

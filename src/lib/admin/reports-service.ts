@@ -13,7 +13,6 @@ import {
   ADMIN_ERR,
   REPORT_JOB_STATUS,
 } from '@/config/admin-strings';
-import type { Prisma } from '@/generated/prisma/client';
 
 export async function getReports() {
   const reports = await prisma.reportArtifact.findMany({
@@ -54,15 +53,11 @@ export interface RegenResult {
   jobId?: string;
 }
 
-export async function regenerateReport(
-  sessionId: string,
-  adminId: string,
-): Promise<RegenResult> {
+export async function regenerateReport(sessionId: string, adminId: string): Promise<RegenResult> {
   const job = await prisma.reportJob.findUnique({ where: { sessionId } });
   if (
     job &&
-    (job.status === REPORT_JOB_STATUS.PENDING ||
-      job.status === REPORT_JOB_STATUS.PROCESSING)
+    (job.status === REPORT_JOB_STATUS.PENDING || job.status === REPORT_JOB_STATUS.PROCESSING)
   ) {
     return { success: false, error: ADMIN_ERR.REPORT_REGEN_IN_PROGRESS };
   }
@@ -85,7 +80,9 @@ export async function regenerateReport(
     const r = result as { report_id?: string; job_id?: string };
     const jobId = r.report_id ?? r.job_id;
     if (!jobId) {
-      console.warn('[reports-service] AI response missing report_id/job_id field', { keys: Object.keys(r) });
+      console.warn('[reports-service] AI response missing report_id/job_id field', {
+        keys: Object.keys(r),
+      });
     }
     return { success: true, jobId };
   } catch {
@@ -115,10 +112,7 @@ export interface UnlockResult {
   error?: string;
 }
 
-export async function unlockReport(
-  sessionId: string,
-  adminId: string,
-): Promise<UnlockResult> {
+export async function unlockReport(sessionId: string, adminId: string): Promise<UnlockResult> {
   const session = await prisma.auditSession.findUnique({ where: { id: sessionId } });
   if (!session) {
     return { success: false, error: ADMIN_ERR.SESSION_NOT_FOUND };

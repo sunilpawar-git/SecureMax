@@ -58,9 +58,7 @@ export function KpiCards({ stats }: KpiCardsProps) {
     {
       label: 'Scraper Health',
       value: stats.scraperHealthy ? 'Healthy' : 'Failed',
-      className: SCRAPER_HEALTH_STYLES[healthKey]
-        .replace('bg-', 'text-')
-        .replace(/text-\S+\s/, ''),
+      className: SCRAPER_HEALTH_STYLES[healthKey].replace('bg-', 'text-').replace(/text-\S+\s/, ''),
     },
   ];
 
@@ -72,9 +70,7 @@ export function KpiCards({ stats }: KpiCardsProps) {
           className="bg-white rounded-lg border border-slate-200 p-5 hover:shadow-sm transition-shadow"
         >
           <p className="text-sm text-slate-500 font-medium">{card.label}</p>
-          <p className={`text-2xl font-bold mt-1 ${card.className}`}>
-            {card.value}
-          </p>
+          <p className={`text-2xl font-bold mt-1 ${card.className}`}>{card.value}</p>
         </div>
       ))}
     </div>

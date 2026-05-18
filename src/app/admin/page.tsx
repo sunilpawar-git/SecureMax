@@ -43,22 +43,16 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      {error && (
-        <p className="text-sm text-red-600 bg-red-50 rounded-md px-4 py-2">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 bg-red-50 rounded-md px-4 py-2">{error}</p>}
       <KpiCards stats={stats ?? EMPTY_STATS} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <section>
-          <h2 className="text-lg font-semibold text-slate-900 mb-3">
-            Action Items
-          </h2>
+          <h2 className="text-lg font-semibold text-slate-900 mb-3">Action Items</h2>
           <ActionItems items={actionItems ?? EMPTY_ACTION_ITEMS} />
         </section>
         <section>
-          <h2 className="text-lg font-semibold text-slate-900 mb-3">
-            Recent Activity
-          </h2>
+          <h2 className="text-lg font-semibold text-slate-900 mb-3">Recent Activity</h2>
           <RecentActivity actions={recentActivity} />
         </section>
       </div>

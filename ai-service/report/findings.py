@@ -109,9 +109,7 @@ def split_free_paid(findings: list[dict]) -> tuple[list[dict], list[dict]]:
                 "domain": finding.get("domain", ""),
                 "domain_name": finding.get("domain_name", ""),
                 "severity": finding.get("severity", "low"),
-                "question": (
-                    question[:60] + "..." if len(question) > 60 else question
-                ),
+                "question": (question[:60] + "..." if len(question) > 60 else question),
                 "answer": "●●●●●●",
                 "recommendation": "Unlock full report for detailed recommendations.",
             }

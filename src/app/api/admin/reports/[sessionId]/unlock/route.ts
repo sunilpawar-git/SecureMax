@@ -5,7 +5,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { unlockReport } from '@/lib/admin/reports-service';
-import { ADMIN_ERR } from '@/config/admin-strings';
 
 export async function POST(
   _request: NextRequest,

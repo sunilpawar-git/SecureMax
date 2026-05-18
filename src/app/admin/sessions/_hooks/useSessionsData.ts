@@ -52,13 +52,18 @@ export function useSessionsData(): SessionsData {
     if (trackFilter) params.set('track', trackFilter);
     try {
       const res = await fetch(`/api/admin/sessions?${params}`);
-      if (!res.ok) { setError('Failed to load sessions'); return; }
+      if (!res.ok) {
+        setError('Failed to load sessions');
+        return;
+      }
       const data: SessionsResponse = await res.json();
       setSessions(data.sessions);
       setTotal(data.total);
     } catch {
       setError('Failed to load sessions');
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }, [statusFilter, trackFilter]);
 
   useEffect(() => {
@@ -66,20 +71,32 @@ export function useSessionsData(): SessionsData {
     void load();
   }, [load]);
 
-  const forceClose = useCallback(async (sessionId: string) => {
-    const res = await fetch('/api/admin/sessions', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId }),
-    });
-    if (res.ok) { await load(); return true; }
-    return false;
-  }, [load]);
+  const forceClose = useCallback(
+    async (sessionId: string) => {
+      const res = await fetch('/api/admin/sessions', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId }),
+      });
+      if (res.ok) {
+        await load();
+        return true;
+      }
+      return false;
+    },
+    [load],
+  );
 
   return {
-    sessions, total, loading, error,
-    statusFilter, trackFilter,
-    setStatusFilter, setTrackFilter,
-    forceClose, refresh: load,
+    sessions,
+    total,
+    loading,
+    error,
+    statusFilter,
+    trackFilter,
+    setStatusFilter,
+    setTrackFilter,
+    forceClose,
+    refresh: load,
   };
 }

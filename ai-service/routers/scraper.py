@@ -114,6 +114,7 @@ def _make_gemini_tagger(gemini):
         except Exception as e:
             logger.warning("Gemini tagging failed for %s: %s", article.url, e)
             from scraper.pipeline import _fallback_process
+
             return _fallback_process(article)
 
     return tag_article
