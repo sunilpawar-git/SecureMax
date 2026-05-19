@@ -31,4 +31,5 @@ export {
   FOLLOWUP_STATUS_STYLES,
   HEADER_STYLES,
   ACTION_TYPE_STYLES,
+  ADMIN_EXIT_LINK_STYLE,
 } from './admin-colors';

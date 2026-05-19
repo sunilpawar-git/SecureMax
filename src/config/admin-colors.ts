@@ -71,6 +71,10 @@ export const HEADER_STYLES = {
   slim: 'bg-slate-50 border-b border-slate-200',
 } as const;
 
+// Exit link in the admin nav — visually distinct from regular nav items
+export const ADMIN_EXIT_LINK_STYLE =
+  'text-xs text-slate-400 hover:text-white border border-slate-600 rounded px-2 py-1 transition-colors whitespace-nowrap';
+
 export const ACTION_TYPE_STYLES: Record<string, string> = {
   lead_status_changed: 'bg-blue-100 text-blue-800',
   report_regenerated: 'bg-purple-100 text-purple-800',

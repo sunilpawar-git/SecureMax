@@ -124,6 +124,7 @@ export const NAV = {
   SAVE_EXIT: 'Save & Exit',
   SIGN_OUT: 'Sign Out',
   SIGN_IN: 'Sign In',
+  EXIT_ADMIN: '← Exit Admin',
 } as const;
 
 export const RESUME = {
