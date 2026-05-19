@@ -9,6 +9,11 @@ import { useEffect, useState } from 'react';
 import { FOLLOWUP_STRINGS, ADMIN_EMAIL_TEMPLATES } from '@/config/admin-strings';
 import { FOLLOWUP_STATUS_STYLES } from '@/config/admin-colors';
 
+function buildWhatsAppUrl(phone: string): string {
+  const encoded = encodeURIComponent(FOLLOWUP_STRINGS.WHATSAPP_MESSAGE);
+  return phone ? `https://wa.me/${phone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
+}
+
 interface FollowUpItem {
   sessionId: string;
   userId: string;
@@ -113,7 +118,7 @@ function FollowUpRow({ item }: { item: FollowUpItem }) {
             {FOLLOWUP_STRINGS.EMAIL_CTA}
           </a>
           <a
-            href={`https://wa.me/?text=${encodeURIComponent(FOLLOWUP_STRINGS.WHATSAPP_MESSAGE)}`}
+            href={buildWhatsAppUrl('')}
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs font-medium text-green-600 hover:text-green-800"

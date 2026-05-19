@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma';
 import { logAdminAction } from './actions';
 import { compareReports, type DiffResult } from './diff-engine';
 import { aiServiceFetch } from '@/lib/ai-service';
+import { logger } from '@/lib/logger';
 import {
   ADMIN_ACTION_TYPE,
   ADMIN_ENTITY_TYPE,
@@ -80,7 +81,7 @@ export async function regenerateReport(sessionId: string, adminId: string): Prom
     const r = result as { report_id?: string; job_id?: string };
     const jobId = r.report_id ?? r.job_id;
     if (!jobId) {
-      console.warn('[reports-service] AI response missing report_id/job_id field', {
+      logger.warn('AI response missing report_id/job_id field', 'reports-service', {
         keys: Object.keys(r),
       });
     }

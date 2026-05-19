@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { apiSuccess, apiError } from '@/lib/api';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
 import { logger } from '@/lib/logger';
@@ -14,10 +15,10 @@ function handleServiceError(error: unknown, fallbackMessage: string): NextRespon
       status: error.statusCode,
     });
     const clientStatus = error.statusCode >= 500 ? 503 : error.statusCode;
-    return NextResponse.json({ error: fallbackMessage }, { status: clientStatus });
+    return apiError(fallbackMessage, clientStatus);
   }
   logger.error('Unexpected error', 'scraper-route');
-  return NextResponse.json({ error: fallbackMessage }, { status: 503 });
+  return apiError(fallbackMessage, 503);
 }
 
 export async function POST() {
@@ -26,7 +27,7 @@ export async function POST() {
   }
   try {
     const result = await aiServiceFetch('/scraper/run', { body: {} });
-    return NextResponse.json(result);
+    return apiSuccess(result);
   } catch (error) {
     return handleServiceError(error, 'Scraper unavailable — check service logs');
   }
@@ -40,10 +41,10 @@ export async function GET(request: NextRequest) {
   try {
     if (action === 'health') {
       const result = await aiServiceFetch('/scraper/health', { method: 'GET' });
-      return NextResponse.json(result);
+      return apiSuccess(result);
     }
     const result = await aiServiceFetch('/scraper/articles', { method: 'GET' });
-    return NextResponse.json(result);
+    return apiSuccess(result);
   } catch (error) {
     return handleServiceError(error, 'Service unavailable — check service logs');
   }

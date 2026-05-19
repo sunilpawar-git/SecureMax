@@ -66,8 +66,8 @@ describe('String resources (SSOT)', () => {
     expect(Object.values(SESSION_STATUS)).toHaveLength(3);
   });
 
-  it('ENTERPRISE_LEAD_STATUS has 4 pipeline stages', () => {
-    expect(Object.values(ENTERPRISE_LEAD_STATUS)).toHaveLength(4);
+  it('ENTERPRISE_LEAD_STATUS has 5 pipeline stages (canonical LEAD_STATUS)', () => {
+    expect(Object.values(ENTERPRISE_LEAD_STATUS)).toHaveLength(5);
   });
 
   it('LINKEDIN_POST_STATUS has 3 states', () => {

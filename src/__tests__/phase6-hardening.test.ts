@@ -42,8 +42,8 @@ describe('Security headers are set via next.config.ts (SSOT)', () => {
     expect(content).toContain('headers()');
   });
 
-  it('middleware.ts does NOT duplicate header setting', () => {
-    const content = fs.readFileSync(path.join(process.cwd(), 'src', 'middleware.ts'), 'utf-8');
+  it('proxy.ts does NOT duplicate header setting', () => {
+    const content = fs.readFileSync(path.join(process.cwd(), 'src', 'proxy.ts'), 'utf-8');
     expect(content).not.toContain('Object.entries(SECURITY_HEADERS)');
   });
 

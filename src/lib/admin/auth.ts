@@ -11,7 +11,7 @@ import { ADMIN_ERR } from '@/config/admin-strings';
 export interface AdminSession {
   user: {
     id: string;
-    email: string;
+    email: string | null;
     role: string;
   };
 }
@@ -21,7 +21,7 @@ export async function verifyAdmin(): Promise<AdminSession | null> {
   if (!session?.user?.role || session.user.role !== USER_ROLE.ADMIN) {
     return null;
   }
-  return session as unknown as AdminSession;
+  return session as AdminSession;
 }
 
 /** Returns a fresh 403 response on every call — never reuses a shared instance. */

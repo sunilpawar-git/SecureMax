@@ -90,3 +90,7 @@ export const AdminActionSchema = z.object({
   entityId: z.string().min(1),
   metadata: z.record(z.string(), z.unknown()).optional(),
 });
+
+export const LinkedInDraftSchema = z.object({
+  article_ids: z.array(z.string().min(1)).min(1).max(10),
+});

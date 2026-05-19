@@ -59,12 +59,11 @@ export const SESSION_STATUS = {
   ABANDONED: 'abandoned',
 } as const;
 
-export const ENTERPRISE_LEAD_STATUS = {
-  NEW: 'new',
-  CONTACTED: 'contacted',
-  PROPOSAL_SENT: 'proposal_sent',
-  CLOSED: 'closed',
-} as const;
+/**
+ * @deprecated Use LEAD_STATUS from '@/config/admin-strings' — canonical 5-stage pipeline.
+ * Kept here as a re-export alias so existing imports don't break.
+ */
+export { LEAD_STATUS as ENTERPRISE_LEAD_STATUS } from './admin-strings';
 
 export const LINKEDIN_POST_STATUS = {
   DRAFT: 'draft',

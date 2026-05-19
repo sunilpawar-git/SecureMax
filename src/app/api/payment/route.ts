@@ -27,6 +27,7 @@ import {
   isWebhookProcessed,
   logPaymentVerification,
 } from '@/lib/payment/payment-service';
+import { logWebhookSuccess, logWebhookFailure } from '@/lib/admin/webhook-service';
 import { PAYMENT } from '@/config/strings';
 import { prisma } from '@/lib/prisma';
 
@@ -99,6 +100,7 @@ async function handleVerify(request: Request) {
       'failed',
       'Invalid signature',
     );
+    await logWebhookFailure('razorpay', 'payment.verify', 'Invalid signature');
     return apiError('Invalid payment signature', 400);
   }
 
@@ -109,6 +111,12 @@ async function handleVerify(request: Request) {
     unlocked ? 'success' : 'partial_failure',
     unlocked ? undefined : 'Signature valid but no matching session found',
   );
+
+  if (unlocked) {
+    await logWebhookSuccess('razorpay', 'payment.verify');
+  } else {
+    await logWebhookFailure('razorpay', 'payment.verify', 'Session not found for order');
+  }
 
   return apiSuccess({ verified: true, report_unlocked: unlocked });
 }

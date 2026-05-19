@@ -2,7 +2,8 @@
  * Admin lead email endpoint — sends custom email to a lead via Resend.
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { apiSuccess, apiError } from '@/lib/api';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { sendEmailToLead } from '@/lib/admin/leads-service';
 import { LeadEmailSchema } from '@/lib/admin/validators';
@@ -17,15 +18,12 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: ADMIN_ERR.INVALID_REQUEST }, { status: 400 });
+    return apiError(ADMIN_ERR.INVALID_REQUEST, 400);
   }
 
   const parsed = LeadEmailSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: ADMIN_ERR.INVALID_REQUEST, details: parsed.error.flatten() },
-      { status: 400 },
-    );
+    return apiError(ADMIN_ERR.INVALID_REQUEST, 400);
   }
 
   try {
@@ -42,11 +40,11 @@ export async function POST(request: NextRequest) {
           : result.error === ADMIN_ERR.LEAD_NO_EMAIL
             ? 422
             : 500;
-      return NextResponse.json({ error: result.error }, { status });
+      return apiError(result.error ?? 'Unknown error', status);
     }
-    return NextResponse.json({ success: true });
+    return apiSuccess({ success: true });
   } catch (err) {
     logger.error('Send failed', 'admin-leads-email', { detail: String(err) });
-    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
+    return apiError('Failed to send email', 500);
   }
 }

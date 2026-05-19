@@ -2,7 +2,7 @@
  * Admin recent activity endpoint — last N admin actions for dashboard feed.
  */
 
-import { NextResponse } from 'next/server';
+import { apiSuccess, apiError } from '@/lib/api';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { getRecentActions } from '@/lib/admin/actions';
 import { logger } from '@/lib/logger';
@@ -16,9 +16,9 @@ export async function GET() {
 
   try {
     const actions = await getRecentActions(DEFAULT_LIMIT);
-    return NextResponse.json(actions);
+    return apiSuccess(actions);
   } catch (err) {
     logger.error('Query failed', 'admin-recent-activity', { detail: String(err) });
-    return NextResponse.json({ error: 'Failed to load activity' }, { status: 500 });
+    return apiError('Failed to load activity', 500);
   }
 }

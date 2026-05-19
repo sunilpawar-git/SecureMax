@@ -41,30 +41,10 @@ export interface DashboardData {
   refresh: () => void;
 }
 
-const EMPTY_STATS: DashboardStats = {
-  activeSessions: 0,
-  completedSessions: 0,
-  pendingLeads: 0,
-  totalLeads: 0,
-  reportsGenerated: 0,
-  totalArticles: 0,
-  scraperHealthy: true,
-};
-
-const EMPTY_ACTION_ITEMS: ActionItems = {
-  overdueFollowUps: 0,
-  scraperFailures: 0,
-  newLeadsCount: 0,
-};
-
-async function fetchJson<T>(url: string, fallback: T): Promise<T> {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return fallback;
-    return await res.json();
-  } catch {
-    return fallback;
-  }
+async function fetchJson<T>(url: string): Promise<T> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${url} returned ${res.status}`);
+  return res.json() as Promise<T>;
 }
 
 export function useDashboardData(): DashboardData {
@@ -79,15 +59,16 @@ export function useDashboardData(): DashboardData {
     setError(null);
     try {
       const [s, a, r] = await Promise.all([
-        fetchJson('/api/admin/stats', EMPTY_STATS),
-        fetchJson('/api/admin/action-items', EMPTY_ACTION_ITEMS),
-        fetchJson<AdminAction[]>('/api/admin/recent-activity', []),
+        fetchJson<DashboardStats>('/api/admin/stats'),
+        fetchJson<ActionItems>('/api/admin/action-items'),
+        fetchJson<AdminAction[]>('/api/admin/recent-activity'),
       ]);
       setStats(s);
       setActionItems(a);
       setRecentActivity(r);
-    } catch {
-      setError('Failed to load dashboard data');
+    } catch (err) {
+      setError('Failed to load dashboard data — check network or re-login.');
+      void Promise.resolve(err);
     } finally {
       setLoading(false);
     }

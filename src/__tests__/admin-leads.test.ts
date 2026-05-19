@@ -146,7 +146,7 @@ describe('updateLeadStatus', () => {
     );
   });
 
-  it('unlocks session report on proposal_sent', async () => {
+  it('does NOT set paid:true on proposal_sent — payment is separate from CRM', async () => {
     const contactedLead = { ...baseLead, status: LEAD_STATUS.CONTACTED };
     mockFindUnique.mockResolvedValue(contactedLead);
     mockUpdate.mockResolvedValue({ ...contactedLead, status: LEAD_STATUS.PROPOSAL_SENT });
@@ -154,11 +154,9 @@ describe('updateLeadStatus', () => {
 
     await updateLeadStatus('lead-1', LEAD_STATUS.PROPOSAL_SENT, 'admin-1');
 
-    expect(mockSessionUpdate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { id: 'sess-1' },
-        data: { paid: true },
-      }),
+    // Enterprise payment must be confirmed via explicit unlock action, not CRM status change.
+    expect(mockSessionUpdate).not.toHaveBeenCalledWith(
+      expect.objectContaining({ data: { paid: true } }),
     );
   });
 

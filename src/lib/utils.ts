@@ -11,3 +11,8 @@ export function safeInt(value: string | null | undefined, fallback: number): num
   const n = parseInt(value, 10);
   return Number.isNaN(n) ? fallback : n;
 }
+
+/** Validates that a string is a plausible Prisma CUID (starts with 'c', 25 chars). */
+export function isValidCuid(value: string): boolean {
+  return /^c[a-z0-9]{24}$/.test(value);
+}

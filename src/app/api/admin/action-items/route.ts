@@ -2,7 +2,7 @@
  * Admin action items endpoint — surfaces urgent dashboard items.
  */
 
-import { NextResponse } from 'next/server';
+import { apiSuccess, apiError } from '@/lib/api';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { getActionItems } from '@/lib/admin/action-items-service';
 import { logger } from '@/lib/logger';
@@ -14,9 +14,9 @@ export async function GET() {
 
   try {
     const items = await getActionItems();
-    return NextResponse.json(items);
+    return apiSuccess(items);
   } catch (err) {
     logger.error('Query failed', 'admin-action-items', { detail: String(err) });
-    return NextResponse.json({ error: 'Failed to load action items' }, { status: 500 });
+    return apiError('Failed to load action items', 500);
   }
 }

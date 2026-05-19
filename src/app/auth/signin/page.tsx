@@ -11,12 +11,22 @@ function sanitizeTrack(raw: string | undefined): string | null {
 }
 
 /**
- * When a track is present (user clicked an audit CTA), redirect to questionnaire.
- * When no track is present (returning user / admin clicked "Sign In"), redirect to dashboard.
- * This ensures admins land at /dashboard, not trapped in a questionnaire.
+ * Validates a callbackUrl is a safe same-origin relative path.
+ * Prevents open-redirect attacks — must start with / and not be a protocol URL.
  */
-function buildRedirectTo(track: string | null): string {
+function sanitizeCallbackUrl(raw: string | undefined): string | null {
+  if (!raw) return null;
+  if (raw.startsWith('/') && !raw.startsWith('//') && !raw.includes(':')) return raw;
+  return null;
+}
+
+/**
+ * Priority: track param → questionnaire; callbackUrl → honour it; fallback → /dashboard.
+ * This ensures admins signing in via /admin redirect land back at /admin, not /dashboard.
+ */
+function buildRedirectTo(track: string | null, callbackUrl: string | null): string {
   if (track) return `/questionnaire?track=${track}`;
+  if (callbackUrl) return callbackUrl;
   return '/dashboard';
 }
 
@@ -27,11 +37,12 @@ function isRealValue(val: string | undefined): boolean {
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ track?: string }>;
+  searchParams: Promise<{ track?: string; callbackUrl?: string }>;
 }) {
   const params = await searchParams;
   const track = sanitizeTrack(params.track);
-  const redirectTo = buildRedirectTo(track);
+  const callbackUrl = sanitizeCallbackUrl(params.callbackUrl);
+  const redirectTo = buildRedirectTo(track, callbackUrl);
 
   const googleEnabled =
     isRealValue(process.env.GOOGLE_CLIENT_ID) && isRealValue(process.env.GOOGLE_CLIENT_SECRET);

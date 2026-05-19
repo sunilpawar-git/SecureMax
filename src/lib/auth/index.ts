@@ -13,17 +13,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // On first sign-in both user and account are populated by OAuth.
       // Upsert the user row and hydrate the JWT with DB-sourced fields.
       if (user?.email && account) {
+        const isAdminEmail = user.email === process.env.ADMIN_EMAIL;
         const dbUser = await prisma.user.upsert({
           where: { email: user.email },
           update: {
             name: user.name ?? undefined,
             image: user.image ?? undefined,
+            // Re-sync role on every sign-in: if ADMIN_EMAIL env changes, existing users get promoted/demoted.
+            role: isAdminEmail ? USER_ROLE.ADMIN : undefined,
           },
           create: {
             email: user.email,
             name: user.name,
             image: user.image,
-            role: user.email === process.env.ADMIN_EMAIL ? USER_ROLE.ADMIN : USER_ROLE.USER,
+            role: isAdminEmail ? USER_ROLE.ADMIN : USER_ROLE.USER,
           },
         });
         const hydratedToken: JWT = {
@@ -36,10 +39,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return hydratedToken;
       }
       // Session update triggered by client-side useSession().update() — e.g. after consent.
-      // Merge any fields passed to update() directly into the token so the proxy sees them
-      // immediately without waiting for a full re-login.
+      // SECURITY: only allow whitelisted mutable fields. Never merge role, sub, or email
+      // from the client — those must come from the DB on sign-in only.
       if (trigger === 'update' && session) {
-        return { ...token, ...(session as Partial<JWT>) };
+        const safe = session as Partial<{ consentAt: string; track: string }>;
+        const updated: Partial<JWT> = {};
+        if (typeof safe.consentAt === 'string') updated.consentAt = safe.consentAt;
+        if (typeof safe.track === 'string') updated.track = safe.track;
+        return { ...token, ...updated };
       }
       // Subsequent requests: delegate to the pure callback helper
       return handleJwt(token, user ?? undefined);

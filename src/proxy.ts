@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { RATE_LIMITS } from '@/config/security';
+import { USER_ROLE } from '@/config/strings';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
@@ -40,7 +41,13 @@ export default auth(async (req) => {
     // Defense-in-depth: block non-admin users from /api/admin/* at middleware layer
     if (pathname.startsWith('/api/admin')) {
       const session = req.auth;
-      if (!session?.user || (session.user as { role?: string }).role !== 'admin') {
+      if (!session?.user) {
+        return NextResponse.json(
+          { error: 'Authentication required' },
+          { status: 401, headers: { 'X-Request-ID': requestId } },
+        );
+      }
+      if ((session.user as { role?: string }).role !== USER_ROLE.ADMIN) {
         return NextResponse.json(
           { error: 'Forbidden' },
           { status: 403, headers: { 'X-Request-ID': requestId } },
@@ -105,7 +112,7 @@ export default auth(async (req) => {
 
   if (isLoggedIn) {
     // Guard admin pages to admin-role users only.
-    if (pathname.startsWith('/admin') && (session.user as { role?: string }).role !== 'admin') {
+    if (pathname.startsWith('/admin') && (session.user as { role?: string }).role !== USER_ROLE.ADMIN) {
       return NextResponse.redirect(new URL('/dashboard', req.url));
     }
 

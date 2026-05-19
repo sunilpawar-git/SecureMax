@@ -32,7 +32,7 @@ export default function LinkedInPage() {
   }, []);
 
   useEffect(() => {
-    fetch('/api/admin/scraper')
+    fetch('/api/admin/threat-intel?limit=50')
       .then((res) => (res.ok ? res.json() : null))
       .then((data: { articles?: Article[] } | null) => {
         if (data) setArticles(data.articles ?? []);
@@ -88,6 +88,12 @@ export default function LinkedInPage() {
       await navigator.clipboard.writeText(fullPost);
       setCopied(true);
       copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
+      // Audit trail: log copied post to DB (fire-and-forget — non-blocking)
+      void fetch('/api/admin/linkedin', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postText: fullPost }),
+      });
     } catch {
       setCopyError('Clipboard copy failed — please select and copy manually.');
     }
@@ -133,7 +139,7 @@ export default function LinkedInPage() {
               </label>
             ))}
             {articles.length === 0 && (
-              <p className="text-sm text-gray-400">No articles yet. Run the scraper first.</p>
+              <p className="text-sm text-gray-400">No articles yet. Run the scraper to populate threat intelligence.</p>
             )}
           </div>
           <button

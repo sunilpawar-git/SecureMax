@@ -2,9 +2,11 @@
  * Admin report diff endpoint — compares current vs previous report version.
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { apiSuccess, apiError } from '@/lib/api';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { getReportDiff } from '@/lib/admin/reports-service';
+import { isValidCuid } from '@/lib/utils';
 import { logger } from '@/lib/logger';
 
 export async function GET(
@@ -14,14 +16,15 @@ export async function GET(
   if (!(await verifyAdmin())) return forbiddenResponse();
 
   const { sessionId } = await params;
+  if (!isValidCuid(sessionId)) return apiError('Invalid session ID', 400);
   try {
     const diff = await getReportDiff(sessionId);
     if (!diff) {
-      return NextResponse.json({ error: 'No previous version for comparison' }, { status: 404 });
+      return apiError('No previous version for comparison', 404);
     }
-    return NextResponse.json(diff);
+    return apiSuccess(diff);
   } catch (err) {
     logger.error('Failed', 'admin-reports-diff', { detail: String(err) });
-    return NextResponse.json({ error: 'Diff generation failed' }, { status: 500 });
+    return apiError('Diff generation failed', 500);
   }
 }
