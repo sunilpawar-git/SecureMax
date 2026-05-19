@@ -50,6 +50,18 @@ export const COLORS = {
 
 export type ColorToken = typeof COLORS;
 
+/**
+ * Landing page header style tokens — public-facing, no session context.
+ * Separate from HEADER_STYLES (which is for authenticated app pages).
+ */
+export const LANDING_HEADER_STYLES = {
+  header: 'absolute inset-x-0 top-0 z-10',
+  nav: 'mx-auto max-w-4xl flex items-center justify-between px-6 py-5',
+  logo: 'text-sm font-bold text-white hover:text-slate-200 transition-colors',
+  signInLink:
+    'rounded-lg border border-white/30 bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors',
+} as const;
+
 export const TRACK_BADGE_STYLES: Record<string, string> = {
   hni: 'bg-emerald-100 text-emerald-800',
   enterprise: 'bg-slate-100 text-slate-800',

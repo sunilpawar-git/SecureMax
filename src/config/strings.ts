@@ -123,6 +123,7 @@ export const NAV = {
   START_AUDIT: 'New Assessment',
   SAVE_EXIT: 'Save & Exit',
   SIGN_OUT: 'Sign Out',
+  SIGN_IN: 'Sign In',
 } as const;
 
 export const RESUME = {

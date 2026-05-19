@@ -2,7 +2,7 @@ export { APP, CTA, TRACK, TRACK_LABEL, USER_ROLE, CPP_DOMAINS, SEVERITY, NAV, RE
 export { SESSION_STATUS, ENTERPRISE_LEAD_STATUS, LINKEDIN_POST_STATUS } from './strings';
 export { TRUST_STACK, LIMITS, PAYMENT, RADAR_THRESHOLDS } from './strings';
 export { UI, DASHBOARD, QUESTIONNAIRE, SESSION_STATUS_LABEL } from './strings';
-export { COLORS } from './colors';
+export { COLORS, LANDING_HEADER_STYLES } from './colors';
 export type { ColorToken } from './colors';
 export { SECURITY_HEADERS, RATE_LIMITS, ENCRYPTION, SESSION_SECURITY } from './security';
 export {

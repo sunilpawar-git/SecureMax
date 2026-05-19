@@ -1,9 +1,23 @@
 import { signIn } from '@/lib/auth';
-import { APP, TRACK, TRUST_STACK, VALID_TRACKS } from '@/config/strings';
+import { APP, TRUST_STACK, VALID_TRACKS } from '@/config/strings';
 
-function sanitizeTrack(raw: string | undefined): string {
+/**
+ * Validates the track param — only accepts known track values.
+ * Returns null when no track is present (direct sign-in flow).
+ */
+function sanitizeTrack(raw: string | undefined): string | null {
   if (raw && (VALID_TRACKS as readonly string[]).includes(raw)) return raw;
-  return TRACK.HNI;
+  return null;
+}
+
+/**
+ * When a track is present (user clicked an audit CTA), redirect to questionnaire.
+ * When no track is present (returning user / admin clicked "Sign In"), redirect to dashboard.
+ * This ensures admins land at /dashboard, not trapped in a questionnaire.
+ */
+function buildRedirectTo(track: string | null): string {
+  if (track) return `/questionnaire?track=${track}`;
+  return '/dashboard';
 }
 
 function isRealValue(val: string | undefined): boolean {
@@ -17,7 +31,7 @@ export default async function SignInPage({
 }) {
   const params = await searchParams;
   const track = sanitizeTrack(params.track);
-  const redirectTo = `/questionnaire?track=${track}`;
+  const redirectTo = buildRedirectTo(track);
 
   const googleEnabled =
     isRealValue(process.env.GOOGLE_CLIENT_ID) && isRealValue(process.env.GOOGLE_CLIENT_SECRET);

@@ -1,4 +1,5 @@
 import { HeroSection } from '@/components/landing/HeroSection';
+import { LandingHeader } from '@/components/landing/LandingHeader';
 import { TrustSignals } from '@/components/landing/TrustSignals';
 import { HowItWorks } from '@/components/landing/HowItWorks';
 import { APP, CTA, TRUST_STACK } from '@/config/strings';
@@ -6,7 +7,9 @@ import Link from 'next/link';
 
 export default function LandingPage() {
   return (
-    <main>
+    <>
+      <LandingHeader />
+      <main>
       <HeroSection />
       <HowItWorks />
       <TrustSignals />
@@ -51,5 +54,6 @@ export default function LandingPage() {
         </div>
       </footer>
     </main>
+    </>
   );
 }
