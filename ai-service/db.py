@@ -12,8 +12,11 @@ from config import Settings
 
 
 async def init_pool(settings: Settings) -> asyncpg.Pool:
-    """Create an asyncpg connection pool. Called once at app startup."""
-    dsn = settings.database_url.replace("+asyncpg", "").split("?")[0]
+    """Create an asyncpg connection pool. Called once at app startup.
+
+    Preserves query params like sslmode from DATABASE_URL.
+    """
+    dsn = settings.database_url.replace("+asyncpg", "")
     return await asyncpg.create_pool(dsn, min_size=2, max_size=10)
 
 

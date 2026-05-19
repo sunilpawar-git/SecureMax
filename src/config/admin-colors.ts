@@ -46,10 +46,7 @@ export const SESSION_STATUS_STYLES: Record<string, string> = {
   abandoned: 'bg-gray-100 text-gray-800',
 };
 
-export const TRACK_BADGE_STYLES: Record<string, string> = {
-  hni: 'bg-emerald-100 text-emerald-800',
-  enterprise: 'bg-slate-100 text-slate-800',
-};
+export { TRACK_BADGE_STYLES } from './colors';
 
 export const URGENCY_STYLES: Record<string, string> = {
   critical: 'bg-red-50 border-red-200 text-red-800',
@@ -62,6 +59,17 @@ export const URGENCY_BADGE_STYLES: Record<string, string> = {
   warning: 'bg-amber-600 text-white',
   info: 'bg-blue-600 text-white',
 };
+
+export const FOLLOWUP_STATUS_STYLES: Record<string, string> = {
+  overdue: 'bg-red-50 border-l-4 border-red-500',
+  due_today: 'bg-amber-50 border-l-4 border-amber-500',
+  upcoming: 'bg-white',
+};
+
+export const HEADER_STYLES = {
+  full: 'bg-white border-b border-slate-200',
+  slim: 'bg-slate-50 border-b border-slate-200',
+} as const;
 
 export const ACTION_TYPE_STYLES: Record<string, string> = {
   lead_status_changed: 'bg-blue-100 text-blue-800',

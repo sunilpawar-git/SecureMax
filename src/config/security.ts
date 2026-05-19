@@ -40,6 +40,7 @@ export const ENCRYPTION = {
   IV_LENGTH: 16,
   TAG_LENGTH: 16,
   KEY_LENGTH: 32,
+  KEY_VERSION_PREFIX: 'v1:',
 } as const;
 
 export const SESSION_SECURITY = {

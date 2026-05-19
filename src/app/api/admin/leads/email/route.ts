@@ -7,6 +7,7 @@ import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { sendEmailToLead } from '@/lib/admin/leads-service';
 import { LeadEmailSchema } from '@/lib/admin/validators';
 import { ADMIN_ERR } from '@/config/admin-strings';
+import { logger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   const session = await verifyAdmin();
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('[admin-leads-email] Send failed', { detail: String(err) });
+    logger.error('Send failed', 'admin-leads-email', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
   }
 }

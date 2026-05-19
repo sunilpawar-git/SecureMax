@@ -42,7 +42,10 @@ SECURITY_KEYWORDS = [
 ]
 
 
-async def fetch_news_api(query: str = "physical security") -> list[RawArticle]:
+async def fetch_news_api(
+    query: str = "physical security",
+    page_size: int = 20,
+) -> list[RawArticle]:
     """Tier 1: News API — most reliable source."""
     settings = get_settings()
     if not settings.news_api_key:
@@ -53,7 +56,7 @@ async def fetch_news_api(query: str = "physical security") -> list[RawArticle]:
         "q": query,
         "language": "en",
         "sortBy": "publishedAt",
-        "pageSize": 20,
+        "pageSize": page_size,
         "apiKey": settings.news_api_key,
     }
 

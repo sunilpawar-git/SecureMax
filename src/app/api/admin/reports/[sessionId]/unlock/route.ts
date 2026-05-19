@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { unlockReport } from '@/lib/admin/reports-service';
+import { logger } from '@/lib/logger';
 
 export async function POST(
   _request: NextRequest,
@@ -21,7 +22,7 @@ export async function POST(
     }
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('[admin-reports-unlock] Failed', { detail: String(err) });
+    logger.error('Failed', 'admin-reports-unlock', { detail: String(err) });
     return NextResponse.json({ error: 'Unlock failed' }, { status: 500 });
   }
 }

@@ -13,6 +13,7 @@ import {
   revokeApiKey,
   getApiKeyAuditLog,
 } from '@/lib/api-key-manager';
+import { logger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   const session = await verifyAdmin();
@@ -125,7 +126,7 @@ export async function POST(request: NextRequest) {
         );
     }
   } catch (error) {
-    console.error('[admin-api-keys] Operation failed', { detail: String(error) });
+    logger.error('Operation failed', 'admin-api-keys', { detail: String(error) });
     return NextResponse.json({ error: 'Failed to manage API key' }, { status: 500 });
   }
 }

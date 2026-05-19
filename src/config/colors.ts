@@ -49,3 +49,8 @@ export const COLORS = {
 } as const;
 
 export type ColorToken = typeof COLORS;
+
+export const TRACK_BADGE_STYLES: Record<string, string> = {
+  hni: 'bg-emerald-100 text-emerald-800',
+  enterprise: 'bg-slate-100 text-slate-800',
+};

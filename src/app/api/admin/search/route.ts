@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { globalSearch } from '@/lib/admin/search-service';
 import { ADMIN_ERR } from '@/config/admin-strings';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   if (!(await verifyAdmin())) return forbiddenResponse();
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
     const results = await globalSearch(q);
     return NextResponse.json(results);
   } catch (err) {
-    console.error('[admin-search] Query failed', { detail: String(err) });
+    logger.error('Query failed', 'admin-search', { detail: String(err) });
     return NextResponse.json({ error: 'Search failed' }, { status: 500 });
   }
 }

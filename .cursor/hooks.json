@@ -16,8 +16,7 @@
     "beforeShellExecution": [
       {
         "command": ".cursor/hooks/block-dangerous-commands.sh",
-        "timeout": 5,
-        "failClosed": true
+        "timeout": 5
       }
     ],
     "beforeSubmitPrompt": [

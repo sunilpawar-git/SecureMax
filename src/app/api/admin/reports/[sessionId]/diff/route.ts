@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { getReportDiff } from '@/lib/admin/reports-service';
+import { logger } from '@/lib/logger';
 
 export async function GET(
   _request: NextRequest,
@@ -20,7 +21,7 @@ export async function GET(
     }
     return NextResponse.json(diff);
   } catch (err) {
-    console.error('[admin-reports-diff] Failed', { detail: String(err) });
+    logger.error('Failed', 'admin-reports-diff', { detail: String(err) });
     return NextResponse.json({ error: 'Diff generation failed' }, { status: 500 });
   }
 }

@@ -9,6 +9,7 @@ import { getLeads, updateLeadStatus } from '@/lib/admin/leads-service';
 import { LeadStatusUpdateSchema } from '@/lib/admin/validators';
 import { ADMIN_ERR } from '@/config/admin-strings';
 import { safeInt } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   const session = await verifyAdmin();
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
     const result = await getLeads(filters);
     return NextResponse.json(result);
   } catch (err) {
-    console.error('[admin-leads] Query failed', { detail: String(err) });
+    logger.error('Query failed', 'admin-leads', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to load leads' }, { status: 500 });
   }
 }
@@ -62,7 +63,7 @@ export async function PATCH(request: NextRequest) {
     }
     return NextResponse.json(result.lead);
   } catch (err) {
-    console.error('[admin-leads] Status update failed', { detail: String(err) });
+    logger.error('Status update failed', 'admin-leads', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to update lead' }, { status: 500 });
   }
 }

@@ -5,6 +5,7 @@
 import { NextResponse } from 'next/server';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { getDashboardStats } from '@/lib/admin/stats-service';
+import { logger } from '@/lib/logger';
 
 export async function GET() {
   if (!(await verifyAdmin())) {
@@ -15,7 +16,7 @@ export async function GET() {
     const stats = await getDashboardStats();
     return NextResponse.json(stats);
   } catch (err) {
-    console.error('[admin-stats] Query failed', { detail: String(err) });
+    logger.error('Query failed', 'admin-stats', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to load stats' }, { status: 500 });
   }
 }

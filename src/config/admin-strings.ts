@@ -97,12 +97,29 @@ export const ADMIN_NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard' },
   { href: '/admin/scraper', label: 'Scraper' },
   { href: '/admin/leads', label: 'Enterprise Leads' },
+  { href: '/admin/followup', label: 'HNI Follow-up' },
   { href: '/admin/reports', label: 'Reports' },
   { href: '/admin/sessions', label: 'Sessions' },
   { href: '/admin/linkedin', label: 'LinkedIn' },
   { href: '/admin/analytics', label: 'Analytics' },
   { href: '/admin/audit-log', label: 'Audit Log' },
 ] as const;
+
+export const FOLLOWUP_STRINGS = {
+  PAGE_TITLE: 'HNI Follow-up',
+  PAGE_DESCRIPTION: "Users who downloaded reports but haven't booked a physical audit",
+  COL_USER: 'User',
+  COL_DOWNLOADED: 'Downloaded At',
+  COL_FOLLOWUP_DUE: 'Follow-up Due',
+  COL_ACTION: 'Action',
+  EMAIL_CTA: 'Send Email',
+  WHATSAPP_CTA: 'WhatsApp',
+  EMPTY_STATE: 'No pending follow-ups',
+  UNKNOWN_USER: 'Unknown',
+  LOAD_ERROR: 'Failed to load follow-up list',
+  WHATSAPP_MESSAGE:
+    "Hi! This is Raivan Global. We noticed you recently downloaded your security audit report. We'd love to discuss the findings and schedule a physical audit. When would be a good time?",
+} as const;
 
 export const FOLLOW_UP_DAYS = 7;
 
@@ -113,5 +130,3 @@ export const MANUAL_ARTICLE_RELEVANCE_SCORE = 1.0;
 export const SCRAPER_SOURCE_OPTIONS = ['newsapi', 'rss', 'playwright', 'manual'] as const;
 
 export const SEARCH_DEBOUNCE_MS = 300;
-
-export const FOLLOW_UP_WINDOW_DAYS = 7;

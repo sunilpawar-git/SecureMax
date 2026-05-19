@@ -5,6 +5,7 @@
 import { NextResponse } from 'next/server';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { getRecentActions } from '@/lib/admin/actions';
+import { logger } from '@/lib/logger';
 
 const DEFAULT_LIMIT = 10;
 
@@ -17,7 +18,7 @@ export async function GET() {
     const actions = await getRecentActions(DEFAULT_LIMIT);
     return NextResponse.json(actions);
   } catch (err) {
-    console.error('[admin-recent-activity] Query failed', { detail: String(err) });
+    logger.error('Query failed', 'admin-recent-activity', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to load activity' }, { status: 500 });
   }
 }

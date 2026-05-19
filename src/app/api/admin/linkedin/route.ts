@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
 import { ADMIN_ERR } from '@/config/admin-strings';
+import { logger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   if (!(await verifyAdmin())) {
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result);
   } catch (error) {
     if (error instanceof AIServiceError) {
-      console.error('[linkedin-route] AI service error', {
+      logger.error('AI service error', 'linkedin-route', {
         status: error.statusCode,
       });
       const clientStatus = error.statusCode >= 500 ? 503 : error.statusCode;
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
         { status: clientStatus },
       );
     }
-    console.error('[linkedin-route] Unexpected error');
+    logger.error('Unexpected error', 'linkedin-route');
     return NextResponse.json({ error: 'LinkedIn draft service unavailable' }, { status: 503 });
   }
 }

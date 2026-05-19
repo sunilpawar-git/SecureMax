@@ -8,6 +8,7 @@ import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { getReports, regenerateReport } from '@/lib/admin/reports-service';
 import { ReportRegenerateSchema } from '@/lib/admin/validators';
 import { ADMIN_ERR } from '@/config/admin-strings';
+import { logger } from '@/lib/logger';
 
 export async function GET() {
   if (!(await verifyAdmin())) return forbiddenResponse();
@@ -16,7 +17,7 @@ export async function GET() {
     const reports = await getReports();
     return NextResponse.json(reports);
   } catch (err) {
-    console.error('[admin-reports] Query failed', { detail: String(err) });
+    logger.error('Query failed', 'admin-reports', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to load reports' }, { status: 500 });
   }
 }
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json({ jobId: result.jobId });
   } catch (err) {
-    console.error('[admin-reports] Regen failed', { detail: String(err) });
+    logger.error('Regen failed', 'admin-reports', { detail: String(err) });
     return NextResponse.json({ error: 'Regeneration failed' }, { status: 500 });
   }
 }

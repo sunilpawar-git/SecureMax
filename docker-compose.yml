@@ -1,3 +1,4 @@
+# Production: use docker-compose.prod.yml override (no exposed ports, TLS, secrets)
 services:
   postgres:
     image: pgvector/pgvector:pg16
@@ -7,6 +8,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB:-raivan_global}
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     ports:
       - "5432:5432"
     volumes:

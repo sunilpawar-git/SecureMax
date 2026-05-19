@@ -21,6 +21,10 @@ import {
   SECURITY_HEADERS,
   RATE_LIMITS,
   ENCRYPTION,
+  UI,
+  DASHBOARD,
+  QUESTIONNAIRE,
+  SESSION_STATUS_LABEL,
 } from '@/config';
 
 describe('String resources (SSOT)', () => {
@@ -129,6 +133,32 @@ describe('Color scheme', () => {
   });
 });
 
+describe('UI SSOT strings', () => {
+  it('UI.LOADING is defined', () => {
+    expect(UI.LOADING).toBe('Loading...');
+  });
+
+  it('DASHBOARD has all required strings', () => {
+    expect(DASHBOARD.SUBTITLE).toBeTruthy();
+    expect(DASHBOARD.EMPTY_STATE).toBeTruthy();
+    expect(DASHBOARD.QUESTIONS_SUFFIX).toBeTruthy();
+  });
+
+  it('QUESTIONNAIRE has all required strings', () => {
+    expect(QUESTIONNAIRE.TRACK_PROMPT).toBeTruthy();
+    expect(QUESTIONNAIRE.COMPLETE_TITLE).toBeTruthy();
+    expect(QUESTIONNAIRE.REPORT_GENERATING).toBeTruthy();
+    expect(QUESTIONNAIRE.VIEW_REPORT_STATUS).toBeTruthy();
+    expect(QUESTIONNAIRE.SECURITY_SCORE).toBeTruthy();
+  });
+
+  it('SESSION_STATUS_LABEL has labels for all statuses', () => {
+    expect(SESSION_STATUS_LABEL[SESSION_STATUS.IN_PROGRESS]).toBe('In Progress');
+    expect(SESSION_STATUS_LABEL[SESSION_STATUS.COMPLETED]).toBe('Completed');
+    expect(SESSION_STATUS_LABEL[SESSION_STATUS.ABANDONED]).toBe('Abandoned');
+  });
+});
+
 describe('Security config', () => {
   it('security headers prevent framing', () => {
     expect(SECURITY_HEADERS['X-Frame-Options']).toBe('DENY');
@@ -146,5 +176,11 @@ describe('Security config', () => {
   it('encryption uses AES-256-GCM', () => {
     expect(ENCRYPTION.ALGORITHM).toBe('aes-256-gcm');
     expect(ENCRYPTION.KEY_LENGTH).toBe(32);
+  });
+
+  it('ENCRYPTION.KEY_VERSION_PREFIX exists and is non-empty', () => {
+    expect(ENCRYPTION.KEY_VERSION_PREFIX).toBeDefined();
+    expect(ENCRYPTION.KEY_VERSION_PREFIX.length).toBeGreaterThan(0);
+    expect(ENCRYPTION.KEY_VERSION_PREFIX).toBe('v1:');
   });
 });

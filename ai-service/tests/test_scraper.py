@@ -350,6 +350,94 @@ class TestGeminiTagger:
         assert result.tagged_by_gemini is False
 
 
+class TestNewsApiYamlWiring:
+    """Verify pipeline iterates YAML newsapi entries instead of using hardcoded query."""
+
+    @pytest.mark.asyncio
+    async def test_fetch_news_api_tier_iterates_yaml_entries(self) -> None:
+        """Pipeline calls fetch_news_api once per YAML newsapi entry with correct query."""
+        mock_pool = MagicMock()
+        mock_conn = AsyncMock()
+        mock_conn.fetchval = AsyncMock(return_value=None)
+        mock_conn.execute = AsyncMock(return_value="INSERT 0 1")
+        mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
+
+        yaml_sources = {
+            "newsapi": [
+                {"name": "query1", "type": "newsapi", "query": "physical security", "api_key_env": "NEWS_API_KEY", "page_size": 10},
+                {"name": "query2", "type": "newsapi", "query": "CCTV surveillance", "api_key_env": "NEWS_API_KEY"},
+            ],
+            "rss": [],
+            "playwright": [],
+        }
+
+        with (
+            patch("scraper.pipeline.load_sources", return_value=yaml_sources),
+            patch("scraper.pipeline.fetch_news_api", AsyncMock(return_value=[])) as mock_fetch,
+            patch("scraper.pipeline.fetch_rss_feed", AsyncMock(return_value=[])),
+            patch("scraper.pipeline.fetch_playwright_tier", AsyncMock(return_value=[])),
+            patch("scraper.pipeline.RSS_FEEDS", []),
+        ):
+            await run_pipeline(mock_pool)
+
+        assert mock_fetch.call_count == 2
+        calls = mock_fetch.call_args_list
+        assert calls[0].kwargs["query"] == "physical security"
+        assert calls[0].kwargs["page_size"] == 10
+        assert calls[1].kwargs["query"] == "CCTV surveillance"
+        assert calls[1].kwargs["page_size"] == 20  # default
+
+    @pytest.mark.asyncio
+    async def test_fetch_news_api_accepts_page_size_param(self) -> None:
+        """page_size parameter flows through to the API request."""
+        from scraper.sources import fetch_news_api
+
+        with patch("scraper.sources.get_settings") as mock_settings:
+            mock_settings.return_value.news_api_key = ""
+            result = await fetch_news_api(query="test", page_size=5)
+
+        assert result == []
+
+    @pytest.mark.asyncio
+    async def test_pipeline_deduplicates_across_newsapi_queries(self) -> None:
+        """Two queries returning the same URL should be deduped."""
+        mock_pool = MagicMock()
+        mock_conn = AsyncMock()
+        mock_conn.fetchval = AsyncMock(return_value=None)
+        mock_conn.execute = AsyncMock(return_value="INSERT 0 1")
+        mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
+
+        shared_article = RawArticle(
+            url="https://shared.com/article",
+            title="Shared",
+            content="physical security content",
+            source_name="TestSource",
+            source_tier="news_api",
+        )
+
+        yaml_sources = {
+            "newsapi": [
+                {"name": "q1", "type": "newsapi", "query": "q1", "api_key_env": "X"},
+                {"name": "q2", "type": "newsapi", "query": "q2", "api_key_env": "X"},
+            ],
+            "rss": [],
+            "playwright": [],
+        }
+
+        with (
+            patch("scraper.pipeline.load_sources", return_value=yaml_sources),
+            patch("scraper.pipeline.fetch_news_api", AsyncMock(return_value=[shared_article])),
+            patch("scraper.pipeline.fetch_rss_feed", AsyncMock(return_value=[])),
+            patch("scraper.pipeline.fetch_playwright_tier", AsyncMock(return_value=[])),
+            patch("scraper.pipeline.RSS_FEEDS", []),
+        ):
+            stats = await run_pipeline(mock_pool)
+
+        assert stats["stored"] == 1
+
+
 class TestPipelineLock:
     @pytest.mark.asyncio
     async def test_lock_busy_returns_complete_stats_shape(self) -> None:

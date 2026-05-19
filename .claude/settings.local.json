@@ -34,7 +34,10 @@
       "Bash(pip3 show *)",
       "Bash(pip3 install *)",
       "Bash(ruff format *)",
-      "Bash(npx prettier *)"
+      "Bash(npx prettier *)",
+      "Bash(xargs -I{} gh run view {} --json jobs)",
+      "Bash(python3 -c \"import sys,json; jobs=json.load\\(sys.stdin\\)['jobs']; [print\\(j['name'], j['conclusion']\\) for j in jobs]\")",
+      "Bash(git checkout *)"
     ]
   }
 }

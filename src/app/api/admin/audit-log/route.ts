@@ -8,6 +8,7 @@ import { getAuditLog } from '@/lib/admin/audit-service';
 import { auditLogToCsv } from '@/lib/admin/csv-export';
 import { AuditLogFilterSchema } from '@/lib/admin/validators';
 import { ADMIN_ERR } from '@/config/admin-strings';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   if (!(await verifyAdmin())) return forbiddenResponse();
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(result);
   } catch (err) {
-    console.error('[admin-audit-log] Query failed', { detail: String(err) });
+    logger.error('Query failed', 'admin-audit-log', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to load audit log' }, { status: 500 });
   }
 }

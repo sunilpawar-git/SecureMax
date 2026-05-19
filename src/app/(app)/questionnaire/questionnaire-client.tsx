@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useCallback, Suspense } from 'react';
+import { useState, useCallback, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { RadarChart } from './radar-chart';
 import { QuestionCard } from './question-card';
-import { APP, CTA, TRACK, VALID_TRACKS } from '@/config/strings';
+import { APP, CTA, TRACK, VALID_TRACKS, UI, QUESTIONNAIRE } from '@/config/strings';
 import { startSession, resumeSession, submitAnswer } from './questionnaire-service';
 import { useReportTrigger } from './use-report-trigger';
+import { ResumePrompt } from '@/components/ResumePrompt';
 import type { QuestionNode, RadarScores, SessionState } from './types';
 
 function getErrorMessage(err: unknown): string {
@@ -22,8 +23,8 @@ export default function QuestionnaireClient() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <p className="text-sm text-slate-400">Loading...</p>
+        <div className="min-h-[calc(100vh-3rem)] bg-gray-50 flex items-center justify-center">
+          <p className="text-sm text-slate-400">{UI.LOADING}</p>
         </div>
       }
     >
@@ -41,6 +42,7 @@ function QuestionnaireContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlTrack = getTrackFromParams(searchParams.get('track'));
+  const urlSessionId = searchParams.get('session');
 
   const [sessionState, setSessionState] = useState<SessionState>('idle');
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -52,6 +54,29 @@ function QuestionnaireContent() {
   const [currentTrack, setCurrentTrack] = useState<string | null>(urlTrack);
 
   const reportTrigger = useReportTrigger(sessionId, sessionState === 'completed');
+
+  useEffect(() => {
+    if (!urlSessionId || !urlTrack || sessionState !== 'idle') return;
+    let cancelled = false;
+
+    async function prefetchResume() {
+      try {
+        const session = await resumeSession(urlSessionId!);
+        if (cancelled) return;
+        setSessionId(session.sessionId);
+        setCurrentTrack(urlTrack);
+        setQuestionsAnswered(session.questionsAnswered);
+        setRadarScores(session.radarScores);
+        setCurrentQuestion(session.currentQuestion);
+        setSessionState('resume_prompt');
+      } catch {
+        if (!cancelled) setSessionState('idle');
+      }
+    }
+
+    prefetchResume();
+    return () => { cancelled = true; };
+  }, [urlSessionId, urlTrack, sessionState]);
 
   const handleStart = useCallback(async (track: string) => {
     setIsLoading(true);
@@ -112,12 +137,23 @@ function QuestionnaireContent() {
     [sessionId, currentQuestion],
   );
 
+  if (sessionState === 'resume_prompt' && sessionId && currentTrack) {
+    return (
+      <ResumePrompt
+        track={currentTrack}
+        questionsAnswered={questionsAnswered}
+        onResume={() => handleResume(sessionId)}
+        onRestart={() => handleStart(currentTrack)}
+      />
+    );
+  }
+
   if (sessionState === 'idle') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-[calc(100vh-3rem)] bg-gray-50 flex items-center justify-center p-4">
         <div className="max-w-lg w-full space-y-6 text-center">
           <h1 className="text-3xl font-bold text-gray-900">{APP.NAME}</h1>
-          <p className="text-gray-600">Select your audit track to begin the security assessment.</p>
+          <p className="text-gray-600">{QUESTIONNAIRE.TRACK_PROMPT}</p>
           <div className="grid gap-4">
             <button
               onClick={() => handleStart(TRACK.HNI)}
@@ -150,7 +186,7 @@ function QuestionnaireContent() {
                   onClick={() => handleResume(sessionId)}
                   className="text-sm text-emerald-700 underline"
                 >
-                  Resume existing session
+                  {QUESTIONNAIRE.RESUME_EXISTING}
                 </button>
               )}
             </div>
@@ -162,16 +198,16 @@ function QuestionnaireContent() {
 
   if (sessionState === 'completed') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-[calc(100vh-3rem)] bg-gray-50 flex items-center justify-center p-4">
         <div className="max-w-2xl w-full space-y-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Assessment Complete</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{QUESTIONNAIRE.COMPLETE_TITLE}</h2>
           <p className="text-gray-600">
             You answered {questionsAnswered} questions.
             {reportTrigger.triggered
               ? reportTrigger.error
                 ? ` ${reportTrigger.error}`
-                : ' Your report is being generated.'
-              : ' Initiating report generation...'}
+                : ` ${QUESTIONNAIRE.REPORT_GENERATING}`
+              : ` ${QUESTIONNAIRE.REPORT_INITIATING}`}
           </p>
           <RadarChart scores={radarScores} />
           {reportTrigger.triggered && !reportTrigger.error && (
@@ -179,7 +215,7 @@ function QuestionnaireContent() {
               onClick={() => router.push(`/report/${reportTrigger.reportId ?? sessionId}/status`)}
               className="inline-block rounded-lg bg-emerald-700 px-6 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
             >
-              View Report Status
+              {QUESTIONNAIRE.VIEW_REPORT_STATUS}
             </button>
           )}
         </div>
@@ -188,7 +224,7 @@ function QuestionnaireContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-[calc(100vh-3rem)] bg-gray-50 p-4">
       <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
         <div className="md:col-span-2">
           {currentQuestion && (
@@ -203,7 +239,7 @@ function QuestionnaireContent() {
         </div>
         <div className="md:col-span-1">
           <div className="sticky top-4">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">Security Score</h3>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">{QUESTIONNAIRE.SECURITY_SCORE}</h3>
             <RadarChart scores={radarScores} />
           </div>
         </div>

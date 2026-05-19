@@ -6,16 +6,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
+import { logger } from '@/lib/logger';
 
 function handleServiceError(error: unknown, fallbackMessage: string): NextResponse {
   if (error instanceof AIServiceError) {
-    console.error('[scraper-route] AI service error', {
+    logger.error('AI service error', 'scraper-route', {
       status: error.statusCode,
     });
     const clientStatus = error.statusCode >= 500 ? 503 : error.statusCode;
     return NextResponse.json({ error: fallbackMessage }, { status: clientStatus });
   }
-  console.error('[scraper-route] Unexpected error');
+  logger.error('Unexpected error', 'scraper-route');
   return NextResponse.json({ error: fallbackMessage }, { status: 503 });
 }
 

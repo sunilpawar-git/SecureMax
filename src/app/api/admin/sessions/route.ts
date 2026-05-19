@@ -8,6 +8,7 @@ import { getSessions, forceCloseSession } from '@/lib/admin/sessions-service';
 import { SessionForceCloseSchema } from '@/lib/admin/validators';
 import { ADMIN_ERR } from '@/config/admin-strings';
 import { safeInt } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   if (!(await verifyAdmin())) return forbiddenResponse();
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
     const result = await getSessions(filters);
     return NextResponse.json(result);
   } catch (err) {
-    console.error('[admin-sessions] Query failed', { detail: String(err) });
+    logger.error('Query failed', 'admin-sessions', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to load sessions' }, { status: 500 });
   }
 }
@@ -53,7 +54,7 @@ export async function PATCH(request: NextRequest) {
     }
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('[admin-sessions] Force close failed', { detail: String(err) });
+    logger.error('Force close failed', 'admin-sessions', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to close session' }, { status: 500 });
   }
 }

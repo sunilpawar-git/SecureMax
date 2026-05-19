@@ -11,6 +11,7 @@ import {
   ThreatIntelFilterSchema,
 } from '@/lib/admin/validators';
 import { ADMIN_ERR } from '@/config/admin-strings';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   if (!(await verifyAdmin())) return forbiddenResponse();
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
     const result = await getArticles(parsed.data);
     return NextResponse.json(result);
   } catch (err) {
-    console.error('[admin-threat-intel] Query failed', { detail: String(err) });
+    logger.error('Query failed', 'admin-threat-intel', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to load articles' }, { status: 500 });
   }
 }
@@ -56,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json(result.article, { status: 201 });
   } catch (err) {
-    console.error('[admin-threat-intel] Add failed', { detail: String(err) });
+    logger.error('Add failed', 'admin-threat-intel', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to add article' }, { status: 500 });
   }
 }
@@ -85,7 +86,7 @@ export async function DELETE(request: NextRequest) {
     }
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('[admin-threat-intel] Delete failed', { detail: String(err) });
+    logger.error('Delete failed', 'admin-threat-intel', { detail: String(err) });
     return NextResponse.json({ error: 'Failed to delete article' }, { status: 500 });
   }
 }
