@@ -5,6 +5,7 @@
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "next dev",
+    "dev:all": "concurrently --names \"next,ai\" --prefix-colors \"cyan,magenta\" \"next dev\" \"cd ai-service && source .venv/bin/activate && uvicorn main:app --reload --port 8000\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings 0",
@@ -36,6 +37,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "jest": "^29",
