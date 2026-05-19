@@ -93,6 +93,31 @@ export const ADMIN_EMAIL_TEMPLATES = {
   FOLLOW_UP_SUBJECT: 'Following Up — Raivan Global Security Audit',
 } as const;
 
+export const USERS_PAGE = {
+  NAV_LABEL: 'Users',
+  TITLE: 'Users',
+  DESCRIPTION: 'All registered users and their audit activity',
+  COL_USER: 'User',
+  COL_TRACK: 'Track',
+  COL_ROLE: 'Role',
+  COL_SESSIONS: 'Sessions',
+  COL_PAID: 'Paid',
+  COL_LAST_ACTIVE: 'Last Active',
+  COL_JOINED: 'Joined',
+  FILTER_ALL_TRACKS: 'All Tracks',
+  FILTER_SEARCH_PLACEHOLDER: 'Search by email or name…',
+  EMPTY_STATE: 'No users found',
+  NEVER: 'Never',
+  PAID_NONE: '—',
+  ROLE_ADMIN_LABEL: 'Admin',
+  LOADING: 'Loading…',
+  TOTAL_LABEL: 'users',
+  PAGINATION_PREV: '← Previous',
+  PAGINATION_NEXT: 'Next →',
+  ERR_LOAD_FAILED: 'Failed to load users',
+  ERR_INVALID_FILTER: 'Invalid filter parameters',
+} as const;
+
 export const ADMIN_NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard' },
   { href: '/admin/scraper', label: 'Scraper' },
@@ -100,6 +125,7 @@ export const ADMIN_NAV_ITEMS = [
   { href: '/admin/followup', label: 'HNI Follow-up' },
   { href: '/admin/reports', label: 'Reports' },
   { href: '/admin/sessions', label: 'Sessions' },
+  { href: '/admin/users', label: USERS_PAGE.NAV_LABEL },
   { href: '/admin/linkedin', label: 'LinkedIn' },
   { href: '/admin/analytics', label: 'Analytics' },
   { href: '/admin/audit-log', label: 'Audit Log' },
@@ -130,3 +156,5 @@ export const MANUAL_ARTICLE_RELEVANCE_SCORE = 1.0;
 export const SCRAPER_SOURCE_OPTIONS = ['newsapi', 'rss', 'playwright', 'manual'] as const;
 
 export const SEARCH_DEBOUNCE_MS = 300;
+
+export const ADMIN_PAGE_SIZE = 50;

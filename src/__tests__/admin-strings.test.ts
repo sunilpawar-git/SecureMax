@@ -17,6 +17,7 @@ import {
   ADMIN_NAV_ITEMS,
   FOLLOW_UP_DAYS,
   SEARCH_RESULTS_PER_TYPE,
+  USERS_PAGE,
 } from '@/config/admin-strings';
 
 import {
@@ -25,6 +26,8 @@ import {
   SESSION_STATUS_STYLES,
   TRACK_BADGE_STYLES,
   ACTION_TYPE_STYLES,
+  PAID_STATUS_STYLES,
+  ROLE_BADGE_STYLES,
 } from '@/config/admin-colors';
 
 describe('Admin String Resources (SSOT)', () => {
@@ -141,5 +144,38 @@ describe('Admin Color Tokens (SSOT)', () => {
     for (const actionType of Object.values(ADMIN_ACTION_TYPE)) {
       expect(ACTION_TYPE_STYLES[actionType]).toBeDefined();
     }
+  });
+});
+
+describe('USERS_PAGE string resources', () => {
+  it('defines all required string keys', () => {
+    expect(USERS_PAGE.NAV_LABEL).toBeDefined();
+    expect(USERS_PAGE.TITLE).toBeDefined();
+    expect(USERS_PAGE.DESCRIPTION).toBeDefined();
+    expect(USERS_PAGE.EMPTY_STATE).toBeDefined();
+    expect(USERS_PAGE.NEVER).toBeDefined();
+    expect(USERS_PAGE.LOADING).toBeDefined();
+    expect(USERS_PAGE.TOTAL_LABEL).toBeDefined();
+    expect(USERS_PAGE.ERR_LOAD_FAILED).toBeDefined();
+    expect(USERS_PAGE.ERR_INVALID_FILTER).toBeDefined();
+    expect(USERS_PAGE.PAGINATION_PREV).toBeDefined();
+    expect(USERS_PAGE.PAGINATION_NEXT).toBeDefined();
+  });
+
+  it('NAV_LABEL matches the label in ADMIN_NAV_ITEMS for /admin/users', () => {
+    const usersNavItem = ADMIN_NAV_ITEMS.find((item) => item.href === '/admin/users');
+    expect(usersNavItem).toBeDefined();
+    expect(usersNavItem?.label).toBe(USERS_PAGE.NAV_LABEL);
+  });
+});
+
+describe('Admin color token completeness', () => {
+  it('PAID_STATUS_STYLES defines paid and unpaid keys', () => {
+    expect(PAID_STATUS_STYLES.paid).toBeDefined();
+    expect(PAID_STATUS_STYLES.unpaid).toBeDefined();
+  });
+
+  it('ROLE_BADGE_STYLES defines admin key', () => {
+    expect(ROLE_BADGE_STYLES['admin']).toBeDefined();
   });
 });

@@ -84,3 +84,12 @@ export const ACTION_TYPE_STYLES: Record<string, string> = {
   threat_intel_added: 'bg-indigo-100 text-indigo-800',
   threat_intel_deleted: 'bg-orange-100 text-orange-800',
 };
+
+export const PAID_STATUS_STYLES = {
+  paid: 'bg-green-100 text-green-800',
+  unpaid: 'bg-gray-100 text-gray-500',
+} as const;
+
+export const ROLE_BADGE_STYLES: Record<string, string> = {
+  admin: 'bg-purple-100 text-purple-800',
+};
