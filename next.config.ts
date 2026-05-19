@@ -3,7 +3,9 @@ import { SECURITY_HEADERS } from './src/config/security';
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  turbopack: {},
+  turbopack: {
+    root: __dirname,
+  },
   async headers() {
     // Re-evaluate SECURITY_HEADERS at request time to ensure NODE_ENV is correct
     // This ensures 'unsafe-eval' is included in dev mode for React debugging
