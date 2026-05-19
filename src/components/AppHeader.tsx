@@ -2,14 +2,14 @@
 
 /**
  * Global app header — two variants:
- * - "full": logo, nav links, sign out (dashboard/report/enterprise pages)
+ * - "full": logo, nav links, admin link (if admin), sign out (dashboard/report/enterprise pages)
  * - "slim": logo + Save & Exit (questionnaire pages)
  */
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signOut } from 'next-auth/react';
-import { APP, NAV } from '@/config/strings';
+import { signOut, useSession } from 'next-auth/react';
+import { APP, NAV, USER_ROLE } from '@/config/strings';
 import { HEADER_STYLES } from '@/config/admin-colors';
 
 export type HeaderVariant = 'full' | 'slim';
@@ -20,6 +20,8 @@ interface AppHeaderProps {
 
 export function AppHeader({ variant }: AppHeaderProps) {
   const router = useRouter();
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === USER_ROLE.ADMIN;
 
   const handleSaveAndExit = () => {
     router.push('/dashboard');
@@ -50,6 +52,14 @@ export function AppHeader({ variant }: AppHeaderProps) {
             >
               {NAV.START_AUDIT}
             </Link>
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors"
+              >
+                Admin Panel
+              </Link>
+            )}
             <button
               onClick={handleSignOut}
               className="text-sm text-slate-500 hover:text-slate-700 transition-colors"
