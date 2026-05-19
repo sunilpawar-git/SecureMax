@@ -3,7 +3,7 @@
  * Verifies header variants, SSOT string/color usage, and layout routing.
  */
 
-import { NAV, APP } from '@/config/strings';
+import { NAV } from '@/config/strings';
 import { HEADER_STYLES } from '@/config/admin-colors';
 
 describe('NAV string constants', () => {

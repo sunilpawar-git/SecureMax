@@ -17,6 +17,13 @@ const eslintConfig = defineConfig([
     "ai-service/**",
     "coverage/**",
   ]),
+  // Allow require() in test files for jest.resetModules() pattern
+  {
+    files: ["src/**/__tests__/**", "src/**/*.test.ts", "src/**/*.test.tsx"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
