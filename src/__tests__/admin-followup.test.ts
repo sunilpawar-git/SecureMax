@@ -3,6 +3,14 @@
  * Verifies SSOT strings, service layer, WhatsApp URL builder, API route contract.
  */
 
+jest.mock('@/lib/prisma', () => ({
+  prisma: {
+    auditSession: {
+      findMany: jest.fn().mockResolvedValue([]),
+    },
+  },
+}));
+
 import { FOLLOWUP_STRINGS, ADMIN_NAV_ITEMS } from '@/config/admin-strings';
 import { FOLLOWUP_STATUS_STYLES } from '@/config/admin-colors';
 

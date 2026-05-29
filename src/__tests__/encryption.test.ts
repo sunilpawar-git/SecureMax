@@ -30,10 +30,11 @@ describe('Encryption (AES-256-GCM)', () => {
     expect(a).not.toBe(b);
   });
 
-  it('ciphertext has 3 parts (iv:tag:data)', () => {
+  it('ciphertext has 4 parts (v1:iv:tag:data)', () => {
     const encrypted = encrypt('test');
     const parts = encrypted.split(':');
-    expect(parts).toHaveLength(3);
+    expect(parts).toHaveLength(4);
+    expect(parts[0]).toBe('v1');
   });
 
   it('throws on tampered ciphertext', () => {

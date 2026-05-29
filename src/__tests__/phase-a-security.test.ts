@@ -155,7 +155,8 @@ describe('middleware security header SSOT', () => {
   it('proxy.ts does NOT contain a SECURITY_HEADERS loop', () => {
     const content = fs.readFileSync(path.join(process.cwd(), 'src', 'proxy.ts'), 'utf-8');
     expect(content).not.toContain('Object.entries(SECURITY_HEADERS)');
-    expect(content).not.toContain('response.headers.set');
+    expect(content).not.toContain('SECURITY_HEADERS');
+    expect(content).not.toContain('X-Content-Type-Options');
   });
 
   it('next.config.ts remains the SSOT for headers', () => {
