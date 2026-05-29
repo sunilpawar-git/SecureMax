@@ -14,9 +14,7 @@ export async function GET(request: NextRequest) {
   const session = await verifyAdmin();
   if (!session) return forbiddenResponse();
 
-  const parsed = UserFilterSchema.safeParse(
-    Object.fromEntries(request.nextUrl.searchParams),
-  );
+  const parsed = UserFilterSchema.safeParse(Object.fromEntries(request.nextUrl.searchParams));
   if (!parsed.success) {
     return apiError(USERS_PAGE.ERR_INVALID_FILTER, 400);
   }

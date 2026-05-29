@@ -33,8 +33,7 @@ export default auth(async (req) => {
   const ip = getClientIp(req);
 
   // Generate or forward X-Request-ID for tracing
-  const requestId =
-    req.headers.get('x-request-id') || crypto.randomUUID();
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
 
   // Rate-limit API routes before auth checks.
   if (pathname.startsWith('/api/')) {
@@ -112,7 +111,10 @@ export default auth(async (req) => {
 
   if (isLoggedIn) {
     // Guard admin pages to admin-role users only.
-    if (pathname.startsWith('/admin') && (session.user as { role?: string }).role !== USER_ROLE.ADMIN) {
+    if (
+      pathname.startsWith('/admin') &&
+      (session.user as { role?: string }).role !== USER_ROLE.ADMIN
+    ) {
       return NextResponse.redirect(new URL('/dashboard', req.url));
     }
 

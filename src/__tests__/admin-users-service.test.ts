@@ -179,9 +179,7 @@ describe('getUsers', () => {
 
     await getUsers(BASE_FILTER);
 
-    expect(mockFindMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: {} }),
-    );
+    expect(mockFindMany).toHaveBeenCalledWith(expect.objectContaining({ where: {} }));
   });
 
   it('passes correct skip and take for page 3 with limit 10', async () => {
@@ -190,9 +188,7 @@ describe('getUsers', () => {
 
     await getUsers({ page: 3, limit: 10 });
 
-    expect(mockFindMany).toHaveBeenCalledWith(
-      expect.objectContaining({ skip: 20, take: 10 }),
-    );
+    expect(mockFindMany).toHaveBeenCalledWith(expect.objectContaining({ skip: 20, take: 10 }));
   });
 
   it('returns the requested page and limit in UsersResult', async () => {

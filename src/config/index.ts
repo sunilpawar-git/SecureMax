@@ -1,4 +1,14 @@
-export { APP, CTA, TRACK, TRACK_LABEL, USER_ROLE, CPP_DOMAINS, SEVERITY, NAV, RESUME } from './strings';
+export {
+  APP,
+  CTA,
+  TRACK,
+  TRACK_LABEL,
+  USER_ROLE,
+  CPP_DOMAINS,
+  SEVERITY,
+  NAV,
+  RESUME,
+} from './strings';
 export { SESSION_STATUS, ENTERPRISE_LEAD_STATUS, LINKEDIN_POST_STATUS } from './strings';
 export { TRUST_STACK, LIMITS, PAYMENT, RADAR_THRESHOLDS } from './strings';
 export { UI, DASHBOARD, QUESTIONNAIRE, SESSION_STATUS_LABEL } from './strings';

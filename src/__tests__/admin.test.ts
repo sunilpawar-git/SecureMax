@@ -65,7 +65,7 @@ describe('AdminNav exit link — SSOT and navigation contract', () => {
     const path = require('path');
     const src = fs.readFileSync(
       path.join(process.cwd(), 'src', 'app', 'admin', '_components', 'AdminNav.tsx'),
-      'utf-8'
+      'utf-8',
     );
     expect(src).toContain('NAV.EXIT_ADMIN');
     expect(src).toContain('/dashboard');
@@ -79,7 +79,7 @@ describe('AdminNav exit link — SSOT and navigation contract', () => {
     const path = require('path');
     const src = fs.readFileSync(
       path.join(process.cwd(), 'src', 'app', 'admin', '_components', 'AdminNav.tsx'),
-      'utf-8'
+      'utf-8',
     );
     expect(src).toContain('ADMIN_EXIT_LINK_STYLE');
   });

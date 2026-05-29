@@ -57,7 +57,7 @@ describe('LandingHeader source uses SSOT (no hardcoded strings or classes)', () 
   const path = require('path');
   const src = fs.readFileSync(
     path.join(process.cwd(), 'src', 'components', 'landing', 'LandingHeader.tsx'),
-    'utf-8'
+    'utf-8',
   );
 
   it('references NAV.SIGN_IN (no hardcoded "Sign In" in JSX)', () => {

@@ -59,9 +59,7 @@ function UserAvatar({ name, email }: { name: string | null; email: string }) {
 
 export function UsersTable({ users }: UsersTableProps) {
   if (users.length === 0) {
-    return (
-      <p className="text-sm text-slate-400 text-center py-8">{USERS_PAGE.EMPTY_STATE}</p>
-    );
+    return <p className="text-sm text-slate-400 text-center py-8">{USERS_PAGE.EMPTY_STATE}</p>;
   }
 
   return (
@@ -69,13 +67,27 @@ export function UsersTable({ users }: UsersTableProps) {
       <table className="w-full text-sm">
         <thead className="bg-slate-50 border-b">
           <tr>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">{USERS_PAGE.COL_USER}</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">{USERS_PAGE.COL_TRACK}</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">{USERS_PAGE.COL_ROLE}</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">{USERS_PAGE.COL_SESSIONS}</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">{USERS_PAGE.COL_PAID}</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">{USERS_PAGE.COL_LAST_ACTIVE}</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">{USERS_PAGE.COL_JOINED}</th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600">
+              {USERS_PAGE.COL_USER}
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600">
+              {USERS_PAGE.COL_TRACK}
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600">
+              {USERS_PAGE.COL_ROLE}
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600">
+              {USERS_PAGE.COL_SESSIONS}
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600">
+              {USERS_PAGE.COL_PAID}
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600">
+              {USERS_PAGE.COL_LAST_ACTIVE}
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600">
+              {USERS_PAGE.COL_JOINED}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -103,7 +115,9 @@ export function UsersTable({ users }: UsersTableProps) {
               <td className="px-4 py-3 text-xs text-slate-600">{u.sessionCount}</td>
               <td className="px-4 py-3">
                 {u.paidSessionCount > 0 ? (
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${PAID_STATUS_STYLES.paid}`}>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${PAID_STATUS_STYLES.paid}`}
+                  >
                     {u.paidSessionCount}
                   </span>
                 ) : (

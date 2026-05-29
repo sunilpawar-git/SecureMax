@@ -10,50 +10,52 @@ export default function LandingPage() {
     <>
       <LandingHeader />
       <main>
-      <HeroSection />
-      <HowItWorks />
-      <TrustSignals />
+        <HeroSection />
+        <HowItWorks />
+        <TrustSignals />
 
-      <section className="py-20 px-6 bg-white">
-        <div className="mx-auto max-w-2xl text-center space-y-6">
-          <h2 className="text-2xl font-bold text-slate-900">Start Your Free Security Assessment</h2>
-          <p className="text-sm text-slate-500">{TRUST_STACK.HNI_PRIVACY}</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/auth/signin?track=hni"
-              className="rounded-lg bg-emerald-700 px-8 py-4 text-sm font-semibold text-white
+        <section className="py-20 px-6 bg-white">
+          <div className="mx-auto max-w-2xl text-center space-y-6">
+            <h2 className="text-2xl font-bold text-slate-900">
+              Start Your Free Security Assessment
+            </h2>
+            <p className="text-sm text-slate-500">{TRUST_STACK.HNI_PRIVACY}</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/auth/signin?track=hni"
+                className="rounded-lg bg-emerald-700 px-8 py-4 text-sm font-semibold text-white
                 hover:bg-emerald-800 transition-colors"
-            >
-              {CTA.HNI}
-            </Link>
-            <Link
-              href="/auth/signin?track=enterprise"
-              className="rounded-lg border border-slate-300 px-8 py-4 text-sm font-semibold text-slate-900
+              >
+                {CTA.HNI}
+              </Link>
+              <Link
+                href="/auth/signin?track=enterprise"
+                className="rounded-lg border border-slate-300 px-8 py-4 text-sm font-semibold text-slate-900
                 hover:bg-slate-50 transition-colors"
-            >
-              {CTA.ENTERPRISE}
-            </Link>
+              >
+                {CTA.ENTERPRISE}
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <footer className="py-8 px-6 border-t border-slate-100">
-        <div className="mx-auto max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p suppressHydrationWarning>
-            &copy; {new Date().getFullYear()} {APP.NAME}. All rights reserved.
-          </p>
-          <div className="flex gap-4">
-            <a
-              href={`mailto:${APP.SUPPORT_EMAIL}`}
-              className="hover:text-slate-600 transition-colors"
-            >
-              {APP.SUPPORT_EMAIL}
-            </a>
-            <span>{TRUST_STACK.CREDENTIAL}</span>
+        <footer className="py-8 px-6 border-t border-slate-100">
+          <div className="mx-auto max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <p suppressHydrationWarning>
+              &copy; {new Date().getFullYear()} {APP.NAME}. All rights reserved.
+            </p>
+            <div className="flex gap-4">
+              <a
+                href={`mailto:${APP.SUPPORT_EMAIL}`}
+                className="hover:text-slate-600 transition-colors"
+              >
+                {APP.SUPPORT_EMAIL}
+              </a>
+              <span>{TRUST_STACK.CREDENTIAL}</span>
+            </div>
           </div>
-        </div>
-      </footer>
-    </main>
+        </footer>
+      </main>
     </>
   );
 }

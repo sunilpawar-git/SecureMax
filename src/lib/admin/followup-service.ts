@@ -65,9 +65,7 @@ export async function getFollowUpList(): Promise<FollowUpItem[]> {
     userEmail: s.user.email,
     downloadedAt: s.downloadedAt,
     followupDueAt: s.postDownloadFollowupAt,
-    status: s.postDownloadFollowupAt
-      ? computeFollowUpStatus(s.postDownloadFollowupAt)
-      : 'upcoming',
+    status: s.postDownloadFollowupAt ? computeFollowUpStatus(s.postDownloadFollowupAt) : 'upcoming',
     track: s.track,
   }));
 }

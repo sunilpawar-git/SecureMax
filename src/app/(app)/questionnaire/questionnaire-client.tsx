@@ -75,7 +75,9 @@ function QuestionnaireContent() {
     }
 
     prefetchResume();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [urlSessionId, urlTrack, sessionState]);
 
   const handleStart = useCallback(async (track: string) => {
@@ -239,7 +241,9 @@ function QuestionnaireContent() {
         </div>
         <div className="md:col-span-1">
           <div className="sticky top-4">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">{QUESTIONNAIRE.SECURITY_SCORE}</h3>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">
+              {QUESTIONNAIRE.SECURITY_SCORE}
+            </h3>
             <RadarChart scores={radarScores} />
           </div>
         </div>

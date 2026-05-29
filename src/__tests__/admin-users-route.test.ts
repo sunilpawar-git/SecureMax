@@ -24,8 +24,7 @@ jest.mock('@/lib/auth', () => ({
 
 jest.mock('@/lib/admin/auth', () => ({
   verifyAdmin: () => mockVerifyAdmin(),
-  forbiddenResponse: () =>
-    new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 }),
+  forbiddenResponse: () => new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 }),
 }));
 
 jest.mock('@/lib/admin/users-service', () => ({
@@ -140,9 +139,7 @@ describe('GET /api/admin/users — response shape', () => {
 
     await GET(makeRequest({ track: 'enterprise' }));
 
-    expect(mockGetUsers).toHaveBeenCalledWith(
-      expect.objectContaining({ track: 'enterprise' }),
-    );
+    expect(mockGetUsers).toHaveBeenCalledWith(expect.objectContaining({ track: 'enterprise' }));
   });
 
   it('passes search filter to getUsers', async () => {
@@ -151,9 +148,7 @@ describe('GET /api/admin/users — response shape', () => {
 
     await GET(makeRequest({ search: 'alice' }));
 
-    expect(mockGetUsers).toHaveBeenCalledWith(
-      expect.objectContaining({ search: 'alice' }),
-    );
+    expect(mockGetUsers).toHaveBeenCalledWith(expect.objectContaining({ search: 'alice' }));
   });
 
   it('passes page and limit to getUsers', async () => {
@@ -162,9 +157,7 @@ describe('GET /api/admin/users — response shape', () => {
 
     await GET(makeRequest({ page: '2', limit: '10' }));
 
-    expect(mockGetUsers).toHaveBeenCalledWith(
-      expect.objectContaining({ page: 2, limit: 10 }),
-    );
+    expect(mockGetUsers).toHaveBeenCalledWith(expect.objectContaining({ page: 2, limit: 10 }));
   });
 });
 
@@ -209,9 +202,7 @@ describe('GET /api/admin/users — validation', () => {
 
     await GET(makeRequest());
 
-    expect(mockGetUsers).toHaveBeenCalledWith(
-      expect.objectContaining({ page: 1, limit: 50 }),
-    );
+    expect(mockGetUsers).toHaveBeenCalledWith(expect.objectContaining({ page: 1, limit: 50 }));
   });
 });
 

@@ -101,14 +101,18 @@ export default function LinkedInPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">LinkedIn Post Workflow</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        LinkedIn Post Workflow
+      </h1>
       <p className="text-sm text-gray-500 dark:text-gray-400">
         Select threat intel articles, generate an AI-drafted post, then copy to LinkedIn.
       </p>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3">
-          <h3 className="font-medium text-gray-900 dark:text-gray-100">1. Select Articles ({selectedIds.size} selected)</h3>
+          <h3 className="font-medium text-gray-900 dark:text-gray-100">
+            1. Select Articles ({selectedIds.size} selected)
+          </h3>
           <div className="max-h-96 overflow-y-auto space-y-2">
             {articles.map((a) => (
               <label
@@ -141,7 +145,9 @@ export default function LinkedInPage() {
               </label>
             ))}
             {articles.length === 0 && (
-              <p className="text-sm text-gray-400 dark:text-gray-500">No articles yet. Run the scraper to populate threat intelligence.</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500">
+                No articles yet. Run the scraper to populate threat intelligence.
+              </p>
             )}
           </div>
           <button
@@ -154,7 +160,9 @@ export default function LinkedInPage() {
           >
             {isGenerating ? 'Generating...' : 'Generate Draft'}
           </button>
-          {generateError && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{generateError}</p>}
+          {generateError && (
+            <p className="text-xs text-red-600 dark:text-red-400 mt-1">{generateError}</p>
+          )}
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3">
@@ -172,7 +180,10 @@ export default function LinkedInPage() {
           {hashtags.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {hashtags.map((h) => (
-                <span key={h} className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 text-xs rounded">
+                <span
+                  key={h}
+                  className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 text-xs rounded"
+                >
                   {h}
                 </span>
               ))}
@@ -180,7 +191,9 @@ export default function LinkedInPage() {
           )}
           <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
             <span>{charCount > 0 ? `${charCount} / 1,300 chars` : ''}</span>
-            {charCount > 1300 && <span className="text-red-600 dark:text-red-400 font-medium">Over limit!</span>}
+            {charCount > 1300 && (
+              <span className="text-red-600 dark:text-red-400 font-medium">Over limit!</span>
+            )}
           </div>
           {copyError && <p className="text-xs text-red-600 dark:text-red-400">{copyError}</p>}
           <button

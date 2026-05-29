@@ -15,12 +15,7 @@ interface ResumePromptProps {
   onRestart: () => void;
 }
 
-export function ResumePrompt({
-  track,
-  questionsAnswered,
-  onResume,
-  onRestart,
-}: ResumePromptProps) {
+export function ResumePrompt({ track, questionsAnswered, onResume, onRestart }: ResumePromptProps) {
   const badgeClass = TRACK_BADGE_STYLES[track] ?? TRACK_BADGE_STYLES.hni;
 
   const handleRestart = () => {

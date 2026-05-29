@@ -2,14 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import {
-  APP,
-  NAV,
-  UI,
-  DASHBOARD,
-  TRACK_LABEL,
-  SESSION_STATUS_LABEL,
-} from '@/config/strings';
+import { APP, NAV, UI, DASHBOARD, TRACK_LABEL, SESSION_STATUS_LABEL } from '@/config/strings';
 import { SESSION_STATUS_STYLES } from '@/config/admin-colors';
 
 /** Matches the shape returned by GET /api/dashboard/sessions */
@@ -49,7 +42,9 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-slate-50 py-8 px-4">
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">{APP.NAME} — {NAV.DASHBOARD}</h1>
+          <h1 className="text-xl font-bold text-slate-900">
+            {APP.NAME} — {NAV.DASHBOARD}
+          </h1>
           <p className="text-sm text-slate-500 mt-1">{DASHBOARD.SUBTITLE}</p>
         </div>
 
@@ -99,7 +94,9 @@ function SessionCard({ session }: { session: SessionSummary }) {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-slate-900">{TRACK_LABEL[session.track] ?? session.track}</span>
+            <span className="text-sm font-medium text-slate-900">
+              {TRACK_LABEL[session.track] ?? session.track}
+            </span>
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${statusColor}`}>
               {SESSION_STATUS_LABEL[session.status] ?? session.status}
             </span>
