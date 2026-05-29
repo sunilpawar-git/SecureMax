@@ -4,6 +4,7 @@ Pool lives on app.state; injected into routes via Depends(get_db).
 """
 
 from collections.abc import AsyncGenerator
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 import asyncpg
 from fastapi import Request
@@ -16,8 +17,6 @@ async def init_pool(settings: Settings) -> asyncpg.Pool:
 
     Strips Prisma-only params (schema=) that asyncpg does not accept.
     """
-    from urllib.parse import urlparse, urlencode, parse_qs, urlunparse
-
     raw = settings.database_url.replace("+asyncpg", "")
     parsed = urlparse(raw)
     params = {k: v for k, v in parse_qs(parsed.query).items() if k != "schema"}

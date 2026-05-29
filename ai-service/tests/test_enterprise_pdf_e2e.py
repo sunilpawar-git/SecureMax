@@ -6,8 +6,6 @@ renders HTML, and verifies all 10 enterprise sections are present.
 
 import uuid
 
-import pytest
-
 from report.constants import ENTERPRISE_SECTION_NAMES
 from report.renderer import render_html
 from report.schemas import (

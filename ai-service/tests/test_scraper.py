@@ -365,8 +365,19 @@ class TestNewsApiYamlWiring:
 
         yaml_sources = {
             "newsapi": [
-                {"name": "query1", "type": "newsapi", "query": "physical security", "api_key_env": "NEWS_API_KEY", "page_size": 10},
-                {"name": "query2", "type": "newsapi", "query": "CCTV surveillance", "api_key_env": "NEWS_API_KEY"},
+                {
+                    "name": "query1",
+                    "type": "newsapi",
+                    "query": "physical security",
+                    "api_key_env": "NEWS_API_KEY",
+                    "page_size": 10,
+                },
+                {
+                    "name": "query2",
+                    "type": "newsapi",
+                    "query": "CCTV surveillance",
+                    "api_key_env": "NEWS_API_KEY",
+                },
             ],
             "rss": [],
             "playwright": [],
