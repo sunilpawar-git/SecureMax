@@ -21,6 +21,7 @@ export async function GET() {
         reportReady: true,
         createdAt: true,
         _count: { select: { events: true } },
+        reportJob: { select: { id: true } },
       },
     });
 
@@ -32,6 +33,7 @@ export async function GET() {
       reportReady: s.reportReady,
       questionsAnswered: s._count.events,
       createdAt: s.createdAt.toISOString(),
+      reportJobId: s.reportJob?.id ?? null,
     }));
 
     return apiSuccess({ sessions });

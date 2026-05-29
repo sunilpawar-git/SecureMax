@@ -3,11 +3,13 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { apiSuccess, apiError } from '@/lib/api';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { getAuditLog } from '@/lib/admin/audit-service';
 import { auditLogToCsv } from '@/lib/admin/csv-export';
 import { AuditLogFilterSchema } from '@/lib/admin/validators';
 import { ADMIN_ERR } from '@/config/admin-strings';
+import { logger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   if (!(await verifyAdmin())) return forbiddenResponse();
@@ -15,7 +17,7 @@ export async function GET(request: NextRequest) {
   const p = request.nextUrl.searchParams;
   const parsed = AuditLogFilterSchema.safeParse(Object.fromEntries(p));
   if (!parsed.success) {
-    return NextResponse.json({ error: ADMIN_ERR.INVALID_REQUEST }, { status: 400 });
+    return apiError(ADMIN_ERR.INVALID_REQUEST, 400);
   }
   const { format, ...filters } = parsed.data;
 
@@ -33,9 +35,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    return NextResponse.json(result);
+    return apiSuccess(result);
   } catch (err) {
-    console.error('[admin-audit-log] Query failed', { detail: String(err) });
-    return NextResponse.json({ error: 'Failed to load audit log' }, { status: 500 });
+    logger.error('Query failed', 'admin-audit-log', { detail: String(err) });
+    return apiError('Failed to load audit log', 500);
   }
 }

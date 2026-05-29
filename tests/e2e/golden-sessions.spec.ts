@@ -26,9 +26,7 @@ type Fixture = {
 };
 
 function loadFixture(name: string): Fixture {
-  return JSON.parse(
-    fs.readFileSync(path.join(FIXTURES_DIR, name), 'utf-8'),
-  );
+  return JSON.parse(fs.readFileSync(path.join(FIXTURES_DIR, name), 'utf-8'));
 }
 
 function loadGraphIds(track: string): Set<string> {
@@ -144,7 +142,10 @@ test.describe('Golden session — live AI assertions @requires-ai', () => {
         },
       });
       const s = await statusRes.json();
-      if (s.status === 'completed') { status = 'completed'; break; }
+      if (s.status === 'completed') {
+        status = 'completed';
+        break;
+      }
     }
     expect(status).toBe('completed');
 
@@ -156,8 +157,6 @@ test.describe('Golden session — live AI assertions @requires-ai', () => {
     });
     const summary = await summaryRes.json();
 
-    expect(summary.urgency_score).toBeLessThanOrEqual(
-      expected.max_urgency_score as number,
-    );
+    expect(summary.urgency_score).toBeLessThanOrEqual(expected.max_urgency_score as number);
   });
 });

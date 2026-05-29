@@ -80,12 +80,9 @@ export async function updateLeadStatus(
       data: { leadId, dueAt, status: FOLLOW_UP_STATUS.PENDING },
     });
 
-    if (lead.sourceSessionId) {
-      await prisma.auditSession.update({
-        where: { id: lead.sourceSessionId },
-        data: { paid: true },
-      });
-    }
+    // SECURITY: Do NOT set paid:true here. Enterprise payment is confirmed separately
+    // via admin "Unlock Report" action after PO/invoice is received — not by CRM status.
+    // Setting paid:true from a CRM transition bypasses payment verification entirely.
 
     if (lead.email) {
       await sendLeadEmail({

@@ -12,7 +12,7 @@ nodes:
   # ===== OPENING =====
   - id: hni_q1_property_type
     domain: CPP-07
-    text: "What type of property are we auditing today?"
+    text: 'What type of property are we auditing today?'
     question_type: single_choice
     cpp_domain_tag: CPP-07
     options: [Villa, Apartment, Farmhouse, Penthouse, Home Office]
@@ -22,20 +22,20 @@ nodes:
 
   - id: hni_q2_existing_vendor
     domain: CPP-07
-    text: "Do you currently work with a security agency or consultant?"
+    text: 'Do you currently work with a security agency or consultant?'
     question_type: single_choice
     cpp_domain_tag: CPP-07
-    options: ["Yes", "No"]
+    options: ['Yes', 'No']
     edges:
       - target: hni_q3_incident_history
         condition: any
 
   - id: hni_q3_incident_history
     domain: CPP-04
-    text: "Has your property experienced any security incident or near-miss in the past 12 months?"
+    text: 'Has your property experienced any security incident or near-miss in the past 12 months?'
     question_type: single_choice
     cpp_domain_tag: CPP-04
-    options: ["Yes", "No", "Prefer not to say"]
+    options: ['Yes', 'No', 'Prefer not to say']
     edges:
       - target: hni_cpp01_perimeter
         condition: any
@@ -43,7 +43,7 @@ nodes:
   # ===== CPP-01: Physical Security =====
   - id: hni_cpp01_perimeter
     domain: CPP-01
-    text: "What type of perimeter protection does your property have?"
+    text: 'What type of perimeter protection does your property have?'
     question_type: multi_choice
     cpp_domain_tag: CPP-01
     options: [Boundary wall, Fence, Hedgerow, None, Other]
@@ -53,31 +53,32 @@ nodes:
 
   - id: hni_cpp01_cctv
     domain: CPP-01
-    text: "Do you have CCTV cameras installed? If yes, are there any known blind spots?"
+    text: 'Do you have CCTV cameras installed? If yes, are there any known blind spots?'
     question_type: single_choice
     cpp_domain_tag: CPP-01
-    options: ["Yes — full coverage", "Yes — some blind spots", "Yes — unsure about coverage", "No CCTV"]
+    options:
+      ['Yes — full coverage', 'Yes — some blind spots', 'Yes — unsure about coverage', 'No CCTV']
     edges:
       - target: hni_cpp01_gate_code
         condition: any
 
   - id: hni_cpp01_gate_code
     domain: CPP-01
-    text: "Is your gate access code shared with delivery personnel or vendors?"
+    text: 'Is your gate access code shared with delivery personnel or vendors?'
     question_type: single_choice
     cpp_domain_tag: CPP-01
     score_drop_trigger: true
-    options: ["Yes", "No", "No gate code system"]
+    options: ['Yes', 'No', 'No gate code system']
     edges:
       - target: hni_cpp01_lighting
         condition: any
 
   - id: hni_cpp01_lighting
     domain: CPP-01
-    text: "Is the perimeter of your property adequately lit at night?"
+    text: 'Is the perimeter of your property adequately lit at night?'
     question_type: single_choice
     cpp_domain_tag: CPP-01
-    options: ["Fully lit", "Partially lit", "Not lit", "Unsure"]
+    options: ['Fully lit', 'Partially lit', 'Not lit', 'Unsure']
     edges:
       - target: hni_cpp06_staff_count
         condition: any
@@ -85,31 +86,31 @@ nodes:
   # ===== CPP-06: Personnel Security =====
   - id: hni_cpp06_staff_count
     domain: CPP-06
-    text: "How many domestic staff do you currently employ? (guards, drivers, cooks, maids, etc.)"
+    text: 'How many domestic staff do you currently employ? (guards, drivers, cooks, maids, etc.)'
     question_type: single_choice
     cpp_domain_tag: CPP-06
-    options: ["0", "1-3", "4-7", "8+"]
+    options: ['0', '1-3', '4-7', '8+']
     edges:
       - target: hni_cpp06_background_checks
         condition: any
 
   - id: hni_cpp06_background_checks
     domain: CPP-06
-    text: "Do you conduct background checks on all domestic staff before hiring?"
+    text: 'Do you conduct background checks on all domestic staff before hiring?'
     question_type: single_choice
     cpp_domain_tag: CPP-06
     score_drop_trigger: true
-    options: ["Yes — verified agency", "Informal checks only", "No"]
+    options: ['Yes — verified agency', 'Informal checks only', 'No']
     edges:
       - target: hni_cpp06_access_zones
         condition: any
 
   - id: hni_cpp06_access_zones
     domain: CPP-06
-    text: "Do all staff members have unrestricted access to all areas of your property?"
+    text: 'Do all staff members have unrestricted access to all areas of your property?'
     question_type: single_choice
     cpp_domain_tag: CPP-06
-    options: ["Yes — all areas", "No — restricted zones exist", "Unsure"]
+    options: ['Yes — all areas', 'No — restricted zones exist', 'Unsure']
     edges:
       - target: hni_cpp05_smart_home
         condition: any
@@ -117,31 +118,32 @@ nodes:
   # ===== CPP-05: Information Security =====
   - id: hni_cpp05_smart_home
     domain: CPP-05
-    text: "Do you use smart home devices (smart locks, Alexa/Google Home, smart cameras)?"
+    text: 'Do you use smart home devices (smart locks, Alexa/Google Home, smart cameras)?'
     question_type: single_choice
     cpp_domain_tag: CPP-05
-    options: ["Yes — multiple devices", "Yes — 1-2 devices", "No"]
+    options: ['Yes — multiple devices', 'Yes — 1-2 devices', 'No']
     edges:
       - target: hni_cpp05_cctv_cloud
         condition: any
 
   - id: hni_cpp05_cctv_cloud
     domain: CPP-05
-    text: "Are your CCTV/security cameras connected to a cloud app with default login credentials?"
+    text: 'Are your CCTV/security cameras connected to a cloud app with default login credentials?'
     question_type: single_choice
     cpp_domain_tag: CPP-05
     score_drop_trigger: true
-    options: ["Yes — default settings", "No — credentials changed", "Not connected to cloud", "Unsure"]
+    options:
+      ['Yes — default settings', 'No — credentials changed', 'Not connected to cloud', 'Unsure']
     edges:
       - target: hni_cpp05_wifi
         condition: any
 
   - id: hni_cpp05_wifi
     domain: CPP-05
-    text: "Is your home WiFi network segregated from your security system network?"
+    text: 'Is your home WiFi network segregated from your security system network?'
     question_type: single_choice
     cpp_domain_tag: CPP-05
-    options: ["Yes — separate networks", "No — same network", "Unsure"]
+    options: ['Yes — separate networks', 'No — same network', 'Unsure']
     edges:
       - target: hni_cpp03_emergency_plan
         condition: any
@@ -149,31 +151,31 @@ nodes:
   # ===== CPP-03: Crisis Management =====
   - id: hni_cpp03_emergency_plan
     domain: CPP-03
-    text: "Does your household have a documented emergency response plan rehearsed in the last year?"
+    text: 'Does your household have a documented emergency response plan rehearsed in the last year?'
     question_type: single_choice
     cpp_domain_tag: CPP-03
     score_drop_trigger: true
-    options: ["Yes — documented and rehearsed", "Documented but not rehearsed", "No plan exists"]
+    options: ['Yes — documented and rehearsed', 'Documented but not rehearsed', 'No plan exists']
     edges:
       - target: hni_cpp03_safe_room
         condition: any
 
   - id: hni_cpp03_safe_room
     domain: CPP-03
-    text: "Does your property have a designated safe room or panic button system?"
+    text: 'Does your property have a designated safe room or panic button system?'
     question_type: single_choice
     cpp_domain_tag: CPP-03
-    options: ["Yes — both", "Safe room only", "Panic button only", "Neither"]
+    options: ['Yes — both', 'Safe room only', 'Panic button only', 'Neither']
     edges:
       - target: hni_cpp03_family_training
         condition: any
 
   - id: hni_cpp03_family_training
     domain: CPP-03
-    text: "Are family members (including children and elderly) trained on what to do in a security emergency?"
+    text: 'Are family members (including children and elderly) trained on what to do in a security emergency?'
     question_type: single_choice
     cpp_domain_tag: CPP-03
-    options: ["Yes — all members", "Some members", "No"]
+    options: ['Yes — all members', 'Some members', 'No']
     edges:
       - target: hni_cpp02_risk_assessment
         condition: any
@@ -181,20 +183,20 @@ nodes:
   # ===== CPP-02: Business Principles =====
   - id: hni_cpp02_risk_assessment
     domain: CPP-02
-    text: "When was the last time you conducted a formal security risk assessment of your property?"
+    text: 'When was the last time you conducted a formal security risk assessment of your property?'
     question_type: single_choice
     cpp_domain_tag: CPP-02
-    options: ["Within last year", "1-3 years ago", "Never", "Unsure"]
+    options: ['Within last year', '1-3 years ago', 'Never', 'Unsure']
     edges:
       - target: hni_cpp02_review_trigger
         condition: any
 
   - id: hni_cpp02_review_trigger
     domain: CPP-02
-    text: "Do you review security measures after significant life events (new staff, renovation, extended travel)?"
+    text: 'Do you review security measures after significant life events (new staff, renovation, extended travel)?'
     question_type: single_choice
     cpp_domain_tag: CPP-02
-    options: ["Always", "Sometimes", "Never"]
+    options: ['Always', 'Sometimes', 'Never']
     edges:
       - target: hni_cpp07_accountability
         condition: any
@@ -202,10 +204,17 @@ nodes:
   # ===== CPP-07: Security Management =====
   - id: hni_cpp07_accountability
     domain: CPP-07
-    text: "Who is primarily accountable for security decisions in your household?"
+    text: 'Who is primarily accountable for security decisions in your household?'
     question_type: single_choice
     cpp_domain_tag: CPP-07
-    options: ["Myself", "Spouse/Partner", "Security agency", "No one specifically", "Shared responsibility"]
+    options:
+      [
+        'Myself',
+        'Spouse/Partner',
+        'Security agency',
+        'No one specifically',
+        'Shared responsibility',
+      ]
     edges:
       - target: hni_cpp07_review_cycle
         condition: any
@@ -215,7 +224,7 @@ nodes:
     text: "Do you have a recurring schedule to review your property's security posture?"
     question_type: single_choice
     cpp_domain_tag: CPP-07
-    options: ["Yes — quarterly or more", "Yes — annually", "No recurring schedule"]
+    options: ['Yes — quarterly or more', 'Yes — annually', 'No recurring schedule']
     edges:
       - target: hni_cpp04_incident_reporting
         condition: any
@@ -223,20 +232,20 @@ nodes:
   # ===== CPP-04: Investigations =====
   - id: hni_cpp04_incident_reporting
     domain: CPP-04
-    text: "Are minor security incidents (suspicious visitor, unlocked door, missing item) formally logged?"
+    text: 'Are minor security incidents (suspicious visitor, unlocked door, missing item) formally logged?'
     question_type: single_choice
     cpp_domain_tag: CPP-04
-    options: ["Yes — written log", "Verbal reporting only", "Not logged"]
+    options: ['Yes — written log', 'Verbal reporting only', 'Not logged']
     edges:
       - target: hni_cpp04_corrective_actions
         condition: any
 
   - id: hni_cpp04_corrective_actions
     domain: CPP-04
-    text: "When a security incident occurs, are corrective actions taken and verified?"
+    text: 'When a security incident occurs, are corrective actions taken and verified?'
     question_type: single_choice
     cpp_domain_tag: CPP-04
-    options: ["Yes — documented", "Informal fixes", "No follow-up"]
+    options: ['Yes — documented', 'Informal fixes', 'No follow-up']
     edges:
       - target: hni_travel_module_entry
         condition: any
@@ -244,24 +253,31 @@ nodes:
   # ===== Travel / Absence Module =====
   - id: hni_travel_module_entry
     domain: CPP-01
-    text: "Do you travel away from this property for extended periods (1+ weeks)?"
+    text: 'Do you travel away from this property for extended periods (1+ weeks)?'
     question_type: single_choice
     cpp_domain_tag: CPP-01
-    options: ["Yes — frequently", "Yes — occasionally", "Rarely/Never"]
+    options: ['Yes — frequently', 'Yes — occasionally', 'Rarely/Never']
     edges:
       - target: hni_travel_key_holder
-        condition: "Yes — frequently"
+        condition: 'Yes — frequently'
       - target: hni_travel_key_holder
-        condition: "Yes — occasionally"
+        condition: 'Yes — occasionally'
       - target: hni_visitor_delivery
-        condition: "Rarely/Never"
+        condition: 'Rarely/Never'
 
   - id: hni_travel_key_holder
     domain: CPP-06
-    text: "When you are away, who holds the keys to your property?"
+    text: 'When you are away, who holds the keys to your property?'
     question_type: single_choice
     cpp_domain_tag: CPP-06
-    options: ["Trusted family member", "Domestic staff", "Security agency", "Neighbor", "No one — property empty"]
+    options:
+      [
+        'Trusted family member',
+        'Domestic staff',
+        'Security agency',
+        'Neighbor',
+        'No one — property empty',
+      ]
     edges:
       - target: hni_visitor_delivery
         condition: any
@@ -269,20 +285,20 @@ nodes:
   # ===== Visitor / Delivery Module =====
   - id: hni_visitor_delivery
     domain: CPP-01
-    text: "Can delivery personnel (food delivery, packages) enter your property gate without escort?"
+    text: 'Can delivery personnel (food delivery, packages) enter your property gate without escort?'
     question_type: single_choice
     cpp_domain_tag: CPP-01
-    options: ["Yes — unrestricted", "Yes — to designated area only", "No — met at gate"]
+    options: ['Yes — unrestricted', 'Yes — to designated area only', 'No — met at gate']
     edges:
       - target: hni_visitor_log
         condition: any
 
   - id: hni_visitor_log
     domain: CPP-04
-    text: "Do you maintain a visitor log (physical or digital) for your property?"
+    text: 'Do you maintain a visitor log (physical or digital) for your property?'
     question_type: single_choice
     cpp_domain_tag: CPP-04
-    options: ["Yes", "No", "Security agency handles it"]
+    options: ['Yes', 'No', 'Security agency handles it']
     edges:
       - target: hni_terminal
         condition: any
@@ -290,7 +306,7 @@ nodes:
   # ===== TERMINAL =====
   - id: hni_terminal
     domain: CPP-07
-    text: "Thank you. Your security assessment is complete. We are generating your report."
+    text: 'Thank you. Your security assessment is complete. We are generating your report.'
     question_type: terminal
     cpp_domain_tag: CPP-07
     is_terminal: true

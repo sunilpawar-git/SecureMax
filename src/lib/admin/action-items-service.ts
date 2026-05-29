@@ -6,7 +6,7 @@
 import { prisma } from '@/lib/prisma';
 import {
   FOLLOW_UP_STATUS,
-  FOLLOW_UP_WINDOW_DAYS,
+  FOLLOW_UP_DAYS,
   LEAD_STATUS,
   SCRAPER_RUN_STATUS,
 } from '@/config/admin-strings';
@@ -30,7 +30,7 @@ export async function getActionItems(): Promise<ActionItems> {
     prisma.scraperRun.count({
       where: {
         status: SCRAPER_RUN_STATUS.FAILED,
-        startedAt: { gte: new Date(now.getTime() - FOLLOW_UP_WINDOW_DAYS * 24 * 60 * 60 * 1000) },
+        startedAt: { gte: new Date(now.getTime() - FOLLOW_UP_DAYS * 24 * 60 * 60 * 1000) },
       },
     }),
     prisma.enterpriseLead.count({ where: { status: LEAD_STATUS.NEW } }),

@@ -1,0 +1,22 @@
+# Production override — run with: docker compose -f docker-compose.yml -f docker-compose.prod.yml up
+# Removes host port exposure, enforces SSL, uses Docker secrets for password.
+
+services:
+  postgres:
+    ports: !reset []
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password
+    secrets:
+      - pg_password
+
+  nextjs:
+    environment:
+      DATABASE_URL: 'postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-raivan_global}?schema=public&sslmode=require'
+
+  fastapi:
+    environment:
+      DATABASE_URL: 'postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-raivan_global}?sslmode=require'
+
+secrets:
+  pg_password:
+    file: ./secrets/pg_password.txt

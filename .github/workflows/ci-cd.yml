@@ -2,7 +2,7 @@ name: Gold-Standard CI/CD Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, feature/*]
   pull_request:
     branches: [main, develop]
   workflow_dispatch:
@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
         env:
-          DATABASE_URL: "postgresql://localhost/dummy"
+          DATABASE_URL: 'postgresql://localhost/dummy'
 
       - name: ESLint
         run: npm run lint
@@ -70,7 +70,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
         env:
-          DATABASE_URL: "postgresql://localhost/dummy"
+          DATABASE_URL: 'postgresql://localhost/dummy'
 
       - name: Run Jest tests
         run: npm test -- --coverage --passWithNoTests
@@ -99,7 +99,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
         env:
-          DATABASE_URL: "postgresql://localhost/dummy"
+          DATABASE_URL: 'postgresql://localhost/dummy'
 
       - name: Audit dependencies (npm audit)
         run: npm audit --audit-level=moderate
@@ -199,8 +199,8 @@ jobs:
           pytest tests/ -v --cov=. --cov-report=xml --cov-report=term -m "not integration"
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/raivan_test
-          ALLOW_INSECURE_LOCAL: "true"
-          ENCRYPTION_KEY: "ci-test-key-do-not-use-in-production!!"
+          ALLOW_INSECURE_LOCAL: 'true'
+          ENCRYPTION_KEY: 'ci-test-key-do-not-use-in-production!!'
         continue-on-error: false
 
       - name: Upload coverage to Codecov
@@ -304,7 +304,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
         env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/raivan_test"
+          DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/raivan_test'
 
       - name: Run Prisma migrations
         run: npx prisma migrate deploy
@@ -357,7 +357,7 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
         env:
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/raivan_test"
+          DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/raivan_test'
 
       - name: Install Python dependencies
         run: |

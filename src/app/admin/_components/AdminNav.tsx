@@ -6,8 +6,9 @@
 
 import Link from 'next/link';
 import { useRef, useEffect } from 'react';
-import { APP } from '@/config/strings';
+import { APP, NAV } from '@/config/strings';
 import { ADMIN_NAV_ITEMS } from '@/config/admin-strings';
+import { ADMIN_EXIT_LINK_STYLE } from '@/config/admin-colors';
 import { useGlobalSearch } from '../_hooks/useGlobalSearch';
 import { SearchDropdown } from './SearchDropdown';
 
@@ -28,7 +29,12 @@ export function AdminNav() {
   return (
     <nav className="bg-slate-900 text-white px-6 py-3">
       <div className="max-w-7xl mx-auto flex items-center gap-6">
-        <span className="font-bold text-sm whitespace-nowrap">{APP.NAME} Admin</span>
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <span className="font-bold text-sm whitespace-nowrap">{APP.NAME} Admin</span>
+          <Link href="/dashboard" className={ADMIN_EXIT_LINK_STYLE}>
+            {NAV.EXIT_ADMIN}
+          </Link>
+        </div>
 
         <div className="flex gap-4 overflow-x-auto flex-shrink-0">
           {ADMIN_NAV_ITEMS.map((item) => (

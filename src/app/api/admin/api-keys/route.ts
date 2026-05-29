@@ -4,7 +4,8 @@
  * POST /api/admin/api-keys?action=store|rotate|revoke
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { apiSuccess, apiError } from '@/lib/api';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import {
   storeApiKey,
@@ -13,6 +14,7 @@ import {
   revokeApiKey,
   getApiKeyAuditLog,
 } from '@/lib/api-key-manager';
+import { logger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   const session = await verifyAdmin();
@@ -23,7 +25,7 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    return apiError('Invalid request body', 400);
   }
 
   try {
@@ -35,10 +37,7 @@ export async function POST(request: NextRequest) {
           keyValue?: unknown;
         };
         if (!provider || !keyName || !keyValue) {
-          return NextResponse.json(
-            { error: 'Missing provider, keyName, or keyValue' },
-            { status: 400 },
-          );
+          return apiError('Missing provider, keyName, or keyValue', 400);
         }
 
         const apiKey = await storeApiKey(
@@ -48,8 +47,7 @@ export async function POST(request: NextRequest) {
           session.user.email || 'admin',
         );
 
-        return NextResponse.json({
-          success: true,
+        return apiSuccess({
           message: `API key for ${String(provider)} stored successfully`,
           keyId: apiKey.id,
         });
@@ -61,7 +59,7 @@ export async function POST(request: NextRequest) {
           newKeyValue?: unknown;
         };
         if (!rotProv || !newKeyValue) {
-          return NextResponse.json({ error: 'Missing provider or newKeyValue' }, { status: 400 });
+          return apiError('Missing provider or newKeyValue', 400);
         }
 
         const rotKey = await rotateApiKey(
@@ -70,8 +68,7 @@ export async function POST(request: NextRequest) {
           session.user.email || 'admin',
         );
 
-        return NextResponse.json({
-          success: true,
+        return apiSuccess({
           message: `API key for ${String(rotProv)} rotated successfully`,
           keyId: rotKey.id,
         });
@@ -80,7 +77,7 @@ export async function POST(request: NextRequest) {
       case 'revoke': {
         const { keyId: revKeyId, reason } = body as { keyId?: unknown; reason?: unknown };
         if (!revKeyId) {
-          return NextResponse.json({ error: 'Missing keyId' }, { status: 400 });
+          return apiError('Missing keyId', 400);
         }
 
         await revokeApiKey(
@@ -89,16 +86,13 @@ export async function POST(request: NextRequest) {
           reason != null ? String(reason) : undefined,
         );
 
-        return NextResponse.json({
-          success: true,
-          message: 'API key revoked successfully',
-        });
+        return apiSuccess({ message: 'API key revoked successfully' });
       }
 
       case 'audit': {
         const { keyId: audKeyId, limit: audLimit } = body as { keyId?: unknown; limit?: unknown };
         if (!audKeyId) {
-          return NextResponse.json({ error: 'Missing keyId' }, { status: 400 });
+          return apiError('Missing keyId', 400);
         }
 
         const audits = await getApiKeyAuditLog(
@@ -106,8 +100,7 @@ export async function POST(request: NextRequest) {
           typeof audLimit === 'number' ? audLimit : 100,
         );
 
-        return NextResponse.json({
-          success: true,
+        return apiSuccess({
           audits: audits.map((a) => ({
             action: a.action,
             actor: a.actor,
@@ -119,14 +112,11 @@ export async function POST(request: NextRequest) {
       }
 
       default:
-        return NextResponse.json(
-          { error: 'Invalid action. Use: store, rotate, revoke, audit' },
-          { status: 400 },
-        );
+        return apiError('Invalid action. Use: store, rotate, revoke, audit', 400);
     }
   } catch (error) {
-    console.error('[admin-api-keys] Operation failed', { detail: String(error) });
-    return NextResponse.json({ error: 'Failed to manage API key' }, { status: 500 });
+    logger.error('Operation failed', 'admin-api-keys', { detail: String(error) });
+    return apiError('Failed to manage API key', 500);
   }
 }
 
@@ -135,16 +125,15 @@ export async function GET(request: NextRequest) {
 
   const provider = request.nextUrl.searchParams.get('provider');
   if (!provider) {
-    return NextResponse.json({ error: 'Missing provider parameter' }, { status: 400 });
+    return apiError('Missing provider parameter', 400);
   }
 
-  // Check if provider has an active key (without returning the key itself)
   const keyInfo = await getApiKey(provider);
   if (!keyInfo) {
-    return NextResponse.json({ exists: false, provider });
+    return apiSuccess({ exists: false, provider });
   }
 
-  return NextResponse.json({
+  return apiSuccess({
     exists: true,
     provider,
     message: 'Active API key found (key content not returned for security)',

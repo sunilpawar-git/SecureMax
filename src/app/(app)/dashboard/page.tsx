@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { APP } from '@/config/strings';
+import { APP, NAV, UI, DASHBOARD, TRACK_LABEL, SESSION_STATUS_LABEL } from '@/config/strings';
+import { SESSION_STATUS_STYLES } from '@/config/admin-colors';
 
+/** Matches the shape returned by GET /api/dashboard/sessions */
 interface SessionSummary {
   id: string;
   status: string;
@@ -12,6 +14,7 @@ interface SessionSummary {
   reportReady: boolean;
   questionsAnswered: number;
   createdAt: string;
+  reportJobId: string | null;
 }
 
 export default function DashboardPage() {
@@ -39,22 +42,24 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-slate-50 py-8 px-4">
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">{APP.NAME} — Dashboard</h1>
-          <p className="text-sm text-slate-500 mt-1">Your security assessments</p>
+          <h1 className="text-xl font-bold text-slate-900">
+            {APP.NAME} — {NAV.DASHBOARD}
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">{DASHBOARD.SUBTITLE}</p>
         </div>
 
         <Link
           href="/questionnaire"
           className="block w-full rounded-lg border-2 border-dashed border-emerald-300 bg-emerald-50 p-6 text-center hover:border-emerald-400 transition-colors"
         >
-          <span className="text-emerald-700 font-medium">Start New Assessment</span>
+          <span className="text-emerald-700 font-medium">{NAV.START_AUDIT}</span>
         </Link>
 
         {loading ? (
-          <p className="text-sm text-slate-400 text-center py-8">Loading...</p>
+          <p className="text-sm text-slate-400 text-center py-8">{UI.LOADING}</p>
         ) : sessions.length === 0 ? (
           <div className="text-center py-8 text-slate-400">
-            <p className="text-sm">No assessments yet. Start one above.</p>
+            <p className="text-sm">{DASHBOARD.EMPTY_STATE}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -69,21 +74,17 @@ export default function DashboardPage() {
 }
 
 function SessionCard({ session }: { session: SessionSummary }) {
-  const statusColor =
-    {
-      completed: 'bg-emerald-100 text-emerald-800',
-      in_progress: 'bg-yellow-100 text-yellow-800',
-      abandoned: 'bg-slate-100 text-slate-600',
-    }[session.status] ?? 'bg-slate-100 text-slate-600';
+  const statusColor = SESSION_STATUS_STYLES[session.status] ?? 'bg-slate-100 text-slate-600';
 
+  const reportId = session.reportJobId ?? session.id;
   const href =
     session.paid && session.reportReady
-      ? `/report/${session.id}/download`
+      ? `/report/${reportId}/download`
       : session.reportReady
-        ? `/report/${session.id}/summary`
+        ? `/report/${reportId}/summary`
         : session.status === 'in_progress'
           ? `/questionnaire?session=${encodeURIComponent(session.id)}&track=${encodeURIComponent(session.track)}`
-          : `/report/${session.id}/status`;
+          : `/report/${reportId}/status`;
 
   return (
     <Link
@@ -93,13 +94,15 @@ function SessionCard({ session }: { session: SessionSummary }) {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-slate-900 capitalize">{session.track}</span>
+            <span className="text-sm font-medium text-slate-900">
+              {TRACK_LABEL[session.track] ?? session.track}
+            </span>
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${statusColor}`}>
-              {session.status.replace('_', ' ')}
+              {SESSION_STATUS_LABEL[session.status] ?? session.status}
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            {session.questionsAnswered} questions &middot;{' '}
+            {session.questionsAnswered} {DASHBOARD.QUESTIONS_SUFFIX} &middot;{' '}
             {new Date(session.createdAt).toLocaleDateString()}
           </p>
         </div>

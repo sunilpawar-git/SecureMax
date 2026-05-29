@@ -4,6 +4,7 @@
  */
 
 import { APP } from '@/config/strings';
+import { logger } from '@/lib/logger';
 
 interface SendEmailParams {
   to: string;
@@ -34,7 +35,7 @@ async function getResendClient(): Promise<ResendLike | null> {
   if (resendClient) return resendClient;
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.error('[admin-email] RESEND_API_KEY not set');
+    logger.error('RESEND_API_KEY not set', 'admin-email');
     return null;
   }
   const { Resend } = await import('resend');
@@ -57,13 +58,13 @@ export async function sendLeadEmail(params: SendEmailParams): Promise<SendEmailR
     });
 
     if (error) {
-      console.error('[admin-email] Resend error', { detail: String(error) });
+      logger.error('Resend error', 'admin-email', { detail: String(error) });
       return { success: false, error: 'Email delivery failed' };
     }
 
     return { success: true, messageId: data?.id };
   } catch (err) {
-    console.error('[admin-email] Unexpected error', { detail: String(err) });
+    logger.error('Unexpected error', 'admin-email', { detail: String(err) });
     return { success: false, error: 'Email delivery failed' };
   }
 }

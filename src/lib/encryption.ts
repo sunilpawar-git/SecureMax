@@ -1,6 +1,8 @@
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 import { ENCRYPTION } from '@/config/security';
 
+const VERSION_PREFIX = ENCRYPTION.KEY_VERSION_PREFIX;
+
 function getKey(): Buffer {
   const key = process.env.ENCRYPTION_KEY;
   if (!key || key.length < ENCRYPTION.KEY_LENGTH * 2) {
@@ -17,11 +19,16 @@ export function encrypt(plaintext: string): string {
   encrypted += cipher.final('hex');
 
   const tag = cipher.getAuthTag();
-  return `${iv.toString('hex')}:${tag.toString('hex')}:${encrypted}`;
+  return `${VERSION_PREFIX}${iv.toString('hex')}:${tag.toString('hex')}:${encrypted}`;
 }
 
 export function decrypt(ciphertext: string): string {
-  const parts = ciphertext.split(':');
+  // Strip version prefix if present; unversioned = legacy v1 key
+  const raw = ciphertext.startsWith(VERSION_PREFIX)
+    ? ciphertext.slice(VERSION_PREFIX.length)
+    : ciphertext;
+
+  const parts = raw.split(':');
   if (parts.length !== 3 || !parts[0] || !parts[1]) {
     throw new Error('Invalid ciphertext format');
   }

@@ -9,4 +9,4 @@ export interface QuestionNode {
 
 export type RadarScores = Record<string, number>;
 
-export type SessionState = 'idle' | 'active' | 'completed';
+export type SessionState = 'idle' | 'active' | 'completed' | 'resume_prompt';

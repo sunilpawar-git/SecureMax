@@ -2,9 +2,12 @@
  * Admin report unlock endpoint — sets enterpriseReportUnlocked flag.
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { apiSuccess, apiError } from '@/lib/api';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { unlockReport } from '@/lib/admin/reports-service';
+import { isValidCuid } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 
 export async function POST(
   _request: NextRequest,
@@ -14,14 +17,15 @@ export async function POST(
   if (!session) return forbiddenResponse();
 
   const { sessionId } = await params;
+  if (!isValidCuid(sessionId)) return apiError('Invalid session ID', 400);
   try {
     const result = await unlockReport(sessionId, session.user.id);
     if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 404 });
+      return apiError(result.error ?? 'Not found', 404);
     }
-    return NextResponse.json({ success: true });
+    return apiSuccess({ success: true });
   } catch (err) {
-    console.error('[admin-reports-unlock] Failed', { detail: String(err) });
-    return NextResponse.json({ error: 'Unlock failed' }, { status: 500 });
+    logger.error('Failed', 'admin-reports-unlock', { detail: String(err) });
+    return apiError('Unlock failed', 500);
   }
 }

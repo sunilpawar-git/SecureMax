@@ -5,7 +5,7 @@
 
 import { z } from 'zod';
 import { LEAD_STATUS, ADMIN_ACTION_TYPE, ADMIN_ENTITY_TYPE } from '@/config/admin-strings';
-import { CPP_DOMAINS } from '@/config/strings';
+import { CPP_DOMAINS, VALID_TRACKS } from '@/config/strings';
 
 const leadStatusValues = Object.values(LEAD_STATUS) as [string, ...string[]];
 const cppDomainCodes: string[] = Object.values(CPP_DOMAINS).map((d) => d.code);
@@ -90,3 +90,18 @@ export const AdminActionSchema = z.object({
   entityId: z.string().min(1),
   metadata: z.record(z.string(), z.unknown()).optional(),
 });
+
+export const LinkedInDraftSchema = z.object({
+  article_ids: z.array(z.string().min(1)).min(1).max(10),
+});
+
+const validTrackValues = [...VALID_TRACKS] as [string, ...string[]];
+
+export const UserFilterSchema = z.object({
+  track: z.enum(validTrackValues).optional(),
+  search: z.string().trim().max(200).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+});
+
+export type UserFilter = z.infer<typeof UserFilterSchema>;

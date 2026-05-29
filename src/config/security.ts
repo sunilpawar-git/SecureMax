@@ -40,12 +40,17 @@ export const ENCRYPTION = {
   IV_LENGTH: 16,
   TAG_LENGTH: 16,
   KEY_LENGTH: 32,
+  KEY_VERSION_PREFIX: 'v1:',
 } as const;
+
+// __Host- prefix enforces Secure + no Domain — use only in production (HTTPS).
+// In dev (HTTP/localhost) the browser silently drops __Host- cookies, breaking OAuth.
+const isProd = process.env.NODE_ENV === 'production';
 
 export const SESSION_SECURITY = {
   MAX_AGE_SECONDS: 24 * 60 * 60,
-  COOKIE_NAME: '__Host-next-auth.session-token',
+  COOKIE_NAME: isProd ? '__Host-next-auth.session-token' : 'next-auth.session-token',
   SAME_SITE: 'lax' as const,
   HTTP_ONLY: true,
-  SECURE: process.env.NODE_ENV === 'production',
+  SECURE: isProd,
 } as const;

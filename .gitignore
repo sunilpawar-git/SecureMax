@@ -53,3 +53,4 @@ DEBT-SWEEP-*.md
 
 # Test files for hook demos
 src/test-auto-format.ts
+.playwright-mcp/

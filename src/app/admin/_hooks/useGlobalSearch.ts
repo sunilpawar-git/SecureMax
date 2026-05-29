@@ -40,7 +40,7 @@ export function useGlobalSearch(): GlobalSearchData {
       const res = await fetch(`/api/admin/search?q=${encodeURIComponent(q)}`);
       if (res.ok) setResults(await res.json());
     } catch {
-      /* non-critical */
+      setResults(EMPTY);
     }
   }, []);
 

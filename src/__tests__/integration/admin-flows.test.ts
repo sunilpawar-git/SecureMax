@@ -77,9 +77,9 @@ describe('Lead lifecycle flow', () => {
     const r2 = await updateLeadStatus('l-1', LEAD_STATUS.PROPOSAL_SENT, 'admin-1');
     expect(r2.success).toBe(true);
     expect(mockPrisma.followUpReminder.create).toHaveBeenCalled();
-    // Verify session unlock used sourceSessionId
-    expect(mockPrisma.auditSession.update).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id: 'sess-1' } }),
+    // Payment unlock must NOT happen on CRM transition — it's a separate action.
+    expect(mockPrisma.auditSession.update).not.toHaveBeenCalledWith(
+      expect.objectContaining({ data: { paid: true } }),
     );
   });
 

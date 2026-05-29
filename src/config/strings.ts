@@ -26,6 +26,11 @@ export const TRACK = {
   ENTERPRISE: 'enterprise',
 } as const;
 
+export const TRACK_LABEL: Record<string, string> = {
+  [TRACK.HNI]: 'HNI',
+  [TRACK.ENTERPRISE]: 'Enterprise',
+};
+
 export const USER_ROLE = {
   USER: 'user',
   ADMIN: 'admin',
@@ -54,12 +59,11 @@ export const SESSION_STATUS = {
   ABANDONED: 'abandoned',
 } as const;
 
-export const ENTERPRISE_LEAD_STATUS = {
-  NEW: 'new',
-  CONTACTED: 'contacted',
-  PROPOSAL_SENT: 'proposal_sent',
-  CLOSED: 'closed',
-} as const;
+/**
+ * @deprecated Use LEAD_STATUS from '@/config/admin-strings' — canonical 5-stage pipeline.
+ * Kept here as a re-export alias so existing imports don't break.
+ */
+export { LEAD_STATUS as ENTERPRISE_LEAD_STATUS } from './admin-strings';
 
 export const LINKEDIN_POST_STATUS = {
   DRAFT: 'draft',
@@ -112,6 +116,50 @@ export const LIMITS_ERR = {
 export const PAYMENT_ERR = {
   GATEWAY_LOADING: 'Payment gateway is loading. Please try again in a moment.',
 } as const;
+
+export const NAV = {
+  DASHBOARD: 'Dashboard',
+  START_AUDIT: 'New Assessment',
+  SAVE_EXIT: 'Save & Exit',
+  SIGN_OUT: 'Sign Out',
+  SIGN_IN: 'Sign In',
+  EXIT_ADMIN: '← Exit Admin',
+} as const;
+
+export const RESUME = {
+  TITLE: 'You have an assessment in progress',
+  DESCRIPTION: 'Would you like to continue where you left off or start a fresh assessment?',
+  RESUME_BTN: 'Resume Session',
+  RESTART_BTN: 'Start Fresh',
+  RESTART_CONFIRM: 'Starting fresh will abandon your current progress. Are you sure?',
+  QUESTIONS_ANSWERED: 'questions answered',
+} as const;
+
+export const UI = {
+  LOADING: 'Loading...',
+} as const;
+
+export const DASHBOARD = {
+  SUBTITLE: 'Your security assessments',
+  EMPTY_STATE: 'No assessments yet. Start one above.',
+  QUESTIONS_SUFFIX: 'questions',
+} as const;
+
+export const QUESTIONNAIRE = {
+  TRACK_PROMPT: 'Select your audit track to begin the security assessment.',
+  COMPLETE_TITLE: 'Assessment Complete',
+  REPORT_GENERATING: 'Your report is being generated.',
+  REPORT_INITIATING: 'Initiating report generation...',
+  VIEW_REPORT_STATUS: 'View Report Status',
+  SECURITY_SCORE: 'Security Score',
+  RESUME_EXISTING: 'Resume existing session',
+} as const;
+
+export const SESSION_STATUS_LABEL: Record<string, string> = {
+  [SESSION_STATUS.IN_PROGRESS]: 'In Progress',
+  [SESSION_STATUS.COMPLETED]: 'Completed',
+  [SESSION_STATUS.ABANDONED]: 'Abandoned',
+};
 
 export const DPDPA = {
   CONSENT_VERSION: 'v1',

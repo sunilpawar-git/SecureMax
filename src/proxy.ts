@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { RATE_LIMITS } from '@/config/security';
+import { USER_ROLE } from '@/config/strings';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
@@ -31,8 +32,28 @@ export default auth(async (req) => {
   const { pathname } = nextUrl;
   const ip = getClientIp(req);
 
+  // Generate or forward X-Request-ID for tracing
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+
   // Rate-limit API routes before auth checks.
   if (pathname.startsWith('/api/')) {
+    // Defense-in-depth: block non-admin users from /api/admin/* at middleware layer
+    if (pathname.startsWith('/api/admin')) {
+      const session = req.auth;
+      if (!session?.user) {
+        return NextResponse.json(
+          { error: 'Authentication required' },
+          { status: 401, headers: { 'X-Request-ID': requestId } },
+        );
+      }
+      if ((session.user as { role?: string }).role !== USER_ROLE.ADMIN) {
+        return NextResponse.json(
+          { error: 'Forbidden' },
+          { status: 403, headers: { 'X-Request-ID': requestId } },
+        );
+      }
+    }
+
     const isAiEndpoint = pathname.includes('/questionnaire') || pathname.includes('/report');
     const isAdminEndpoint = pathname.startsWith('/api/admin');
 
@@ -53,12 +74,17 @@ export default auth(async (req) => {
         { error: 'Too many requests' },
         {
           status: 429,
-          headers: { 'Retry-After': String(Math.ceil(result.resetMs / 1000)) },
+          headers: {
+            'Retry-After': String(Math.ceil(result.resetMs / 1000)),
+            'X-Request-ID': requestId,
+          },
         },
       );
     }
 
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set('X-Request-ID', requestId);
+    return response;
   }
 
   const session = req.auth;
@@ -85,7 +111,10 @@ export default auth(async (req) => {
 
   if (isLoggedIn) {
     // Guard admin pages to admin-role users only.
-    if (pathname.startsWith('/admin') && (session.user as { role?: string }).role !== 'admin') {
+    if (
+      pathname.startsWith('/admin') &&
+      (session.user as { role?: string }).role !== USER_ROLE.ADMIN
+    ) {
       return NextResponse.redirect(new URL('/dashboard', req.url));
     }
 
@@ -99,7 +128,9 @@ export default auth(async (req) => {
     }
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  response.headers.set('X-Request-ID', requestId);
+  return response;
 });
 
 export const config = {

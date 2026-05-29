@@ -3,7 +3,7 @@
  * Verifies OWASP headers, DPDPA compliance structure, PWA manifest.
  */
 
-import { SECURITY_HEADERS, RATE_LIMITS, ENCRYPTION } from '@/config/security';
+import { SECURITY_HEADERS, RATE_LIMITS, ENCRYPTION, SESSION_SECURITY } from '@/config/security';
 import fs from 'fs';
 import path from 'path';
 import { checkRateLimit } from '@/lib/rate-limit';
@@ -137,6 +137,70 @@ describe('next.config.ts integration', () => {
     const configPath = path.join(process.cwd(), 'next.config.ts');
     const content = fs.readFileSync(configPath, 'utf-8');
     expect(content).not.toContain('X-Content-Type-Options');
+  });
+});
+
+describe('Encryption key versioning', () => {
+  it('ENCRYPTION.KEY_VERSION_PREFIX exists and is non-empty', () => {
+    expect(ENCRYPTION.KEY_VERSION_PREFIX).toBeDefined();
+    expect(ENCRYPTION.KEY_VERSION_PREFIX.length).toBeGreaterThan(0);
+  });
+
+  it('encrypt() output starts with version prefix v1:', () => {
+    process.env.ENCRYPTION_KEY = 'a'.repeat(64);
+    jest.resetModules();
+    const { encrypt } = require('@/lib/encryption');
+    const result = encrypt('test plaintext');
+    expect(result).toMatch(/^v1:/);
+  });
+
+  it('decrypt() handles versioned ciphertext correctly', () => {
+    process.env.ENCRYPTION_KEY = 'a'.repeat(64);
+    jest.resetModules();
+    const { encrypt, decrypt } = require('@/lib/encryption');
+    const encrypted = encrypt('round trip test');
+    const decrypted = decrypt(encrypted);
+    expect(decrypted).toBe('round trip test');
+  });
+
+  it('decrypt() handles legacy unversioned ciphertext', () => {
+    process.env.ENCRYPTION_KEY = 'a'.repeat(64);
+    jest.resetModules();
+    const { encrypt, decrypt } = require('@/lib/encryption');
+    const versioned = encrypt('legacy test');
+    const unversioned = versioned.replace(/^v1:/, '');
+    const decrypted = decrypt(unversioned);
+    expect(decrypted).toBe('legacy test');
+  });
+});
+
+describe('SESSION_SECURITY wired to NextAuth config', () => {
+  it('auth config consumes SESSION_SECURITY for maxAge', () => {
+    const { authConfig } = require('@/lib/auth/config');
+    expect(authConfig.session.maxAge).toBe(SESSION_SECURITY.MAX_AGE_SECONDS);
+  });
+
+  it('auth config sets cookie name from SESSION_SECURITY', () => {
+    const { authConfig } = require('@/lib/auth/config');
+    expect(authConfig.cookies.sessionToken.name).toBe(SESSION_SECURITY.COOKIE_NAME);
+  });
+
+  it('auth config sets httpOnly from SESSION_SECURITY', () => {
+    const { authConfig } = require('@/lib/auth/config');
+    expect(authConfig.cookies.sessionToken.options.httpOnly).toBe(SESSION_SECURITY.HTTP_ONLY);
+  });
+
+  it('auth config sets sameSite from SESSION_SECURITY', () => {
+    const { authConfig } = require('@/lib/auth/config');
+    expect(authConfig.cookies.sessionToken.options.sameSite).toBe(SESSION_SECURITY.SAME_SITE);
+  });
+
+  it('SESSION_SECURITY maxAge is at least 1 hour', () => {
+    expect(SESSION_SECURITY.MAX_AGE_SECONDS).toBeGreaterThanOrEqual(3600);
+  });
+
+  it('SESSION_SECURITY cookie is httpOnly', () => {
+    expect(SESSION_SECURITY.HTTP_ONLY).toBe(true);
   });
 });
 

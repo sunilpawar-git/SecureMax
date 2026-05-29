@@ -46,10 +46,7 @@ export const SESSION_STATUS_STYLES: Record<string, string> = {
   abandoned: 'bg-gray-100 text-gray-800',
 };
 
-export const TRACK_BADGE_STYLES: Record<string, string> = {
-  hni: 'bg-emerald-100 text-emerald-800',
-  enterprise: 'bg-slate-100 text-slate-800',
-};
+export { TRACK_BADGE_STYLES } from './colors';
 
 export const URGENCY_STYLES: Record<string, string> = {
   critical: 'bg-red-50 border-red-200 text-red-800',
@@ -63,6 +60,21 @@ export const URGENCY_BADGE_STYLES: Record<string, string> = {
   info: 'bg-blue-600 text-white',
 };
 
+export const FOLLOWUP_STATUS_STYLES: Record<string, string> = {
+  overdue: 'bg-red-50 border-l-4 border-red-500',
+  due_today: 'bg-amber-50 border-l-4 border-amber-500',
+  upcoming: 'bg-white',
+};
+
+export const HEADER_STYLES = {
+  full: 'bg-white border-b border-slate-200',
+  slim: 'bg-slate-50 border-b border-slate-200',
+} as const;
+
+// Exit link in the admin nav — visually distinct from regular nav items
+export const ADMIN_EXIT_LINK_STYLE =
+  'text-xs text-slate-400 hover:text-white border border-slate-600 rounded px-2 py-1 transition-colors whitespace-nowrap';
+
 export const ACTION_TYPE_STYLES: Record<string, string> = {
   lead_status_changed: 'bg-blue-100 text-blue-800',
   report_regenerated: 'bg-purple-100 text-purple-800',
@@ -71,4 +83,13 @@ export const ACTION_TYPE_STYLES: Record<string, string> = {
   email_sent: 'bg-cyan-100 text-cyan-800',
   threat_intel_added: 'bg-indigo-100 text-indigo-800',
   threat_intel_deleted: 'bg-orange-100 text-orange-800',
+};
+
+export const PAID_STATUS_STYLES = {
+  paid: 'bg-green-100 text-green-800',
+  unpaid: 'bg-gray-100 text-gray-500',
+} as const;
+
+export const ROLE_BADGE_STYLES: Record<string, string> = {
+  admin: 'bg-purple-100 text-purple-800',
 };

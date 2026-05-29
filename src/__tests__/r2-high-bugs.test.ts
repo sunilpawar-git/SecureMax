@@ -63,12 +63,12 @@ beforeEach(() => {
 });
 
 describe('updateLeadStatus — proposal_sent side effects (sourceSessionId field)', () => {
-  it('unlocks report via sourceSessionId (not sessionId)', async () => {
+  it('does NOT set paid:true on proposal_sent — payment is confirmed separately', async () => {
     const lead = {
       id: 'l-1',
       status: LEAD_STATUS.CONTACTED,
       email: 'lead@acme.com',
-      sourceSessionId: 'sess-abc', // ← correct field name
+      sourceSessionId: 'sess-abc',
     };
     mockPrisma.enterpriseLead.findUnique.mockResolvedValue(lead);
     mockPrisma.enterpriseLead.update.mockResolvedValue({
@@ -79,8 +79,9 @@ describe('updateLeadStatus — proposal_sent side effects (sourceSessionId field
 
     await updateLeadStatus('l-1', LEAD_STATUS.PROPOSAL_SENT, 'admin-1');
 
-    expect(mockPrisma.auditSession.update).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id: 'sess-abc' } }),
+    // CRM status must not trigger payment unlock. Unlock is via admin report unlock action.
+    expect(mockPrisma.auditSession.update).not.toHaveBeenCalledWith(
+      expect.objectContaining({ data: { paid: true } }),
     );
   });
 

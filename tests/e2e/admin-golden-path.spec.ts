@@ -42,7 +42,9 @@ test.describe('Admin Golden Path', () => {
     expect(resp.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('admin API threat-intel endpoint returns auth error without session', async ({ request }) => {
+  test('admin API threat-intel endpoint returns auth error without session', async ({
+    request,
+  }) => {
     const resp = await request.get('/api/admin/threat-intel');
     expect(resp.status()).toBeGreaterThanOrEqual(400);
   });

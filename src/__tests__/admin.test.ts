@@ -40,3 +40,47 @@ describe('Admin API route structure', () => {
     expect(Array.isArray(mockResponse)).toBe(true);
   });
 });
+
+describe('AdminNav exit link — SSOT and navigation contract', () => {
+  it('NAV.EXIT_ADMIN exists and is non-empty', () => {
+    const { NAV } = require('@/config/strings');
+    expect(NAV.EXIT_ADMIN).toBeDefined();
+    expect(NAV.EXIT_ADMIN.trim().length).toBeGreaterThan(0);
+  });
+
+  it('NAV.EXIT_ADMIN contains a back arrow indicator', () => {
+    const { NAV } = require('@/config/strings');
+    expect(NAV.EXIT_ADMIN).toContain('←');
+  });
+
+  it('ADMIN_EXIT_LINK_STYLE is exported from admin-colors', () => {
+    const mod = require('@/config/admin-colors');
+    expect(mod.ADMIN_EXIT_LINK_STYLE).toBeDefined();
+    expect(typeof mod.ADMIN_EXIT_LINK_STYLE).toBe('string');
+    expect(mod.ADMIN_EXIT_LINK_STYLE.trim().length).toBeGreaterThan(0);
+  });
+
+  it('AdminNav source references NAV.EXIT_ADMIN (no hardcoded string)', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const src = fs.readFileSync(
+      path.join(process.cwd(), 'src', 'app', 'admin', '_components', 'AdminNav.tsx'),
+      'utf-8',
+    );
+    expect(src).toContain('NAV.EXIT_ADMIN');
+    expect(src).toContain('/dashboard');
+    // Strip comments, verify no raw hardcoded exit string
+    const noComments = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+    expect(noComments).not.toMatch(/"← Exit Admin"/);
+  });
+
+  it('AdminNav source references ADMIN_EXIT_LINK_STYLE (no hardcoded classes)', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const src = fs.readFileSync(
+      path.join(process.cwd(), 'src', 'app', 'admin', '_components', 'AdminNav.tsx'),
+      'utf-8',
+    );
+    expect(src).toContain('ADMIN_EXIT_LINK_STYLE');
+  });
+});

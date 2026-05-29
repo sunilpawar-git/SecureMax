@@ -13,6 +13,7 @@ import {
   SearchQuerySchema,
   AuditLogFilterSchema,
   AdminActionSchema,
+  UserFilterSchema,
 } from '@/lib/admin/validators';
 
 describe('LeadStatusUpdateSchema', () => {
@@ -222,5 +223,66 @@ describe('ThreatIntelDeleteSchema', () => {
   it('rejects empty article ID', () => {
     const result = ThreatIntelDeleteSchema.safeParse({ articleId: '' });
     expect(result.success).toBe(false);
+  });
+});
+
+describe('UserFilterSchema', () => {
+  it('accepts valid hni track', () => {
+    const result = UserFilterSchema.safeParse({ track: 'hni' });
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts valid enterprise track', () => {
+    const result = UserFilterSchema.safeParse({ track: 'enterprise' });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects unknown track value', () => {
+    const result = UserFilterSchema.safeParse({ track: 'sme' });
+    expect(result.success).toBe(false);
+  });
+
+  it('defaults page to 1 when absent', () => {
+    const result = UserFilterSchema.safeParse({});
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.page).toBe(1);
+  });
+
+  it('defaults limit to 50 when absent', () => {
+    const result = UserFilterSchema.safeParse({});
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.limit).toBe(50);
+  });
+
+  it('rejects limit above 100 (boundary)', () => {
+    const result = UserFilterSchema.safeParse({ limit: '101' });
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts limit of exactly 100', () => {
+    const result = UserFilterSchema.safeParse({ limit: '100' });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects search string exceeding 200 characters', () => {
+    const result = UserFilterSchema.safeParse({ search: 'x'.repeat(201) });
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts search string of exactly 200 characters', () => {
+    const result = UserFilterSchema.safeParse({ search: 'x'.repeat(200) });
+    expect(result.success).toBe(true);
+  });
+
+  it('trims leading and trailing whitespace from search', () => {
+    const result = UserFilterSchema.safeParse({ search: '  alice  ' });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.search).toBe('alice');
+  });
+
+  it('accepts absent search (optional)', () => {
+    const result = UserFilterSchema.safeParse({ page: 1, limit: 10 });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.search).toBeUndefined();
   });
 });

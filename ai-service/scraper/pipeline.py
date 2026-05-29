@@ -12,6 +12,7 @@ import asyncpg
 
 from scraper.dedup import is_duplicate
 from scraper.models import ProcessedArticle, RawArticle, SourceHealth
+from scraper.source_loader import load_sources
 from scraper.sources import (
     RSS_FEEDS,
     SECURITY_KEYWORDS,
@@ -184,21 +185,41 @@ def _fallback_process(article: RawArticle) -> ProcessedArticle:
 
 
 async def _fetch_news_api_tier(stats: dict) -> list[RawArticle]:
-    tier_name = "news_api"
-    health = _source_health.setdefault(
-        tier_name,
-        SourceHealth(source_name=tier_name, source_tier="news_api"),
-    )
+    """Iterates all newsapi entries from sources.yaml, deduplicating by URL."""
     try:
-        articles = await fetch_news_api()
-        health.record_success(len(articles))
-        if not articles:
-            logger.info("News API returned 0 articles (key may be empty)")
-        return articles
+        sources = load_sources()
     except Exception as e:
-        health.record_failure()
-        stats["errors"].append(f"{tier_name}: {e}")
+        logger.warning("Failed to load sources.yaml: %s", e)
+        stats["errors"].append(f"sources.yaml: {e}")
         return []
+
+    all_articles: list[RawArticle] = []
+    seen_urls: set[str] = set()
+
+    for entry in sources.get("newsapi", []):
+        entry_name = entry.get("name", "newsapi")
+        health_key = f"news_api:{entry_name}"
+        health = _source_health.setdefault(
+            health_key,
+            SourceHealth(source_name=health_key, source_tier="news_api"),
+        )
+        try:
+            articles = await fetch_news_api(
+                query=entry.get("query", "physical security"),
+                page_size=entry.get("page_size", 20),
+            )
+            health.record_success(len(articles))
+            for a in articles:
+                if a.url not in seen_urls:
+                    seen_urls.add(a.url)
+                    all_articles.append(a)
+            if not articles:
+                logger.info("News API '%s' returned 0 articles", entry_name)
+        except Exception as e:
+            health.record_failure()
+            stats["errors"].append(f"{health_key}: {e}")
+
+    return all_articles
 
 
 async def _fetch_rss_tier(stats: dict) -> list[RawArticle]:

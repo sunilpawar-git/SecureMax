@@ -9,6 +9,7 @@ import type { Provider } from '@auth/core/providers';
 import Google from 'next-auth/providers/google';
 import MicrosoftEntraID from 'next-auth/providers/microsoft-entra-id';
 import { handleJwt, handleSession, isAuthorized } from './callbacks';
+import { SESSION_SECURITY } from '@/config/security';
 
 function isRealValue(val: string | undefined): val is string {
   return !!val && !val.startsWith('your-');
@@ -71,5 +72,19 @@ export const authConfig: NextAuthConfig = {
       };
     },
   },
-  session: { strategy: 'jwt' },
+  session: {
+    strategy: 'jwt',
+    maxAge: SESSION_SECURITY.MAX_AGE_SECONDS,
+  },
+  cookies: {
+    sessionToken: {
+      name: SESSION_SECURITY.COOKIE_NAME,
+      options: {
+        httpOnly: SESSION_SECURITY.HTTP_ONLY,
+        sameSite: SESSION_SECURITY.SAME_SITE,
+        secure: SESSION_SECURITY.SECURE,
+        path: '/',
+      },
+    },
+  },
 };

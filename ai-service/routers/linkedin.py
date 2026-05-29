@@ -16,9 +16,8 @@ from gemini_client import GeminiClient
 router = APIRouter(prefix="/linkedin", tags=["linkedin"])
 logger = logging.getLogger(__name__)
 
-_UUID_RE = re.compile(
-    r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.IGNORECASE
-)
+# Accepts both UUIDs and Prisma CUIDs (cuid() produces cljxxxxxxxxxxxxxxxx-style IDs)
+_SAFE_ID_RE = re.compile(r"^[a-zA-Z0-9_-]{1,64}$")
 
 
 class DraftRequest(BaseModel):
@@ -26,9 +25,9 @@ class DraftRequest(BaseModel):
 
     @field_validator("article_ids")
     @classmethod
-    def validate_uuids(cls, ids: list[str]) -> list[str]:
+    def validate_ids(cls, ids: list[str]) -> list[str]:
         for uid in ids:
-            if not _UUID_RE.match(uid):
+            if not _SAFE_ID_RE.match(uid):
                 raise ValueError(f"Invalid article ID format: {uid!r}")
         return ids
 

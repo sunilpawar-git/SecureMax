@@ -25,7 +25,13 @@ export function SearchDropdown({ data }: SearchDropdownProps) {
       {results.users.length > 0 && (
         <Section title="Users">
           {results.users.map((u) => (
-            <ResultRow key={u.id} label={u.name ?? u.email ?? u.id} sub={u.email} />
+            <Link
+              key={u.id}
+              href={`/admin/sessions?userId=${u.id}`}
+              onClick={() => data.setIsOpen(false)}
+            >
+              <ResultRow label={u.name ?? u.email ?? u.id} sub={u.email} />
+            </Link>
           ))}
         </Section>
       )}

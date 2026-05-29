@@ -9,11 +9,7 @@
 const CACHE_VERSION = 'v2';
 const CACHE_NAME = `raivan-${CACHE_VERSION}`;
 
-const STATIC_SHELL = [
-  '/',
-  '/manifest.json',
-  '/offline.html',
-];
+const STATIC_SHELL = ['/', '/manifest.json', '/offline.html'];
 
 const NEVER_CACHE_PREFIXES = [
   '/api/',
@@ -36,7 +32,8 @@ function shouldSkipCache(url) {
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
+    caches
+      .open(CACHE_NAME)
       .then((cache) => cache.addAll(STATIC_SHELL))
       .then(() => self.skipWaiting()),
   );
@@ -46,7 +43,8 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys()
+    caches
+      .keys()
       .then((keys) =>
         Promise.all(
           keys
@@ -67,23 +65,23 @@ self.addEventListener('fetch', (event) => {
   const isNavigation = event.request.mode === 'navigate';
 
   if (isNavigation) {
-    event.respondWith(
-      fetch(event.request)
-        .catch(() => caches.match('/offline.html')),
-    );
+    event.respondWith(fetch(event.request).catch(() => caches.match('/offline.html')));
     return;
   }
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        if (response.status === 200) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        }
-        return response;
-      });
-    }).catch(() => caches.match('/offline.html')),
+    caches
+      .match(event.request)
+      .then((cached) => {
+        if (cached) return cached;
+        return fetch(event.request).then((response) => {
+          if (response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
+        });
+      })
+      .catch(() => caches.match('/offline.html')),
   );
 });
