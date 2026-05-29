@@ -10,6 +10,7 @@ import Google from 'next-auth/providers/google';
 import MicrosoftEntraID from 'next-auth/providers/microsoft-entra-id';
 import { handleJwt, handleSession, isAuthorized } from './callbacks';
 import { SESSION_SECURITY } from '@/config/security';
+import { env } from '@/lib/env';
 
 function isRealValue(val: string | undefined): val is string {
   return !!val && !val.startsWith('your-');
@@ -17,23 +18,20 @@ function isRealValue(val: string | undefined): val is string {
 
 const providers: Provider[] = [];
 
-if (isRealValue(process.env.GOOGLE_CLIENT_ID) && isRealValue(process.env.GOOGLE_CLIENT_SECRET)) {
+if (isRealValue(env.GOOGLE_CLIENT_ID) && isRealValue(env.GOOGLE_CLIENT_SECRET)) {
   providers.push(
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   );
 }
 
-if (
-  isRealValue(process.env.AZURE_AD_CLIENT_ID) &&
-  isRealValue(process.env.AZURE_AD_CLIENT_SECRET)
-) {
+if (isRealValue(env.AZURE_AD_CLIENT_ID) && isRealValue(env.AZURE_AD_CLIENT_SECRET)) {
   providers.push(
     MicrosoftEntraID({
-      clientId: process.env.AZURE_AD_CLIENT_ID,
-      clientSecret: process.env.AZURE_AD_CLIENT_SECRET,
+      clientId: env.AZURE_AD_CLIENT_ID,
+      clientSecret: env.AZURE_AD_CLIENT_SECRET,
     }),
   );
 }

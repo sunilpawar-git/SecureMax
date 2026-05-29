@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { APP, CTA, TRUST_STACK } from '@/config/strings';
+import { TurnstileWidget } from '@/components/security/TurnstileWidget';
 
 interface FormData {
   companyName: string;
@@ -76,6 +77,10 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState('');
+
+  const captchaConfigured = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const handleVerify = useCallback((token: string) => setCaptchaToken(token), []);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -97,6 +102,7 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
           contactPhone: form.contactPhone || undefined,
           facilityCount: parseInt(form.facilityCount, 10) || 1,
           reportId: sessionId,
+          captchaToken: captchaToken || undefined,
         }),
       });
 
@@ -207,11 +213,13 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
             />
           </div>
 
+          <TurnstileWidget onVerify={handleVerify} />
+
           {error && <p className="text-sm text-red-600">{error}</p>}
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || (captchaConfigured && !captchaToken)}
             className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white
               hover:bg-emerald-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >

@@ -3,6 +3,7 @@ import { LandingHeader } from '@/components/landing/LandingHeader';
 import { TrustSignals } from '@/components/landing/TrustSignals';
 import { HowItWorks } from '@/components/landing/HowItWorks';
 import { APP, CTA, TRUST_STACK } from '@/config/strings';
+import { LEGAL_LINKS } from '@/config/legal-strings';
 import Link from 'next/link';
 
 export default function LandingPage() {
@@ -45,6 +46,18 @@ export default function LandingPage() {
               &copy; {new Date().getFullYear()} {APP.NAME}. All rights reserved.
             </p>
             <div className="flex gap-4">
+              <Link
+                href={LEGAL_LINKS.PRIVACY.href}
+                className="hover:text-slate-600 transition-colors"
+              >
+                {LEGAL_LINKS.PRIVACY.label}
+              </Link>
+              <Link
+                href={LEGAL_LINKS.TERMS.href}
+                className="hover:text-slate-600 transition-colors"
+              >
+                {LEGAL_LINKS.TERMS.label}
+              </Link>
               <a
                 href={`mailto:${APP.SUPPORT_EMAIL}`}
                 className="hover:text-slate-600 transition-colors"

@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { APP, DPDPA, TRUST_STACK } from '@/config/strings';
+import { LEGAL_LINKS } from '@/config/legal-strings';
 
 export default function ConsentPage() {
   const router = useRouter();
@@ -84,6 +86,17 @@ export default function ConsentPage() {
               accordance with the Digital Personal Data Protection Act, 2023.
             </span>
           </label>
+
+          <p className="text-xs text-slate-400">
+            Read our full{' '}
+            <Link
+              href={LEGAL_LINKS.PRIVACY.href}
+              className="text-emerald-700 hover:text-emerald-800 underline"
+            >
+              {LEGAL_LINKS.PRIVACY.label}
+            </Link>
+            .
+          </p>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 

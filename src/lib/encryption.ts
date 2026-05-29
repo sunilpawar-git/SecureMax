@@ -1,10 +1,11 @@
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 import { ENCRYPTION } from '@/config/security';
+import { env } from '@/lib/env';
 
 const VERSION_PREFIX = ENCRYPTION.KEY_VERSION_PREFIX;
 
 function getKey(): Buffer {
-  const key = process.env.ENCRYPTION_KEY;
+  const key = env.ENCRYPTION_KEY;
   if (!key || key.length < ENCRYPTION.KEY_LENGTH * 2) {
     throw new Error('ENCRYPTION_KEY must be a 64-character hex string');
   }

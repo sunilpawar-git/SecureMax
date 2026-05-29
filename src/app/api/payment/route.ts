@@ -28,7 +28,8 @@ import {
   logPaymentVerification,
 } from '@/lib/payment/payment-service';
 import { logWebhookSuccess, logWebhookFailure } from '@/lib/admin/webhook-service';
-import { PAYMENT } from '@/config/strings';
+import { verifyTurnstile } from '@/lib/security/turnstile';
+import { PAYMENT, CAPTCHA } from '@/config/strings';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
@@ -124,6 +125,9 @@ async function handleVerify(request: Request) {
 async function handleEnterpriseProposal(request: Request) {
   const parsed = await parseBody(request, EnterpriseProposalSchema);
   if (!parsed.success) return apiValidationError(parsed.errors);
+
+  const captchaOk = await verifyTurnstile(parsed.data.captchaToken);
+  if (!captchaOk) return apiError(CAPTCHA.FAILED, 400);
 
   const { companyName, contactName, contactEmail, contactPhone, facilityCount, reportId } =
     parsed.data;

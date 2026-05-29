@@ -7,6 +7,7 @@
 import { NextRequest } from 'next/server';
 import { requireAuth, unauthorizedResponse, apiSuccess, apiError, validateCuid } from '@/lib/api';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
+import { env } from '@/lib/env';
 import { REDACTED_PLACEHOLDER } from '@/components/report/FindingCard';
 
 interface ReportFinding {
@@ -97,8 +98,8 @@ export async function GET(request: NextRequest) {
         return apiSuccess(redactFindings(result));
       }
       case 'full': {
-        const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
-        const AI_SERVICE_KEY = process.env.AI_SERVICE_KEY ?? '';
+        const AI_SERVICE_URL = env.AI_SERVICE_URL || 'http://localhost:8000';
+        const AI_SERVICE_KEY = env.AI_SERVICE_KEY;
         const pdfRes = await fetch(`${AI_SERVICE_URL}/report/${reportId}/full`, {
           method: 'GET',
           headers: {

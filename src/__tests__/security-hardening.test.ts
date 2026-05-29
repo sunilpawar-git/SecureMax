@@ -57,17 +57,17 @@ describe('Rate limiting configuration', () => {
     expect(RATE_LIMITS.GLOBAL_MAX_REQUESTS).toBeGreaterThan(RATE_LIMITS.AI_ENDPOINT_MAX_REQUESTS);
   });
 
-  it('rate limiter blocks after max requests', () => {
+  it('rate limiter blocks after max requests', async () => {
     const id = `test-${Date.now()}`;
     const maxReqs = 3;
     const windowMs = 5000;
 
     for (let i = 0; i < maxReqs; i++) {
-      const r = checkRateLimit(id, windowMs, maxReqs);
+      const r = await checkRateLimit(id, windowMs, maxReqs);
       expect(r.allowed).toBe(true);
     }
 
-    const blocked = checkRateLimit(id, windowMs, maxReqs);
+    const blocked = await checkRateLimit(id, windowMs, maxReqs);
     expect(blocked.allowed).toBe(false);
     expect(blocked.remaining).toBe(0);
   });
@@ -126,17 +126,20 @@ describe('DPDPA Compliance Structure', () => {
 });
 
 describe('next.config.ts integration', () => {
-  it('imports SECURITY_HEADERS from config SSOT', () => {
+  it('imports the header + CSP SSOT from config', () => {
     const configPath = path.join(process.cwd(), 'next.config.ts');
     const content = fs.readFileSync(configPath, 'utf-8');
-    expect(content).toContain('import { SECURITY_HEADERS }');
+    expect(content).toContain('SECURITY_HEADERS');
+    expect(content).toContain('buildContentSecurityPolicy');
     expect(content).toContain('./src/config/security');
   });
 
-  it('does not duplicate header definitions inline', () => {
+  it('does not duplicate header or CSP definitions inline', () => {
     const configPath = path.join(process.cwd(), 'next.config.ts');
     const content = fs.readFileSync(configPath, 'utf-8');
     expect(content).not.toContain('X-Content-Type-Options');
+    // CSP directives must come from the SSOT builder, not be inlined here.
+    expect(content).not.toContain("default-src 'self'");
   });
 });
 

@@ -1,5 +1,6 @@
 import { signIn } from '@/lib/auth';
 import { APP, TRUST_STACK, VALID_TRACKS } from '@/config/strings';
+import { env } from '@/lib/env';
 
 /**
  * Validates the track param — only accepts known track values.
@@ -44,10 +45,9 @@ export default async function SignInPage({
   const callbackUrl = sanitizeCallbackUrl(params.callbackUrl);
   const redirectTo = buildRedirectTo(track, callbackUrl);
 
-  const googleEnabled =
-    isRealValue(process.env.GOOGLE_CLIENT_ID) && isRealValue(process.env.GOOGLE_CLIENT_SECRET);
+  const googleEnabled = isRealValue(env.GOOGLE_CLIENT_ID) && isRealValue(env.GOOGLE_CLIENT_SECRET);
   const microsoftEnabled =
-    isRealValue(process.env.AZURE_AD_CLIENT_ID) && isRealValue(process.env.AZURE_AD_CLIENT_SECRET);
+    isRealValue(env.AZURE_AD_CLIENT_ID) && isRealValue(env.AZURE_AD_CLIENT_SECRET);
 
   return (
     <div className="space-y-6">

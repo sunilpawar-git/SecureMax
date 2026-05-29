@@ -3,8 +3,10 @@
  * All questionnaire and report calls go through here.
  */
 
-const AI_SERVICE_URL = process.env.AI_SERVICE_URL;
-const AI_SERVICE_KEY = process.env.AI_SERVICE_KEY ?? '';
+import { env } from '@/lib/env';
+
+const AI_SERVICE_URL = env.AI_SERVICE_URL;
+const AI_SERVICE_KEY = env.AI_SERVICE_KEY;
 
 if (!AI_SERVICE_URL) {
   console.warn('[ai-service] AI_SERVICE_URL not set — defaulting to localhost:8000');
