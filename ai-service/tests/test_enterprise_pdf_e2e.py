@@ -80,8 +80,7 @@ def _sample_enterprise_report_data(session_id: str) -> ReportData:
     ]
 
     sections = [
-        ReportSection(name=name, data={"placeholder": True})
-        for name in ENTERPRISE_SECTION_NAMES
+        ReportSection(name=name, data={"placeholder": True}) for name in ENTERPRISE_SECTION_NAMES
     ]
 
     free_summary = FreeSummary(

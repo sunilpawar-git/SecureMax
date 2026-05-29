@@ -1,13 +1,11 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <!-- Board Executive Summary -->
 <div class="section">
   <h2 class="section-title">Board Executive Summary</h2>
   {% if report.board_summary %}
   <p class="summary-text">{{ report.board_summary }}</p>
-  {% endif %}
-  {% if report.executive_summary %}
+  {% endif %} {% if report.executive_summary %}
   <p class="summary-text">{{ report.executive_summary }}</p>
   {% endif %}
   <div class="stat-grid">
@@ -29,31 +27,67 @@
     </div>
   </div>
   <div class="urgency-bar">
-    <div class="urgency-fill" style="width:{{ report.urgency_score }}%; background:
+    <div
+      class="urgency-fill"
+      style="width:{{ report.urgency_score }}%; background:
       {%- if report.urgency_score >= 70 %}{{ severity_colors.critical }}
       {%- elif report.urgency_score >= 40 %}{{ severity_colors.medium }}
-      {%- else %}{{ severity_colors.low }}{% endif %};"></div>
+      {%- else %}{{ severity_colors.low }}{% endif %};"
+    ></div>
   </div>
 </div>
 
-<!-- Domain Scores -->
+<!-- Radar Scores -->
 {% if report.radar_scores %}
 <div class="section">
-  <h2 class="section-title">Domain Security Scores</h2>
+  <h2 class="section-title">Radar Scores — Domain Security Overview</h2>
   <table>
-    <thead><tr><th>CPP Domain</th><th>Score</th><th>Status</th></tr></thead>
+    <thead>
+      <tr>
+        <th>CPP Domain</th>
+        <th>Score</th>
+        <th>Status</th>
+      </tr>
+    </thead>
     <tbody>
-    {% for domain, score in report.radar_scores.items() %}
-    <tr>
-      <td>{{ domain }}</td>
-      <td>{{ "%.1f" | format(score) }}%</td>
-      <td>
-        {% if score >= 70 %}<span class="badge badge-low">Good</span>
-        {% elif score >= 40 %}<span class="badge badge-medium">Needs Attention</span>
-        {% else %}<span class="badge badge-critical">Critical</span>{% endif %}
-      </td>
-    </tr>
-    {% endfor %}
+      {% for domain, score in report.radar_scores.items() %}
+      <tr>
+        <td>{{ domain }}</td>
+        <td>{{ "%.1f" | format(score) }}%</td>
+        <td>
+          {% if score >= 70 %}<span class="badge badge-low">Good</span> {% elif score >= 40 %}<span
+            class="badge badge-medium"
+            >Needs Attention</span
+          >
+          {% else %}<span class="badge badge-critical">Critical</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+<!-- Domain Breakdown -->
+{% if report.findings %}
+<div class="section">
+  <h2 class="section-title">Domain Breakdown</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>CPP Domain</th>
+        <th>Issue</th>
+        <th>Severity</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for finding in report.findings %}
+      <tr>
+        <td><strong>{{ finding.domain }}</strong><br /><small>{{ finding.domain_name }}</small></td>
+        <td>{{ finding.question }}</td>
+        <td><span class="badge badge-{{ finding.severity }}">{{ finding.severity }}</span></td>
+      </tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>
@@ -67,17 +101,22 @@
   <h2 class="section-title">Compliance Gap Analysis — ISO 27001 / PSARA</h2>
   <table>
     <thead>
-      <tr><th>CPP Domain</th><th>ISO 27001 Clause</th><th>PSARA Section</th><th>Owner</th></tr>
+      <tr>
+        <th>CPP Domain</th>
+        <th>ISO 27001 Clause</th>
+        <th>PSARA Section</th>
+        <th>Owner</th>
+      </tr>
     </thead>
     <tbody>
-    {% for m in report.compliance_mappings %}
-    <tr>
-      <td>{{ m.finding_domain }}</td>
-      <td>{{ m.iso_clause }}</td>
-      <td>{{ m.psara_section }}</td>
-      <td>{{ m.remediation_owner_role }}</td>
-    </tr>
-    {% endfor %}
+      {% for m in report.compliance_mappings %}
+      <tr>
+        <td>{{ m.finding_domain }}</td>
+        <td>{{ m.iso_clause }}</td>
+        <td>{{ m.psara_section }}</td>
+        <td>{{ m.remediation_owner_role }}</td>
+      </tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>
@@ -87,19 +126,31 @@
 <div class="section">
   <h2 class="section-title">Security Findings</h2>
   {% for finding in report.findings %}
-  <div style="margin-bottom:16px; padding:12px; border-left:4px solid {{ severity_colors[finding.severity] }}; background:#fafafa; border-radius:0 6px 6px 0;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+  <div
+    style="margin-bottom:16px; padding:12px; border-left:4px solid {{ severity_colors[finding.severity] }}; background:#fafafa; border-radius:0 6px 6px 0;"
+  >
+    <div
+      style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px"
+    >
       <strong>{{ finding.domain_name }}</strong>
       <span class="badge badge-{{ finding.severity }}">{{ finding.severity }}</span>
     </div>
-    <div style="font-size:10pt; margin-bottom:4px;"><strong>Issue:</strong> {{ finding.question }}</div>
-    <div style="font-size:10pt; margin-bottom:4px;"><strong>Response:</strong> {{ finding.answer }}</div>
-    <div style="font-size:10pt;"><strong>Recommendation:</strong> {{ finding.recommendation }}</div>
+    <div style="font-size: 10pt; margin-bottom: 4px">
+      <strong>Issue:</strong> {{ finding.question }}
+    </div>
+    <div style="font-size: 10pt; margin-bottom: 4px">
+      <strong>Response:</strong> {{ finding.answer }}
+    </div>
+    <div style="font-size: 10pt"><strong>Recommendation:</strong> {{ finding.recommendation }}</div>
     {% if finding.cpp_citation %}
-    <div class="cpp-citation">Source: {{ finding.cpp_citation.get("section", "") }} — "{{ finding.cpp_citation.get("excerpt", "")[:120] }}..."</div>
-    {% endif %}
-    {% if finding.requires_physical_verification %}
-    <div style="font-size:9pt; color:#DC2626; margin-top:4px;">⚠ Requires physical on-site verification</div>
+    <div class="cpp-citation">
+      Source: {{ finding.cpp_citation.get("section", "") }} — "{{
+      finding.cpp_citation.get("excerpt", "")[:120] }}..."
+    </div>
+    {% endif %} {% if finding.requires_physical_verification %}
+    <div style="font-size: 9pt; color: #dc2626; margin-top: 4px">
+      ⚠ Requires physical on-site verification
+    </div>
     {% endif %}
   </div>
   {% endfor %}
@@ -110,17 +161,63 @@
 <div class="section page-break">
   <h2 class="section-title">Relevant Threat Intelligence</h2>
   <table>
-    <thead><tr><th>Title</th><th>Domains</th><th>Source</th></tr></thead>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Domains</th>
+        <th>Source</th>
+      </tr>
+    </thead>
     <tbody>
-    {% for article in report.threat_intel_articles %}
-    <tr>
-      <td>{{ article.title }}</td>
-      <td>{{ article.domain_tags | join(", ") if article.domain_tags else "—" }}</td>
-      <td>{{ article.source | default("—") }}</td>
-    </tr>
-    {% endfor %}
+      {% for article in report.threat_intel_articles %}
+      <tr>
+        <td>{{ article.title }}</td>
+        <td>{{ article.domain_tags | join(", ") if article.domain_tags else "—" }}</td>
+        <td>{{ article.source | default("—") }}</td>
+      </tr>
+      {% endfor %}
     </tbody>
   </table>
+</div>
+{% endif %}
+
+<!-- Module Findings -->
+{% if report.sections %}
+<div class="section">
+  <h2 class="section-title">Module Findings</h2>
+  <p class="summary-text">Assessment coverage across operational security modules:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Module</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for section in report.sections %}
+      <tr>
+        <td>{{ section.name | replace("_", " ") | title }}</td>
+        <td><span class="badge badge-medium">Assessed</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+<!-- Recommendations -->
+{% if report.findings %}
+<div class="section">
+  <h2 class="section-title">Recommendations</h2>
+  <ol>
+    {% for finding in report.findings | sort(attribute='severity') %}
+    <li style="margin-bottom: 8px;">
+      <strong>{{ finding.domain_name }}</strong>
+      <span class="badge badge-{{ finding.severity }}" style="margin-left: 8px;">{{ finding.severity }}</span>
+      <br />{{ finding.recommendation }}
+    </li>
+    {% endfor %}
+  </ol>
 </div>
 {% endif %}
 
@@ -128,12 +225,29 @@
 <div class="section">
   <h2 class="section-title">Remediation Roadmap</h2>
   <table>
-    <thead><tr><th>Timeline</th><th>Action</th></tr></thead>
+    <thead>
+      <tr>
+        <th>Timeline</th>
+        <th>Action</th>
+      </tr>
+    </thead>
     <tbody>
-    <tr><td><strong>Immediate</strong></td><td>Address all critical-severity findings</td></tr>
-    <tr><td><strong>30 Days</strong></td><td>Resolve all critical and high-severity findings</td></tr>
-    <tr><td><strong>90 Days</strong></td><td>Implement recurring review cycle and staff training</td></tr>
-    <tr><td><strong>Annual</strong></td><td>Schedule next comprehensive audit</td></tr>
+      <tr>
+        <td><strong>Immediate</strong></td>
+        <td>Address all critical-severity findings</td>
+      </tr>
+      <tr>
+        <td><strong>30 Days</strong></td>
+        <td>Resolve all critical and high-severity findings</td>
+      </tr>
+      <tr>
+        <td><strong>90 Days</strong></td>
+        <td>Implement recurring review cycle and staff training</td>
+      </tr>
+      <tr>
+        <td><strong>Annual</strong></td>
+        <td>Schedule next comprehensive audit</td>
+      </tr>
     </tbody>
   </table>
 </div>
@@ -141,10 +255,12 @@
 <!-- Methodology -->
 <div class="section">
   <h2 class="section-title">Methodology</h2>
-  <p class="summary-text">This assessment was conducted using the <strong>CPP Seven Precis</strong> framework,
-    covering 7 security domains aligned with ISO 27001, PSARA, and ESRM methodology.
-    Each domain was evaluated through structured questionnaire responses analysed by
-    AI-assisted assessment tools grounded in CPP reference material.</p>
+  <p class="summary-text">
+    This assessment was conducted using the <strong>CPP Seven Precis</strong> framework, covering 7
+    security domains aligned with ISO 27001, PSARA, and ESRM methodology. Each domain was evaluated
+    through structured questionnaire responses analysed by AI-assisted assessment tools grounded in
+    CPP reference material.
+  </p>
 </div>
 
 {% endblock %}
