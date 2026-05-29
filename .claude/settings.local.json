@@ -37,7 +37,13 @@
       "Bash(npx prettier *)",
       "Bash(xargs -I{} gh run view {} --json jobs)",
       "Bash(python3 -c \"import sys,json; jobs=json.load\\(sys.stdin\\)['jobs']; [print\\(j['name'], j['conclusion']\\) for j in jobs]\")",
-      "Bash(git checkout *)"
+      "Bash(git checkout *)",
+      "Bash(git stash *)",
+      "Bash(pkill -f \"uvicorn main:app\")",
+      "Bash(brew services *)",
+      "Bash(npm install *)",
+      "Bash(git commit)",
+      "Bash(git *)"
     ]
   }
 }

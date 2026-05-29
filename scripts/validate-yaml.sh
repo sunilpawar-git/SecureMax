@@ -31,7 +31,12 @@ echo ""
 # Run the validation script (which checks all YAML files in question-graph/)
 cd "$(git rev-parse --show-toplevel)" || exit 1
 
-if python question-graph/validate.py; then
+# Ensure pyyaml is available
+if ! python3 -c "import yaml" 2>/dev/null; then
+  python3 -m pip install pyyaml -q 2>/dev/null || true
+fi
+
+if python3 question-graph/validate.py; then
   echo ""
   echo "✅ Question graph validation passed"
   exit 0
@@ -40,6 +45,6 @@ else
   echo "❌ Question graph validation failed"
   echo ""
   echo "Fix the YAML errors above and try again:"
-  echo "  python question-graph/validate.py"
+  echo "  python3 question-graph/validate.py"
   exit 2
 fi

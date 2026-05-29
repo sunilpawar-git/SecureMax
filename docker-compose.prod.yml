@@ -11,11 +11,11 @@ services:
 
   nextjs:
     environment:
-      DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-raivan_global}?schema=public&sslmode=require"
+      DATABASE_URL: 'postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-raivan_global}?schema=public&sslmode=require'
 
   fastapi:
     environment:
-      DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-raivan_global}?sslmode=require"
+      DATABASE_URL: 'postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-raivan_global}?sslmode=require'
 
 secrets:
   pg_password:

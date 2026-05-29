@@ -23,6 +23,7 @@ Admins run a web scraper that enriches the knowledge base and auto-posts to Link
 ## Development Commands
 
 ### Next.js Frontend
+
 ```bash
 npm run dev          # start dev server (localhost:3000)
 npm run build        # production build
@@ -34,6 +35,7 @@ npm run format       # Prettier write
 ```
 
 ### Python FastAPI (AI service)
+
 ```bash
 cd ai-service
 python -m venv .venv && source .venv/bin/activate
@@ -45,6 +47,7 @@ pytest tests/test_questionnaire.py -k "test_branch"   # run a single test
 ```
 
 ### Database
+
 ```bash
 npx prisma migrate dev
 npx prisma generate
@@ -62,6 +65,7 @@ python question-graph/validate.py
 ## Architecture
 
 ### Two-Service Design
+
 The app is intentionally split. Next.js handles all user-facing concerns (auth, UI, API routes, PDF generation). The FastAPI service is isolated for anything touching Gemini or pgvector — this keeps AI logic testable independently and keeps the Node runtime lean.
 
 ```
@@ -75,6 +79,7 @@ User → Next.js (port 3000)
 All Next.js → FastAPI calls go through `src/lib/ai-service.ts` (`aiServiceFetch`), which attaches `X-Service-Key`. The FastAPI `ServiceAuthMiddleware` (`auth_middleware.py`) validates this key on every non-`/health` endpoint.
 
 ### Questionnaire Engine (Core)
+
 The questionnaire is a directed graph. The SSOT is `question-graph/hni.yaml` and `question-graph/enterprise.yaml` — **edit YAML, then reseed; never edit the DB directly.** The seed script validates the graph before writing.
 
 Each node defines `edges` with optional `condition` fields. The AI service (`questionnaire.py`) drives branching: deterministic for `condition: any`, Gemini-assisted for answer-dependent forks. Graph state is persisted to `AuditSession.currentNodeId` after every answer; each answer is written as an immutable `SessionEvent` row with the answer and AI reasoning both AES-encrypted at rest.
@@ -82,6 +87,7 @@ Each node defines `edges` with optional `condition` fields. The AI service (`que
 Two user tracks: `hni` (high net worth individuals, entry `hni_q1_property_type`) and `enterprise` (entry node in `enterprise.yaml`). Track is set on the `User` row at onboarding.
 
 CPP Seven Precis domains (source of all questions):
+
 - CPP-01: Physical Security (ESRM, 4 Ds: Deter/Detect/Delay/Deny, access control, perimeter)
 - CPP-02: Business Principles (risk categories, leadership, decision-making)
 - CPP-03: Crisis Management (BIA, BCM, emergency response, CMT)
@@ -91,12 +97,15 @@ CPP Seven Precis domains (source of all questions):
 - CPP-07: Security Management (ESRM cycle, stakeholders, operating environment)
 
 ### Audit Report Generation
+
 After the questionnaire ends, `ai-service/report/` assembles findings ranked by severity (critical → high → medium → low). Each finding cites its CPP domain. The AI augments findings with current threat intelligence from the `threat_intel` table. The PDF bytes are AES-encrypted before being stored in `ReportArtifact.pdfEncrypted`. Next.js decrypts and streams the PDF to the user after Razorpay payment confirmation.
 
 ### Admin Panel
+
 Separate Next.js route group `src/app/admin/` protected by role check in middleware. Admin triggers the Playwright scraper (`ai-service/routers/scraper.py`), reviews synthesized security briefings, and posts to LinkedIn. Every LinkedIn post is logged in `LinkedinPost` with status, timestamp, and platform.
 
 ### Key DB Tables
+
 - `AuditSession` — one per questionnaire run; tracks `status`, `domainScores`, `moduleScores`, `paid`, `reportReady`
 - `SessionEvent` — append-only audit trail; `answerEncrypted` + `aiReasoningEncrypted` columns; unique on `(sessionId, questionNodeId)`
 - `CppChunk` — pgvector embeddings (`vector(3072)`) of CPP Seven Precis text, seeded from PDFs in `cpp-pdfs/`
@@ -110,47 +119,62 @@ These rules apply to every task unless explicitly overridden.
 Bias: caution over speed on non-trivial work.
 
 ### Rule 1 — Think Before Coding
+
 State assumptions explicitly. If uncertain, ask rather than guess. Stop when confused — name what's unclear.
 
 ### Rule 2 — Simplicity First
+
 Minimum code that solves the problem. No features beyond what was asked. No abstractions for single-use code.
 
 ### Rule 3 — Surgical Changes
+
 Touch only what you must. Don't "improve" adjacent code. Match existing style.
 
 ### Rule 4 — Goal-Driven Execution
+
 Define success criteria before writing a line. Loop until verified. Don't follow steps blindly.
 
 ### Rule 5 — Use Gemini for Judgment, Code for Determinism
+
 Use Gemini for: question flow decisions, audit finding classification, report narrative, security briefing synthesis.
 Do NOT use it for: routing logic, retries, PDF layout, CRUD, data transforms. If code can answer, code answers.
 
 ### Rule 6 — Token Budgets Are Not Advisory
+
 Per-task: 4,000 tokens. Per-session: 30,000 tokens. Surface the breach. Do not silently overrun.
 
 ### Rule 7 — Surface Conflicts, Don't Average Them
+
 If CPP Seven Precis and AI inference contradict, the PDF wins. Flag the conflict in the audit report. Never blend contradicting sources into a vague finding.
 
 ### Rule 8 — Read Before You Write
+
 Before adding a question, read the existing question schema and flow graph. Before adding a scraper source, check what the crawler already ingests.
 
 ### Rule 9 — Tests Verify Intent, Not Just Behavior
+
 Questionnaire tests must assert that a specific answer causes the correct branch — not just that the function returns. A test that cannot fail when branching logic changes is wrong.
 
 ### Rule 10 — Checkpoint Every Significant Step
+
 After each feature: state what was built, what was verified, what is next. If you lose track, stop and restate.
 
 ### Rule 11 — Match Codebase Conventions
+
 Next.js follows App Router conventions. Python follows FastAPI patterns. Conformance > taste. Surface harmful conventions — don't fork silently.
 
 ### Rule 12 — Fail Loud
+
 "Completed" is wrong if anything was skipped silently. If the scraper finds 0 results, log it — don't silently pass.
 
 ### Rule 13 — CPP Seven Precis Is the Knowledge Authority
+
 Every questionnaire question and audit finding must be grounded in one of the 7 CPP domains before AI augmentation is added. Audit reports must cite source domain (e.g., "CPP-01: Physical Security"). AI can extend — not replace.
 
 ### Rule 14 — Security by Design Is Non-Negotiable
+
 This product audits others' security — our own must be exemplary.
+
 - Data encrypted at rest (AES-256) and in transit (TLS 1.3)
 - OWASP Top 10 addressed before any feature ships
 - No PII in logs; no secrets in code or git
@@ -159,4 +183,5 @@ This product audits others' security — our own must be exemplary.
 - Web crawler must not scrape behind authentication
 
 ### Rule 15 — The Audit Trail Is Sacred
+
 Every session — questions asked, answers given, AI reasoning, findings generated — must be immutably logged with timestamps. The PDF is a summary; the DB log is the truth. Never delete or overwrite session data. Admin social posts must log what was posted, when, and to which platform.

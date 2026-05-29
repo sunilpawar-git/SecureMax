@@ -1,7 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Skill(update-config)"
-    ]
+    "allow": ["Skill(update-config)"]
   }
 }

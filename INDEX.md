@@ -9,14 +9,17 @@
 ## 📍 Where to Start
 
 ### For Decision-Makers
+
 **→ Read:** Section "VERDICT: YES, PROCEED TO PHASE 5" in this file (below)
 
 ### For Developers (Quick Review)
+
 1. **5-minute overview:** This file (sections highlighted)
 2. **Deep technical dive:** `PHASE-4-5-ANALYSIS.md`
 3. **Implementation:** `PHASE-5-IMPLEMENTATION-GUIDE.md`
 
 ### For Implementation (Copy-Paste Ready)
+
 **→ Start here:** Section "🔓 UNBLOCKING PHASE 5 (TODAY — 30 minutes)" in `PHASE-5-IMPLEMENTATION-GUIDE.md`
 
 ---
@@ -24,6 +27,7 @@
 ## ✅ PHASE 4: QUESTIONNAIRE ENGINE (95% Complete)
 
 ### What's Done
+
 - ✅ Session management (create, resume, abandon) — `session_repository.py`
 - ✅ AI-driven branching with Gemini Flash — `branching.py`
 - ✅ CPP context retrieval via pgvector — `cpp_repository.py` (scaffolded, needs embeddings)
@@ -32,10 +36,12 @@
 - ✅ Immutable session audit trail — `session_events` table
 
 ### What Needs Completion (4 hours)
+
 - ⏳ Mobile card-by-card UI (currently React Flow desktop only)
 - ⏳ Question graph validation script (orphan checks, cycle detection)
 
 ### What Affects Phase 4
+
 - 🔴 **Blocker:** CPP embeddings NOT seeded → AI branching falls back to deterministic
   - **Fix:** 30 minutes (copy PDFs + run seed script)
   - **Impact:** Affects Phases 5, 7, 8
@@ -45,6 +51,7 @@
 ## 🟡 PHASE 5: REPORT GENERATION (60% Complete)
 
 ### What's Done
+
 - ✅ Report data structure (8 HNI + 10 Enterprise sections) — `report/generator.py`
 - ✅ Findings classification by severity — `report/findings.py`
 - ✅ Urgency scoring (0-100) — `report/findings.py`
@@ -54,6 +61,7 @@
 ### What's NOT Done (Critical Blockers)
 
 #### ❌ 1. CPP Embeddings NOT Seeded (Blocks Everything)
+
 - **Current:** `cpp_chunks` table = 0 rows (expected: ~1,400)
 - **Needed for:**
   - Gemini context retrieval (Phase 5)
@@ -63,8 +71,9 @@
 - **Status:** See "🔓 UNBLOCKING PHASE 5" section in `PHASE-5-IMPLEMENTATION-GUIDE.md`
 
 #### ❌ 2. Gemini Narrative Augmentation NOT Implemented
+
 - **Current:** Placeholder text only
-- **Needed:** 
+- **Needed:**
   - Executive summary (3-4 paragraphs)
   - Enterprise board language (liability, insurance, compliance risk)
   - Threat intel context integration
@@ -72,6 +81,7 @@
 - **Where:** `ai-service/report/generator.py` (see code template in `PHASE-5-IMPLEMENTATION-GUIDE.md`)
 
 #### ❌ 3. HTML→PDF Rendering NOT Implemented
+
 - **Current:** Scaffolded template only
 - **Needed:**
   - Playwright browser automation
@@ -84,16 +94,19 @@
 ### What's NOT Done (High Priority)
 
 #### ⏳ 4. Compliance Appendix (Enterprise Only)
+
 - **Needed:** Finding → ISO 27001 Annex A.11 → PSARA section → remediation owner
 - **Fix time:** 3 hours
 - **Where:** New file `ai-service/report/compliance.py`
 
 #### ⏳ 5. Threat Intel Integration
+
 - **Needed:** Link findings to real security incidents from scraper DB
 - **Status:** Section 6 of report currently empty
 - **Fix time:** 2 hours
 
 #### ⏳ 6. SSE/Polling for Report Status
+
 - **Current:** Synchronous generation (blocks on large reports)
 - **Needed:** Non-blocking async job with polling endpoint
 - **Fix time:** 2 hours
@@ -103,6 +116,7 @@
 ## 🎯 VERDICT: YES, PROCEED TO PHASE 5
 
 ### Conditions for Success
+
 1. ✅ Phase 4 is 95% complete — scaffolding is solid
 2. 🔴 **BUT:** Must seed CPP embeddings first (30 min)
 3. 🔴 **Then:** Implement critical Phase 5 components (8-10 hours)
@@ -110,18 +124,17 @@
 ### Recommended Sequence
 
 **TODAY (May 14) — 8.5 hours total**
+
 1. 🔓 **30 min:** Seed CPP embeddings
    - Copy 7 PDFs to `cpp-pdfs/`
    - Run `python ai-service/scripts/seed_cpp_embeddings.py`
    - Verify `cpp_chunks` table has ~1,400 rows
-   
 2. 🧠 **3 hours:** Implement Gemini narrative augmentation
    - Modify `ai-service/report/generator.py`
    - Add calls to Gemini 2.5 Pro for:
      - Executive summary (3-4 paragraphs)
      - Board language (enterprise only)
      - Detailed recommendations (per finding)
-   
 3. 📄 **5 hours:** Implement HTML→PDF rendering
    - Create `ai-service/report/pdf_renderer.py`
    - Use Playwright to render HTML → PDF
@@ -130,10 +143,7 @@
 
 **Result:** Phase 5 critical path 80% complete by EOD
 
-**TOMORROW (May 15) — 7 hours total**
-4. 📋 **3 hours:** Compliance appendix (ISO + PSARA mapping)
-5. 🔗 **2 hours:** Threat intel linking
-6. 📡 **2 hours:** SSE polling + error handling
+**TOMORROW (May 15) — 7 hours total** 4. 📋 **3 hours:** Compliance appendix (ISO + PSARA mapping) 5. 🔗 **2 hours:** Threat intel linking 6. 📡 **2 hours:** SSE polling + error handling
 
 **Result:** Phase 5 PRODUCTION READY ✅
 
@@ -144,25 +154,32 @@
 All findings must be grounded in CPP domains for credibility. Each finding: **(Question Answer) → (CPP Domain) → (Recommendation)**
 
 ### CPP-01: Physical Security
+
 - Framework: 4 Ds (Deter, Detect, Delay, Deny)
 - Topics: Access control, perimeter, CCTV, lighting, gates, single points of failure
 
 ### CPP-02: Business Principles
+
 - Topics: Risk categorization, leadership, decision-making frameworks
 
 ### CPP-03: Crisis Management
+
 - Topics: Business Impact Analysis (BIA), Business Continuity Management (BCM), emergency response
 
 ### CPP-04: Investigations
+
 - Topics: Incident objectivity, thoroughness, accuracy, timeliness of response
 
 ### CPP-05: Information Security
+
 - Topics: Information Asset Protection (IAP), cyber-physical crossover, smart home security
 
 ### CPP-06: Personnel Security
+
 - Topics: Officer operations, patrol schedules, access control, background checks, weapons policy
 
 ### CPP-07: Security Management
+
 - Topics: ESRM cycle, stakeholder engagement, operating environment assessment
 
 ---
@@ -231,22 +248,22 @@ curl -X POST http://localhost:8000/ai/search-chunks \
 
 ## 📊 Implementation Status Summary
 
-| Phase | Component | Status | Blocker | Est. Hours |
-|-------|-----------|--------|---------|------------|
-| **4** | Session Management | ✅ Done | None | 0 |
-| **4** | AI Branching | ✅ Done | Embeddings | 0 |
-| **4** | Score Tracking | ✅ Done | None | 0 |
-| **4** | Mobile UI | 🟡 Partial | None | 3 |
-| **4** | Graph Validation | ❌ TODO | None | 2 |
-| **5** | Report Structure | ✅ Done | None | 0 |
-| **5** | Findings Classification | ✅ Done | None | 0 |
-| **5** | **CPP Embeddings** | ❌ BLOCKER | Manual | 0.5 |
-| **5** | Gemini Narrative | ❌ TODO | Embeddings | 3 |
-| **5** | PDF Rendering | ❌ TODO | Narrative | 5 |
-| **5** | Compliance Appendix | ❌ TODO | PDF | 3 |
-| **5** | Threat Intel | ❌ TODO | PDF | 2 |
-| **5** | SSE Polling | ❌ TODO | Report Gen | 2 |
-| **5** | Testing | ❌ TODO | All above | 2 |
+| Phase | Component               | Status     | Blocker    | Est. Hours |
+| ----- | ----------------------- | ---------- | ---------- | ---------- |
+| **4** | Session Management      | ✅ Done    | None       | 0          |
+| **4** | AI Branching            | ✅ Done    | Embeddings | 0          |
+| **4** | Score Tracking          | ✅ Done    | None       | 0          |
+| **4** | Mobile UI               | 🟡 Partial | None       | 3          |
+| **4** | Graph Validation        | ❌ TODO    | None       | 2          |
+| **5** | Report Structure        | ✅ Done    | None       | 0          |
+| **5** | Findings Classification | ✅ Done    | None       | 0          |
+| **5** | **CPP Embeddings**      | ❌ BLOCKER | Manual     | 0.5        |
+| **5** | Gemini Narrative        | ❌ TODO    | Embeddings | 3          |
+| **5** | PDF Rendering           | ❌ TODO    | Narrative  | 5          |
+| **5** | Compliance Appendix     | ❌ TODO    | PDF        | 3          |
+| **5** | Threat Intel            | ❌ TODO    | PDF        | 2          |
+| **5** | SSE Polling             | ❌ TODO    | Report Gen | 2          |
+| **5** | Testing                 | ❌ TODO    | All above  | 2          |
 
 **Critical path:** 30 min (embeddings) + 3 hrs (narrative) + 5 hrs (PDF) = **8.5 hours to 80% completion**
 
@@ -266,6 +283,7 @@ For understanding the architecture:
 
 **Q: Can we start Phase 5 without seeding embeddings?**  
 A: Technically yes, but:
+
 - AI branching in Phase 4 loses context (falls back to deterministic)
 - Threat intel tagging in Phase 7 impossible
 - Report findings lack CPP grounding (look generic)
@@ -299,6 +317,7 @@ A: Phase 5 complete (~16 hrs) + Phase 6 is scaffolded already (2-3 hrs) = ~20 ho
 **Your question:** "should we proceed to @/...prosecure_full_build_64d12eac.plan.md Phase 5: Report Generation (can cite CPP sources!)? analyse the current codebase, and what needs to be Implement for phase 4?"
 
 **Our answer:**
+
 1. ✅ YES, proceed to Phase 5
 2. ✅ Analysis complete (see 2 detailed docs)
 3. ✅ Phase 4 status: 95% done (4 hours to polish)
