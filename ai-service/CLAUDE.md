@@ -1,6 +1,29 @@
-# AI Service — Database Safety & Operations
+# AI Service — FastAPI Application & Database Safety
 
-This document details database access control, role permissions, and operational safeguards for the FastAPI AI service.
+This document details app architecture, service design patterns, database access control, and operational safeguards.
+
+## Architecture & Service Design
+
+FastAPI app entry: `main.py` (app factory, mounts routers, initializes Gemini client, APScheduler).
+
+**Configuration SSOT** (`config.py`): Pydantic Settings class — all env vars live here. Never use `os.environ` directly anywhere else.
+
+**SSOT Locations**:
+- Prompts → `prompts.py` (`string.Template` objects; never f-strings for security)
+- Constants → `constants.py` (string constants, session statuses, HTTP messages)
+- Answer keywords → `answer_keywords.py` (negative/moderate keyword sets for scoring)
+
+**Pure Modules** (no I/O — keep them that way):
+- `chunker.py` — semantic chunking of CPP PDFs/Markdown
+- `scoring.py` — radar score calculation from answer penalties
+- `answer_keywords.py` — keyword classification constants
+- `report/findings.py` — finding extraction and severity classification
+
+**Gemini Integration** (`gemini_client.py`): Single module owning all Gemini calls. Never import `google.genai` directly in other modules. Wrapper includes retry logic and exponential backoff.
+
+---
+
+## Database Safety & Operations
 
 ## Database Architecture
 
