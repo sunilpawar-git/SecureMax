@@ -9,7 +9,12 @@ _REQUIRED_IN_PROD = ("database_url", "gemini_api_key", "encryption_key")
 
 
 class Settings(BaseSettings):
-    database_url: str = ""
+    # Database URLs: separate roles for security isolation
+    database_url: str = ""  # Legacy fallback (don't use in production)
+    database_read_url: str = ""  # ai_readonly role (SELECT only)
+    database_write_url: str = ""  # app_user role (read + audit writes)
+    scraper_database_url: str = ""  # scraper_user role (threat_intel writes)
+
     gemini_api_key: str = ""
     encryption_key: str = ""
     allow_insecure_local: bool = False
@@ -28,6 +33,18 @@ class Settings(BaseSettings):
     cpp_retrieval_top_k: int = 3
 
     model_config = {"env_file": ".env", "extra": "ignore"}
+
+    def get_read_url(self) -> str:
+        """Get URL for read-only queries (SELECT only)."""
+        return self.database_read_url or self.database_url
+
+    def get_write_url(self) -> str:
+        """Get URL for write queries (INSERT/UPDATE/DELETE)."""
+        return self.database_write_url or self.database_url
+
+    def get_scraper_url(self) -> str:
+        """Get URL for scraper (threat_intel writes)."""
+        return self.scraper_database_url or self.database_write_url or self.database_url
 
 
 def get_settings() -> Settings:

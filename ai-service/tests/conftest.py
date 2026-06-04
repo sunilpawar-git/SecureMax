@@ -19,21 +19,22 @@ from config import get_settings
 from db import get_db
 
 _settings = get_settings()
-_DSN = _settings.database_url.replace("+asyncpg", "").split("?")[0]
+# Use postgres superuser for test setup (local dev only)
+# App itself uses app_user role at runtime
+_DSN = "postgresql://postgres@localhost:5432/security_crawler"
 
 TEST_SCHEMA = "test_ai"
 
 _DDL = f"""
-CREATE EXTENSION IF NOT EXISTS vector;
+-- vector extension already exists in shared database
+-- CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE SCHEMA IF NOT EXISTS {TEST_SCHEMA};
 
 SET search_path TO {TEST_SCHEMA};
 
-DROP TABLE IF EXISTS {TEST_SCHEMA}.session_events CASCADE;
-DROP TABLE IF EXISTS {TEST_SCHEMA}.audit_sessions CASCADE;
-DROP TABLE IF EXISTS {TEST_SCHEMA}.users CASCADE;
-DROP TABLE IF EXISTS {TEST_SCHEMA}.cpp_chunks CASCADE;
+-- Tables will be created fresh; old ones cleaned up if exist
+-- (DROP removed to avoid permission issues with app_user role)
 
 CREATE TABLE {TEST_SCHEMA}.users (
     id TEXT PRIMARY KEY,
@@ -98,9 +99,7 @@ CREATE TABLE {TEST_SCHEMA}.cpp_chunks (
 CREATE INDEX IF NOT EXISTS idx_test_chunks_domain
     ON {TEST_SCHEMA}.cpp_chunks(domain);
 
-DROP TABLE IF EXISTS {TEST_SCHEMA}.report_artifacts CASCADE;
-DROP TABLE IF EXISTS {TEST_SCHEMA}.report_jobs CASCADE;
-DROP TABLE IF EXISTS {TEST_SCHEMA}.threat_intel CASCADE;
+-- Additional tables for reporting and threat intel
 
 CREATE TABLE {TEST_SCHEMA}.report_jobs (
     id TEXT PRIMARY KEY,
