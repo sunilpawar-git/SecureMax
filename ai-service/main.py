@@ -15,6 +15,7 @@ from auth_middleware import ServiceAuthMiddleware
 from config import get_settings
 from db import init_pool
 from gemini_client import GeminiClient
+from schema_guard import assert_schema_ready
 from routers.assistant import router as assistant_router
 from routers.cpp_admin import router as cpp_admin_router
 from routers.linkedin import router as linkedin_router
@@ -45,6 +46,7 @@ def _get_allowed_origins() -> list[str]:
 async def lifespan(app: FastAPI):
     settings = get_settings()
     pool = await init_pool(settings)
+    await assert_schema_ready(pool)
     gemini = GeminiClient(settings) if settings.gemini_api_key else None
     app.state.pool = pool
     app.state.settings = settings

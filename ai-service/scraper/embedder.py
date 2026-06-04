@@ -33,7 +33,7 @@ async def embed_and_store(
             article_id,
         )
         return True
-    except (OSError, ValueError, asyncpg.PostgresError) as e:
+    except Exception as e:  # noqa: BLE001 — embedding is best-effort; any failure returns False
         logger.warning("Failed to embed article %s: %s", article_id, e)
         return False
 
