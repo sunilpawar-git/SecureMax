@@ -21,8 +21,13 @@ async def get_relevant_chunks(
     top_k: int | None = None,
     *,
     gemini: GeminiClient | None = None,
+    domains: list[str] | None = None,
 ) -> list[CppChunkResult]:
-    """Embed *query* and return the top-k most similar CPP chunks."""
+    """Embed *query* and return the top-k most similar CPP chunks.
+
+    If *domains* is provided and non-empty, restricts search to those
+    CPP domains only (e.g. ["CPP-01", "CPP-05"]). Otherwise searches all.
+    """
     k = top_k or settings.cpp_retrieval_top_k
 
     try:
@@ -34,16 +39,30 @@ async def get_relevant_chunks(
 
     embedding_str = "[" + ",".join(str(v) for v in embedding) + "]"
 
-    rows = await conn.fetch(
-        """
-        SELECT id, domain, section, chunk_text
-        FROM cpp_chunks
-        ORDER BY embedding <=> $1::vector
-        LIMIT $2
-        """,
-        embedding_str,
-        k,
-    )
+    if domains:
+        rows = await conn.fetch(
+            """
+            SELECT id, domain, section, chunk_text
+            FROM cpp_chunks
+            WHERE domain = ANY($3)
+            ORDER BY embedding <=> $1::vector
+            LIMIT $2
+            """,
+            embedding_str,
+            k,
+            domains,
+        )
+    else:
+        rows = await conn.fetch(
+            """
+            SELECT id, domain, section, chunk_text
+            FROM cpp_chunks
+            ORDER BY embedding <=> $1::vector
+            LIMIT $2
+            """,
+            embedding_str,
+            k,
+        )
 
     return [
         CppChunkResult(

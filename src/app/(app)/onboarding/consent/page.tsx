@@ -28,7 +28,7 @@ export default function ConsentPage() {
       const data = await res.json();
       // Refresh the JWT so the proxy sees consentAt on the very next request.
       await updateSession({ consentAt: data.consentAt });
-      router.push('/questionnaire');
+      router.push('/onboarding/profile');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {

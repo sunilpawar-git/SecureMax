@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { DraftQueue } from './_components/DraftQueue';
 
 interface Article {
   id: string;
@@ -107,6 +108,8 @@ export default function LinkedInPage() {
       <p className="text-sm text-gray-500 dark:text-gray-400">
         Select threat intel articles, generate an AI-drafted post, then copy to LinkedIn.
       </p>
+
+      <DraftQueue />
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3">

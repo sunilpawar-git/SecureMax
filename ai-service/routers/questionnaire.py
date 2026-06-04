@@ -35,7 +35,7 @@ from models import (
     SubmitAnswerRequest,
     SubmitAnswerResponse,
 )
-from questionnaire import get_entry_node_id, get_node_map, node_to_response
+from questionnaire import get_entry_node_id, get_graph_version, get_node_map, node_to_response
 
 router = APIRouter(prefix="/questionnaire", tags=["questionnaire"])
 logger = logging.getLogger(__name__)
@@ -85,9 +85,10 @@ async def start_session(
 
     entry_id = get_entry_node_id(req.track)
     node_map = get_node_map(req.track)
+    graph_version = get_graph_version(req.track)
 
     try:
-        session_id = await repo.create_session(conn, req.user_id, req.track)
+        session_id = await repo.create_session(conn, req.user_id, req.track, graph_version)
     except asyncpg.ForeignKeyViolationError as exc:
         if "user_id" in str(exc):
             logger.error(

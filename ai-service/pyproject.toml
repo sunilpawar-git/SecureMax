@@ -19,5 +19,5 @@ select = ["E", "F", "I", "N", "W", "UP", "S", "B", "A", "C4", "SIM"]
 ignore = ["S101", "N817", "E402"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "S105", "S106"]
+"tests/**" = ["S101", "S105", "S106", "S608"]
 "session_repository.py" = ["S608"]

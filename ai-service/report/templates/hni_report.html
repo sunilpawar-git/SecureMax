@@ -1,5 +1,22 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
 
+{% block cover %}
+<div class="cover-page">
+  <div class="cover-logo">{{ branding.company_name }}</div>
+  <div class="cover-title">Physical Security Audit Report</div>
+  <div class="cover-subtitle">{{ report.track | upper }} Assessment — CPP Seven Precis Framework</div>
+  <div class="cover-meta">
+    Session Reference: {{ report.session_id[:12] }}<br/>
+    Generated: {{ generated_at }}<br/>
+    Assessment Framework: CPP Seven Precis (7 Domains)
+  </div>
+  <div class="cover-confidential">{{ confidentiality_notice }}</div>
+</div>
+<div class="page-break"></div>
+{% endblock %}
+
+{% block content %}
+{% if section_mode != "technical" %}
 <!-- Executive Summary -->
 <div class="section">
   <h2 class="section-title">Executive Summary</h2>
@@ -31,17 +48,16 @@
   </div>
 </div>
 
-<!-- Radar Scores -->
-{% if report.radar_scores %}
+<!-- Radar Chart -->
+{% if radar_svg %}
 <div class="section">
   <h2 class="section-title">Domain Security Scores</h2>
+  <div class="radar-container">
+    {{ radar_svg | safe }}
+  </div>
   <table>
     <thead>
-      <tr>
-        <th>CPP Domain</th>
-        <th>Score</th>
-        <th>Status</th>
-      </tr>
+      <tr><th>Domain</th><th>Score</th><th>Status</th></tr>
     </thead>
     <tbody>
       {% for domain, score in report.radar_scores.items() %}
@@ -49,10 +65,8 @@
         <td>{{ domain }}</td>
         <td>{{ "%.1f" | format(score) }}%</td>
         <td>
-          {% if score >= 70 %}<span class="badge badge-low">Good</span> {% elif score >= 40 %}<span
-            class="badge badge-medium"
-            >Needs Attention</span
-          >
+          {% if score >= 70 %}<span class="badge badge-low">Good</span>
+          {% elif score >= 40 %}<span class="badge badge-medium">Needs Attention</span>
           {% else %}<span class="badge badge-critical">Critical</span>{% endif %}
         </td>
       </tr>
@@ -62,37 +76,57 @@
 </div>
 {% endif %}
 
-<div class="page-break"></div>
+{% if section_mode == "executive" %}
+<!-- Next Steps (in executive brief) -->
+<div class="section">
+  <h2 class="section-title">Recommended Next Steps</h2>
+  <ol style="padding-left: 20px; line-height: 2;">
+    <li>Review the accompanying Technical Annex for full findings detail</li>
+    {% if report.urgency_score >= 50 %}
+    <li>Schedule a physical security audit consultation with our team</li>
+    <li>Book an on-site assessment for independent verification</li>
+    {% else %}
+    <li>Implement recommendations at your convenience</li>
+    <li>Schedule a periodic security review (quarterly recommended)</li>
+    {% endif %}
+  </ol>
+</div>
+{% endif %}
+{% endif %}
+
+{% if section_mode != "executive" %}
+{% if section_mode == "full" %}<div class="page-break"></div>{% endif %}
 
 <!-- Findings by Severity -->
 <div class="section">
   <h2 class="section-title">Security Findings</h2>
   {% for finding in report.findings %}
-  <div
-    style="margin-bottom:16px; padding:12px; border-left:4px solid {{ severity_colors[finding.severity] }}; background:#fafafa; border-radius:0 6px 6px 0;"
-  >
-    <div
-      style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px"
-    >
-      <strong>{{ finding.domain_name }}</strong>
+  <div class="finding-card" style="border-left:4px solid {{ severity_colors[finding.severity] }};">
+    <div class="finding-card-header">
+      <span class="finding-domain">{{ finding.domain_name }}</span>
       <span class="badge badge-{{ finding.severity }}">{{ finding.severity }}</span>
     </div>
-    <div style="font-size: 10pt; margin-bottom: 4px">
-      <strong>Issue:</strong> {{ finding.question }}
+    <div class="finding-field">
+      <span class="finding-field-label">Issue:</span> {{ finding.question }}
     </div>
-    <div style="font-size: 10pt; margin-bottom: 4px">
-      <strong>Response:</strong> {{ finding.answer }}
+    <div class="finding-field">
+      <span class="finding-field-label">Response:</span> {{ finding.answer }}
     </div>
-    <div style="font-size: 10pt"><strong>Recommendation:</strong> {{ finding.recommendation }}</div>
+    {% if finding.risk_impact %}
+    <div class="finding-risk-impact">
+      Risk Impact: {{ finding.risk_impact }}
+    </div>
+    {% endif %}
+    <div class="finding-field">
+      <span class="finding-field-label">Recommendation:</span> {{ finding.recommendation }}
+    </div>
     {% if finding.cpp_citation %}
-    <div class="cpp-citation">
-      Source: {{ finding.cpp_citation.get("section", "") }} — "{{
-      finding.cpp_citation.get("excerpt", "")[:120] }}..."
+    <div class="finding-cpp-citation">
+      CPP Reference: {{ finding.cpp_citation.get("section", "") }} — "{{ finding.cpp_citation.get("excerpt", "")[:120] }}..."
     </div>
-    {% endif %} {% if finding.requires_physical_verification %}
-    <div style="font-size: 9pt; color: #dc2626; margin-top: 4px">
-      ⚠ Requires physical on-site verification
-    </div>
+    {% endif %}
+    {% if finding.requires_physical_verification %}
+    <div class="finding-physical-flag">&#9888; Requires physical on-site verification</div>
     {% endif %}
   </div>
   {% endfor %}
@@ -101,14 +135,10 @@
 <!-- Threat Intelligence -->
 {% if report.threat_intel_articles %}
 <div class="section">
-  <h2 class="section-title">Relevant Threat Intelligence</h2>
+  <h2 class="section-title">Recent Security Incidents Relevant to Your Gaps</h2>
   <table>
     <thead>
-      <tr>
-        <th>Title</th>
-        <th>Domains</th>
-        <th>Source</th>
-      </tr>
+      <tr><th>Incident</th><th>Relevant Domains</th><th>Source</th></tr>
     </thead>
     <tbody>
       {% for article in report.threat_intel_articles %}
@@ -123,30 +153,34 @@
 </div>
 {% endif %}
 
+{% if section_mode == "full" %}
 <!-- Next Steps -->
 <div class="section">
   <h2 class="section-title">Recommended Next Steps</h2>
-  <ol style="padding-left: 20px">
-    <li>Download and review this full security report</li>
+  <ol style="padding-left: 20px; line-height: 2;">
+    <li>Review all critical and high-severity findings in this report</li>
     {% if report.urgency_score >= 50 %}
-    <li>Book a physical security audit consultation</li>
-    <li>Schedule an on-site assessment with our team</li>
+    <li>Schedule a physical security audit consultation with our team</li>
+    <li>Book an on-site assessment for independent verification</li>
     {% else %}
-    <li>Review recommendations at your convenience</li>
-    <li>Consider a periodic security review</li>
+    <li>Implement recommendations at your convenience</li>
+    <li>Schedule a periodic security review (quarterly recommended)</li>
     {% endif %}
   </ol>
 </div>
+{% endif %}
 
 <!-- Methodology -->
 <div class="section">
-  <h2 class="section-title">Methodology</h2>
+  <h2 class="section-title">Assessment Methodology</h2>
   <p class="summary-text">
-    This assessment was conducted using the <strong>CPP Seven Precis</strong> framework, covering 7
-    security domains aligned with ISO 27001, PSARA, and ESRM methodology. Each domain was evaluated
-    through structured questionnaire responses analysed by AI-assisted assessment tools grounded in
-    CPP reference material.
+    This assessment was conducted using the <strong>CPP Seven Precis</strong> framework,
+    covering 7 security domains aligned with ISO 27001, PSARA, and ESRM methodology.
+    Each domain was evaluated through structured questionnaire responses analysed by
+    AI-assisted assessment tools grounded in CPP reference material.
+    Findings are classified by severity (Critical, High, Medium) and include specific
+    remediation recommendations with CPP standard citations.
   </p>
 </div>
-
+{% endif %}
 {% endblock %}

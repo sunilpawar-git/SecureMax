@@ -21,6 +21,8 @@ model User {
   track         String   @default("hni")
   orgName       String?  @map("org_name")
   logoUrl       String?  @map("logo_url")
+  city          String?
+  country       String?
   consentAt      DateTime? @map("consent_at")
   consentVersion String?   @map("consent_version")
   consentPurpose String?   @map("consent_purpose")
@@ -88,6 +90,7 @@ model AuditSession {
   propertyType              String?   @map("property_type")
   facilityType              String?   @map("facility_type")
   currentNodeId             String?   @map("current_node_id")
+  graphVersion              String?   @map("graph_version")
   domainScores              Json?     @map("domain_scores")
   moduleScores              Json?     @map("module_scores")
   paid                      Boolean   @default(false)
@@ -168,18 +171,19 @@ model CppChunk {
 // ========== THREAT INTEL ==========
 
 model ThreatIntel {
-  id           String   @id @default(cuid())
-  title        String
-  url          String   @unique
-  contentHash  String   @unique @map("content_hash")
-  summary      String   @db.Text
-  domainTags   Json     @map("domain_tags")
-  industryTags Json     @map("industry_tags")
-  source         String   @default("unknown")
-  relevanceScore Float    @default(0.0) @map("relevance_score")
-  usedInReports  Boolean  @default(false) @map("used_in_reports")
-  softDeleted    Boolean  @default(false) @map("soft_deleted")
-  scrapedAt      DateTime @default(now()) @map("scraped_at")
+  id             String                       @id @default(cuid())
+  title          String
+  url            String                       @unique
+  contentHash    String                       @unique @map("content_hash")
+  summary        String                       @db.Text
+  domainTags     Json                         @map("domain_tags")
+  industryTags   Json                         @map("industry_tags")
+  source         String                       @default("unknown")
+  relevanceScore Float                        @default(0.0) @map("relevance_score")
+  usedInReports  Boolean                      @default(false) @map("used_in_reports")
+  softDeleted    Boolean                      @default(false) @map("soft_deleted")
+  scrapedAt      DateTime                     @default(now()) @map("scraped_at")
+  embedding      Unsupported("vector(3072)")?
 
   @@index([softDeleted])
   @@map("threat_intel")

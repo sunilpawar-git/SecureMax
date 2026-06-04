@@ -1,0 +1,116 @@
+# Severity Calibration Matrix — Expert-Editable
+# Maps (domain, question_node_id, answer_pattern) → (severity, risk_impact)
+# Loaded by severity_loader.py; falls back to keyword matching for unmapped questions.
+# Edit this file to calibrate severity without code changes.
+
+CPP-01:
+  hni_cpp01_perimeter:
+    negative_patterns: ["none", "no boundary", "no perimeter"]
+    severity_override: critical
+    risk_impact: "No perimeter protection — unrestricted physical access to property boundary"
+
+  hni_cpp01_cctv:
+    negative_patterns: ["no cctv", "not installed", "no cameras"]
+    severity_override: critical
+    risk_impact: "No visual surveillance — intruders can operate undetected without evidence capture"
+
+  hni_cpp01_gate_code:
+    negative_patterns: ["yes", "shared", "yes — all staff"]
+    severity_override: high
+    risk_impact: "Gate access credentials shared with unauthorized personnel — access control compromised"
+
+  hni_cpp01_lighting:
+    negative_patterns: ["not lit", "no lighting", "no"]
+    severity_override: high
+    risk_impact: "Inadequate perimeter lighting — concealment opportunities for intruders after dark"
+
+  hni_cpp01_access_control:
+    negative_patterns: ["no access control", "no system", "none"]
+    severity_override: critical
+    risk_impact: "No access control system — unable to verify or audit entry to premises"
+
+CPP-02:
+  hni_cpp02_risk_register:
+    negative_patterns: ["no", "never", "no plan exists"]
+    severity_override: high
+    risk_impact: "No formal risk register — security decisions made reactively without documented assessment"
+
+  hni_cpp02_insurance_review:
+    negative_patterns: ["no", "never", "unsure"]
+    severity_override: medium
+    risk_impact: "Insurance coverage not reviewed against current risk profile — potential coverage gaps"
+
+CPP-03:
+  hni_cpp03_emergency_plan:
+    negative_patterns: ["no", "no plan exists", "never"]
+    severity_override: critical
+    risk_impact: "No emergency response plan — uncoordinated response to crisis events risks lives and assets"
+
+  hni_cpp03_evacuation:
+    negative_patterns: ["no", "never rehearsed", "no drill"]
+    severity_override: high
+    risk_impact: "Evacuation procedures untested — occupants may be unable to exit safely during emergency"
+
+  hni_cpp03_contacts:
+    negative_patterns: ["no", "informal only", "verbal reporting only"]
+    severity_override: medium
+    risk_impact: "Emergency contacts not formally documented — delayed response during critical incidents"
+
+CPP-04:
+  hni_cpp04_incident_log:
+    negative_patterns: ["no", "not logged", "verbal reporting only"]
+    severity_override: high
+    risk_impact: "No incident logging — inability to identify patterns, repeat offenders, or systemic failures"
+
+  hni_cpp04_follow_up:
+    negative_patterns: ["no follow-up", "no", "never"]
+    severity_override: medium
+    risk_impact: "Incidents not investigated to root cause — same vulnerabilities exploited repeatedly"
+
+CPP-05:
+  hni_cpp05_network_segregation:
+    negative_patterns: ["no — same network", "no segregation", "no"]
+    severity_override: critical
+    risk_impact: "Security systems on shared network — compromise of one device exposes entire security infrastructure"
+
+  hni_cpp05_password_policy:
+    negative_patterns: ["no", "yes — default settings", "default"]
+    severity_override: high
+    risk_impact: "Default or no password policy on security devices — trivial unauthorized access"
+
+  hni_cpp05_data_backup:
+    negative_patterns: ["no", "never", "no backup"]
+    severity_override: medium
+    risk_impact: "CCTV and access logs not backed up — evidence lost if primary storage fails or is tampered"
+
+CPP-06:
+  hni_cpp06_guard_vetting:
+    negative_patterns: ["no", "never", "unsure", "informal checks only"]
+    severity_override: critical
+    risk_impact: "Security personnel not vetted — insider threat risk from unverified guards with property access"
+
+  hni_cpp06_patrol_schedule:
+    negative_patterns: ["no recurring schedule", "no", "informal only"]
+    severity_override: high
+    risk_impact: "No structured patrol routine — security gaps during unmonitored periods"
+
+  hni_cpp06_shift_handover:
+    negative_patterns: ["informal handover", "no", "verbal only"]
+    severity_override: medium
+    risk_impact: "No formal shift handover — critical information lost between guard rotations"
+
+CPP-07:
+  hni_cpp07_security_owner:
+    negative_patterns: ["no one specifically", "no", "informal role"]
+    severity_override: high
+    risk_impact: "No designated security owner — accountability gaps and uncoordinated security posture"
+
+  hni_cpp07_review_cycle:
+    negative_patterns: ["no formal cycle", "never", "no"]
+    severity_override: medium
+    risk_impact: "No periodic security review — posture degrades over time as threats evolve unaddressed"
+
+  hni_cpp07_vendor_management:
+    negative_patterns: ["no", "informal only", "no contract"]
+    severity_override: medium
+    risk_impact: "Security vendors not formally managed — no SLA enforcement or performance accountability"

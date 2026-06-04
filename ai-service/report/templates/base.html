@@ -11,23 +11,44 @@
         font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         font-size: 11pt;
         line-height: 1.6;
-        color: #1a1a2e;
+        color: {{ colors.text_primary }};
         background: #fff;
       }
       .page-break { page-break-after: always; }
 
-      /* Header */
-      .report-header {
-        background: {{ branding.primary_color }};
-        color: #fff;
-        padding: 30px 40px;
-        margin: -20mm -15mm 20px -15mm;
+      /* Cover Page */
+      .cover-page {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        text-align: center;
+      }
+      .cover-logo { font-size: 28pt; font-weight: 800; color: {{ branding.primary_color }}; }
+      .cover-title { font-size: 20pt; font-weight: 600; color: {{ colors.text_primary }}; margin-top: 40px; }
+      .cover-subtitle { font-size: 12pt; color: {{ colors.text_secondary }}; margin-top: 12px; }
+      .cover-meta { font-size: 9pt; color: {{ colors.text_muted }}; margin-top: 60px; line-height: 2; }
+      .cover-confidential {
+        font-size: 8pt;
+        color: {{ colors.text_muted }};
+        border-top: 1px solid {{ colors.border }};
+        padding-top: 16px;
+        margin-top: 60px;
+        max-width: 400px;
+      }
+
+      /* Header (non-cover pages) */
+      .page-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        border-bottom: 2px solid {{ branding.accent_color }};
+        padding-bottom: 8px;
+        margin-bottom: 24px;
       }
-      .report-header h1 { font-size: 22pt; font-weight: 700; }
-      .report-header .meta { font-size: 9pt; opacity: 0.85; text-align: right; }
+      .page-header-brand { font-size: 12pt; font-weight: 700; color: {{ branding.primary_color }}; }
+      .page-header-meta { font-size: 8pt; color: {{ colors.text_muted }}; text-align: right; }
 
       /* Sections */
       .section { margin-bottom: 28px; }
@@ -40,10 +61,59 @@
         margin-bottom: 14px;
       }
 
-      /* Findings table */
-      table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
-      th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
-      th { background: #f3f4f6; font-weight: 600; font-size: 9pt; text-transform: uppercase; }
+      /* Stat boxes */
+      .stat-grid { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
+      .stat-box {
+        flex: 1;
+        min-width: 120px;
+        padding: 14px;
+        background: {{ colors.bg_subtle }};
+        border-radius: 8px;
+        text-align: center;
+      }
+      .stat-value { font-size: 20pt; font-weight: 700; color: {{ branding.primary_color }}; }
+      .stat-label { font-size: 8pt; color: {{ colors.text_muted }}; text-transform: uppercase; }
+
+      /* Urgency meter */
+      .urgency-bar { height: 12px; border-radius: 6px; background: {{ colors.border }}; overflow: hidden; margin: 8px 0; }
+      .urgency-fill { height: 100%; border-radius: 6px; }
+
+      /* Finding cards */
+      .finding-card {
+        margin-bottom: 18px;
+        padding: 14px;
+        border-radius: 0 8px 8px 0;
+        background: {{ colors.bg_subtle }};
+      }
+      .finding-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .finding-domain { font-weight: 700; font-size: 10pt; }
+      .finding-field { font-size: 10pt; margin-bottom: 4px; }
+      .finding-field-label { font-weight: 600; }
+      .finding-risk-impact {
+        font-size: 9pt;
+        color: {{ severity_colors.critical }};
+        font-style: italic;
+        margin-top: 6px;
+        padding: 6px 10px;
+        background: #FEF2F2;
+        border-radius: 4px;
+      }
+      .finding-cpp-citation {
+        font-size: 9pt;
+        color: {{ colors.text_muted }};
+        font-style: italic;
+        margin-top: 4px;
+      }
+      .finding-physical-flag {
+        font-size: 9pt;
+        color: {{ severity_colors.critical }};
+        margin-top: 4px;
+      }
 
       /* Severity badges */
       .badge {
@@ -57,60 +127,39 @@
       }
       .badge-critical { background: {{ severity_colors.critical }}; }
       .badge-high { background: {{ severity_colors.high }}; }
-      .badge-medium { background: {{ severity_colors.medium }}; color: #1a1a2e; }
+      .badge-medium { background: {{ severity_colors.medium }}; color: {{ colors.text_primary }}; }
       .badge-low { background: {{ severity_colors.low }}; }
 
-      /* Urgency meter */
-      .urgency-bar {
-        height: 12px;
-        border-radius: 6px;
-        background: #e5e7eb;
-        overflow: hidden;
-        margin: 8px 0;
-      }
-      .urgency-fill { height: 100%; border-radius: 6px; }
+      /* Tables */
+      table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+      th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid {{ colors.border }}; }
+      th { background: {{ colors.bg_subtle }}; font-weight: 600; font-size: 9pt; text-transform: uppercase; }
+
+      /* Radar chart */
+      .radar-container { text-align: center; margin: 16px 0; }
+
+      /* Summary text */
+      .summary-text { margin-bottom: 16px; line-height: 1.7; }
 
       /* Footer */
       .report-footer {
         font-size: 8pt;
-        color: #6b7280;
-        border-top: 1px solid #e5e7eb;
+        color: {{ colors.text_muted }};
+        border-top: 1px solid {{ colors.border }};
         padding-top: 10px;
         margin-top: 30px;
         text-align: center;
       }
-
-      .cpp-citation {
-        font-size: 9pt;
-        color: #6b7280;
-        font-style: italic;
-        margin-top: 4px;
-      }
-
-      .summary-text { margin-bottom: 16px; line-height: 1.7; }
-      .stat-grid { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
-      .stat-box {
-        flex: 1;
-        min-width: 120px;
-        padding: 14px;
-        background: #f9fafb;
-        border-radius: 8px;
-        text-align: center;
-      }
-      .stat-value { font-size: 20pt; font-weight: 700; color: {{ branding.primary_color }}; }
-      .stat-label { font-size: 8pt; color: #6b7280; text-transform: uppercase; }
     </style>
   </head>
   <body>
-    <div class="report-header">
-      <div>
-        <h1>{{ branding.company_name }}</h1>
-        <div style="font-size: 10pt; margin-top: 4px">Security Audit Report</div>
-      </div>
-      <div class="meta">
-        <div>Session: {{ report.session_id[:12] }}...</div>
-        <div>Track: {{ report.track | upper }}</div>
-        <div>{{ generated_at }}</div>
+    {% block cover %}{% endblock %}
+
+    <div class="page-header">
+      <div class="page-header-brand">{{ branding.company_name }}</div>
+      <div class="page-header-meta">
+        {{ report.track | upper }} Security Audit<br/>
+        {{ generated_at }}
       </div>
     </div>
 

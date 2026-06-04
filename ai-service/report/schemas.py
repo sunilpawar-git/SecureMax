@@ -22,6 +22,7 @@ class Finding(BaseModel):
     answer: str
     severity: str
     recommendation: str
+    risk_impact: str | None = None
     cpp_citation: dict[str, str] | None = None
     requires_physical_verification: bool = False
     module_tag: str | None = None
@@ -47,7 +48,7 @@ class ReportData(BaseModel):
     track: str
     session_id: str
     findings: list[Finding]
-    sections: list[ReportSection]
+    sections: list[ReportSection] = Field(default_factory=list)
     urgency_score: int = Field(ge=0, le=100)
     peer_benchmark_percentile: float = Field(ge=0.0, le=100.0)
     compliance_gap_count: int | None = None
@@ -56,6 +57,7 @@ class ReportData(BaseModel):
     threat_intel_articles: list[dict[str, Any]] = Field(default_factory=list)
     compliance_mappings: list["ComplianceMapping"] = Field(default_factory=list)
     radar_scores: dict[str, float] = Field(default_factory=dict)
+    trend_summary: str | None = None
     free_summary: "FreeSummary | None" = None
 
     @field_validator("track")
@@ -74,6 +76,18 @@ class FreeSummary(BaseModel):
     findings_preview: list[dict[str, Any]]
     peer_benchmark: dict[str, Any]
     compliance_gap_count: int | None = None
+
+
+class ThreatIntelArticle(BaseModel):
+    """A threat intelligence article referenced in the report."""
+
+    id: str
+    title: str
+    url: str
+    summary: str
+    domain_tags: list[str] = Field(default_factory=list)
+    source: str = "unknown"
+    scraped_at: str | None = None
 
 
 class ComplianceMapping(BaseModel):

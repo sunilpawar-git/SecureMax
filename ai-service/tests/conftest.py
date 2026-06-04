@@ -33,17 +33,14 @@ CREATE SCHEMA IF NOT EXISTS {TEST_SCHEMA};
 
 SET search_path TO {TEST_SCHEMA};
 
--- Tables will be created fresh; old ones cleaned up if exist
--- (DROP removed to avoid permission issues with app_user role)
-
-CREATE TABLE {TEST_SCHEMA}.users (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.users (
     id TEXT PRIMARY KEY,
     email TEXT NOT NULL DEFAULT 'test@example.com',
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE {TEST_SCHEMA}.audit_sessions (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.audit_sessions (
     id TEXT PRIMARY KEY,
     user_id TEXT NOT NULL REFERENCES {TEST_SCHEMA}.users(id) ON DELETE CASCADE,
     track TEXT NOT NULL DEFAULT 'hni',
@@ -51,6 +48,7 @@ CREATE TABLE {TEST_SCHEMA}.audit_sessions (
     property_type TEXT,
     facility_type TEXT,
     current_node_id TEXT,
+    graph_version TEXT,
     domain_scores JSONB,
     module_scores JSONB,
     paid BOOLEAN DEFAULT FALSE,
@@ -67,7 +65,7 @@ CREATE TABLE {TEST_SCHEMA}.audit_sessions (
 CREATE INDEX IF NOT EXISTS idx_test_sessions_user_status
     ON {TEST_SCHEMA}.audit_sessions(user_id, status);
 
-CREATE TABLE {TEST_SCHEMA}.session_events (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.session_events (
     id TEXT PRIMARY KEY,
     session_id TEXT NOT NULL
         REFERENCES {TEST_SCHEMA}.audit_sessions(id) ON DELETE CASCADE,
@@ -86,7 +84,7 @@ CREATE TABLE {TEST_SCHEMA}.session_events (
 CREATE INDEX IF NOT EXISTS idx_test_events_session
     ON {TEST_SCHEMA}.session_events(session_id);
 
-CREATE TABLE {TEST_SCHEMA}.cpp_chunks (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.cpp_chunks (
     id TEXT PRIMARY KEY,
     domain TEXT NOT NULL,
     section TEXT NOT NULL,
@@ -101,7 +99,7 @@ CREATE INDEX IF NOT EXISTS idx_test_chunks_domain
 
 -- Additional tables for reporting and threat intel
 
-CREATE TABLE {TEST_SCHEMA}.report_jobs (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.report_jobs (
     id TEXT PRIMARY KEY,
     session_id TEXT NOT NULL UNIQUE
         REFERENCES {TEST_SCHEMA}.audit_sessions(id) ON DELETE CASCADE,
@@ -111,7 +109,7 @@ CREATE TABLE {TEST_SCHEMA}.report_jobs (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE {TEST_SCHEMA}.report_artifacts (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.report_artifacts (
     id TEXT PRIMARY KEY,
     session_id TEXT NOT NULL UNIQUE
         REFERENCES {TEST_SCHEMA}.audit_sessions(id) ON DELETE CASCADE,
@@ -123,7 +121,7 @@ CREATE TABLE {TEST_SCHEMA}.report_artifacts (
     generated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE {TEST_SCHEMA}.threat_intel (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.threat_intel (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
     url TEXT NOT NULL UNIQUE,
@@ -132,12 +130,29 @@ CREATE TABLE {TEST_SCHEMA}.threat_intel (
     domain_tags JSONB NOT NULL,
     industry_tags JSONB NOT NULL,
     source TEXT NOT NULL DEFAULT 'unknown',
+    relevance_score DOUBLE PRECISION NOT NULL DEFAULT 0.0,
     soft_deleted BOOLEAN NOT NULL DEFAULT FALSE,
-    scraped_at TIMESTAMPTZ DEFAULT NOW()
+    scraped_at TIMESTAMPTZ DEFAULT NOW(),
+    embedding public.vector(3072)
 );
 
 CREATE INDEX IF NOT EXISTS idx_test_threat_intel_soft_deleted
     ON {TEST_SCHEMA}.threat_intel(soft_deleted);
+
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.scraper_runs (
+    id TEXT PRIMARY KEY,
+    source TEXT,
+    status TEXT NOT NULL DEFAULT 'running',
+    articles_found INTEGER NOT NULL DEFAULT 0,
+    articles_stored INTEGER NOT NULL DEFAULT 0,
+    duplicates INTEGER NOT NULL DEFAULT 0,
+    errors JSONB,
+    started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    completed_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_test_scraper_runs_started
+    ON {TEST_SCHEMA}.scraper_runs(started_at);
 """
 
 
@@ -201,6 +216,7 @@ def _cleanup_test_data():
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.audit_sessions CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.users CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.cpp_chunks CASCADE")
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.scraper_runs CASCADE")
         finally:
             await conn.close()
 

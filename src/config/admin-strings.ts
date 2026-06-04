@@ -12,6 +12,9 @@ export const ADMIN_ACTION_TYPE = {
   EMAIL_SENT: 'email_sent',
   THREAT_INTEL_ADDED: 'threat_intel_added',
   THREAT_INTEL_DELETED: 'threat_intel_deleted',
+  LINKEDIN_DRAFT_CREATED: 'linkedin_draft_created',
+  LINKEDIN_POST_STATUS_CHANGED: 'linkedin_post_status_changed',
+  LINKEDIN_POST_COPIED: 'linkedin_post_copied',
 } as const;
 
 export const ADMIN_ENTITY_TYPE = {
@@ -19,6 +22,7 @@ export const ADMIN_ENTITY_TYPE = {
   SESSION: 'session',
   REPORT: 'report',
   THREAT_INTEL: 'threat_intel',
+  LINKEDIN_POST: 'linkedin_post',
 } as const;
 
 export const LEAD_STATUS = {

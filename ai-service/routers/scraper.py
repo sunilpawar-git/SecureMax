@@ -9,12 +9,14 @@ import re
 
 from fastapi import APIRouter, Request
 
+from config import get_settings
+from scraper.embedder import backfill_embeddings
 from scraper.pipeline import get_source_health, get_stored_articles, run_pipeline
 
 router = APIRouter(prefix="/scraper", tags=["scraper"])
 logger = logging.getLogger(__name__)
 
-_FLASH_MODEL = "models/gemini-2.0-flash"
+_FLASH_MODEL = get_settings().generation_model_fast
 
 
 @router.post("/run")
@@ -23,13 +25,15 @@ async def trigger_scraper(request: Request) -> dict:
     gemini = getattr(request.app.state, "gemini", None)
 
     process_fn = None
+    embed_fn = None
     if gemini is not None:
         try:
             process_fn = _make_gemini_tagger(gemini)
+            embed_fn = gemini.embed
         except Exception as e:
             logger.warning("Gemini tagger setup failed, using fallback: %s", e)
 
-    stats = await run_pipeline(pool, process_fn=process_fn)
+    stats = await run_pipeline(pool, process_fn=process_fn, embed_fn=embed_fn)
     return {"status": "completed", "stats": stats}
 
 
@@ -65,6 +69,19 @@ async def list_articles(request: Request, limit: int = 50) -> dict:
     pool = request.app.state.pool
     articles = await get_stored_articles(pool, limit=limit)
     return {"total": len(articles), "articles": articles}
+
+
+@router.post("/backfill-embeddings")
+async def backfill_threat_intel_embeddings(request: Request) -> dict:
+    """Backfill embeddings for threat_intel rows missing them."""
+    pool = request.app.state.pool
+    gemini = getattr(request.app.state, "gemini", None)
+
+    if gemini is None:
+        return {"error": "Gemini client not available", "embedded": 0}
+
+    stats = await backfill_embeddings(pool, gemini.embed, batch_size=50)
+    return {"status": "completed", "stats": stats}
 
 
 def _make_gemini_tagger(gemini):

@@ -91,7 +91,7 @@ async def draft_post(req: DraftRequest, request: Request) -> dict:
             "hashtags": hashtags,
             "character_count": char_count,
         }
-    except Exception as e:
+    except (OSError, ValueError, json.JSONDecodeError, RuntimeError) as e:
         logger.warning("Gemini LinkedIn draft failed: %s", e)
         fallback_text = (
             "Recent security incidents highlight ongoing risks "

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from google import genai
 from google.genai import types
 
-from config import Settings
+from config import Settings, get_settings
 from prompts import build_branching_prompt
 from questionnaire import determine_next_node
 from schemas import CppChunkResult
@@ -20,7 +20,7 @@ from schemas import CppChunkResult
 logger = logging.getLogger(__name__)
 
 _AI_TIMEOUT_SECONDS = 5
-_GEMINI_MODEL = "gemini-2.0-flash"
+_GEMINI_MODEL = get_settings().generation_model_fast
 
 
 @dataclass(frozen=True, slots=True)

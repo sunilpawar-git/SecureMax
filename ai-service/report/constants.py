@@ -58,6 +58,14 @@ CONFIDENTIALITY_NOTICE = (
     "Unauthorized distribution is prohibited."
 )
 
+TEMPLATE_COLORS = {
+    "text_primary": "#1a1a2e",
+    "text_secondary": "#374151",
+    "text_muted": "#6b7280",
+    "bg_subtle": "#f9fafb",
+    "border": "#e5e7eb",
+}
+
 REPORT_JOB_PENDING = "pending"
 REPORT_JOB_PROCESSING = "processing"
 REPORT_JOB_COMPLETED = "completed"

@@ -57,6 +57,7 @@ def build_report_events(raw_events: list[dict], node_map: dict) -> list[dict]:
         node = node_map.get(ev["question_node_id"], {})
         result.append(
             {
+                "question_node_id": ev["question_node_id"],
                 "domain": delta.get("domain", ""),
                 "question_text": node.get("text", ev["question_node_id"]),
                 "answer": answer,

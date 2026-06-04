@@ -15,6 +15,8 @@ from auth_middleware import ServiceAuthMiddleware
 from config import get_settings
 from db import init_pool
 from gemini_client import GeminiClient
+from routers.assistant import router as assistant_router
+from routers.cpp_admin import router as cpp_admin_router
 from routers.linkedin import router as linkedin_router
 from routers.questionnaire import router as questionnaire_router
 from routers.report import router as report_router
@@ -55,7 +57,8 @@ async def lifespan(app: FastAPI):
             from scraper.pipeline import run_pipeline
 
             process_fn = _make_gemini_tagger(gemini) if gemini else None
-            stats = await run_pipeline(pool, process_fn=process_fn)
+            embed_fn = gemini.embed if gemini else None
+            stats = await run_pipeline(pool, process_fn=process_fn, embed_fn=embed_fn)
             logger.info("Scheduled scraper completed: %s", stats)
         except Exception:
             logger.exception("Scheduled scraper failed")
@@ -95,6 +98,8 @@ app.add_middleware(
     allow_headers=["Content-Type", "X-Service-Key", "X-User-Id"],
 )
 
+app.include_router(assistant_router)
+app.include_router(cpp_admin_router)
 app.include_router(linkedin_router)
 app.include_router(questionnaire_router)
 app.include_router(report_router)

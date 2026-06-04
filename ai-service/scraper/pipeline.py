@@ -6,20 +6,17 @@ Fetches from all tiers, deduplicates, tags via Gemini, persists to threat_intel.
 import asyncio
 import json
 import logging
+import uuid
 from collections.abc import Awaitable, Callable
+from datetime import UTC, datetime
 
 import asyncpg
 
 from scraper.dedup import is_duplicate
+from scraper.embedder import embed_and_store
+from scraper.fetchers import fetch_news_api_tier, fetch_playwright_tier_wrapper, fetch_rss_tier
 from scraper.models import ProcessedArticle, RawArticle, SourceHealth
-from scraper.source_loader import load_sources
-from scraper.sources import (
-    RSS_FEEDS,
-    SECURITY_KEYWORDS,
-    fetch_news_api,
-    fetch_playwright_tier,
-    fetch_rss_feed,
-)
+from scraper.sources import SECURITY_KEYWORDS
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +63,7 @@ async def get_stored_articles(pool: asyncpg.Pool, limit: int = 50) -> list[dict]
 async def run_pipeline(
     pool: asyncpg.Pool,
     process_fn: Callable[[RawArticle], Awaitable[ProcessedArticle]] | None = None,
+    embed_fn: Callable[[str], Awaitable[list[float]]] | None = None,
 ) -> dict:
     """Execute full ingestion pipeline. Returns summary stats.
 
@@ -73,6 +71,8 @@ async def run_pipeline(
         pool: asyncpg connection pool for DB persistence and dedup.
         process_fn: async callable(RawArticle) -> ProcessedArticle.
                     If None, uses keyword-based fallback.
+        embed_fn: async callable(str) -> list[float]. If provided, embeds
+                  article summaries on ingest.
     """
     if _pipeline_lock.locked():
         return {
@@ -85,6 +85,9 @@ async def run_pipeline(
         }
 
     async with _pipeline_lock:
+        run_id = str(uuid.uuid4())
+        await _insert_run(pool, run_id)
+
         stats: dict = {
             "fetched": 0,
             "duplicates": 0,
@@ -94,9 +97,9 @@ async def run_pipeline(
         }
 
         raw_articles: list[RawArticle] = []
-        raw_articles.extend(await _fetch_news_api_tier(stats))
-        raw_articles.extend(await _fetch_rss_tier(stats))
-        raw_articles.extend(await _fetch_playwright_tier(stats))
+        raw_articles.extend(await fetch_news_api_tier(stats, _source_health))
+        raw_articles.extend(await fetch_rss_tier(stats, _source_health))
+        raw_articles.extend(await fetch_playwright_tier_wrapper(stats, _source_health))
 
         for article in raw_articles:
             stats["fetched"] += 1
@@ -112,7 +115,7 @@ async def run_pipeline(
                 else:
                     processed = _fallback_process(article)
 
-                inserted = await _persist_article(processed, pool)
+                inserted = await _persist_article(processed, pool, embed_fn)
                 if inserted:
                     stats["stored"] += 1
                 else:
@@ -124,19 +127,69 @@ async def run_pipeline(
         if stats["fetched"] == 0:
             logger.warning("Pipeline fetched 0 articles across all tiers")
 
+        await _complete_run(pool, run_id, stats)
         return stats
 
 
-async def _persist_article(article: ProcessedArticle, pool: asyncpg.Pool) -> bool:
+async def _insert_run(pool: asyncpg.Pool, run_id: str) -> None:
+    """INSERT a new scraper_runs row with status=running."""
+    try:
+        async with pool.acquire() as conn:
+            await conn.execute(
+                """
+                INSERT INTO scraper_runs (id, status, started_at)
+                VALUES ($1, 'running', $2)
+                """,
+                run_id,
+                datetime.now(UTC),
+            )
+    except Exception as e:
+        logger.warning("Failed to insert scraper run %s: %s", run_id, e)
+
+
+async def _complete_run(pool: asyncpg.Pool, run_id: str, stats: dict) -> None:
+    """UPDATE scraper_runs with final stats and completed timestamp."""
+    status = "completed"
+    try:
+        async with pool.acquire() as conn:
+            await conn.execute(
+                """
+                UPDATE scraper_runs
+                SET status = $2,
+                    articles_found = $3,
+                    articles_stored = $4,
+                    duplicates = $5,
+                    errors = $6::jsonb,
+                    completed_at = $7
+                WHERE id = $1
+                """,
+                run_id,
+                status,
+                stats["fetched"],
+                stats["stored"],
+                stats["duplicates"],
+                json.dumps(stats["errors"]) if stats["errors"] else None,
+                datetime.now(UTC),
+            )
+    except Exception as e:
+        logger.warning("Failed to complete scraper run %s: %s", run_id, e)
+
+
+async def _persist_article(
+    article: ProcessedArticle,
+    pool: asyncpg.Pool,
+    embed_fn: Callable[[str], Awaitable[list[float]]] | None = None,
+) -> bool:
     """INSERT into threat_intel. Returns True if inserted, False if duplicate."""
     async with pool.acquire() as conn:
-        result = await conn.execute(
+        row = await conn.fetchrow(
             """
             INSERT INTO threat_intel
                 (id, title, url, content_hash, summary, domain_tags, industry_tags,
                  source, relevance_score)
             VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5::jsonb, $6::jsonb, $7, $8)
             ON CONFLICT (url) DO NOTHING
+            RETURNING id
             """,
             article.title,
             article.url,
@@ -147,7 +200,13 @@ async def _persist_article(article: ProcessedArticle, pool: asyncpg.Pool) -> boo
             article.source,
             article.relevance_score,
         )
-        return result == "INSERT 0 1"
+        if row is None:
+            return False
+
+        if embed_fn and article.summary:
+            await embed_and_store(conn, row["id"], article.summary, embed_fn)
+
+        return True
 
 
 def _fallback_process(article: RawArticle) -> ProcessedArticle:
@@ -182,80 +241,6 @@ def _fallback_process(article: RawArticle) -> ProcessedArticle:
         source=f"{article.source_name} ({article.source_tier})",
         relevance_score=len(matched_kw) * 0.15,
     )
-
-
-async def _fetch_news_api_tier(stats: dict) -> list[RawArticle]:
-    """Iterates all newsapi entries from sources.yaml, deduplicating by URL."""
-    try:
-        sources = load_sources()
-    except Exception as e:
-        logger.warning("Failed to load sources.yaml: %s", e)
-        stats["errors"].append(f"sources.yaml: {e}")
-        return []
-
-    all_articles: list[RawArticle] = []
-    seen_urls: set[str] = set()
-
-    for entry in sources.get("newsapi", []):
-        entry_name = entry.get("name", "newsapi")
-        health_key = f"news_api:{entry_name}"
-        health = _source_health.setdefault(
-            health_key,
-            SourceHealth(source_name=health_key, source_tier="news_api"),
-        )
-        try:
-            articles = await fetch_news_api(
-                query=entry.get("query", "physical security"),
-                page_size=entry.get("page_size", 20),
-            )
-            health.record_success(len(articles))
-            for a in articles:
-                if a.url not in seen_urls:
-                    seen_urls.add(a.url)
-                    all_articles.append(a)
-            if not articles:
-                logger.info("News API '%s' returned 0 articles", entry_name)
-        except Exception as e:
-            health.record_failure()
-            stats["errors"].append(f"{health_key}: {e}")
-
-    return all_articles
-
-
-async def _fetch_rss_tier(stats: dict) -> list[RawArticle]:
-    all_articles: list[RawArticle] = []
-    for feed in RSS_FEEDS:
-        source_name = feed["name"]
-        health = _source_health.setdefault(
-            source_name,
-            SourceHealth(source_name=source_name, source_tier="rss"),
-        )
-        try:
-            articles = await fetch_rss_feed(feed["url"], source_name)
-            health.record_success(len(articles))
-            all_articles.extend(articles)
-        except Exception as e:
-            health.record_failure()
-            stats["errors"].append(f"{source_name}: {e}")
-    return all_articles
-
-
-async def _fetch_playwright_tier(stats: dict) -> list[RawArticle]:
-    tier_name = "playwright"
-    health = _source_health.setdefault(
-        tier_name,
-        SourceHealth(source_name=tier_name, source_tier="playwright"),
-    )
-    try:
-        articles = await fetch_playwright_tier()
-        health.record_success(len(articles))
-        if not articles:
-            logger.info("Playwright tier returned 0 articles")
-        return articles
-    except Exception as e:
-        health.record_failure()
-        stats["errors"].append(f"{tier_name}: {e}")
-        return []
 
 
 def reset_pipeline() -> None:

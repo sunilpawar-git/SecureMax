@@ -204,7 +204,7 @@ class TestPersistArticle:
     @pytest.mark.asyncio
     async def test_persist_returns_true_on_insert(self) -> None:
         mock_conn = AsyncMock()
-        mock_conn.execute = AsyncMock(return_value="INSERT 0 1")
+        mock_conn.fetchrow = AsyncMock(return_value={"id": "new-id-123"})
         mock_pool = MagicMock()
         mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
         mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
@@ -222,15 +222,15 @@ class TestPersistArticle:
         result = await _persist_article(article, mock_pool)
 
         assert result is True
-        mock_conn.execute.assert_called_once()
-        call_sql = mock_conn.execute.call_args.args[0]
+        mock_conn.fetchrow.assert_called_once()
+        call_sql = mock_conn.fetchrow.call_args.args[0]
         assert "INSERT INTO threat_intel" in call_sql
         assert "relevance_score" in call_sql
 
     @pytest.mark.asyncio
     async def test_persist_returns_false_on_conflict(self) -> None:
         mock_conn = AsyncMock()
-        mock_conn.execute = AsyncMock(return_value="INSERT 0 0")
+        mock_conn.fetchrow = AsyncMock(return_value=None)
         mock_pool = MagicMock()
         mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
         mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
@@ -252,7 +252,7 @@ class TestPersistArticle:
     @pytest.mark.asyncio
     async def test_persist_stores_domain_tags_as_json(self) -> None:
         mock_conn = AsyncMock()
-        mock_conn.execute = AsyncMock(return_value="INSERT 0 1")
+        mock_conn.fetchrow = AsyncMock(return_value={"id": "new-id-456"})
         mock_pool = MagicMock()
         mock_pool.acquire.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
         mock_pool.acquire.return_value.__aexit__ = AsyncMock(return_value=False)
@@ -269,7 +269,7 @@ class TestPersistArticle:
 
         await _persist_article(article, mock_pool)
 
-        call_args = mock_conn.execute.call_args.args
+        call_args = mock_conn.fetchrow.call_args.args
         # domain_tags must be serialized JSON string
         domain_tags_arg = call_args[5]
         parsed = json.loads(domain_tags_arg)
@@ -384,11 +384,11 @@ class TestNewsApiYamlWiring:
         }
 
         with (
-            patch("scraper.pipeline.load_sources", return_value=yaml_sources),
-            patch("scraper.pipeline.fetch_news_api", AsyncMock(return_value=[])) as mock_fetch,
-            patch("scraper.pipeline.fetch_rss_feed", AsyncMock(return_value=[])),
-            patch("scraper.pipeline.fetch_playwright_tier", AsyncMock(return_value=[])),
-            patch("scraper.pipeline.RSS_FEEDS", []),
+            patch("scraper.fetchers.load_sources", return_value=yaml_sources),
+            patch("scraper.fetchers.fetch_news_api", AsyncMock(return_value=[])) as mock_fetch,
+            patch("scraper.fetchers.fetch_rss_feed", AsyncMock(return_value=[])),
+            patch("scraper.fetchers.fetch_playwright_tier", AsyncMock(return_value=[])),
+            patch("scraper.fetchers.RSS_FEEDS", []),
         ):
             await run_pipeline(mock_pool)
 
@@ -438,11 +438,11 @@ class TestNewsApiYamlWiring:
         }
 
         with (
-            patch("scraper.pipeline.load_sources", return_value=yaml_sources),
-            patch("scraper.pipeline.fetch_news_api", AsyncMock(return_value=[shared_article])),
-            patch("scraper.pipeline.fetch_rss_feed", AsyncMock(return_value=[])),
-            patch("scraper.pipeline.fetch_playwright_tier", AsyncMock(return_value=[])),
-            patch("scraper.pipeline.RSS_FEEDS", []),
+            patch("scraper.fetchers.load_sources", return_value=yaml_sources),
+            patch("scraper.fetchers.fetch_news_api", AsyncMock(return_value=[shared_article])),
+            patch("scraper.fetchers.fetch_rss_feed", AsyncMock(return_value=[])),
+            patch("scraper.fetchers.fetch_playwright_tier", AsyncMock(return_value=[])),
+            patch("scraper.fetchers.RSS_FEEDS", []),
         ):
             stats = await run_pipeline(mock_pool)
 
@@ -504,10 +504,10 @@ class TestPipelineLock:
             return _fallback_process(article)
 
         with (
-            patch("scraper.pipeline.fetch_news_api", AsyncMock(return_value=[])),
-            patch("scraper.pipeline.fetch_rss_feed", AsyncMock(return_value=[fallback_article])),
-            patch("scraper.pipeline.fetch_playwright_tier", AsyncMock(return_value=[])),
-            patch("scraper.pipeline.RSS_FEEDS", [{"url": "x", "name": "TestFeed"}]),
+            patch("scraper.fetchers.fetch_news_api", AsyncMock(return_value=[])),
+            patch("scraper.fetchers.fetch_rss_feed", AsyncMock(return_value=[fallback_article])),
+            patch("scraper.fetchers.fetch_playwright_tier", AsyncMock(return_value=[])),
+            patch("scraper.fetchers.RSS_FEEDS", [{"url": "x", "name": "TestFeed"}]),
         ):
             stats = await run_pipeline(mock_pool, process_fn=process_fn_fallback)
 

@@ -46,6 +46,12 @@ def get_entry_node_id(track: str) -> str:
     return graph["metadata"]["entry_node"]
 
 
+def get_graph_version(track: str) -> str | None:
+    """Return the version string from the graph metadata, or None."""
+    graph = load_graph_for_track(track)
+    return str(graph["metadata"].get("version")) if "version" in graph.get("metadata", {}) else None
+
+
 def node_to_response(node_data: dict) -> QuestionNode:
     """Convert raw YAML node dict to API response model."""
     return QuestionNode(
