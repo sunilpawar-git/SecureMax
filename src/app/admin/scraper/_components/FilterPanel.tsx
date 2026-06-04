@@ -36,20 +36,20 @@ export function FilterPanel({
   }
 
   return (
-    <div className="bg-white rounded-lg border p-4 space-y-3">
-      <h3 className="font-medium text-slate-900 text-sm">Filters</h3>
+    <div className="bg-white dark:bg-slate-800 rounded-lg border dark:border-slate-700 p-4 space-y-3">
+      <h3 className="font-medium text-slate-900 dark:text-slate-100 text-sm">Filters</h3>
       <div className="flex flex-wrap gap-3">
         <input
           type="text"
           placeholder="Search titles..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500 w-48"
+          className="text-sm rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500 w-48"
         />
         <select
           value={source}
           onChange={(e) => onSourceChange(e.target.value)}
-          className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500"
+          className="text-sm rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">All Sources</option>
           {SOURCE_OPTIONS.filter(Boolean).map((s) => (
@@ -67,7 +67,7 @@ export function FilterPanel({
             className={`text-xs px-2 py-1 rounded border transition-colors ${
               domains.includes(code)
                 ? 'bg-indigo-600 text-white border-indigo-600'
-                : 'bg-white text-slate-600 border-slate-300 hover:border-indigo-400'
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:border-indigo-400'
             }`}
           >
             {code}
@@ -76,7 +76,7 @@ export function FilterPanel({
         {domains.length > 0 && (
           <button
             onClick={() => onDomainsChange([])}
-            className="text-xs px-2 py-1 text-slate-400 hover:text-slate-600"
+            className="text-xs px-2 py-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
           >
             Clear
           </button>

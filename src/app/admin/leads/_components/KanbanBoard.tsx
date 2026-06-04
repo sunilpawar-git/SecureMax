@@ -69,18 +69,18 @@ export function KanbanBoard({ leads, onStatusChange, onEmail }: KanbanBoardProps
             key={status}
             className={`rounded-lg p-3 min-h-[200px] transition-colors ${
               isDragTarget
-                ? 'bg-blue-50 border-2 border-blue-300'
-                : 'bg-slate-50 border border-slate-200'
+                ? 'bg-blue-50 dark:bg-blue-900/30 border-2 border-blue-300 dark:border-blue-700'
+                : 'bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700'
             }`}
             onDragOver={(e) => handleDragOver(e, status)}
             onDragLeave={() => setDragOver(null)}
             onDrop={() => handleDrop(status)}
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
+              <h3 className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                 {LEAD_STATUS_LABEL[status]}
               </h3>
-              <span className="text-xs text-slate-400">{columnLeads.length}</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">{columnLeads.length}</span>
             </div>
             <div className="space-y-3">
               {columnLeads.map((lead) => (
@@ -89,6 +89,7 @@ export function KanbanBoard({ leads, onStatusChange, onEmail }: KanbanBoardProps
                   draggable
                   onDragStart={() => handleDragStart(lead.id)}
                   onDragEnd={handleDragEnd}
+                  aria-label="Drag to reorder lead"
                   className="cursor-grab active:cursor-grabbing"
                 >
                   <LeadCard lead={lead} onStatusChange={onStatusChange} onEmail={onEmail} />

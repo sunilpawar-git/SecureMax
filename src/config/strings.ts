@@ -19,6 +19,7 @@ export const CTA = {
   CALENDAR: 'Schedule a Consultation',
   ENTERPRISE_PROPOSAL: 'Request Enterprise Proposal',
   DOWNLOAD_SAMPLE: 'Download Sample Enterprise Report',
+  FREE_ASSESSMENT: 'Start Your Free Security Assessment',
 } as const;
 
 export const TRACK = {
@@ -181,6 +182,13 @@ export const SESSION_STATUS_LABEL: Record<string, string> = {
   [SESSION_STATUS.COMPLETED]: 'Completed',
   [SESSION_STATUS.ABANDONED]: 'Abandoned',
 };
+
+export const REPORT_STRINGS = {
+  RISK_HIGH: 'HIGH RISK',
+  RISK_MODERATE: 'MODERATE RISK',
+  RISK_LOW: 'LOW RISK',
+  POSTURE_SCORE_LABEL: 'Physical Security Posture Score',
+} as const;
 
 export const DPDPA = {
   CONSENT_VERSION: 'v1',

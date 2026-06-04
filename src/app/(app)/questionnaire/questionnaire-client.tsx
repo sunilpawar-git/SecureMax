@@ -11,20 +11,19 @@ import { ResumePrompt } from '@/components/ResumePrompt';
 import type { QuestionNode, RadarScores, SessionState } from './types';
 
 function getErrorMessage(err: unknown): string {
-  if (err instanceof Error) return err.message;
-  if (typeof err === 'string') return err;
-  if (typeof err === 'object' && err !== null && 'message' in err) {
-    return String((err as Record<string, unknown>).message);
+  if (process.env.NODE_ENV === 'development') {
+    if (err instanceof Error) return err.message;
+    if (typeof err === 'string') return err;
   }
-  return 'An unexpected error occurred';
+  return 'Something went wrong. Please try again.';
 }
 
 export default function QuestionnaireClient() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-[calc(100vh-3rem)] bg-gray-50 flex items-center justify-center">
-          <p className="text-sm text-slate-400">{UI.LOADING}</p>
+        <div className="min-h-[calc(100vh-3rem)] bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
+          <p className="text-sm text-slate-400 dark:text-slate-500">{UI.LOADING}</p>
         </div>
       }
     >
@@ -152,10 +151,10 @@ function QuestionnaireContent() {
 
   if (sessionState === 'idle') {
     return (
-      <div className="min-h-[calc(100vh-3rem)] bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-[calc(100vh-3rem)] bg-gray-50 dark:bg-slate-900 flex items-center justify-center p-4">
         <div className="max-w-lg w-full space-y-6 text-center">
-          <h1 className="text-3xl font-bold text-gray-900">{APP.NAME}</h1>
-          <p className="text-gray-600">{QUESTIONNAIRE.TRACK_PROMPT}</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">{APP.NAME}</h1>
+          <p className="text-gray-600 dark:text-slate-300">{QUESTIONNAIRE.TRACK_PROMPT}</p>
           <div className="grid gap-4">
             <button
               onClick={() => handleStart(TRACK.HNI)}
@@ -173,8 +172,8 @@ function QuestionnaireContent() {
               disabled={isLoading}
               className={`w-full py-4 px-6 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 ${
                 currentTrack === TRACK.ENTERPRISE
-                  ? 'bg-slate-900 ring-2 ring-slate-400'
-                  : 'bg-slate-800 hover:bg-slate-900'
+                  ? 'bg-slate-800 ring-2 ring-slate-400 dark:bg-slate-700 dark:ring-slate-300'
+                  : 'bg-slate-800 hover:bg-slate-900 dark:hover:bg-slate-700'
               }`}
             >
               {CTA.ENTERPRISE}
@@ -182,11 +181,11 @@ function QuestionnaireContent() {
           </div>
           {error && (
             <div className="space-y-2">
-              <p className="text-red-600 text-sm">{error}</p>
+              <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
               {sessionId && currentTrack && (
                 <button
                   onClick={() => handleResume(sessionId)}
-                  className="text-sm text-emerald-700 underline"
+                  className="text-sm text-emerald-700 dark:text-emerald-400 underline"
                 >
                   {QUESTIONNAIRE.RESUME_EXISTING}
                 </button>
@@ -200,10 +199,10 @@ function QuestionnaireContent() {
 
   if (sessionState === 'completed') {
     return (
-      <div className="min-h-[calc(100vh-3rem)] bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-[calc(100vh-3rem)] bg-gray-50 dark:bg-slate-900 flex items-center justify-center p-4">
         <div className="max-w-2xl w-full space-y-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900">{QUESTIONNAIRE.COMPLETE_TITLE}</h2>
-          <p className="text-gray-600">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">{QUESTIONNAIRE.COMPLETE_TITLE}</h2>
+          <p className="text-gray-600 dark:text-slate-300">
             You answered {questionsAnswered} questions.
             {reportTrigger.triggered
               ? reportTrigger.error
@@ -226,7 +225,7 @@ function QuestionnaireContent() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-3rem)] bg-gray-50 p-4">
+    <div className="min-h-[calc(100vh-3rem)] bg-gray-50 dark:bg-slate-900 p-4">
       <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
         <div className="md:col-span-2">
           {currentQuestion && (
@@ -237,11 +236,11 @@ function QuestionnaireContent() {
               questionNumber={questionsAnswered + 1}
             />
           )}
-          {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+          {error && <p className="text-red-600 dark:text-red-400 text-sm mt-2">{error}</p>}
         </div>
         <div className="md:col-span-1">
           <div className="sticky top-4">
-            <h3 className="text-sm font-medium text-gray-500 mb-2">
+            <h3 className="text-sm font-medium text-gray-500 dark:text-slate-400 mb-2">
               {QUESTIONNAIRE.SECURITY_SCORE}
             </h3>
             <RadarChart scores={radarScores} />

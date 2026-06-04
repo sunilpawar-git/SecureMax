@@ -39,13 +39,13 @@ export default function AnalyticsPage() {
     load();
   }, []);
 
-  if (loading) return <p className="text-sm text-slate-400">Loading analytics...</p>;
-  if (error) return <p className="text-sm text-red-600">{error}</p>;
+  if (loading) return <p className="text-sm text-slate-400 dark:text-slate-500">Loading analytics...</p>;
+  if (error) return <p className="text-sm text-red-600 dark:text-red-400">{error}</p>;
   if (!data) return null;
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold text-slate-900">Analytics</h1>
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Analytics</h1>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard label="Total Sessions" value={data.sessions.total} />
@@ -67,20 +67,20 @@ export default function AnalyticsPage() {
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">Domain Performance</h2>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Domain Performance</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {Object.values(CPP_DOMAINS).map((d) => {
             const domainData = data.domains[d.code];
             return (
-              <div key={d.code} className="rounded-lg border border-slate-200 bg-white p-4">
-                <div className="text-xs font-medium text-emerald-700">{d.code}</div>
-                <div className="text-sm font-semibold text-slate-900">{d.name}</div>
-                <div className="mt-2 flex justify-between text-xs text-slate-500">
+              <div key={d.code} className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+                <div className="text-xs font-medium text-emerald-700 dark:text-emerald-400">{d.code}</div>
+                <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">{d.name}</div>
+                <div className="mt-2 flex justify-between text-xs text-slate-500 dark:text-slate-400">
                   <span>Avg Score: {domainData?.avgScore ?? '—'}</span>
                   <span>{domainData?.questionCount ?? 0} questions</span>
                 </div>
                 {domainData && (
-                  <div className="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                  <div className="mt-2 h-1.5 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
                     <div
                       className="h-full rounded-full bg-emerald-500"
                       style={{ width: `${Math.min(domainData.avgScore, 100)}%` }}
@@ -95,10 +95,10 @@ export default function AnalyticsPage() {
 
       {data.trends.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
             Session Trends (Last 30 Days)
           </h2>
-          <div className="rounded-lg border border-slate-200 bg-white p-4 overflow-x-auto">
+          <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 overflow-x-auto">
             <div className="flex items-end gap-1 h-40">
               {data.trends.map((t) => {
                 const maxSessions = Math.max(...data.trends.map((d) => d.sessions), 1);
@@ -108,6 +108,7 @@ export default function AnalyticsPage() {
                     key={t.date}
                     className="flex flex-col items-center flex-1 min-w-[12px]"
                     title={`${t.date}: ${t.sessions} sessions`}
+                    aria-label={`${t.date}: ${t.sessions} sessions`}
                   >
                     <div
                       className="w-full bg-emerald-500 rounded-t"
@@ -126,9 +127,9 @@ export default function AnalyticsPage() {
 
 function KpiCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4">
-      <div className="text-xs text-slate-500 mb-1">{label}</div>
-      <div className="text-xl font-bold text-slate-900">{value}</div>
+    <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+      <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">{label}</div>
+      <div className="text-xl font-bold text-slate-900 dark:text-slate-100">{value}</div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 
 interface LinkedInDraft {
   id: string;
@@ -39,7 +39,6 @@ function reducer(state: State, action: Action): State {
 
 export function DraftQueue() {
   const [state, dispatch] = useReducer(reducer, { drafts: [], loading: true, error: null });
-  const fetched = useRef<boolean | null>(null);
 
   const fetchDrafts = useCallback(async () => {
     dispatch({ type: 'FETCH_START' });
@@ -53,10 +52,7 @@ export function DraftQueue() {
     }
   }, []);
 
-  if (fetched.current == null) {
-    fetched.current = true;
-    fetchDrafts();
-  }
+  useEffect(() => { void fetchDrafts(); }, [fetchDrafts]);
 
   const markPublished = async (id: string) => {
     try {
@@ -74,7 +70,7 @@ export function DraftQueue() {
   const pendingDrafts = state.drafts.filter((d) => d.status === 'draft');
 
   if (state.loading) {
-    return <div className="text-sm text-gray-500">Loading drafts...</div>;
+    return <div className="text-sm text-slate-500 dark:text-slate-400">Loading drafts...</div>;
   }
 
   if (pendingDrafts.length === 0) {
@@ -82,7 +78,7 @@ export function DraftQueue() {
   }
 
   return (
-    <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg p-4 space-y-3">
+    <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 space-y-3">
       <h3 className="font-medium text-amber-900 dark:text-amber-200">
         Pending Drafts ({pendingDrafts.length})
       </h3>
@@ -90,13 +86,13 @@ export function DraftQueue() {
         {pendingDrafts.map((draft) => (
           <div
             key={draft.id}
-            className="flex items-start justify-between gap-3 bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700"
+            className="flex items-start justify-between gap-3 bg-white dark:bg-slate-800 rounded-lg p-3 border border-slate-200 dark:border-slate-700"
           >
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
+              <p className="text-sm text-slate-700 dark:text-slate-300 line-clamp-2">
                 {draft.postText.slice(0, 150)}...
               </p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
                 {new Date(draft.createdAt).toLocaleDateString()}
               </p>
             </div>

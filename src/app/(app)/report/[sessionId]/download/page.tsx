@@ -113,17 +113,17 @@ export default function ReportDownloadPage() {
   }, [sessionId]);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center space-y-6">
-        <h1 className="text-xl font-bold text-slate-900">{APP.NAME}</h1>
+        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">{APP.NAME}</h1>
 
         {state === 'loading' && (
-          <p className="text-sm text-slate-500">Verifying report access...</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Verifying report access...</p>
         )}
 
         {state === 'ready' && (
           <div className="space-y-4">
-            <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
               <svg
                 className="w-8 h-8 text-emerald-600"
                 fill="none"
@@ -138,7 +138,7 @@ export default function ReportDownloadPage() {
                 />
               </svg>
             </div>
-            <p className="text-sm text-slate-600">Your report is ready.</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300">Your report is ready.</p>
             <button
               onClick={handleDownload}
               className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
@@ -149,12 +149,12 @@ export default function ReportDownloadPage() {
         )}
 
         {state === 'downloading' && (
-          <p className="text-sm text-slate-500">Downloading your report...</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Downloading your report...</p>
         )}
 
         {state === 'payment_required' && (
           <div className="space-y-4">
-            <p className="text-sm text-slate-600">Payment required to access the full report.</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300">Payment required to access the full report.</p>
             <a
               href={`/payment/${auditSessionId ?? sessionId}`}
               className="block w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
@@ -166,11 +166,11 @@ export default function ReportDownloadPage() {
 
         {state === 'pending_approval' && (
           <div className="space-y-3">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 dark:text-slate-300">
               Your enterprise report is pending approval. Our team will unlock it after your
               proposal is processed.
             </p>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-400 dark:text-slate-500">
               You will be notified when the report is ready for download.
             </p>
           </div>
@@ -178,7 +178,7 @@ export default function ReportDownloadPage() {
 
         {state === 'error' && (
           <div className="space-y-3">
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
             <button
               onClick={() => window.location.reload()}
               className="text-sm text-emerald-700 underline"

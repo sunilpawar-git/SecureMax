@@ -143,7 +143,7 @@ export const FOLLOWUP_STRINGS = {
   COL_FOLLOWUP_DUE: 'Follow-up Due',
   COL_ACTION: 'Action',
   EMAIL_CTA: 'Send Email',
-  WHATSAPP_CTA: 'WhatsApp',
+  WHATSAPP_CTA: 'WhatsApp (enter number manually)',
   EMPTY_STATE: 'No pending follow-ups',
   UNKNOWN_USER: 'Unknown',
   LOAD_ERROR: 'Failed to load follow-up list',

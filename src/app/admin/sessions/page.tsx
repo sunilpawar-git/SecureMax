@@ -26,12 +26,12 @@ export default function SessionsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-2xl font-bold text-slate-900">Sessions</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Sessions</h1>
         <div className="flex gap-3">
           <select
             value={data.statusFilter}
             onChange={(e) => data.setStatusFilter(e.target.value)}
-            className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-sm rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-800 dark:text-slate-100"
           >
             <option value="">All Statuses</option>
             {STATUSES.filter(Boolean).map((s) => (
@@ -43,7 +43,7 @@ export default function SessionsPage() {
           <select
             value={data.trackFilter}
             onChange={(e) => data.setTrackFilter(e.target.value)}
-            className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-sm rounded-md border border-slate-300 dark:border-slate-600 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-800 dark:text-slate-100"
           >
             <option value="">All Tracks</option>
             {TRACKS.filter(Boolean).map((t) => (
@@ -52,15 +52,15 @@ export default function SessionsPage() {
               </option>
             ))}
           </select>
-          <span className="text-sm text-slate-400 self-center">{data.total} sessions</span>
+          <span className="text-sm text-slate-400 dark:text-slate-500 self-center">{data.total} sessions</span>
         </div>
       </div>
 
       {data.error && (
-        <p className="text-sm text-red-600 bg-red-50 rounded-md px-4 py-2">{data.error}</p>
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-md px-4 py-2">{data.error}</p>
       )}
       {data.loading ? (
-        <p className="text-sm text-slate-400">Loading sessions...</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500">Loading sessions...</p>
       ) : (
         <SessionsTable sessions={data.sessions} onForceClose={setCloseTarget} />
       )}

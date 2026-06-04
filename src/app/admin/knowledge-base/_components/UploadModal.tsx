@@ -26,17 +26,22 @@ export function UploadModal({ open, onClose, onUpload, uploading }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
-        <h2 className="text-lg font-bold text-slate-900 mb-4">Upload CPP Document</h2>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dialog-title"
+        className="bg-white dark:bg-slate-800 rounded-xl shadow-xl p-6 w-full max-w-md"
+      >
+        <h2 id="dialog-title" className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">Upload CPP Document</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
               CPP Domain
             </label>
             <select
               value={domain}
               onChange={(e) => setDomain(e.target.value)}
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"
+              className="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 rounded-lg px-3 py-2 text-sm"
               required
             >
               <option value="">Select domain...</option>
@@ -48,7 +53,7 @@ export function UploadModal({ open, onClose, onUpload, uploading }: Props) {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
               Markdown File
             </label>
             <input
@@ -56,14 +61,14 @@ export function UploadModal({ open, onClose, onUpload, uploading }: Props) {
               type="file"
               accept=".md,.txt"
               required
-              className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200"
+              className="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-slate-100 dark:file:bg-slate-700 file:text-slate-700 dark:file:text-slate-200 hover:file:bg-slate-200 dark:hover:file:bg-slate-600"
             />
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg"
+              className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg"
             >
               Cancel
             </button>

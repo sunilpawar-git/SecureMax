@@ -25,16 +25,16 @@ export function ResumePrompt({ track, questionsAnswered, onResume, onRestart }: 
   };
 
   return (
-    <div className="min-h-[calc(100vh-3rem)] bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-sm border border-slate-200 p-8 space-y-6 text-center">
+    <div className="min-h-[calc(100vh-3rem)] bg-gray-50 dark:bg-slate-900 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 space-y-6 text-center">
         <span className={`inline-block text-xs font-medium px-3 py-1 rounded-full ${badgeClass}`}>
           {TRACK_LABEL[track] ?? track}
         </span>
 
-        <h2 className="text-xl font-bold text-slate-900">{RESUME.TITLE}</h2>
-        <p className="text-sm text-slate-600">{RESUME.DESCRIPTION}</p>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">{RESUME.TITLE}</h2>
+        <p className="text-sm text-slate-600 dark:text-slate-300">{RESUME.DESCRIPTION}</p>
 
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           {questionsAnswered} {RESUME.QUESTIONS_ANSWERED}
         </p>
 
@@ -47,7 +47,7 @@ export function ResumePrompt({ track, questionsAnswered, onResume, onRestart }: 
           </button>
           <button
             onClick={handleRestart}
-            className="w-full py-3 px-6 bg-white text-slate-600 border border-slate-300 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+            className="w-full py-3 px-6 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 rounded-lg font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
             {RESUME.RESTART_BTN}
           </button>

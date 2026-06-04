@@ -56,36 +56,39 @@ export function QuestionCard({ question, onSubmit, isLoading, questionNumber }: 
     (question.question_type !== 'text_input' && selectedOptions.length === 0);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-xs font-medium px-2 py-1 bg-emerald-50 text-emerald-700 rounded">
+        <span className="text-xs font-medium px-2 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded">
           {domainLabel}
         </span>
-        <span className="text-xs text-gray-400">Q{questionNumber}</span>
+        <span className="text-xs text-gray-400 dark:text-slate-500">Q{questionNumber}</span>
       </div>
 
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">{question.text}</h2>
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-6">{question.text}</h2>
 
       {question.question_type === 'text_input' ? (
         <textarea
           value={textInput}
           onChange={(e) => setTextInput(e.target.value)}
           placeholder="Type your answer..."
+          aria-label="Your answer"
           rows={3}
-          className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:ring-2
-            focus:ring-emerald-500 focus:border-transparent resize-none"
+          className="w-full border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-lg p-3 text-sm focus:ring-2
+            focus:ring-emerald-500 focus:border-transparent resize-none dark:placeholder-slate-500"
         />
       ) : (
         <div className="space-y-2">
           {question.options?.map((option) => (
             <button
               key={option}
+              type="button"
               onClick={() => handleOptionClick(option)}
+              aria-pressed={selectedOptions.includes(option)}
               className={`w-full text-left px-4 py-3 rounded-lg border text-sm transition-all
                 ${
                   selectedOptions.includes(option)
-                    ? 'border-emerald-600 bg-emerald-50 text-emerald-800 font-medium'
-                    : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 font-medium'
+                    : 'border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500 text-gray-700 dark:text-slate-200'
                 }`}
             >
               {option}
@@ -95,6 +98,7 @@ export function QuestionCard({ question, onSubmit, isLoading, questionNumber }: 
       )}
 
       <button
+        type="button"
         onClick={handleSubmit}
         disabled={isSubmitDisabled}
         className="mt-6 w-full py-3 bg-emerald-700 text-white rounded-lg font-medium

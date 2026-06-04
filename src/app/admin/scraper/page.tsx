@@ -19,7 +19,7 @@ export default function ScraperPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <h1 className="text-2xl font-bold text-slate-900">Scraper & Threat Intel</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Scraper & Threat Intel</h1>
         <div className="flex gap-3">
           <button
             onClick={() => setShowAddModal(true)}
@@ -38,7 +38,7 @@ export default function ScraperPage() {
       </div>
 
       {data.error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-800">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-sm text-red-800 dark:text-red-300">
           {data.error}
         </div>
       )}

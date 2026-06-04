@@ -37,25 +37,25 @@ export default function ConsentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+    <div className="min-h-[calc(100vh-3rem)] bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
       <div className="max-w-lg w-full space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-slate-900">{APP.NAME}</h1>
-          <p className="mt-1 text-sm text-slate-500">Data Privacy Consent</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{APP.NAME}</h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Data Privacy Consent</p>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 space-y-4">
-          <h2 className="font-semibold text-slate-900">Before we begin</h2>
-          <p className="text-xs text-slate-500">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 space-y-4">
+          <h2 className="font-semibold text-slate-900 dark:text-slate-100">Before we begin</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Purpose: {DPDPA.CONSENT_DESCRIPTION} (Consent {DPDPA.CONSENT_VERSION})
           </p>
 
-          <div className="space-y-3 text-sm text-slate-600 leading-relaxed">
+          <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
             <p>{TRUST_STACK.HNI_PRIVACY}</p>
 
-            <div className="rounded-lg bg-slate-50 p-4 space-y-2">
-              <p className="font-medium text-slate-700">How we use your data:</p>
-              <ul className="list-disc list-inside space-y-1 text-slate-600">
+            <div className="rounded-lg bg-slate-50 dark:bg-slate-700/50 p-4 space-y-2">
+              <p className="font-medium text-slate-700 dark:text-slate-200">How we use your data:</p>
+              <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-300">
                 <li>Your answers are encrypted at rest using AES-256-GCM</li>
                 <li>We generate a security audit report based on CPP Seven Precis methodology</li>
                 <li>Your data is never shared with third parties without explicit consent</li>
@@ -63,9 +63,9 @@ export default function ConsentPage() {
               </ul>
             </div>
 
-            <div className="rounded-lg bg-slate-50 p-4 space-y-2">
-              <p className="font-medium text-slate-700">Your rights under DPDPA:</p>
-              <ul className="list-disc list-inside space-y-1 text-slate-600">
+            <div className="rounded-lg bg-slate-50 dark:bg-slate-700/50 p-4 space-y-2">
+              <p className="font-medium text-slate-700 dark:text-slate-200">Your rights under DPDPA:</p>
+              <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-300">
                 <li>Right to access your personal data</li>
                 <li>Right to correction of inaccurate data</li>
                 <li>Right to erasure (soft-delete with anonymization)</li>
@@ -79,26 +79,26 @@ export default function ConsentPage() {
               type="checkbox"
               checked={agreed}
               onChange={(e) => setAgreed(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-emerald-700 focus:ring-emerald-600"
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-emerald-700 focus:ring-emerald-600"
             />
-            <span className="text-sm text-slate-700">
+            <span className="text-sm text-slate-700 dark:text-slate-200">
               I understand and consent to the processing of my data as described above, in
               accordance with the Digital Personal Data Protection Act, 2023.
             </span>
           </label>
 
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 dark:text-slate-500">
             Read our full{' '}
             <Link
               href={LEGAL_LINKS.PRIVACY.href}
-              className="text-emerald-700 hover:text-emerald-800 underline"
+              className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 underline"
             >
               {LEGAL_LINKS.PRIVACY.label}
             </Link>
             .
           </p>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
           <button
             onClick={handleConsent}
@@ -110,7 +110,7 @@ export default function ConsentPage() {
           </button>
         </div>
 
-        <p className="text-center text-xs text-slate-400">{TRUST_STACK.CREDENTIAL}</p>
+        <p className="text-center text-xs text-slate-400 dark:text-slate-500">{TRUST_STACK.CREDENTIAL}</p>
       </div>
     </div>
   );

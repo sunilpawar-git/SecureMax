@@ -102,18 +102,18 @@ export default function LinkedInPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
         LinkedIn Post Workflow
       </h1>
-      <p className="text-sm text-gray-500 dark:text-gray-400">
+      <p className="text-sm text-slate-500 dark:text-slate-400">
         Select threat intel articles, generate an AI-drafted post, then copy to LinkedIn.
       </p>
 
       <DraftQueue />
 
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3">
-          <h3 className="font-medium text-gray-900 dark:text-gray-100">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 space-y-3">
+          <h3 className="font-medium text-slate-900 dark:text-slate-100">
             1. Select Articles ({selectedIds.size} selected)
           </h3>
           <div className="max-h-96 overflow-y-auto space-y-2">
@@ -123,7 +123,7 @@ export default function LinkedInPage() {
                 className={`flex items-start gap-2 p-2 rounded cursor-pointer text-sm ${
                   selectedIds.has(a.id)
                     ? 'bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700'
-                    : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                    : 'hover:bg-slate-50 dark:hover:bg-slate-700'
                 }`}
               >
                 <input
@@ -133,7 +133,7 @@ export default function LinkedInPage() {
                   className="mt-0.5"
                 />
                 <div>
-                  <span className="font-medium text-gray-900 dark:text-gray-100">{a.title}</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-100">{a.title}</span>
                   <div className="flex gap-1 mt-1">
                     {(a.domain_tags ?? []).map((t) => (
                       <span
@@ -148,7 +148,7 @@ export default function LinkedInPage() {
               </label>
             ))}
             {articles.length === 0 && (
-              <p className="text-sm text-gray-400 dark:text-gray-500">
+              <p className="text-sm text-slate-400 dark:text-slate-500">
                 No articles yet. Run the scraper to populate threat intelligence.
               </p>
             )}
@@ -168,15 +168,15 @@ export default function LinkedInPage() {
           )}
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3">
-          <h3 className="font-medium text-gray-900 dark:text-gray-100">2. Review and Copy</h3>
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 space-y-3">
+          <h3 className="font-medium text-slate-900 dark:text-slate-100">2. Review and Copy</h3>
           <textarea
             value={draftPost}
             onChange={(e) => setDraftPost(e.target.value)}
             rows={10}
-            className="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm resize-none
-              bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100
-              placeholder-gray-400 dark:placeholder-gray-500"
+            className="w-full border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm resize-none
+              bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100
+              placeholder-slate-400 dark:placeholder-slate-500"
             placeholder={isGenerating ? 'Generating...' : 'AI-generated draft will appear here...'}
             disabled={isGenerating}
           />
@@ -192,7 +192,7 @@ export default function LinkedInPage() {
               ))}
             </div>
           )}
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span>{charCount > 0 ? `${charCount} / 1,300 chars` : ''}</span>
             {charCount > 1300 && (
               <span className="text-red-600 dark:text-red-400 font-medium">Over limit!</span>

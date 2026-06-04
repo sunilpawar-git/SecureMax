@@ -40,7 +40,10 @@ describe('Admin String Resources (SSOT)', () => {
     expect(types).toContain('email_sent');
     expect(types).toContain('threat_intel_added');
     expect(types).toContain('threat_intel_deleted');
-    expect(types.length).toBe(7);
+    expect(types).toContain('linkedin_draft_created');
+    expect(types).toContain('linkedin_post_status_changed');
+    expect(types).toContain('linkedin_post_copied');
+    expect(types.length).toBe(10);
   });
 
   it('defines all admin entity types', () => {
@@ -49,7 +52,8 @@ describe('Admin String Resources (SSOT)', () => {
     expect(types).toContain('session');
     expect(types).toContain('report');
     expect(types).toContain('threat_intel');
-    expect(types.length).toBe(4);
+    expect(types).toContain('linkedin_post');
+    expect(types.length).toBe(5);
   });
 
   it('defines all lead statuses with labels', () => {

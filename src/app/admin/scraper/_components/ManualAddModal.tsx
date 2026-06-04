@@ -47,15 +47,20 @@ export function ManualAddModal({ onAdd, onClose }: ManualAddModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">Add Manual Article</h2>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dialog-title"
+        className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-lg mx-4 p-6"
+      >
+        <h2 id="dialog-title" className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Add Manual Article</h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="text"
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full text-sm rounded-md border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full text-sm rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
             required
             maxLength={500}
           />
@@ -64,7 +69,7 @@ export function ManualAddModal({ onAdd, onClose }: ManualAddModalProps) {
             placeholder="https://..."
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="w-full text-sm rounded-md border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full text-sm rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
             required
             maxLength={2000}
           />
@@ -73,13 +78,13 @@ export function ManualAddModal({ onAdd, onClose }: ManualAddModalProps) {
             value={summary}
             onChange={(e) => setSummary(e.target.value)}
             rows={4}
-            className="w-full text-sm rounded-md border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full text-sm rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             required
             minLength={10}
             maxLength={5000}
           />
           <div>
-            <p className="text-xs font-medium text-slate-600 mb-1">
+            <p className="text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">
               CPP Domains (select at least 1)
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -91,7 +96,7 @@ export function ManualAddModal({ onAdd, onClose }: ManualAddModalProps) {
                   className={`text-xs px-2 py-1 rounded border transition-colors ${
                     selectedDomains.includes(code)
                       ? 'bg-indigo-600 text-white border-indigo-600'
-                      : 'bg-white text-slate-600 border-slate-300'
+                      : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
                   }`}
                 >
                   {code}
@@ -99,12 +104,12 @@ export function ManualAddModal({ onAdd, onClose }: ManualAddModalProps) {
               ))}
             </div>
           </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="text-sm px-4 py-2 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors"
+              className="text-sm px-4 py-2 rounded-md border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               Cancel
             </button>
