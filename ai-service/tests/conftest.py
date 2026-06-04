@@ -21,7 +21,7 @@ from db import get_db
 _settings = get_settings()
 # Use postgres superuser for test setup (local dev only)
 # App itself uses app_user role at runtime
-_DSN = "postgresql://postgres@localhost:5432/security_crawler"
+_DSN = "postgresql://postgres@localhost:5432/raivan_global"
 
 TEST_SCHEMA = "test_ai"
 
@@ -185,7 +185,10 @@ def _setup_test_schema():
     async def _setup():
         conn = await asyncpg.connect(_DSN)
         try:
-            # Execute the entire DDL script as a single transaction
+            # Drop and recreate the test schema so the DDL is always current.
+            # CREATE TABLE IF NOT EXISTS would silently skip column additions
+            # added since the schema was first created.
+            await conn.execute(f"DROP SCHEMA IF EXISTS {TEST_SCHEMA} CASCADE")
             await conn.execute(_DDL)
             # Verify the tables were created
             result = await conn.fetch(
