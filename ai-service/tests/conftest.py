@@ -7,8 +7,9 @@ via TRUNCATE after completion. TestClient creates per-request connections.
 import asyncio
 import os
 
-os.environ.setdefault("ALLOW_INSECURE_LOCAL", "true")
-os.environ.setdefault("DEV_BYPASS_SESSION_CHECK", "false")
+os.environ["ALLOW_INSECURE_LOCAL"] = "true"
+os.environ["DEV_BYPASS_SESSION_CHECK"] = "false"
+os.environ["AI_SERVICE_KEY"] = "test"
 
 import asyncpg
 import pytest
@@ -31,11 +32,19 @@ SET search_path TO {TEST_SCHEMA};
 
 DROP TABLE IF EXISTS {TEST_SCHEMA}.session_events CASCADE;
 DROP TABLE IF EXISTS {TEST_SCHEMA}.audit_sessions CASCADE;
+DROP TABLE IF EXISTS {TEST_SCHEMA}.users CASCADE;
 DROP TABLE IF EXISTS {TEST_SCHEMA}.cpp_chunks CASCADE;
+
+CREATE TABLE {TEST_SCHEMA}.users (
+    id TEXT PRIMARY KEY,
+    email TEXT NOT NULL DEFAULT 'test@example.com',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
 
 CREATE TABLE {TEST_SCHEMA}.audit_sessions (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL,
+    user_id TEXT NOT NULL REFERENCES {TEST_SCHEMA}.users(id) ON DELETE CASCADE,
     track TEXT NOT NULL DEFAULT 'hni',
     status TEXT NOT NULL DEFAULT 'in_progress',
     property_type TEXT,
@@ -191,6 +200,7 @@ def _cleanup_test_data():
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.threat_intel CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.session_events CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.audit_sessions CASCADE")
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.users CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.cpp_chunks CASCADE")
         finally:
             await conn.close()
@@ -247,6 +257,15 @@ def test_client():
     app.state.pool = _TestPool(_DSN, TEST_SCHEMA)
     app.dependency_overrides[get_db] = _override_get_db
     with TestClient(app, raise_server_exceptions=True) as client:
+        original_request = client.request
+
+        def _request_with_service_key(method, url, **kwargs):
+            headers = dict(kwargs.get("headers") or {})
+            headers.setdefault("X-Service-Key", os.environ["AI_SERVICE_KEY"])
+            kwargs["headers"] = headers
+            return original_request(method, url, **kwargs)
+
+        client.request = _request_with_service_key  # type: ignore[method-assign]
         yield client
     app.dependency_overrides.clear()
 
@@ -263,3 +282,14 @@ def db_conn():
 def run_db(coro):
     """Helper for sync tests to execute async repo operations."""
     return _run(coro)
+
+
+async def seed_test_user(conn: asyncpg.Connection, user_id: str) -> None:
+    """Insert a minimal user row — mirrors production FK on audit_sessions.user_id."""
+    sql = f"INSERT INTO {TEST_SCHEMA}.users (id, email) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING"  # noqa: S608
+    await conn.execute(sql, user_id, f"{user_id}@test.local")
+
+
+def ensure_test_user(db_conn: asyncpg.Connection, user_id: str) -> None:
+    """Sync helper — seed users row before inserting audit_sessions."""
+    run_db(seed_test_user(db_conn, user_id))

@@ -15,12 +15,13 @@ from report.schemas import (
     ReportData,
     ReportSection,
 )
-from tests.conftest import run_db
+from tests.conftest import ensure_test_user, run_db
 
 
 def _create_enterprise_session(db_conn) -> str:
     """Insert a completed enterprise audit session with events."""
     session_id = str(uuid.uuid4())
+    ensure_test_user(db_conn, "ent-user-1")
     run_db(
         db_conn.execute(
             """

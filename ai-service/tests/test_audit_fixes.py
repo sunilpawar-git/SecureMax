@@ -134,9 +134,10 @@ class TestStatusSummaryAuth:
     def test_status_wrong_user_gets_403(self, test_client, db_conn) -> None:
         import uuid
 
-        from tests.conftest import run_db
+        from tests.conftest import ensure_test_user, run_db
 
         sid = str(uuid.uuid4())
+        ensure_test_user(db_conn, "owner-user")
         run_db(
             db_conn.execute(
                 "INSERT INTO audit_sessions (id, user_id, track, status) "
@@ -162,9 +163,10 @@ class TestStatusSummaryAuth:
         import report_repository as rpt_repo
         from crypto import derive_key, encrypt_bytes
         from report.constants import REPORT_JOB_COMPLETED
-        from tests.conftest import run_db
+        from tests.conftest import ensure_test_user, run_db
 
         sid = str(uuid.uuid4())
+        ensure_test_user(db_conn, "owner-user")
         run_db(
             db_conn.execute(
                 "INSERT INTO audit_sessions (id, user_id, track, status) "

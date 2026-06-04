@@ -12,16 +12,29 @@ from fastapi import Request
 from config import Settings
 
 
-async def init_pool(settings: Settings) -> asyncpg.Pool:
-    """Create an asyncpg connection pool. Called once at app startup.
+def clean_database_dsn(raw_url: str) -> str:
+    """Return an asyncpg-compatible DSN.
 
-    Strips Prisma-only params (schema=) that asyncpg does not accept.
+    Strips Prisma-only query params (e.g. schema=) that asyncpg rejects.
     """
-    raw = settings.database_url.replace("+asyncpg", "")
-    parsed = urlparse(raw)
+    parsed = urlparse(raw_url.replace("+asyncpg", ""))
     params = {k: v for k, v in parse_qs(parsed.query).items() if k != "schema"}
     clean_query = urlencode({k: v[0] for k, v in params.items()})
-    dsn = urlunparse(parsed._replace(query=clean_query))
+    return urlunparse(parsed._replace(query=clean_query))
+
+
+def parse_database_name(raw_url: str) -> str:
+    """Extract the PostgreSQL database name from a DATABASE_URL."""
+    parsed = urlparse(raw_url.replace("+asyncpg", ""))
+    name = parsed.path.lstrip("/").split("?")[0]
+    if not name:
+        raise ValueError(f"Could not parse database name from URL: {raw_url!r}")
+    return name
+
+
+async def init_pool(settings: Settings) -> asyncpg.Pool:
+    """Create an asyncpg connection pool. Called once at app startup."""
+    dsn = clean_database_dsn(settings.database_url)
     return await asyncpg.create_pool(dsn, min_size=2, max_size=10)
 
 

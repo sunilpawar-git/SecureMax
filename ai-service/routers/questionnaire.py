@@ -19,6 +19,7 @@ from constants import (
     ERR_SESSION_ALREADY_COMPLETED,
     ERR_SESSION_ALREADY_EXISTS,
     ERR_SESSION_NOT_FOUND,
+    ERR_USER_NOT_FOUND,
     ERR_WRONG_QUESTION,
     SESSION_ABANDONED,
     SESSION_COMPLETED,
@@ -85,7 +86,17 @@ async def start_session(
     entry_id = get_entry_node_id(req.track)
     node_map = get_node_map(req.track)
 
-    session_id = await repo.create_session(conn, req.user_id, req.track)
+    try:
+        session_id = await repo.create_session(conn, req.user_id, req.track)
+    except asyncpg.ForeignKeyViolationError as exc:
+        if "user_id" in str(exc):
+            logger.error(
+                "User not found starting session (check DATABASE_URL): user=%s",
+                req.user_id[:12],
+            )
+            raise HTTPException(status_code=404, detail=ERR_USER_NOT_FOUND) from exc
+        raise
+
     await repo.set_current_node(conn, session_id, entry_id)
 
     return StartSessionResponse(

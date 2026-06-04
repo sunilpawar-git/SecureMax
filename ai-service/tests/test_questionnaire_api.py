@@ -1,10 +1,23 @@
 """Integration tests for questionnaire API endpoints — Phase 4."""
 
+import asyncpg
+
 import session_repository as repo
+from tests.conftest import _DSN, TEST_SCHEMA, run_db, seed_test_user
 
 
 def _start(test_client, user_id: str, track: str = "hni"):
     """Start a session with correct X-User-Id header (matches body user_id)."""
+
+    async def _seed():
+        conn = await asyncpg.connect(_DSN)
+        await conn.execute(f"SET search_path TO {TEST_SCHEMA}, public")
+        try:
+            await seed_test_user(conn, user_id)
+        finally:
+            await conn.close()
+
+    run_db(_seed())
     return test_client.post(
         "/questionnaire/start",
         json={"user_id": user_id, "track": track},
@@ -57,6 +70,16 @@ class TestStartSession:
             headers={"X-User-Id": "attacker"},
         )
         assert resp.status_code == 403
+
+    def test_start_unknown_user_returns_clear_error_not_500(self, test_client) -> None:
+        """Missing users row must fail loudly — not an opaque 500 (DB misconfiguration)."""
+        resp = test_client.post(
+            "/questionnaire/start",
+            json={"user_id": "ghost-user-no-row", "track": "hni"},
+            headers={"X-User-Id": "ghost-user-no-row"},
+        )
+        assert resp.status_code == 404
+        assert "same database" in resp.json()["detail"].lower()
 
 
 class TestSubmitAnswer:

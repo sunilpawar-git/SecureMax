@@ -3,15 +3,23 @@ Tests for session_repository — CRUD against a real test DB.
 Each test uses truncated tables for isolation.
 """
 
+import pytest
+
 import session_repository as repo
 from constants import SESSION_ABANDONED, SESSION_COMPLETED, SESSION_IN_PROGRESS
 from crypto import decrypt, derive_key, encrypt
-from tests.conftest import run_db
+from tests.conftest import ensure_test_user, run_db
 
 _TEST_ENC_KEY = derive_key("test-encryption-key-for-ci")
 _USER_A = "user-a-test"
 _USER_B = "user-b-test"
 _TRACK = "hni"
+
+
+@pytest.fixture(autouse=True)
+def _seed_repo_users(db_conn):
+    ensure_test_user(db_conn, _USER_A)
+    ensure_test_user(db_conn, _USER_B)
 
 
 class TestSessionCRUD:
