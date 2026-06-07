@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { APP, CTA, TRACK, TRUST_STACK } from '@/config/strings';
+import { APP, CTA, TRACK, TRUST_STACK, LANDING } from '@/config/strings';
 
 export function HeroSection() {
   return (
@@ -33,7 +33,7 @@ export function HeroSection() {
         </div>
 
         <p className="text-xs text-slate-400">
-          {TRUST_STACK.ESTIMATED_TIME} &middot; Free executive summary
+          {TRUST_STACK.ESTIMATED_TIME} &middot; {LANDING.HERO_FREE_SUMMARY}
         </p>
       </div>
     </section>

@@ -219,3 +219,43 @@ export const DPDPA = {
   CONSENT_DESCRIPTION:
     'Processing of personal data for AI-driven physical security audit, report generation, and threat intelligence enrichment under DPDPA 2023.',
 } as const;
+
+/** Landing-page section headings and inline copy (marketing sections). */
+export const LANDING = {
+  HERO_FREE_SUMMARY: 'Free executive summary',
+  HOW_IT_WORKS_TITLE: 'How It Works',
+  HOW_IT_WORKS_SUBTITLE_SUFFIX: 'to a complete security posture assessment',
+  TRUST_TITLE: 'Built on Trust',
+  CPP_DOMAINS_TITLE: 'Grounded in 7 CPP Security Domains',
+  SIGNAL_ENCRYPTION_TITLE: 'End-to-End Encryption',
+  SIGNAL_DATA_TITLE: 'India-Hosted Data',
+  SIGNAL_STANDARDS_TITLE: 'Standards-Based',
+  SIGNAL_VENDOR_TITLE: 'Non-Disruptive',
+} as const;
+
+/** "How It Works" four-step explainer (title + description per step). */
+export const LANDING_STEPS = [
+  {
+    step: '1',
+    title: 'Answer the Assessment',
+    description:
+      'AI-guided questionnaire based on CPP Seven Precis methodology. Takes about 12 minutes.',
+  },
+  {
+    step: '2',
+    title: 'Get Your Free Summary',
+    description:
+      'Instant executive summary with a security posture score and risk radar across 7 domains.',
+  },
+  {
+    step: '3',
+    title: 'Unlock Full Report',
+    description:
+      'Detailed findings, compliance gaps, remediation roadmap, and current threat intelligence.',
+  },
+  {
+    step: '4',
+    title: 'Book Physical Audit',
+    description: 'Priority access to on-site assessment by certified security professionals.',
+  },
+] as const;
