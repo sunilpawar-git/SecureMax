@@ -3,3 +3,40 @@
 @theme inline {
   --font-sans: var(--font-inter);
 }
+
+/* Question card entrance — CSS-only, no animation deps. */
+@keyframes question-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-question-in {
+  animation: question-slide-in 0.25s ease-out both;
+}
+
+/* Radar polygon morph — progressive enhancement (Chromium animates the `d`
+   property; other engines simply snap, which is fine). */
+.radar-polygon {
+  transition: d 0.4s ease-out;
+}
+
+/* Bottom CTA bar respects the iOS home-indicator inset. */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Accessibility: fully disable motion when the user asks for it (assertion #12). */
+@media (prefers-reduced-motion: reduce) {
+  .animate-question-in {
+    animation: none;
+  }
+  .radar-polygon {
+    transition: none;
+  }
+}

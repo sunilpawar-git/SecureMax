@@ -146,3 +146,36 @@ export const BADGE_STYLES = {
   slate: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200',
   amber: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
 } as const;
+
+/**
+ * Questionnaire question-card tokens (question-card.tsx). `option.base` is
+ * color-free layout (52px touch target per WCAG 2.5.5); `selected`/`unselected`
+ * carry AA-verified pairs in both modes. Kept here so the card holds no inline
+ * color blobs (SSOT/DRY).
+ */
+export const QUESTION_STYLES = {
+  option: {
+    base: 'w-full text-left px-4 min-h-[52px] flex items-center gap-2 rounded-lg border text-sm transition-colors',
+    selected:
+      'border-emerald-600 bg-emerald-50 text-emerald-800 font-medium ' +
+      'dark:border-emerald-500 dark:bg-emerald-900/30 dark:text-emerald-300',
+    unselected:
+      'border-slate-200 text-slate-700 hover:border-slate-300 ' +
+      'dark:border-slate-600 dark:text-slate-200 dark:hover:border-slate-500',
+  },
+  textarea:
+    'w-full rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-900 ' +
+    'focus:border-transparent focus:ring-2 focus:ring-emerald-500 resize-none ' +
+    'dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500',
+  meta: 'text-xs text-slate-400 dark:text-slate-500',
+  question: 'text-lg font-semibold text-slate-900 dark:text-slate-100',
+  /**
+   * Mobile fixed CTA bar surface for choice questions (assertion #11). On
+   * desktop (md+) it collapses to a transparent inline footer so the Continue
+   * button flows under the card.
+   */
+  ctaBar:
+    'fixed inset-x-0 bottom-0 z-10 border-t border-slate-200 bg-white/95 p-4 pb-safe ' +
+    'backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 ' +
+    'md:static md:z-auto md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none md:dark:bg-transparent',
+} as const;

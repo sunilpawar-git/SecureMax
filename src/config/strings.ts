@@ -175,6 +175,29 @@ export const QUESTIONNAIRE = {
   VIEW_REPORT_STATUS: 'View Report Status',
   SECURITY_SCORE: 'Security Score',
   RESUME_EXISTING: 'Resume existing session',
+  QUESTION_LABEL: 'Question',
+  ANSWERED_PREFIX: 'You answered',
+  ANSWERED_SUFFIX: 'questions.',
+  TRUST_SIGNAL: 'Encrypted end-to-end. Grounded in CPP Seven Precis.',
+  SCORE_OUT_OF: '/ 100',
+  RADAR_ARIA: 'Live security posture across the seven CPP domains',
+} as const;
+
+/** Question-card copy and accessibility labels (questionnaire active state). */
+export const QUESTION_CARD = {
+  CONTINUE: 'Continue',
+  PROCESSING: 'Processing...',
+  TEXT_PLACEHOLDER: 'Type your answer...',
+  TEXT_ARIA: 'Your answer',
+  QUESTION_PREFIX: 'Q',
+  OPTIONS_ARIA: 'Answer options',
+} as const;
+
+/** Mobile navigation drawer labels (presentational MobileNavDrawer). */
+export const NAV_DRAWER = {
+  ARIA_LABEL: 'Navigation menu',
+  OPEN: 'Open menu',
+  CLOSE: 'Close menu',
 } as const;
 
 export const SESSION_STATUS_LABEL: Record<string, string> = {

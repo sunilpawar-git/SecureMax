@@ -1,7 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { CPP_DOMAINS } from '@/config/strings';
+import { CheckIcon } from '@heroicons/react/24/outline';
+import { CPP_DOMAINS, QUESTION_CARD } from '@/config/strings';
+import { QUESTION_STYLES } from '@/config/colors';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+import { cx } from '@/lib/utils';
 import type { QuestionNode } from './types';
 
 const DOMAIN_NAME_MAP: Record<string, string> = Object.fromEntries(
@@ -20,9 +25,12 @@ export function QuestionCard({ question, onSubmit, isLoading, questionNumber }: 
   const [textInput, setTextInput] = useState('');
 
   const domainLabel = DOMAIN_NAME_MAP[question.domain] || question.domain;
+  const isText = question.question_type === 'text_input';
+  const isMulti = question.question_type === 'multi_choice';
+  const isSingle = !isText && !isMulti;
 
   const handleOptionClick = (option: string) => {
-    if (question.question_type === 'multi_choice') {
+    if (isMulti) {
       setSelectedOptions((prev) =>
         prev.includes(option) ? prev.filter((o) => o !== option) : [...prev, option],
       );
@@ -32,82 +40,103 @@ export function QuestionCard({ question, onSubmit, isLoading, questionNumber }: 
   };
 
   const handleSubmit = () => {
-    if (question.question_type === 'text_input') {
+    if (isText) {
       if (textInput.trim()) {
         onSubmit(textInput.trim());
         setTextInput('');
       }
-    } else if (question.question_type === 'multi_choice') {
-      if (selectedOptions.length > 0) {
-        onSubmit(selectedOptions);
-        setSelectedOptions([]);
-      }
-    } else {
-      if (selectedOptions.length === 1) {
-        onSubmit(selectedOptions[0]);
-        setSelectedOptions([]);
-      }
+    } else if (selectedOptions.length > 0) {
+      onSubmit(isMulti ? selectedOptions : selectedOptions[0]);
+      setSelectedOptions([]);
     }
   };
 
   const isSubmitDisabled =
-    isLoading ||
-    (question.question_type === 'text_input' && !textInput.trim()) ||
-    (question.question_type !== 'text_input' && selectedOptions.length === 0);
+    isLoading || (isText && !textInput.trim()) || (!isText && selectedOptions.length === 0);
+
+  // Enter submits a valid choice answer. Captured so it runs before the focused
+  // option button's default Enter activation (which would toggle the selection).
+  // Skipped for text_input so Enter inserts a newline in the textarea.
+  const handleKeyDownCapture = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Enter' || isText || isSubmitDisabled) return;
+    e.preventDefault();
+    handleSubmit();
+  };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
+    <div
+      data-testid="question-card"
+      onKeyDownCapture={handleKeyDownCapture}
+      className={cx(
+        'animate-question-in bg-white dark:bg-slate-800 rounded-xl shadow-sm',
+        'border border-gray-100 dark:border-slate-700 p-6',
+        !isText && 'pb-24 md:pb-6',
+      )}
+    >
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-xs font-medium px-2 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 rounded">
-          {domainLabel}
+        <Badge variant="emerald">{domainLabel}</Badge>
+        <span className={QUESTION_STYLES.meta}>
+          {QUESTION_CARD.QUESTION_PREFIX}
+          {questionNumber}
         </span>
-        <span className="text-xs text-gray-400 dark:text-slate-500">Q{questionNumber}</span>
       </div>
 
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-6">
+      <h2 className={cx(QUESTION_STYLES.question, 'mb-6')} aria-live="polite">
         {question.text}
       </h2>
 
-      {question.question_type === 'text_input' ? (
+      {isText ? (
         <textarea
           value={textInput}
           onChange={(e) => setTextInput(e.target.value)}
-          placeholder="Type your answer..."
-          aria-label="Your answer"
+          placeholder={QUESTION_CARD.TEXT_PLACEHOLDER}
+          aria-label={QUESTION_CARD.TEXT_ARIA}
           rows={3}
-          className="w-full border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-lg p-3 text-sm focus:ring-2
-            focus:ring-emerald-500 focus:border-transparent resize-none dark:placeholder-slate-500"
+          className={QUESTION_STYLES.textarea}
         />
       ) : (
-        <div className="space-y-2">
-          {question.options?.map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => handleOptionClick(option)}
-              aria-pressed={selectedOptions.includes(option)}
-              className={`w-full text-left px-4 py-3 rounded-lg border text-sm transition-all
-                ${
-                  selectedOptions.includes(option)
-                    ? 'border-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 font-medium'
-                    : 'border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500 text-gray-700 dark:text-slate-200'
-                }`}
-            >
-              {option}
-            </button>
-          ))}
+        <div
+          role={isSingle ? 'radiogroup' : 'group'}
+          aria-label={QUESTION_CARD.OPTIONS_ARIA}
+          className="space-y-2"
+        >
+          {question.options?.map((option) => {
+            const selected = selectedOptions.includes(option);
+            return (
+              <button
+                key={option}
+                type="button"
+                data-testid="question-option"
+                onClick={() => handleOptionClick(option)}
+                role={isSingle ? 'radio' : undefined}
+                aria-checked={isSingle ? selected : undefined}
+                aria-pressed={isMulti ? selected : undefined}
+                className={cx(
+                  QUESTION_STYLES.option.base,
+                  selected ? QUESTION_STYLES.option.selected : QUESTION_STYLES.option.unselected,
+                )}
+              >
+                {selected && <CheckIcon className="h-4 w-4 shrink-0" aria-hidden="true" />}
+                <span>{option}</span>
+              </button>
+            );
+          })}
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={handleSubmit}
-        disabled={isSubmitDisabled}
-        className="mt-6 w-full py-3 bg-emerald-700 text-white rounded-lg font-medium
-          hover:bg-emerald-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isLoading ? 'Processing...' : 'Continue'}
-      </button>
+      <div className={isText ? 'mt-6' : QUESTION_STYLES.ctaBar}>
+        <Button
+          type="button"
+          data-testid="question-continue"
+          onClick={handleSubmit}
+          disabled={isSubmitDisabled}
+          loading={isLoading}
+          size="lg"
+          className="w-full"
+        >
+          {isLoading ? QUESTION_CARD.PROCESSING : QUESTION_CARD.CONTINUE}
+        </Button>
+      </div>
     </div>
   );
 }
