@@ -19,7 +19,6 @@ from fastapi import (
     status,
 )
 from fastapi.responses import Response
-from pydantic import BaseModel
 
 import report_repository as rpt_repo
 import session_repository as repo
@@ -46,34 +45,19 @@ from report.constants import (
     REPORT_JOB_PENDING,
     REPORT_JOB_PROCESSING,
 )
-from report.schemas import ReportData
+from report.schemas import (
+    AdminRegenerateRequest,
+    GenerateReportRequest,
+    GenerateReportResponse,
+    ReportData,
+    ReportStatusResponse,
+)
 
 _settings = get_settings()
 _enc_key = derive_key(_settings.encryption_key) if _settings.encryption_key else None
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/report", tags=["report"])
-
-
-class GenerateReportRequest(BaseModel):
-    session_id: str
-
-
-class GenerateReportResponse(BaseModel):
-    report_id: str
-    status: str
-
-
-class ReportStatusResponse(BaseModel):
-    report_id: str
-    session_id: str = ""  # audit session CUID — needed for payment URL
-    status: str
-    progress: int = 0
-    downloadable: bool = False
-
-
-class AdminRegenerateRequest(BaseModel):
-    session_id: str
 
 
 def _is_report_unlocked(session: dict) -> bool:

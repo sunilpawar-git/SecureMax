@@ -97,3 +97,32 @@ class ComplianceMapping(BaseModel):
     iso_clause: str
     psara_section: str
     remediation_owner_role: str
+
+
+class GenerateReportRequest(BaseModel):
+    """Request to initiate report generation."""
+
+    session_id: str
+
+
+class GenerateReportResponse(BaseModel):
+    """Response after initiating report generation."""
+
+    report_id: str
+    status: str
+
+
+class ReportStatusResponse(BaseModel):
+    """Status of a report job."""
+
+    report_id: str
+    session_id: str = ""
+    status: str
+    progress: int = 0
+    downloadable: bool = False
+
+
+class AdminRegenerateRequest(BaseModel):
+    """Admin request to regenerate a report."""
+
+    session_id: str
