@@ -117,7 +117,9 @@ async def _threat_intel_semantic(
         embedding_str,
         max_articles,
     )
-    return list(rows) if rows else None
+    # Return the list even if empty — an empty result from a successful semantic
+    # search is valid; only return None to signal that the caller should fall back.
+    return list(rows)
 
 
 async def _threat_intel_tag_fallback(
@@ -132,13 +134,18 @@ async def _threat_intel_tag_fallback(
     params: list[Any] = [domains, max_articles]
     if city or country:
         location_terms = [t for t in (city, country) if t]
+        # Derive positional param indices dynamically so this is resilient
+        # to future changes in the number of preceding params.
+        location_clauses = []
+        for term in location_terms:
+            idx = len(params) + 1  # 1-indexed for asyncpg
+            params.append(term)
+            location_clauses.append(
+                f"(summary ILIKE '%' || ${idx} || '%' OR title ILIKE '%' || ${idx} || '%')"
+            )
         location_clause = (
-            ", CASE WHEN " + " OR ".join(
-                f"(summary ILIKE '%' || ${i+3} || '%' OR title ILIKE '%' || ${i+3} || '%')"
-                for i, _ in enumerate(location_terms)
-            ) + " THEN 0 ELSE 1 END AS location_rank"
+            ", CASE WHEN " + " OR ".join(location_clauses) + " THEN 0 ELSE 1 END AS location_rank"
         )
-        params.extend(location_terms)
 
     order_clause = "location_rank, scraped_at DESC" if location_clause else "scraped_at DESC"
 

@@ -137,9 +137,14 @@ nodes:
   # ===== CPP-01: Physical Security =====
   - id: ent_cpp01_perimeter
     domain: CPP-01
-    text: 'What is the total perimeter length and how many entry/exit points exist?'
-    question_type: text_input
+    text: 'How would you describe the current state of your facility perimeter security?'
+    question_type: single_choice
     cpp_domain_tag: CPP-01
+    options:
+      - 'Fully fenced with monitored access points'
+      - 'Partially fenced — some gaps exist'
+      - 'Unfenced or open boundary'
+      - 'No formal perimeter controls'
     edges:
       - target: ent_cpp01_cctv_sop
         condition: any

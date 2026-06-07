@@ -86,9 +86,16 @@ async def render_pdf(
     report: ReportData,
     *,
     branding: dict | None = None,
+    section_mode: str = "complete",
 ) -> bytes:
-    """Render ReportData → HTML → PDF bytes via Playwright."""
-    html = await asyncio.to_thread(render_html, report, branding=branding)
+    """Render ReportData → HTML → PDF bytes via Playwright.
+
+    Args:
+        section_mode: "complete" (default), "executive", or "technical".
+    """
+    html = await asyncio.to_thread(
+        render_html, report, branding=branding, section_mode=section_mode
+    )
 
     async with async_playwright() as pw:
         browser = await pw.chromium.launch(headless=True)

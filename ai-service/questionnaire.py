@@ -1,8 +1,14 @@
 """
 Questionnaire engine — graph traversal with optional AI branching.
 Drives question flow based on YAML graph + Gemini Flash for conditional decisions.
+
+Cache behaviour: graphs are loaded once per process and cached in memory.
+If the YAML files are updated (e.g., after reseeding), a server restart is required
+to pick up the changes. The loader logs a WARNING when the on-disk version differs
+from the cached version so ops can detect stale caches without examining logs manually.
 """
 
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -11,18 +17,45 @@ import yaml
 from config import TRACK_HNI
 from models import QuestionNode
 
+logger = logging.getLogger(__name__)
+
 GRAPH_DIR = Path(__file__).resolve().parent.parent / "question-graph"
 
 _graph_cache: dict[str, dict[str, Any]] = {}
 
 
-def load_graph_for_track(track: str) -> dict[str, Any]:
-    """Load and cache graph for a given track."""
-    if track in _graph_cache:
-        return _graph_cache[track]
+def _read_yaml_version(filepath: Path) -> str | None:
+    """Read only the metadata.version from a graph YAML without caching."""
+    try:
+        with open(filepath) as f:
+            data = yaml.safe_load(f)
+        return str(data["metadata"]["version"]) if "version" in data.get("metadata", {}) else None
+    except Exception:
+        return None
 
+
+def load_graph_for_track(track: str) -> dict[str, Any]:
+    """Load and cache graph for a given track.
+
+    On cache hit, checks whether the on-disk version matches the cached version
+    and emits a WARNING if they differ — a restart is needed to pick up changes.
+    """
     filename = "hni.yaml" if track == TRACK_HNI else "enterprise.yaml"
     filepath = GRAPH_DIR / filename
+
+    if track in _graph_cache:
+        cached_version = _graph_cache[track].get("metadata", {}).get("version")
+        disk_version = _read_yaml_version(filepath)
+        if disk_version is not None and str(cached_version) != str(disk_version):
+            logger.warning(
+                "Graph cache version mismatch for track '%s': cached=%s, on-disk=%s. "
+                "A server restart is required to load the updated graph.",
+                track,
+                cached_version,
+                disk_version,
+            )
+        return _graph_cache[track]
+
     try:
         with open(filepath) as f:
             graph = yaml.safe_load(f)

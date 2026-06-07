@@ -36,7 +36,7 @@ CPP-01:
     severity_override: high
     risk_impact: "Uncontrolled visitor and delivery access bypasses all perimeter security investments"
   ent_cpp01_perimeter:
-    negative_patterns: ["no", "no perimeter", "unfenced", "partial only"]
+    negative_patterns: ["Unfenced or open boundary", "No formal perimeter controls"]
     severity_override: critical
     risk_impact: "Facility perimeter unsecured — unrestricted physical access to building exterior"
   ent_cpp01_cctv_sop:

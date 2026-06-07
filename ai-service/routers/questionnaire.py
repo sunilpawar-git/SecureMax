@@ -10,7 +10,7 @@ import asyncpg
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 
 import session_repository as repo
-from branching import determine_next_node_with_ai
+from branching import BranchResult, determine_next_node_with_ai
 from config import Settings, get_settings
 from constants import (
     ERR_ACCESS_DENIED,
@@ -249,7 +249,7 @@ def _decrypt_context_events(
     for ev in raw_events:
         try:
             answer = decrypt(ev["answer_encrypted"], enc_key)
-        except (ValueError, Exception):
+        except Exception:
             answer = ""
         node = node_map.get(ev["question_node_id"], {})
         result.append(
@@ -280,7 +280,7 @@ async def _safe_retrieve_cpp(
 async def _build_answer_response(
     conn: asyncpg.Connection,
     session_id: str,
-    branch,
+    branch: BranchResult,
     node_map: dict,
     enc_key: bytes,
     citations: list[str],

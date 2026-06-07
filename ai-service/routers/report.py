@@ -14,6 +14,7 @@ from fastapi import (
     Depends,
     Header,
     HTTPException,
+    Query,
     Request,
     status,
 )
@@ -39,11 +40,13 @@ from report.background import (
     build_report_events,
     generate_report_background,
 )
+from report.checklist import generate_checklist
 from report.constants import (
     REPORT_JOB_COMPLETED,
     REPORT_JOB_PENDING,
     REPORT_JOB_PROCESSING,
 )
+from report.schemas import ReportData
 
 _settings = get_settings()
 _enc_key = derive_key(_settings.encryption_key) if _settings.encryption_key else None
@@ -215,10 +218,15 @@ async def get_free_summary(
 @router.get("/{report_id}/full")
 async def get_full_report(
     report_id: str,
+    mode: str = Query(default="complete", pattern="^(complete|executive|technical)$"),
     x_user_id: str | None = Header(None),
     conn: asyncpg.Connection = Depends(get_db),  # noqa: B008
 ) -> Response:
-    """Full paid report — decrypts and streams the PDF. Gated on DB payment flag."""
+    """Full paid report — decrypts and streams the PDF. Gated on DB payment flag.
+
+    mode: "complete" (default) returns stored PDF; "executive" or "technical"
+    re-renders on the fly using the stored findings_json.
+    """
     if not x_user_id:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=ERR_ACCESS_DENIED)
     if not _enc_key:
@@ -236,17 +244,29 @@ async def get_full_report(
     artifact = await rpt_repo.get_artifact_by_session(conn, job["session_id"])
     if not artifact:
         raise HTTPException(status_code=404, detail=ERR_REPORT_NOT_FOUND)
-    if not artifact.get("pdf_encrypted"):
-        raise HTTPException(status_code=404, detail="PDF not available for this report")
-    pdf_bytes = decrypt_bytes(bytes(artifact["pdf_encrypted"]), _enc_key)
 
-    # Validate PDF magic bytes before serving — catches encryption key mismatch or corruption
-    if pdf_bytes[:4] != b"%PDF":
-        logger.error(
-            "Decrypted artifact for session %s does not start with %%PDF — likely key mismatch",
-            job["session_id"][:8],
-        )
-        raise HTTPException(status_code=500, detail="PDF data is corrupt. Please contact support.")
+    if mode in ("executive", "technical"):
+        # Re-render from stored findings_json without launching a full generation run.
+        if not artifact.get("findings_json"):
+            raise HTTPException(status_code=404, detail="Report data not available for re-render")
+        from report.renderer import render_pdf  # noqa: PLC0415 (avoid circular at module level)
+
+        report_data = ReportData.model_validate(json.loads(artifact["findings_json"]))
+        pdf_bytes = await render_pdf(report_data, section_mode=mode)
+    else:
+        if not artifact.get("pdf_encrypted"):
+            raise HTTPException(status_code=404, detail="PDF not available for this report")
+        pdf_bytes = decrypt_bytes(bytes(artifact["pdf_encrypted"]), _enc_key)
+
+        # Validate PDF magic bytes before serving — catches encryption key mismatch or corruption
+        if pdf_bytes[:4] != b"%PDF":
+            logger.error(
+                "Decrypted artifact for session %s does not start with %%PDF — likely key mismatch",
+                job["session_id"][:8],
+            )
+            raise HTTPException(
+                status_code=500, detail="PDF data is corrupt. Please contact support."
+            )
 
     return Response(
         content=pdf_bytes,
@@ -275,8 +295,6 @@ async def get_checklist(
     artifact = await rpt_repo.get_artifact_by_session(conn, job["session_id"])
     if not artifact:
         raise HTTPException(status_code=404, detail=ERR_REPORT_NOT_FOUND)
-
-    from report.checklist import generate_checklist
 
     full = json.loads(artifact["findings_json"])
     findings = full.get("findings", [])

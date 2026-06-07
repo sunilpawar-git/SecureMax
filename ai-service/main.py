@@ -86,8 +86,9 @@ async def lifespan(app: FastAPI):
                     articles, gemini=gemini
                 )
                 await conn.execute(
-                    """INSERT INTO "LinkedinPost" (id, content, status, "createdAt")
-                    VALUES (gen_random_uuid(), $1, 'draft', NOW())""",
+                    """INSERT INTO linkedin_posts
+                       (id, draft_text, status, platform, created_at, updated_at)
+                       VALUES (gen_random_uuid(), $1, 'draft', 'linkedin', NOW(), NOW())""",
                     briefing_text,
                 )
             logger.info("Weekly LinkedIn briefing drafted (%d chars)", len(briefing_text))

@@ -4,6 +4,7 @@ Converts session findings into actionable checklist items grouped by CPP domain.
 Pure function — no side effects, no DB calls.
 """
 
+import hashlib
 from dataclasses import asdict, dataclass
 
 _SEVERITY_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
@@ -24,10 +25,12 @@ def generate_checklist(findings: list[dict]) -> list[dict]:
 
     Only high/critical findings produce checklist items.
     Items are sorted by severity (critical first), then by domain.
+    IDs are stable — derived from domain + question text so they survive
+    report regeneration and can be reliably matched against localStorage.
     Returns list of dicts (serialisable for JSON API response).
     """
     items: list[ChecklistItem] = []
-    for i, finding in enumerate(findings):
+    for finding in findings:
         severity = finding.get("severity", "low").lower()
         if severity not in ("critical", "high"):
             continue
@@ -35,12 +38,13 @@ def generate_checklist(findings: list[dict]) -> list[dict]:
         domain = finding.get("domain", "Unknown")
         question = finding.get("question", "")
         risk_impact = finding.get("risk_impact", "")
-        action = _derive_action(question, risk_impact, finding.get("answer", ""))
+        action = _derive_action(question, risk_impact)
         reference = _build_reference(finding)
+        stable_id = _stable_id(domain, question)
 
         items.append(
             ChecklistItem(
-                id=f"chk_{i:03d}_{domain.lower().replace('-', '')}",
+                id=stable_id,
                 domain=domain,
                 severity=severity,
                 action=action,
@@ -52,7 +56,17 @@ def generate_checklist(findings: list[dict]) -> list[dict]:
     return [asdict(item) for item in items]
 
 
-def _derive_action(question: str, risk_impact: str, answer: str) -> str:
+def _stable_id(domain: str, question: str) -> str:
+    """Derive a stable 8-char hex ID from domain + question text.
+
+    Stable across report regenerations — allows localStorage progress keys
+    to remain valid when a report is rebuilt without changing questions.
+    """
+    raw = f"{domain}:{question}".encode()
+    return "chk_" + hashlib.sha256(raw).hexdigest()[:8]
+
+
+def _derive_action(question: str, risk_impact: str) -> str:
     """Create an actionable checklist instruction from the finding context."""
     if risk_impact:
         return f"VERIFY: {risk_impact.rstrip('.')}"

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { APP } from '@/config/strings';
+import { ChecklistDownload } from './_components/ChecklistDownload';
 
 type DownloadState =
   | 'loading'
@@ -171,6 +172,7 @@ export default function ReportDownloadPage() {
             >
               Download PDF Report
             </button>
+            <ChecklistDownload sessionId={sessionId} reportId={sessionId} />
           </div>
         )}
 

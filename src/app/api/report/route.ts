@@ -1,7 +1,8 @@
 /**
  * Report API routes — proxies to FastAPI AI service.
  * POST /api/report?action=generate
- * GET /api/report?action=status|summary|full&report_id=X
+ * GET /api/report?action=status|summary|full|checklist&report_id=X
+ * GET /api/report?action=full&report_id=X&mode=executive|technical|complete
  */
 
 import { NextRequest } from 'next/server';
@@ -98,15 +99,21 @@ export async function GET(request: NextRequest) {
         return apiSuccess(redactFindings(result));
       }
       case 'full': {
+        const mode = request.nextUrl.searchParams.get('mode') ?? 'complete';
         const AI_SERVICE_URL = env.AI_SERVICE_URL || 'http://localhost:8000';
         const AI_SERVICE_KEY = env.AI_SERVICE_KEY;
-        const pdfRes = await fetch(`${AI_SERVICE_URL}/report/${reportId}/full`, {
-          method: 'GET',
-          headers: {
-            'X-Service-Key': AI_SERVICE_KEY,
-            'X-User-Id': session.user.id,
+        const modeParam =
+          mode === 'executive' || mode === 'technical' ? `?mode=${mode}` : '';
+        const pdfRes = await fetch(
+          `${AI_SERVICE_URL}/report/${reportId}/full${modeParam}`,
+          {
+            method: 'GET',
+            headers: {
+              'X-Service-Key': AI_SERVICE_KEY,
+              'X-User-Id': session.user.id,
+            },
           },
-        });
+        );
         if (!pdfRes.ok) {
           return apiError('Failed to retrieve report', pdfRes.status);
         }
@@ -120,8 +127,15 @@ export async function GET(request: NextRequest) {
           },
         });
       }
+      case 'checklist': {
+        const result = await aiServiceFetch(`/report/${reportId}/checklist`, {
+          method: 'GET',
+          userId: session.user.id,
+        });
+        return apiSuccess(result);
+      }
       default:
-        return apiError('Invalid action. Use: status, summary, full');
+        return apiError('Invalid action. Use: status, summary, full, checklist');
     }
   } catch (error) {
     if (error instanceof AIServiceError) {

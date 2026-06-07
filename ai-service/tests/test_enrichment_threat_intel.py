@@ -1,9 +1,10 @@
 """Tests for threat intelligence enrichment — domain-filtered, source-cited."""
 
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from config import Settings
 from report.enrichment import enrich_findings_with_threat_intel
 
 
@@ -11,6 +12,22 @@ from report.enrichment import enrich_findings_with_threat_intel
 def mock_conn():
     conn = AsyncMock()
     return conn
+
+
+@pytest.fixture()
+def mock_gemini():
+    """Mock GeminiClient that returns a dummy 3072-dim embedding."""
+    client = MagicMock()
+    client.embed = AsyncMock(return_value=[0.1] * 3072)
+    return client
+
+
+@pytest.fixture()
+def mock_settings():
+    """Minimal Settings-like object for the semantic path."""
+    s = MagicMock(spec=Settings)
+    s.embedding_model = "text-embedding-004"
+    return s
 
 
 class TestThreatIntelEnrichment:
@@ -103,3 +120,71 @@ class TestThreatIntelEnrichment:
         call_args = mock_conn.fetch.call_args
         domains_param = call_args[0][1]
         assert sorted(domains_param) == ["CPP-01", "CPP-03"]
+
+
+class TestThreatIntelSemanticPath:
+    """Tests for the pgvector semantic search path (gemini + settings provided)."""
+
+    @pytest.mark.asyncio
+    async def test_semantic_path_runs_vector_query(
+        self, mock_conn, mock_gemini, mock_settings
+    ) -> None:
+        """When gemini is provided, the semantic path fires and uses <=> cosine operator."""
+        from datetime import UTC, datetime
+
+        scraped = datetime(2024, 1, 1, tzinfo=UTC)
+        mock_conn.fetch.return_value = [
+            {
+                "id": "s-1",
+                "title": "Semantic result",
+                "url": "https://example.com/s",
+                "summary": "Found via vector search",
+                "domain_tags": '["CPP-01"]',
+                "source": "Reuters",
+                "scraped_at": scraped,
+            }
+        ]
+        findings = [{"domain": "CPP-01", "question": "perimeter check", "answer": "none"}]
+        result = await enrich_findings_with_threat_intel(
+            findings, mock_conn, gemini=mock_gemini, settings=mock_settings
+        )
+
+        mock_gemini.embed.assert_called_once()
+        sql = mock_conn.fetch.call_args[0][0]
+        assert "<=>" in sql, "Semantic path must use pgvector cosine operator"
+        assert len(result) == 1
+        assert result[0]["title"] == "Semantic result"
+
+    @pytest.mark.asyncio
+    async def test_semantic_empty_result_does_not_trigger_fallback(
+        self, mock_conn, mock_gemini, mock_settings
+    ) -> None:
+        """Empty semantic result is a valid response — tag fallback must NOT run."""
+        mock_conn.fetch.return_value = []  # pgvector finds nothing
+        findings = [{"domain": "CPP-02", "question": "leadership", "answer": "weak"}]
+        result = await enrich_findings_with_threat_intel(
+            findings, mock_conn, gemini=mock_gemini, settings=mock_settings
+        )
+
+        # fetch called exactly once for the semantic query; tag fallback adds a second call
+        assert mock_conn.fetch.call_count == 1, (
+            "Tag fallback must not run when semantic search succeeds with empty results"
+        )
+        assert result == []
+
+    @pytest.mark.asyncio
+    async def test_semantic_embedding_failure_falls_back_to_tags(
+        self, mock_conn, mock_gemini, mock_settings
+    ) -> None:
+        """When Gemini embedding raises, we fall back to tag-based search."""
+        from gemini_client import GeminiError
+
+        mock_gemini.embed = AsyncMock(side_effect=GeminiError("rate limit"))
+        mock_conn.fetch.return_value = []
+        findings = [{"domain": "CPP-01"}]
+        await enrich_findings_with_threat_intel(
+            findings, mock_conn, gemini=mock_gemini, settings=mock_settings
+        )
+
+        sql = mock_conn.fetch.call_args[0][0]
+        assert "?|" in sql, "After embedding failure, tag fallback must run"

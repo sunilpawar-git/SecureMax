@@ -3,6 +3,11 @@ Severity matrix loader — reads expert-editable YAML and provides
 per-question severity overrides with risk impact statements.
 Falls through to keyword-based classification for unmapped questions.
 Pure module: no I/O at import time; YAML loaded lazily on first call.
+
+Cache behaviour: the matrix is loaded once and held in `_cache` for the
+process lifetime. If `severity_matrix.yaml` is edited at runtime, a server
+restart is required for the changes to take effect. Use `_reset_cache()`
+in tests to force a reload between test cases.
 """
 
 import re
