@@ -13,12 +13,12 @@ FastAPI route handlers: questionnaire, report, scraper, linkedin. Service-layer 
 
 ## Files
 
-| File | Endpoints |
-|------|-----------|
+| File               | Endpoints                                                                                                             |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------- |
 | `questionnaire.py` | `POST /questionnaire/start`, `POST /questionnaire/answer`, `GET /questionnaire/resume`, `POST /questionnaire/abandon` |
-| `report.py` | `POST /report/generate`, `GET /report/{job_id}/status`, `GET /report/{job_id}/summary`, `GET /report/{job_id}/full` |
-| `scraper.py` | `POST /scraper/run`, `GET /scraper/health`, `GET /scraper/articles` — admin-only |
-| `linkedin.py` | `POST /linkedin/draft` — Gemini drafts post from threat intel article IDs |
+| `report.py`        | `POST /report/generate`, `GET /report/{job_id}/status`, `GET /report/{job_id}/summary`, `GET /report/{job_id}/full`   |
+| `scraper.py`       | `POST /scraper/run`, `GET /scraper/health`, `GET /scraper/articles` — admin-only                                      |
+| `linkedin.py`      | `POST /linkedin/draft` — Gemini drafts post from threat intel article IDs                                             |
 
 ## Error Handling
 

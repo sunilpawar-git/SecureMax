@@ -93,11 +93,13 @@ async def ask_assistant(
 
     for chunk in chunks:
         context_parts.append(f"[{chunk.domain} — {chunk.section}]\n{chunk.chunk_text}")
-        citations.append({
-            "domain": chunk.domain,
-            "section": chunk.section,
-            "excerpt": chunk.chunk_text[:200],
-        })
+        citations.append(
+            {
+                "domain": chunk.domain,
+                "section": chunk.section,
+                "excerpt": chunk.chunk_text[:200],
+            }
+        )
         domains_seen.add(chunk.domain)
 
     no_context = "No relevant CPP material found."

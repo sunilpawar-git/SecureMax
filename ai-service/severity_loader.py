@@ -45,8 +45,7 @@ def validate_matrix(matrix: dict) -> None:
     for domain, questions in matrix.items():
         if domain not in CPP_DOMAINS:
             raise ValueError(
-                f"Invalid domain in severity matrix: '{domain}'. "
-                f"Valid: {list(CPP_DOMAINS.keys())}"
+                f"Invalid domain in severity matrix: '{domain}'. Valid: {list(CPP_DOMAINS.keys())}"
             )
         if not isinstance(questions, dict):
             raise ValueError(f"Domain '{domain}' must map to a dict of questions")
@@ -54,8 +53,7 @@ def validate_matrix(matrix: dict) -> None:
             severity = config.get("severity_override")
             if severity not in SEVERITY_ORDER:
                 raise ValueError(
-                    f"Invalid severity '{severity}' for {domain}/{node_id}. "
-                    f"Valid: {SEVERITY_ORDER}"
+                    f"Invalid severity '{severity}' for {domain}/{node_id}. Valid: {SEVERITY_ORDER}"
                 )
 
 

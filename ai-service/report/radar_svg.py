@@ -36,12 +36,8 @@ def generate_radar_svg(scores: dict[str, float], size: int = _DEFAULT_SIZE) -> s
 
     grid_rings = _build_grid_rings(cx, cy, radius, n, angle_step, start_offset)
     axis_lines = _build_axis_lines(cx, cy, radius, n, angle_step, start_offset)
-    data_polygon = _build_data_polygon(
-        scores, domains, cx, cy, radius, n, angle_step, start_offset
-    )
-    labels = _build_labels(
-        scores, domains, cx, cy, radius, n, angle_step, start_offset
-    )
+    data_polygon = _build_data_polygon(scores, domains, cx, cy, radius, n, angle_step, start_offset)
+    labels = _build_labels(scores, domains, cx, cy, radius, n, angle_step, start_offset)
 
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" '
@@ -55,8 +51,12 @@ def generate_radar_svg(scores: dict[str, float], size: int = _DEFAULT_SIZE) -> s
 
 
 def _build_grid_rings(
-    cx: float, cy: float, radius: float, n: int,
-    angle_step: float, start_offset: float,
+    cx: float,
+    cy: float,
+    radius: float,
+    n: int,
+    angle_step: float,
+    start_offset: float,
 ) -> str:
     """Concentric guide polygons at 25%, 50%, 75%, 100%."""
     rings = []
@@ -72,8 +72,12 @@ def _build_grid_rings(
 
 
 def _build_axis_lines(
-    cx: float, cy: float, radius: float, n: int,
-    angle_step: float, start_offset: float,
+    cx: float,
+    cy: float,
+    radius: float,
+    n: int,
+    angle_step: float,
+    start_offset: float,
 ) -> str:
     """Lines from center to each vertex."""
     lines = []
@@ -89,9 +93,14 @@ def _build_axis_lines(
 
 
 def _build_data_polygon(
-    scores: dict[str, float], domains: list[str],
-    cx: float, cy: float, radius: float, n: int,
-    angle_step: float, start_offset: float,
+    scores: dict[str, float],
+    domains: list[str],
+    cx: float,
+    cy: float,
+    radius: float,
+    n: int,
+    angle_step: float,
+    start_offset: float,
 ) -> str:
     """The data shape — filled polygon proportional to scores."""
     points_list = []
@@ -113,9 +122,14 @@ def _build_data_polygon(
 
 
 def _build_labels(
-    scores: dict[str, float], domains: list[str],
-    cx: float, cy: float, radius: float, n: int,
-    angle_step: float, start_offset: float,
+    scores: dict[str, float],
+    domains: list[str],
+    cx: float,
+    cy: float,
+    radius: float,
+    n: int,
+    angle_step: float,
+    start_offset: float,
 ) -> str:
     """Domain name labels and score values at each axis tip."""
     labels = []
@@ -144,8 +158,12 @@ def _build_labels(
 
 
 def _polygon_points(
-    cx: float, cy: float, radius: float, n: int,
-    angle_step: float, start_offset: float,
+    cx: float,
+    cy: float,
+    radius: float,
+    n: int,
+    angle_step: float,
+    start_offset: float,
 ) -> str:
     """Generate space-separated polygon point coordinates."""
     pts = []

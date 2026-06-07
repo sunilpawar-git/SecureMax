@@ -127,9 +127,7 @@ class TestMCQAlwaysDeterministic:
 
         # Positive answer — should go to next_q (skip deep_dive)
         result = run_db(
-            determine_next_node_with_ai(
-                node, "Biometric/smart lock", node_map, [], [], _settings
-            )
+            determine_next_node_with_ai(node, "Biometric/smart lock", node_map, [], [], _settings)
         )
         assert result.ai_used is False
         assert result.target_id == "next_q"
@@ -146,9 +144,7 @@ class TestMCQAlwaysDeterministic:
         node_map = {"access_control": node, "deep_dive": {}, "next_q": {}}
 
         result = run_db(
-            determine_next_node_with_ai(
-                node, "Traditional lock only", node_map, [], [], _settings
-            )
+            determine_next_node_with_ai(node, "Traditional lock only", node_map, [], [], _settings)
         )
         assert result.ai_used is False
         assert result.target_id == "deep_dive"
@@ -179,9 +175,7 @@ class TestMCQAlwaysDeterministic:
         node_map = {"travel_entry": node, "key_holder": {}, "visitor_delivery": {}}
 
         result_travel = run_db(
-            determine_next_node_with_ai(
-                node, "Yes — frequently", node_map, [], [], _settings
-            )
+            determine_next_node_with_ai(node, "Yes — frequently", node_map, [], [], _settings)
         )
         assert result_travel.ai_used is False
         assert result_travel.target_id == "key_holder"
@@ -235,8 +229,6 @@ class TestTextInputBranching:
         node = _node("q_text", edges, question_type="text_input")
         node_map = {"q_text": node, "deep_dive": {}, "next_q": {}}
 
-        result = run_db(
-            determine_next_node_with_ai(node, "no", node_map, [], [], _settings)
-        )
+        result = run_db(determine_next_node_with_ai(node, "no", node_map, [], [], _settings))
         assert result.ai_used is False
         assert result.target_id == "deep_dive"

@@ -40,7 +40,7 @@ async def ingest_cpp_document(
     if len(raw_bytes) > _MAX_UPLOAD_BYTES:
         raise HTTPException(
             status_code=413,
-            detail=f"File too large. Maximum size: {_MAX_UPLOAD_BYTES // (1024*1024)} MB",
+            detail=f"File too large. Maximum size: {_MAX_UPLOAD_BYTES // (1024 * 1024)} MB",
         )
     try:
         text = raw_bytes.decode("utf-8")
@@ -59,9 +59,7 @@ async def ingest_cpp_document(
 
     existing_hashes = {
         row["content_hash"]
-        for row in await conn.fetch(
-            "SELECT content_hash FROM cpp_chunks WHERE domain = $1", domain
-        )
+        for row in await conn.fetch("SELECT content_hash FROM cpp_chunks WHERE domain = $1", domain)
     }
 
     inserted = 0
@@ -73,9 +71,7 @@ async def ingest_cpp_document(
             continue
 
         try:
-            embedding = await gemini.embed(
-                chunk["chunk_text"], model=settings.embedding_model
-            )
+            embedding = await gemini.embed(chunk["chunk_text"], model=settings.embedding_model)
             embedding_str = "[" + ",".join(str(v) for v in embedding) + "]"
 
             await conn.execute(
@@ -93,9 +89,7 @@ async def ingest_cpp_document(
             )
             inserted += 1
         except (asyncpg.PostgresError, ValueError, OSError):
-            logger.warning(
-                "Failed to embed/insert chunk for %s", domain, exc_info=True
-            )
+            logger.warning("Failed to embed/insert chunk for %s", domain, exc_info=True)
 
     logger.info("CPP ingest: domain=%s inserted=%d skipped=%d", domain, inserted, skipped)
     return {"status": "ok", "domain": domain, "inserted": inserted, "skipped": skipped}

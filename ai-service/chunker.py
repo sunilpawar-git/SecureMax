@@ -25,9 +25,7 @@ HEADING_PATTERN = re.compile(
 )
 
 _HTML_TAG_RE = re.compile(r"<[^>]+>")
-_DETAILS_BLOCK_RE = re.compile(
-    r"<details>.*?</details>", re.DOTALL | re.IGNORECASE
-)
+_DETAILS_BLOCK_RE = re.compile(r"<details>.*?</details>", re.DOTALL | re.IGNORECASE)
 _TOC_LINK_RE = re.compile(r"^\s*\*\s*\[.+?\]\(#.+?\)\s*$", re.MULTILINE)
 _MD_HEADING_HASH_RE = re.compile(r"^#{1,4}\s+", re.MULTILINE)
 
@@ -114,9 +112,7 @@ def _split_preserving_lists(body: str) -> list[str]:
 
     for line in lines:
         stripped = line.strip()
-        is_list_item = bool(
-            re.match(r"^[-*+]\s", stripped) or re.match(r"^\d+\.\s", stripped)
-        )
+        is_list_item = bool(re.match(r"^[-*+]\s", stripped) or re.match(r"^\d+\.\s", stripped))
 
         if is_list_item:
             if current_paragraph:

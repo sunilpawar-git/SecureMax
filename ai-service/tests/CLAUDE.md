@@ -14,12 +14,12 @@ Python test suite: 26 test files covering unit, integration, and E2E.
 
 ## Test Categories
 
-| Category | Files | DB | Gemini | Notes |
-|----------|-------|----|----|-------|
-| **Pure Unit** | `test_chunker.py`, `test_scoring.py`, `test_crypto_bytes.py` | None | None | No mocks; test functions in isolation |
-| **Gemini Tests** | `test_branching.py`, `test_narrative.py`, `test_compliance.py` | None | Mocked | `unittest.mock.AsyncMock` |
-| **DB Tests** | `test_session_repository.py`, `test_cpp_repository.py` | `test_ai` | None | Real DB schema (test-isolated) |
-| **Integration** | `test_questionnaire_api.py`, `test_enterprise_pdf_e2e.py` | `test_ai` | Mocked | Full flow (marked `@pytest.mark.integration`) |
+| Category         | Files                                                          | DB        | Gemini | Notes                                         |
+| ---------------- | -------------------------------------------------------------- | --------- | ------ | --------------------------------------------- |
+| **Pure Unit**    | `test_chunker.py`, `test_scoring.py`, `test_crypto_bytes.py`   | None      | None   | No mocks; test functions in isolation         |
+| **Gemini Tests** | `test_branching.py`, `test_narrative.py`, `test_compliance.py` | None      | Mocked | `unittest.mock.AsyncMock`                     |
+| **DB Tests**     | `test_session_repository.py`, `test_cpp_repository.py`         | `test_ai` | None   | Real DB schema (test-isolated)                |
+| **Integration**  | `test_questionnaire_api.py`, `test_enterprise_pdf_e2e.py`      | `test_ai` | Mocked | Full flow (marked `@pytest.mark.integration`) |
 
 ## Running Tests
 

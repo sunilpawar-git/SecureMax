@@ -82,9 +82,7 @@ async def lifespan(app: FastAPI):
                     ORDER BY scraped_at DESC LIMIT 10"""
                 )
                 articles = [dict(r) for r in rows]
-                briefing_text = await synthesize_weekly_briefing(
-                    articles, gemini=gemini
-                )
+                briefing_text = await synthesize_weekly_briefing(articles, gemini=gemini)
                 await conn.execute(
                     """INSERT INTO linkedin_posts
                        (id, draft_text, status, platform, created_at, updated_at)

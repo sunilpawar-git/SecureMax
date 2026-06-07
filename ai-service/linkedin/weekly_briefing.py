@@ -60,7 +60,7 @@ async def synthesize_weekly_briefing(
     try:
         result = await gemini.generate(prompt)
         if len(result) > _MAX_CHARS:
-            result = result[:_MAX_CHARS - 3] + "..."
+            result = result[: _MAX_CHARS - 3] + "..."
         return result
     except GeminiError:
         logger.warning("Gemini briefing synthesis failed — using fallback")

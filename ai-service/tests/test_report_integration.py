@@ -65,9 +65,7 @@ class TestFullReportPipeline:
         events = _sample_events()
         findings = generate_findings(events)
         assert len(findings) >= 4
-        cctv_finding = next(
-            (f for f in findings if "cctv" in f.get("question", "").lower()), None
-        )
+        cctv_finding = next((f for f in findings if "cctv" in f.get("question", "").lower()), None)
         assert cctv_finding is not None
         assert cctv_finding["severity"] == "critical"
         assert cctv_finding["risk_impact"] is not None

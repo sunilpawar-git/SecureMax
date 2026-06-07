@@ -27,9 +27,7 @@ class TestSeverityMatrixLoading:
         for domain, questions in matrix.items():
             for node_id, config in questions.items():
                 sev = config.get("severity_override")
-                assert sev in SEVERITY_ORDER, (
-                    f"Invalid severity '{sev}' for {domain}/{node_id}"
-                )
+                assert sev in SEVERITY_ORDER, f"Invalid severity '{sev}' for {domain}/{node_id}"
 
     def test_matrix_rejects_invalid_domain(self, tmp_path) -> None:
         from severity_loader import validate_matrix
@@ -73,9 +71,7 @@ class TestQuestionSeverityLookup:
     def test_no_match_when_answer_not_in_patterns(self) -> None:
         from severity_loader import get_question_severity
 
-        result = get_question_severity(
-            "CPP-01", "hni_cpp01_cctv", "Yes — full coverage"
-        )
+        result = get_question_severity("CPP-01", "hni_cpp01_cctv", "Yes — full coverage")
         assert result is None
 
     def test_empty_matrix_uses_pure_keyword_logic(self) -> None:

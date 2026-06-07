@@ -13,11 +13,11 @@ One-time seeding and setup scripts: CPP embeddings, question graph, sample threa
 
 ## Scripts
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
+| Script                           | Purpose                                                                   | Usage                                               |
+| -------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
 | `seed_cpp_embeddings_md_sync.py` | CPP PDFs (Markdown) → chunk → Gemini embed → insert (sync, **preferred**) | `python seed_cpp_embeddings_md_sync.py [--dry-run]` |
-| `seed_question_graph.py` | YAML graphs → validate → upsert `question_nodes` | `python seed_question_graph.py` |
-| `seed_sample_threat_intel.py` | Insert hardcoded sample threat articles (idempotent) | `python seed_sample_threat_intel.py` |
+| `seed_question_graph.py`         | YAML graphs → validate → upsert `question_nodes`                          | `python seed_question_graph.py`                     |
+| `seed_sample_threat_intel.py`    | Insert hardcoded sample threat articles (idempotent)                      | `python seed_sample_threat_intel.py`                |
 
 ## Initial Setup Workflow
 
@@ -40,8 +40,8 @@ python scripts/seed_sample_threat_intel.py
 
 ## Flags
 
-| Script | Flag | Purpose |
-|--------|------|---------|
+| Script                           | Flag        | Purpose                                        |
+| -------------------------------- | ----------- | ---------------------------------------------- |
 | `seed_cpp_embeddings_md_sync.py` | `--dry-run` | Count chunks without inserting; preview impact |
 
 ## Environment Requirements

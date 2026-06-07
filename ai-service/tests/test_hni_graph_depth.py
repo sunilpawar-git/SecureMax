@@ -52,15 +52,11 @@ class TestHniGraphDepth:
     def test_all_domains_have_at_least_3_questions(self, non_terminal_nodes):
         domains = Counter(n["domain"] for n in non_terminal_nodes)
         for domain, count in sorted(domains.items()):
-            assert count >= 3, (
-                f"Domain {domain} has only {count} questions, need ≥3"
-            )
+            assert count >= 3, f"Domain {domain} has only {count} questions, need ≥3"
 
     def test_cpp02_has_at_least_4_questions(self, non_terminal_nodes):
         cpp02_count = sum(1 for n in non_terminal_nodes if n["domain"] == "CPP-02")
-        assert cpp02_count >= 4, (
-            f"CPP-02 should have ≥4 questions (was 2), got {cpp02_count}"
-        )
+        assert cpp02_count >= 4, f"CPP-02 should have ≥4 questions (was 2), got {cpp02_count}"
 
     def test_version_is_2(self, hni_data):
         assert hni_data["metadata"]["version"] == 2

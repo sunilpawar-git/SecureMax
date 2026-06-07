@@ -11,6 +11,7 @@ from schemas import CppChunkResult
 def _clear_rate_limit():
     """Reset the in-memory rate limiter between tests."""
     from routers.assistant import _rate_limit_map
+
     _rate_limit_map.clear()
     yield
     _rate_limit_map.clear()
@@ -21,22 +22,25 @@ class TestAssistantEndpoint:
         """Successful query returns answer + citations."""
         fake_chunks = [
             CppChunkResult(
-                id="c1", domain="CPP-01",
-                section="Access Control", chunk_text="Locks must be tested.",
+                id="c1",
+                domain="CPP-01",
+                section="Access Control",
+                chunk_text="Locks must be tested.",
             ),
             CppChunkResult(
-                id="c2", domain="CPP-05",
-                section="InfoSec", chunk_text="Encrypt all data at rest.",
+                id="c2",
+                domain="CPP-05",
+                section="InfoSec",
+                chunk_text="Encrypt all data at rest.",
             ),
         ]
 
         with patch(
             "routers.assistant.get_relevant_chunks",
-            new_callable=AsyncMock, return_value=fake_chunks,
+            new_callable=AsyncMock,
+            return_value=fake_chunks,
         ):
-            test_client.app.state.gemini = _FakeGemini(
-                "Per CPP-01, secure all access points."
-            )
+            test_client.app.state.gemini = _FakeGemini("Per CPP-01, secure all access points.")
             resp = test_client.post(
                 "/assistant/ask",
                 json={"question": "How do I secure my front gate?"},
@@ -77,7 +81,8 @@ class TestAssistantEndpoint:
             return []
 
         with patch(
-            "routers.assistant.get_relevant_chunks", side_effect=mock_chunks,
+            "routers.assistant.get_relevant_chunks",
+            side_effect=mock_chunks,
         ):
             test_client.app.state.gemini = _FakeGemini("answer")
             test_client.post(
@@ -91,7 +96,8 @@ class TestAssistantEndpoint:
         """If Gemini fails, return graceful error message."""
         with patch(
             "routers.assistant.get_relevant_chunks",
-            new_callable=AsyncMock, return_value=[],
+            new_callable=AsyncMock,
+            return_value=[],
         ):
             test_client.app.state.gemini = _FailingGemini()
             resp = test_client.post(

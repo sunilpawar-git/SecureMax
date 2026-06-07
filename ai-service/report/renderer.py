@@ -49,9 +49,7 @@ def render_html(
     """
     brand = branding or dict(DEFAULT_WHITE_LABEL)
     template_name = (
-        "enterprise_report.html"
-        if report.track == TRACK_ENTERPRISE
-        else "hni_report.html"
+        "enterprise_report.html" if report.track == TRACK_ENTERPRISE else "hni_report.html"
     )
     template = _jinja_env.get_template(template_name)
 

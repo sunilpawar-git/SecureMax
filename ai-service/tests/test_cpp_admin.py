@@ -79,9 +79,9 @@ class TestStatsEndpoint:
             app = FastAPI()
             app.include_router(cpp_router)
             app.state.pool = MagicMock()
-            app.dependency_overrides[
-                __import__("db", fromlist=["get_db"]).get_db
-            ] = lambda: mock_conn
+            app.dependency_overrides[__import__("db", fromlist=["get_db"]).get_db] = lambda: (
+                mock_conn
+            )
             test_client = TestClient(app)
 
             response = test_client.get("/admin/cpp/stats")

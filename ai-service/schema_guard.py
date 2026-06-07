@@ -23,7 +23,7 @@ _REQUIRED_COLUMNS: list[tuple[str, str]] = [
     ("audit_sessions", "track"),
     ("audit_sessions", "status"),
     ("audit_sessions", "current_node_id"),
-    ("audit_sessions", "graph_version"),   # migration 8 — was the missing column
+    ("audit_sessions", "graph_version"),  # migration 8 — was the missing column
     ("audit_sessions", "domain_scores"),
     ("audit_sessions", "module_scores"),
     ("audit_sessions", "paid"),
@@ -81,8 +81,7 @@ async def assert_schema_ready(pool: asyncpg.Pool) -> None:
     if missing:
         msg = (
             "Schema validation failed — the following columns are missing from the "
-            "database. Run the pending Prisma migrations and restart:\n  "
-            + "\n  ".join(missing)
+            "database. Run the pending Prisma migrations and restart:\n  " + "\n  ".join(missing)
         )
         logger.critical(msg)
         raise RuntimeError(msg)

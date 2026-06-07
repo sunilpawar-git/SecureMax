@@ -95,9 +95,7 @@ async def _threat_intel_semantic(
     """Pgvector cosine search using finding text as query. Returns None to signal fallback."""
     if not gemini or not settings:
         return None
-    query_parts = [
-        f"{f.get('question', '')} {f.get('answer', '')}" for f in findings[:5]
-    ]
+    query_parts = [f"{f.get('question', '')} {f.get('answer', '')}" for f in findings[:5]]
     query_text = " ".join(query_parts)[:500]
     try:
         embedding = await gemini.embed(query_text, model=settings.embedding_model)

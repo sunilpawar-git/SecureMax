@@ -135,9 +135,7 @@ def embed_and_insert_chunks(chunks: list[dict], settings: "Settings") -> None:  
         finally:
             await conn.close()
 
-        print(
-            f"\n✓ Inserted {inserted} chunks, skipped {skipped} (already exist or no embedding)"
-        )
+        print(f"\n✓ Inserted {inserted} chunks, skipped {skipped} (already exist or no embedding)")
 
     asyncio.run(insert_chunks())
 

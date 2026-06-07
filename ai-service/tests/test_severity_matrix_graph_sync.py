@@ -74,9 +74,7 @@ class TestMatrixGraphSync:
                 assert "severity_override" in config, (
                     f"{domain}.{node_id} missing severity_override"
                 )
-                assert "risk_impact" in config, (
-                    f"{domain}.{node_id} missing risk_impact"
+                assert "risk_impact" in config, f"{domain}.{node_id} missing risk_impact"
+                assert config["severity_override"] in ("critical", "high", "medium", "low"), (
+                    f"{domain}.{node_id} invalid severity: {config['severity_override']}"
                 )
-                assert config["severity_override"] in (
-                    "critical", "high", "medium", "low"
-                ), f"{domain}.{node_id} invalid severity: {config['severity_override']}"

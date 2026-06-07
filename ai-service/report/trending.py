@@ -122,6 +122,7 @@ def _parse_scores(scores) -> dict[str, float]:
     """Normalize JSON domain scores to a clean dict."""
     if isinstance(scores, str):
         import json
+
         scores = json.loads(scores)
     if not isinstance(scores, dict):
         return {}

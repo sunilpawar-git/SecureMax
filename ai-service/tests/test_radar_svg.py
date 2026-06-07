@@ -21,8 +21,13 @@ class TestRadarSvgOutput:
         scores = _uniform_scores(50.0)
         svg = generate_radar_svg(scores)
         expected_labels = [
-            "Physical", "Business", "Crisis",
-            "Investigations", "InfoSec", "Personnel", "Management",
+            "Physical",
+            "Business",
+            "Crisis",
+            "Investigations",
+            "InfoSec",
+            "Personnel",
+            "Management",
         ]
         for label in expected_labels:
             assert label in svg, f"Missing label: {label}"

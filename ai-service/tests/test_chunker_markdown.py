@@ -28,9 +28,7 @@ class TestMarkdownHeadings:
 class TestHtmlStripping:
     def test_strips_details_blocks(self) -> None:
         text = (
-            "# Overview\n\n"
-            "<details><summary>TOC</summary>\n- Item\n</details>\n\n"
-            "Actual content."
+            "# Overview\n\n<details><summary>TOC</summary>\n- Item\n</details>\n\nActual content."
         )
         sections = split_into_sections(text)
         all_text = " ".join(s[1] for s in sections)

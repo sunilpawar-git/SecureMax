@@ -9,11 +9,13 @@ FastAPI app entry: `main.py` (app factory, mounts routers, initializes Gemini cl
 **Configuration SSOT** (`config.py`): Pydantic Settings class — all env vars live here. Never use `os.environ` directly anywhere else.
 
 **SSOT Locations**:
+
 - Prompts → `prompts.py` (`string.Template` objects; never f-strings for security)
 - Constants → `constants.py` (string constants, session statuses, HTTP messages)
 - Answer keywords → `answer_keywords.py` (negative/moderate keyword sets for scoring)
 
 **Pure Modules** (no I/O — keep them that way):
+
 - `chunker.py` — semantic chunking of CPP PDFs/Markdown
 - `scoring.py` — radar score calculation from answer penalties
 - `answer_keywords.py` — keyword classification constants
@@ -33,15 +35,15 @@ Single PostgreSQL database (`security_crawler`) with role-based access control (
 
 ### Tables Overview
 
-| Table | Purpose | Read By | Written By |
-|-------|---------|---------|-----------|
-| **cpp_chunks** | CPP Seven Precis embeddings (knowledge base) | all roles | app_user (seeding) |
-| **threat_intel** | Security threats from scraper | all roles | scraper_user |
-| **audit_sessions** | Questionnaire sessions | all roles | app_user |
-| **session_events** | Encrypted answers + AI reasoning | all roles | app_user |
-| **report_artifacts** | Generated PDF reports (encrypted) | app_user | app_user |
-| **linkedin_posts** | Admin social media log | all roles | app_user |
-| **api_keys** | Encrypted third-party credentials | app_user only | app_user |
+| Table                | Purpose                                      | Read By       | Written By         |
+| -------------------- | -------------------------------------------- | ------------- | ------------------ |
+| **cpp_chunks**       | CPP Seven Precis embeddings (knowledge base) | all roles     | app_user (seeding) |
+| **threat_intel**     | Security threats from scraper                | all roles     | scraper_user       |
+| **audit_sessions**   | Questionnaire sessions                       | all roles     | app_user           |
+| **session_events**   | Encrypted answers + AI reasoning             | all roles     | app_user           |
+| **report_artifacts** | Generated PDF reports (encrypted)            | app_user      | app_user           |
+| **linkedin_posts**   | Admin social media log                       | all roles     | app_user           |
+| **api_keys**         | Encrypted third-party credentials            | app_user only | app_user           |
 
 ---
 
@@ -56,6 +58,7 @@ GRANT SELECT ON ALL TABLES IN SCHEMA public TO ai_readonly;
 **Used by**: Claude AI in Claude Code, analytics scripts
 
 **Permissions**:
+
 - SELECT from all tables (cpp_chunks, threat_intel, audit_sessions, etc.)
 - Cannot INSERT, UPDATE, DELETE, DROP
 - Cannot see api_keys
@@ -63,6 +66,7 @@ GRANT SELECT ON ALL TABLES IN SCHEMA public TO ai_readonly;
 **Environment variable**: `DATABASE_READ_URL`
 
 **Connection string**:
+
 ```
 postgresql://ai_readonly:secure_ai_readonly_2024@localhost:5432/security_crawler
 ```
@@ -78,6 +82,7 @@ GRANT INSERT ON linkedin_posts;
 **Used by**: FastAPI service (all routes)
 
 **Permissions**:
+
 - SELECT from all tables (read for branching, threat context, etc.)
 - INSERT/UPDATE on audit sessions and reports
 - Can INSERT new cpp_chunks (seeding)
@@ -88,6 +93,7 @@ GRANT INSERT ON linkedin_posts;
 **Environment variable**: `DATABASE_WRITE_URL`
 
 **Connection string**:
+
 ```
 postgresql://app_user:secure_app_2024@localhost:5432/security_crawler
 ```
@@ -102,6 +108,7 @@ GRANT INSERT, UPDATE, DELETE ON threat_intel;
 **Used by**: `ai-service/routers/scraper.py`, Playwright scraper
 
 **Permissions**:
+
 - SELECT from all tables (to check for duplicates, what was posted)
 - INSERT/UPDATE/DELETE on threat_intel only
 - Cannot touch cpp_chunks, audit_sessions, api_keys
@@ -110,6 +117,7 @@ GRANT INSERT, UPDATE, DELETE ON threat_intel;
 **Environment variable**: `SCRAPER_DATABASE_URL`
 
 **Connection string**:
+
 ```
 postgresql://scraper_user:secure_scraper_2024@localhost:5432/security_crawler
 ```
@@ -121,11 +129,12 @@ postgresql://scraper_user:secure_scraper_2024@localhost:5432/security_crawler
 **Permissions**: ALL on all tables
 
 **Connection string**:
+
 ```
 postgresql://db_admin:secure_admin_password@localhost:5432/security_crawler
 ```
 
-*Keep credentials secure. Only used for emergencies.*
+_Keep credentials secure. Only used for emergencies._
 
 ---
 
@@ -171,6 +180,7 @@ scraper_url = settings.get_scraper_url()
 ### 1. Accidental Deletion Prevention
 
 **All database deletion operations are prohibited for AI (Claude Code)**:
+
 - Cannot run `DELETE FROM ...` via shell
 - Cannot run `DROP TABLE`, `TRUNCATE`
 - Cannot run `git reset --hard`, `rm -rf`
@@ -180,11 +190,13 @@ These are blocked by `.claude/settings.json` permission rules.
 ### 2. Audit Logging
 
 PostgreSQL audit logging enabled (`pgaudit` extension):
+
 - All DDL (CREATE, ALTER, DROP) logged
 - All DML (INSERT, UPDATE, DELETE) logged
 - Failed queries logged
 
 View logs:
+
 ```bash
 psql -d security_crawler -c "SELECT * FROM pg_catalog.pg_logging_log ORDER BY logged DESC LIMIT 50;"
 ```
@@ -192,11 +204,13 @@ psql -d security_crawler -c "SELECT * FROM pg_catalog.pg_logging_log ORDER BY lo
 ### 3. Automated Backups
 
 Hourly backups to `/backups/`:
+
 ```bash
 pg_dump security_crawler | gzip > /backups/security_crawler_$(date +%Y%m%d_%H%M%S).sql.gz
 ```
 
 Restore from backup:
+
 ```bash
 gunzip < /backups/security_crawler_20260604_120000.sql.gz | psql security_crawler
 ```
@@ -204,6 +218,7 @@ gunzip < /backups/security_crawler_20260604_120000.sql.gz | psql security_crawle
 ### 4. Data Immutability
 
 Session events (`session_events` table) are append-only:
+
 - Answers and AI reasoning AES-encrypted before insertion
 - No UPDATE or DELETE allowed on existing events
 - Timestamp recorded at insert time
@@ -305,7 +320,7 @@ async def test_read_only_safety():
     settings = get_settings()
     url = settings.get_read_url()
     conn = await asyncpg.connect(url)
-    
+
     try:
         # This should fail (permission denied)
         await conn.execute("DELETE FROM threat_intel WHERE id = $1", "test-id")
@@ -323,13 +338,13 @@ async def test_scraper_permissions():
     settings = get_settings()
     url = settings.get_scraper_url()
     conn = await asyncpg.connect(url)
-    
+
     # Should work
     await conn.execute(
         "INSERT INTO threat_intel (title, url) VALUES ($1, $2)",
         "Test threat", "http://example.com"
     )
-    
+
     # Should fail (no INSERT on cpp_chunks)
     try:
         await conn.execute(

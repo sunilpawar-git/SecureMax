@@ -52,21 +52,15 @@ class TestEnterpriseGraphDepth:
     def test_all_domains_have_at_least_3_questions(self, non_terminal_nodes):
         domains = Counter(n["domain"] for n in non_terminal_nodes)
         for domain, count in sorted(domains.items()):
-            assert count >= 3, (
-                f"Domain {domain} has only {count} questions, need ≥3"
-            )
+            assert count >= 3, f"Domain {domain} has only {count} questions, need ≥3"
 
     def test_cpp02_has_at_least_3_questions(self, non_terminal_nodes):
         cpp02_count = sum(1 for n in non_terminal_nodes if n["domain"] == "CPP-02")
-        assert cpp02_count >= 3, (
-            f"CPP-02 should have ≥3 questions (was 1), got {cpp02_count}"
-        )
+        assert cpp02_count >= 3, f"CPP-02 should have ≥3 questions (was 1), got {cpp02_count}"
 
     def test_cpp04_has_at_least_3_questions(self, non_terminal_nodes):
         cpp04_count = sum(1 for n in non_terminal_nodes if n["domain"] == "CPP-04")
-        assert cpp04_count >= 3, (
-            f"CPP-04 should have ≥3 questions (was 1), got {cpp04_count}"
-        )
+        assert cpp04_count >= 3, f"CPP-04 should have ≥3 questions (was 1), got {cpp04_count}"
 
     def test_version_is_2(self, ent_data):
         assert ent_data["metadata"]["version"] == 2
