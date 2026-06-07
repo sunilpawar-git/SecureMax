@@ -12,6 +12,8 @@ type DownloadState =
   | 'payment_required'
   | 'pending_approval';
 
+type ReportMode = 'executive' | 'technical' | 'complete';
+
 export default function ReportDownloadPage() {
   const params = useParams();
   const sessionId = Array.isArray(params.sessionId)
@@ -20,6 +22,7 @@ export default function ReportDownloadPage() {
   const [state, setState] = useState<DownloadState>('loading');
   const [error, setError] = useState<string | null>(null);
   const [auditSessionId, setAuditSessionId] = useState<string | null>(null);
+  const [reportMode, setReportMode] = useState<ReportMode>('complete');
 
   useEffect(() => {
     if (!sessionId) return;
@@ -65,7 +68,8 @@ export default function ReportDownloadPage() {
   const handleDownload = useCallback(async () => {
     setState('downloading');
     try {
-      const res = await fetch(`/api/report?action=full&report_id=${encodeURIComponent(sessionId)}`);
+      const modeParam = reportMode !== 'complete' ? `&mode=${reportMode}` : '';
+      const res = await fetch(`/api/report?action=full&report_id=${encodeURIComponent(sessionId)}${modeParam}`);
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setState('error');
@@ -110,7 +114,7 @@ export default function ReportDownloadPage() {
       setState('error');
       setError('Download failed. Please try again.');
     }
-  }, [sessionId]);
+  }, [sessionId, reportMode]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
@@ -139,6 +143,28 @@ export default function ReportDownloadPage() {
               </svg>
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-300">Your report is ready.</p>
+            <fieldset className="text-left space-y-2 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
+              <legend className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
+                Report Format
+              </legend>
+              {([
+                { value: 'executive', label: 'Executive Brief (1 page)' },
+                { value: 'technical', label: 'Technical Annex (full detail)' },
+                { value: 'complete', label: 'Complete Report' },
+              ] as const).map((opt) => (
+                <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="report-mode"
+                    value={opt.value}
+                    checked={reportMode === opt.value}
+                    onChange={() => setReportMode(opt.value)}
+                    className="accent-emerald-700"
+                  />
+                  <span className="text-sm text-slate-700 dark:text-slate-200">{opt.label}</span>
+                </label>
+              ))}
+            </fieldset>
             <button
               onClick={handleDownload}
               className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"

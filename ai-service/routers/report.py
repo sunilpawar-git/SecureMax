@@ -255,6 +255,35 @@ async def get_full_report(
     )
 
 
+@router.get("/{report_id}/checklist")
+async def get_checklist(
+    report_id: str,
+    x_user_id: str | None = Header(None),
+    conn: asyncpg.Connection = Depends(get_db),  # noqa: B008
+) -> dict:
+    """Generate an on-site audit checklist from session findings."""
+    if not x_user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=ERR_ACCESS_DENIED)
+    job = await rpt_repo.get_job(conn, report_id)
+    if not job:
+        raise HTTPException(status_code=404, detail=ERR_REPORT_NOT_FOUND)
+    session = await repo.get_session(conn, job["session_id"])
+    if not session or session["user_id"] != x_user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=ERR_ACCESS_DENIED)
+    if job["status"] != REPORT_JOB_COMPLETED:
+        raise HTTPException(status_code=202, detail=ERR_REPORT_STILL_GENERATING)
+    artifact = await rpt_repo.get_artifact_by_session(conn, job["session_id"])
+    if not artifact:
+        raise HTTPException(status_code=404, detail=ERR_REPORT_NOT_FOUND)
+
+    from report.checklist import generate_checklist
+
+    full = json.loads(artifact["findings_json"])
+    findings = full.get("findings", [])
+    items = generate_checklist(findings)
+    return {"session_id": job["session_id"], "items": items, "total": len(items)}
+
+
 def _job_progress(job_status: str) -> int:
     """Map job status to a progress percentage."""
     return {

@@ -122,7 +122,11 @@ async def submit_answer(
     domain = current_node["domain"]
     score_drop = current_node.get("score_drop_trigger", False)
 
-    chunks, citations = await _safe_retrieve_cpp(answer_str, conn, _settings)
+    related = current_node.get("related_domains", [])
+    retrieval_domains = [domain] + related
+    chunks, citations = await _safe_retrieve_cpp(
+        answer_str, conn, _settings, domains=retrieval_domains
+    )
 
     # Build AI context from events already in the DB (prior to this answer)
     raw_prior = await repo.get_events(conn, req.session_id)
@@ -261,9 +265,11 @@ async def _safe_retrieve_cpp(
     answer_text: str,
     conn: asyncpg.Connection,
     settings: Settings,
+    *,
+    domains: list[str] | None = None,
 ) -> tuple[list, list[str]]:
     try:
-        chunks = await get_relevant_chunks(answer_text, conn, settings)
+        chunks = await get_relevant_chunks(answer_text, conn, settings, domains=domains)
         citations = [f"{c.domain}: {c.section}" for c in chunks]
         return chunks, citations
     except Exception:
