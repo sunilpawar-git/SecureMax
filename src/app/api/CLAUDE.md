@@ -21,14 +21,14 @@ import { parseBody, apiSuccess, apiError } from '@/lib/api';
 import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function POST(req: Request) {
-  const session = await requireAuth(req);  // Throws 401 if not authed
-  
+  const session = await requireAuth(req); // Throws 401 if not authed
+
   const result = await checkRateLimit(session.user.id, 60000, 10);
   if (!result.ok) return apiError('Rate limit exceeded', 429);
-  
+
   const { data, error } = await parseBody(req, MySchema);
   if (error) return apiValidationError(error);
-  
+
   // ... mutation logic via service ...
   return apiSuccess(result);
 }

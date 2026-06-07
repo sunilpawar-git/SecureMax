@@ -80,7 +80,9 @@ export function KanbanBoard({ leads, onStatusChange, onEmail }: KanbanBoardProps
               <h3 className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                 {LEAD_STATUS_LABEL[status]}
               </h3>
-              <span className="text-xs text-slate-400 dark:text-slate-500">{columnLeads.length}</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">
+                {columnLeads.length}
+              </span>
             </div>
             <div className="space-y-3">
               {columnLeads.map((lead) => (

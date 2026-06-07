@@ -46,14 +46,19 @@ export function RadarChart({ scores }: RadarChartProps) {
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm border border-gray-100 dark:border-slate-700">
-      <svg viewBox={`0 0 ${CHART_SIZE} ${CHART_SIZE}`} className="text-slate-300 dark:text-slate-600 w-full max-w-[240px] mx-auto">
+      <svg
+        viewBox={`0 0 ${CHART_SIZE} ${CHART_SIZE}`}
+        className="text-slate-300 dark:text-slate-600 w-full max-w-[240px] mx-auto"
+      >
         {gridLevels.map((level) => {
           const gridPoints = DOMAIN_KEYS.map((_, i) =>
             polarToCartesian(i * angleStep, RADIUS * level),
           );
           const gridPath =
             gridPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ') + ' Z';
-          return <path key={level} d={gridPath} fill="none" stroke="currentColor" strokeWidth="0.5" />;
+          return (
+            <path key={level} d={gridPath} fill="none" stroke="currentColor" strokeWidth="0.5" />
+          );
         })}
 
         {DOMAIN_KEYS.map((_, i) => {

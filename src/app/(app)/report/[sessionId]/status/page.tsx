@@ -113,7 +113,9 @@ export default function ReportStatusPage() {
                 />
               </svg>
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-300">Generating your security audit report...</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Generating your security audit report...
+            </p>
             <p className="text-xs text-slate-400 dark:text-slate-500">
               This usually takes 30-60 seconds. You&apos;ll be redirected automatically.
             </p>

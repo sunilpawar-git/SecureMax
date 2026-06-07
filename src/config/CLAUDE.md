@@ -13,15 +13,15 @@ App-wide constants: strings, colors, security parameters. Pure configuration; no
 
 ## Files
 
-| File | Contains |
-|------|----------|
-| `index.ts` | Barrel export |
-| `strings.ts` | APP, CTA, TRACK, USER_ROLE, LIMITS, PAYMENT, UI labels, error messages |
-| `admin-strings.ts` | ADMIN_ACTION_TYPE, LEAD_STATUS, scraper/followup/webhook enums, email templates |
-| `legal-strings.ts` | Privacy policy, terms of service copy |
-| `colors.ts` | Tailwind color token constants for user app UI |
-| `admin-colors.ts` | Tailwind color token constants for admin panel |
-| `security.ts` | SECURITY_HEADERS (CSP, HSTS, X-Frame-Options), RATE_LIMITS, ENCRYPTION constants, SESSION_SECURITY |
+| File               | Contains                                                                                           |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| `index.ts`         | Barrel export                                                                                      |
+| `strings.ts`       | APP, CTA, TRACK, USER_ROLE, LIMITS, PAYMENT, UI labels, error messages                             |
+| `admin-strings.ts` | ADMIN_ACTION_TYPE, LEAD_STATUS, scraper/followup/webhook enums, email templates                    |
+| `legal-strings.ts` | Privacy policy, terms of service copy                                                              |
+| `colors.ts`        | Tailwind color token constants for user app UI                                                     |
+| `admin-colors.ts`  | Tailwind color token constants for admin panel                                                     |
+| `security.ts`      | SECURITY_HEADERS (CSP, HSTS, X-Frame-Options), RATE_LIMITS, ENCRYPTION constants, SESSION_SECURITY |
 
 ## Import Convention
 
@@ -33,8 +33,8 @@ const color = config.COLORS.SEVERITY.CRITICAL;
 const limit = config.LIMITS.MAX_SESSIONS_PER_MONTH;
 
 // ✗ Wrong
-import { APP } from '@/config/strings';  // Direct import from file
-import { COLORS } from '@/config/colors';  // Direct import from file
+import { APP } from '@/config/strings'; // Direct import from file
+import { COLORS } from '@/config/colors'; // Direct import from file
 ```
 
 ## Common Pitfalls

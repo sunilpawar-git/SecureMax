@@ -34,7 +34,10 @@ export function AppHeader({ variant }: AppHeaderProps) {
   return (
     <header className={`${HEADER_STYLES[variant]} h-12 flex items-center px-4 shrink-0`}>
       <div className="max-w-7xl w-full mx-auto flex items-center justify-between">
-        <Link href="/dashboard" className="text-sm font-bold text-slate-900 dark:text-slate-100 hover:text-slate-700 dark:hover:text-slate-300">
+        <Link
+          href="/dashboard"
+          className="text-sm font-bold text-slate-900 dark:text-slate-100 hover:text-slate-700 dark:hover:text-slate-300"
+        >
           {APP.NAME}
         </Link>
 

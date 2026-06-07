@@ -62,7 +62,9 @@ export default function ReportSummaryPage() {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
         <div className="text-center space-y-3">
-          <p className="text-sm text-red-600 dark:text-red-400">{error || 'Failed to load summary'}</p>
+          <p className="text-sm text-red-600 dark:text-red-400">
+            {error || 'Failed to load summary'}
+          </p>
           <button
             onClick={() => window.location.reload()}
             className="text-sm text-emerald-700 underline"
@@ -80,7 +82,9 @@ export default function ReportSummaryPage() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8 px-4">
       <div className="max-w-2xl mx-auto space-y-8">
         <div className="text-center">
-          <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">{APP.NAME} — Security Assessment</h1>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            {APP.NAME} — Security Assessment
+          </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Free Executive Summary</p>
         </div>
 
@@ -95,7 +99,9 @@ export default function ReportSummaryPage() {
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 dark:bg-emerald-900/30 p-6 text-center space-y-4">
           {isEnterprise ? (
             <>
-              <h3 className="font-semibold text-emerald-900 dark:text-emerald-300">Unlock Full Enterprise Report</h3>
+              <h3 className="font-semibold text-emerald-900 dark:text-emerald-300">
+                Unlock Full Enterprise Report
+              </h3>
               <p className="text-sm text-emerald-700 dark:text-emerald-300">
                 Includes compliance mapping, board-level risk language, and remediation roadmap.
               </p>
@@ -108,7 +114,9 @@ export default function ReportSummaryPage() {
             </>
           ) : (
             <>
-              <h3 className="font-semibold text-emerald-900 dark:text-emerald-300">Unlock Full Report</h3>
+              <h3 className="font-semibold text-emerald-900 dark:text-emerald-300">
+                Unlock Full Report
+              </h3>
               <p className="text-sm text-emerald-700 dark:text-emerald-300">
                 Get detailed findings, action roadmap, and threat intelligence.
               </p>

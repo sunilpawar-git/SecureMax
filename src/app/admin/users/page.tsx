@@ -23,8 +23,12 @@ export default function UsersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{USERS_PAGE.TITLE}</h1>
-          <p className="text-sm text-slate-400 dark:text-slate-500 mt-0.5">{USERS_PAGE.DESCRIPTION}</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            {USERS_PAGE.TITLE}
+          </h1>
+          <p className="text-sm text-slate-400 dark:text-slate-500 mt-0.5">
+            {USERS_PAGE.DESCRIPTION}
+          </p>
         </div>
         <div className="flex gap-3 flex-wrap">
           <select
@@ -52,7 +56,9 @@ export default function UsersPage() {
       </div>
 
       {data.error && (
-        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-md px-4 py-2">{data.error}</p>
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-md px-4 py-2">
+          {data.error}
+        </p>
       )}
       {data.loading ? (
         <p className="text-sm text-slate-400 dark:text-slate-500">{USERS_PAGE.LOADING}</p>

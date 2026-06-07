@@ -53,7 +53,12 @@ export function ManualAddModal({ onAdd, onClose }: ManualAddModalProps) {
         aria-labelledby="dialog-title"
         className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-lg mx-4 p-6"
       >
-        <h2 id="dialog-title" className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Add Manual Article</h2>
+        <h2
+          id="dialog-title"
+          className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4"
+        >
+          Add Manual Article
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="text"

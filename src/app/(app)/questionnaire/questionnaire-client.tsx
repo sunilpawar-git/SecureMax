@@ -201,7 +201,9 @@ function QuestionnaireContent() {
     return (
       <div className="min-h-[calc(100vh-3rem)] bg-gray-50 dark:bg-slate-900 flex items-center justify-center p-4">
         <div className="max-w-2xl w-full space-y-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">{QUESTIONNAIRE.COMPLETE_TITLE}</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">
+            {QUESTIONNAIRE.COMPLETE_TITLE}
+          </h2>
           <p className="text-gray-600 dark:text-slate-300">
             You answered {questionsAnswered} questions.
             {reportTrigger.triggered

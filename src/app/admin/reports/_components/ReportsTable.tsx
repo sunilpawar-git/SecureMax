@@ -16,7 +16,11 @@ interface ReportsTableProps {
 
 export function ReportsTable({ reports, onRegenerate, onUnlock, onViewDiff }: ReportsTableProps) {
   if (reports.length === 0) {
-    return <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">No reports generated yet.</p>;
+    return (
+      <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">
+        No reports generated yet.
+      </p>
+    );
   }
 
   return (
@@ -24,20 +28,41 @@ export function ReportsTable({ reports, onRegenerate, onUnlock, onViewDiff }: Re
       <table className="w-full text-sm">
         <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
           <tr>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Session</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">User</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Track</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">V</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Urgency</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Gaps</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Unlocked</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Generated</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Actions</th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Session
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              User
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Track
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              V
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Urgency
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Gaps
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Unlocked
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Generated
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
           {reports.map((r) => (
-            <tr key={r.id} className="border-b border-slate-200 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700">
+            <tr
+              key={r.id}
+              className="border-b border-slate-200 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700"
+            >
               <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">
                 {r.sessionId.slice(0, 8)}...
               </td>
@@ -52,8 +77,12 @@ export function ReportsTable({ reports, onRegenerate, onUnlock, onViewDiff }: Re
                 </span>
               </td>
               <td className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">v{r.version}</td>
-              <td className="px-4 py-3 text-xs font-medium text-slate-700 dark:text-slate-200">{r.urgencyScore}</td>
-              <td className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">{r.gapCount ?? '—'}</td>
+              <td className="px-4 py-3 text-xs font-medium text-slate-700 dark:text-slate-200">
+                {r.urgencyScore}
+              </td>
+              <td className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">
+                {r.gapCount ?? '—'}
+              </td>
               <td className="px-4 py-3 text-xs">
                 {r.unlocked || r.paid ? (
                   <span className="text-green-600">Yes</span>

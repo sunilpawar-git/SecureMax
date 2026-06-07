@@ -54,10 +54,7 @@ const mockApiError = apiError as jest.Mock;
 const MOCK_SESSION = { user: { id: 'user_cuid_test_12345678' } };
 const VALID_REPORT_ID = 'clxxxxxxxxxxxxxxxxxxxxxx';
 
-function makeRequest(
-  action: string,
-  extraParams: Record<string, string> = {},
-): NextRequest {
+function makeRequest(action: string, extraParams: Record<string, string> = {}): NextRequest {
   const url = new URL(`http://localhost/api/report`);
   url.searchParams.set('action', action);
   url.searchParams.set('report_id', VALID_REPORT_ID);
@@ -159,8 +156,6 @@ describe('/api/report GET — invalid actions', () => {
   it('returns error for unknown action', async () => {
     const { GET } = await import('../app/api/report/route');
     await GET(makeRequest('nonexistent'));
-    expect(mockApiError).toHaveBeenCalledWith(
-      expect.stringContaining('Invalid action'),
-    );
+    expect(mockApiError).toHaveBeenCalledWith(expect.stringContaining('Invalid action'));
   });
 });

@@ -64,7 +64,9 @@ export function QuestionCard({ question, onSubmit, isLoading, questionNumber }: 
         <span className="text-xs text-gray-400 dark:text-slate-500">Q{questionNumber}</span>
       </div>
 
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-6">{question.text}</h2>
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-6">
+        {question.text}
+      </h2>
 
       {question.question_type === 'text_input' ? (
         <textarea

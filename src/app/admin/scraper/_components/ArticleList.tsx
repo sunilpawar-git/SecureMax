@@ -22,7 +22,10 @@ export function ArticleList({ articles, total, onDelete }: ArticleListProps) {
           const tags = (a.domainTags ?? []) as string[];
           const iTags = (a.industryTags ?? []) as string[];
           return (
-            <div key={a.id} className="border-b border-slate-100 dark:border-slate-700 pb-3 last:border-0">
+            <div
+              key={a.id}
+              className="border-b border-slate-100 dark:border-slate-700 pb-3 last:border-0"
+            >
               <div className="flex items-start justify-between gap-2">
                 <a
                   href={safeUrl}
@@ -35,7 +38,11 @@ export function ArticleList({ articles, total, onDelete }: ArticleListProps) {
                 {!a.usedInReports && (
                   <button
                     onClick={() => {
-                      if (window.confirm('Delete this article from the knowledge base? This cannot be undone.')) {
+                      if (
+                        window.confirm(
+                          'Delete this article from the knowledge base? This cannot be undone.',
+                        )
+                      ) {
                         onDelete(a.id);
                       }
                     }}
@@ -45,7 +52,9 @@ export function ArticleList({ articles, total, onDelete }: ArticleListProps) {
                   </button>
                 )}
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">{a.summary}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                {a.summary}
+              </p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {tags.map((tag) => (
                   <span
@@ -68,13 +77,17 @@ export function ArticleList({ articles, total, onDelete }: ArticleListProps) {
                 {a.source}
                 {a.scrapedAt ? ` · ${new Date(a.scrapedAt).toLocaleDateString()}` : ''}
                 {a.usedInReports && (
-                  <span className="ml-2 text-amber-600 dark:text-amber-400 font-medium">Used in reports</span>
+                  <span className="ml-2 text-amber-600 dark:text-amber-400 font-medium">
+                    Used in reports
+                  </span>
                 )}
               </p>
             </div>
           );
         })}
-        {articles.length === 0 && <p className="text-sm text-slate-400 dark:text-slate-500">No articles found.</p>}
+        {articles.length === 0 && (
+          <p className="text-sm text-slate-400 dark:text-slate-500">No articles found.</p>
+        )}
       </div>
     </div>
   );

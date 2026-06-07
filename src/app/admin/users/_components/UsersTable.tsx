@@ -50,7 +50,9 @@ function UserAvatar({ name, email }: { name: string | null; email: string }) {
         {initials}
       </div>
       <div className="min-w-0">
-        {name && <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">{name}</p>}
+        {name && (
+          <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">{name}</p>
+        )}
         <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{email}</p>
       </div>
     </div>
@@ -59,7 +61,11 @@ function UserAvatar({ name, email }: { name: string | null; email: string }) {
 
 export function UsersTable({ users }: UsersTableProps) {
   if (users.length === 0) {
-    return <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">{USERS_PAGE.EMPTY_STATE}</p>;
+    return (
+      <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">
+        {USERS_PAGE.EMPTY_STATE}
+      </p>
+    );
   }
 
   return (
@@ -92,7 +98,10 @@ export function UsersTable({ users }: UsersTableProps) {
         </thead>
         <tbody>
           {users.map((u) => (
-            <tr key={u.id} className="border-b dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700">
+            <tr
+              key={u.id}
+              className="border-b dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700"
+            >
               <td className="px-4 py-3 max-w-[200px]">
                 <UserAvatar name={u.name} email={u.email} />
               </td>
@@ -112,7 +121,9 @@ export function UsersTable({ users }: UsersTableProps) {
                   </span>
                 )}
               </td>
-              <td className="px-4 py-3 text-xs text-slate-600 dark:text-slate-300">{u.sessionCount}</td>
+              <td className="px-4 py-3 text-xs text-slate-600 dark:text-slate-300">
+                {u.sessionCount}
+              </td>
               <td className="px-4 py-3">
                 {u.paidSessionCount > 0 ? (
                   <span
@@ -121,13 +132,17 @@ export function UsersTable({ users }: UsersTableProps) {
                     {u.paidSessionCount}
                   </span>
                 ) : (
-                  <span className="text-xs text-slate-400 dark:text-slate-500">{USERS_PAGE.PAID_NONE}</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-500">
+                    {USERS_PAGE.PAID_NONE}
+                  </span>
                 )}
               </td>
               <td className="px-4 py-3 text-xs text-slate-400 dark:text-slate-500">
                 {formatRelativeDate(u.lastActiveAt, USERS_PAGE.NEVER)}
               </td>
-              <td className="px-4 py-3 text-xs text-slate-400 dark:text-slate-500">{formatShortDate(u.joinedAt)}</td>
+              <td className="px-4 py-3 text-xs text-slate-400 dark:text-slate-500">
+                {formatShortDate(u.joinedAt)}
+              </td>
             </tr>
           ))}
         </tbody>

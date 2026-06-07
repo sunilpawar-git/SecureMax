@@ -19,7 +19,12 @@ export function RegenConfirmDialog({ sessionId, onConfirm, onCancel }: RegenConf
         aria-labelledby="dialog-title"
         className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-sm mx-4 p-6"
       >
-        <h2 id="dialog-title" className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">Regenerate Report</h2>
+        <h2
+          id="dialog-title"
+          className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2"
+        >
+          Regenerate Report
+        </h2>
         <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
           This will create a new version of the report for session{' '}
           <span className="font-mono text-xs">{sessionId.slice(0, 8)}...</span>. The previous

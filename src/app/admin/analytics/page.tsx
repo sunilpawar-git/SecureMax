@@ -39,7 +39,8 @@ export default function AnalyticsPage() {
     load();
   }, []);
 
-  if (loading) return <p className="text-sm text-slate-400 dark:text-slate-500">Loading analytics...</p>;
+  if (loading)
+    return <p className="text-sm text-slate-400 dark:text-slate-500">Loading analytics...</p>;
   if (error) return <p className="text-sm text-red-600 dark:text-red-400">{error}</p>;
   if (!data) return null;
 
@@ -67,14 +68,23 @@ export default function AnalyticsPage() {
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Domain Performance</h2>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
+          Domain Performance
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {Object.values(CPP_DOMAINS).map((d) => {
             const domainData = data.domains[d.code];
             return (
-              <div key={d.code} className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
-                <div className="text-xs font-medium text-emerald-700 dark:text-emerald-400">{d.code}</div>
-                <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">{d.name}</div>
+              <div
+                key={d.code}
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4"
+              >
+                <div className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                  {d.code}
+                </div>
+                <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  {d.name}
+                </div>
                 <div className="mt-2 flex justify-between text-xs text-slate-500 dark:text-slate-400">
                   <span>Avg Score: {domainData?.avgScore ?? '—'}</span>
                   <span>{domainData?.questionCount ?? 0} questions</span>

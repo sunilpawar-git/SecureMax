@@ -15,7 +15,9 @@ export function ChecklistDownload({ sessionId, reportId }: ChecklistDownloadProp
   const handleDownload = useCallback(async () => {
     setState('loading');
     try {
-      const res = await fetch(`/api/report?action=checklist&report_id=${encodeURIComponent(reportId)}`);
+      const res = await fetch(
+        `/api/report?action=checklist&report_id=${encodeURIComponent(reportId)}`,
+      );
       if (!res.ok) {
         setState('error');
         return;

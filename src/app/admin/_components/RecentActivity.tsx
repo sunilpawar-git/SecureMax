@@ -52,7 +52,9 @@ export function RecentActivity({ actions }: RecentActivityProps) {
   return (
     <ul className="space-y-2">
       {actions.map((action) => {
-        const style = ACTION_TYPE_STYLES[action.actionType] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
+        const style =
+          ACTION_TYPE_STYLES[action.actionType] ??
+          'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
         const label = ACTION_LABELS[action.actionType] ?? action.actionType;
         return (
           <li
@@ -64,7 +66,9 @@ export function RecentActivity({ actions }: RecentActivityProps) {
             </span>
             <span className="text-slate-700 dark:text-slate-200 flex-1 truncate">
               {label}
-              <span className="text-slate-400 dark:text-slate-500 ml-1">#{action.entityId.slice(-6)}</span>
+              <span className="text-slate-400 dark:text-slate-500 ml-1">
+                #{action.entityId.slice(-6)}
+              </span>
             </span>
             <span className="text-slate-400 dark:text-slate-500 text-xs whitespace-nowrap">
               {formatRelativeTime(action.createdAt)}

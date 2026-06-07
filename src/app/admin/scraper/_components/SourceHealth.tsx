@@ -49,7 +49,9 @@ export function SourceHealth({ sources, nextRun }: SourceHealthProps) {
             >
               <span className="font-medium text-slate-700 dark:text-slate-200">{name}</span>
               <div className="flex items-center gap-3">
-                <span className="text-slate-400 dark:text-slate-500">{h.total_articles} articles</span>
+                <span className="text-slate-400 dark:text-slate-500">
+                  {h.total_articles} articles
+                </span>
                 {h.last_success && (
                   <span className="text-xs text-slate-400 dark:text-slate-500">
                     Last: {new Date(h.last_success).toLocaleDateString()}
@@ -65,7 +67,9 @@ export function SourceHealth({ sources, nextRun }: SourceHealthProps) {
           );
         })}
         {entries.length === 0 && (
-          <p className="text-sm text-slate-400 dark:text-slate-500">No source data yet. Run the scraper first.</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500">
+            No source data yet. Run the scraper first.
+          </p>
         )}
       </div>
     </div>

@@ -14,20 +14,20 @@ Server-side library utilities: env, crypto, auth, DB context, logging, rate limi
 
 ## Core Modules
 
-| File | Purpose |
-|------|---------|
-| `env.ts` | Typed env var accessor; `validateServerEnv()` called at startup |
-| `encryption.ts` | AES-256-GCM encrypt/decrypt with versioned format |
-| `logger.ts` | Structured logger; JSON in prod, human-readable in dev; PII-stripping |
-| `prisma.ts` | Singleton Prisma client (globalThis pattern) |
-| `ai-service.ts` | HTTP client for FastAPI; 30s timeout, `X-Service-Key` auth |
+| File            | Purpose                                                               |
+| --------------- | --------------------------------------------------------------------- |
+| `env.ts`        | Typed env var accessor; `validateServerEnv()` called at startup       |
+| `encryption.ts` | AES-256-GCM encrypt/decrypt with versioned format                     |
+| `logger.ts`     | Structured logger; JSON in prod, human-readable in dev; PII-stripping |
+| `prisma.ts`     | Singleton Prisma client (globalThis pattern)                          |
+| `ai-service.ts` | HTTP client for FastAPI; 30s timeout, `X-Service-Key` auth            |
 
 ## Common Patterns
 
 ```typescript
 // ✓ Access env vars
 import { env } from '@/lib/env';
-const dbUrl = env.DATABASE_URL;  // Typed, validated at startup
+const dbUrl = env.DATABASE_URL; // Typed, validated at startup
 
 // ✓ User-scoped DB query (enforces RLS)
 import { withUserContext } from '@/lib/db/with-user-context';
@@ -38,7 +38,7 @@ const result = await withUserContext(userId, async (tx) => {
 // ✓ Admin query (crosses tenant boundaries)
 import { withRlsBypass } from '@/lib/db/with-user-context';
 const result = await withRlsBypass(async (tx) => {
-  return tx.auditSession.findMany();  // No tenant filter
+  return tx.auditSession.findMany(); // No tenant filter
 });
 ```
 

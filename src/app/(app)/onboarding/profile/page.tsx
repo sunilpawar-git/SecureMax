@@ -5,8 +5,15 @@ import { useRouter } from 'next/navigation';
 import { APP } from '@/config/strings';
 
 const COUNTRIES = [
-  'India', 'United Arab Emirates', 'Singapore', 'United Kingdom',
-  'United States', 'Saudi Arabia', 'Qatar', 'Bahrain', 'Other',
+  'India',
+  'United Arab Emirates',
+  'Singapore',
+  'United Kingdom',
+  'United States',
+  'Saudi Arabia',
+  'Qatar',
+  'Bahrain',
+  'Other',
 ] as const;
 
 export default function ProfilePage() {
@@ -53,7 +60,9 @@ export default function ProfilePage() {
           className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 space-y-5"
         >
           <div>
-            <h2 className="font-semibold text-slate-900 dark:text-slate-100">Where is your property located?</h2>
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+              Where is your property located?
+            </h2>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               This helps us tailor the security assessment to local threat landscapes and
               regulations.
@@ -62,7 +71,10 @@ export default function ProfilePage() {
 
           <div className="space-y-4">
             <div>
-              <label htmlFor="country" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
+              <label
+                htmlFor="country"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1"
+              >
                 Country
               </label>
               <select
@@ -75,13 +87,18 @@ export default function ProfilePage() {
               >
                 <option value="">Select country</option>
                 {COUNTRIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label htmlFor="city" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
+              <label
+                htmlFor="city"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1"
+              >
                 City
               </label>
               <input

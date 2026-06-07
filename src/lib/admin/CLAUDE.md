@@ -13,19 +13,19 @@ Admin service layer: 18 service files for admin mutations and queries. Single so
 
 ## Service Files
 
-| File | Purpose |
-|------|---------|
-| `index.ts` | Barrel export (import all from `@/lib/admin`) |
-| `auth.ts` | `verifyAdmin()`, `forbiddenResponse()` |
-| `actions.ts` | `logAdminAction()`, `getRecentActions()` (immutable audit trail) |
-| `stats-service.ts` | `getDashboardStats()` — KPI aggregations |
-| `leads-service.ts` | Lead CRUD with state machine transitions |
-| `reports-service.ts` | Report listing, regeneration, unlock |
-| `diff-engine.ts` | `compareReports()` — report version diff |
-| `threat-intel-service.ts` | Scraper article CRUD |
-| `validators.ts` | All admin Zod schemas (lead status, report ops, etc.) |
-| `csv-export.ts` | `maskEmail()`, `auditLogToCsv()` |
-| `email.ts` | `sendLeadEmail()` via Resend |
+| File                      | Purpose                                                          |
+| ------------------------- | ---------------------------------------------------------------- |
+| `index.ts`                | Barrel export (import all from `@/lib/admin`)                    |
+| `auth.ts`                 | `verifyAdmin()`, `forbiddenResponse()`                           |
+| `actions.ts`              | `logAdminAction()`, `getRecentActions()` (immutable audit trail) |
+| `stats-service.ts`        | `getDashboardStats()` — KPI aggregations                         |
+| `leads-service.ts`        | Lead CRUD with state machine transitions                         |
+| `reports-service.ts`      | Report listing, regeneration, unlock                             |
+| `diff-engine.ts`          | `compareReports()` — report version diff                         |
+| `threat-intel-service.ts` | Scraper article CRUD                                             |
+| `validators.ts`           | All admin Zod schemas (lead status, report ops, etc.)            |
+| `csv-export.ts`           | `maskEmail()`, `auditLogToCsv()`                                 |
+| `email.ts`                | `sendLeadEmail()` via Resend                                     |
 
 ## Common Patterns
 
@@ -37,10 +37,10 @@ import { leadsService } from '@/lib/admin';
 async function updateLeadStatus(leadId: string, newStatus: string) {
   const parsed = UpdateLeadSchema.safeParse({ leadId, status: newStatus });
   if (!parsed.success) throw new Error('Invalid input');
-  
+
   const result = await leadsService.updateLeadStatus(leadId, newStatus);
   await logAdminAction(adminId, 'LEAD_STATUS_UPDATE', { leadId, status: newStatus });
-  
+
   return result;
 }
 ```

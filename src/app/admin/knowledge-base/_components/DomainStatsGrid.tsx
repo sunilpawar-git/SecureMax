@@ -18,7 +18,10 @@ export function DomainStatsGrid({ domains, total }: Props) {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {Object.values(CPP_DOMAINS).map((d) => (
-          <div key={d.code} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
+          <div
+            key={d.code}
+            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4"
+          >
             <div className="text-xs font-medium text-slate-500 dark:text-slate-400">{d.code}</div>
             <div className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-1">
               {domains[d.code] ?? 0}

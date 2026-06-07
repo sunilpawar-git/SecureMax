@@ -35,9 +35,12 @@ describe('useKnowledgeBase fetch logic', () => {
     formData.append('domain', 'CPP-01');
 
     await fetch('/api/admin/knowledge-base', { method: 'POST', body: formData });
-    expect(mockFetch).toHaveBeenCalledWith('/api/admin/knowledge-base', expect.objectContaining({
-      method: 'POST',
-    }));
+    expect(mockFetch).toHaveBeenCalledWith(
+      '/api/admin/knowledge-base',
+      expect.objectContaining({
+        method: 'POST',
+      }),
+    );
   });
 
   it('handles fetch error gracefully', async () => {
@@ -65,8 +68,7 @@ describe('Admin Knowledge Base API route', () => {
       logger: { error: jest.fn(), info: jest.fn(), warn: jest.fn() },
     }));
     jest.mock('@/lib/api', () => ({
-      apiSuccess: (data: unknown) =>
-        new Response(JSON.stringify({ data }), { status: 200 }),
+      apiSuccess: (data: unknown) => new Response(JSON.stringify({ data }), { status: 200 }),
       apiError: (msg: string, code: number) =>
         new Response(JSON.stringify({ error: msg }), { status: code }),
     }));
@@ -75,9 +77,9 @@ describe('Admin Knowledge Base API route', () => {
   it('GET requires admin auth', async () => {
     jest.mock('@/lib/admin/auth', () => ({
       verifyAdmin: jest.fn().mockResolvedValue(false),
-      forbiddenResponse: jest.fn().mockReturnValue(
-        new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 }),
-      ),
+      forbiddenResponse: jest
+        .fn()
+        .mockReturnValue(new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 })),
     }));
 
     const { GET } = await import('@/app/api/admin/knowledge-base/route');

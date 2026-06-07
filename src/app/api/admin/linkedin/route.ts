@@ -14,7 +14,10 @@ import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 
 const LogPostSchema = z.object({ postText: z.string().min(1).max(3000) });
-const PatchStatusSchema = z.object({ id: z.string().min(1), status: z.enum(['published', 'draft']) });
+const PatchStatusSchema = z.object({
+  id: z.string().min(1),
+  status: z.enum(['published', 'draft']),
+});
 
 /** GET /api/admin/linkedin?type=drafts — list draft posts. */
 export async function GET(request: NextRequest) {

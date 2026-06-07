@@ -70,7 +70,9 @@ export default function ReportDownloadPage() {
     setState('downloading');
     try {
       const modeParam = reportMode !== 'complete' ? `&mode=${reportMode}` : '';
-      const res = await fetch(`/api/report?action=full&report_id=${encodeURIComponent(sessionId)}${modeParam}`);
+      const res = await fetch(
+        `/api/report?action=full&report_id=${encodeURIComponent(sessionId)}${modeParam}`,
+      );
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setState('error');
@@ -148,11 +150,13 @@ export default function ReportDownloadPage() {
               <legend className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
                 Report Format
               </legend>
-              {([
-                { value: 'executive', label: 'Executive Brief (1 page)' },
-                { value: 'technical', label: 'Technical Annex (full detail)' },
-                { value: 'complete', label: 'Complete Report' },
-              ] as const).map((opt) => (
+              {(
+                [
+                  { value: 'executive', label: 'Executive Brief (1 page)' },
+                  { value: 'technical', label: 'Technical Annex (full detail)' },
+                  { value: 'complete', label: 'Complete Report' },
+                ] as const
+              ).map((opt) => (
                 <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="radio"
@@ -182,7 +186,9 @@ export default function ReportDownloadPage() {
 
         {state === 'payment_required' && (
           <div className="space-y-4">
-            <p className="text-sm text-slate-600 dark:text-slate-300">Payment required to access the full report.</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Payment required to access the full report.
+            </p>
             <a
               href={`/payment/${auditSessionId ?? sessionId}`}
               className="block w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"

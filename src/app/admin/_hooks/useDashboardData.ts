@@ -83,7 +83,9 @@ export function useDashboardData(): DashboardData {
       }
     };
     void fetchData();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

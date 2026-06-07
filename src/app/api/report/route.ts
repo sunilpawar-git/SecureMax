@@ -102,18 +102,14 @@ export async function GET(request: NextRequest) {
         const mode = request.nextUrl.searchParams.get('mode') ?? 'complete';
         const AI_SERVICE_URL = env.AI_SERVICE_URL || 'http://localhost:8000';
         const AI_SERVICE_KEY = env.AI_SERVICE_KEY;
-        const modeParam =
-          mode === 'executive' || mode === 'technical' ? `?mode=${mode}` : '';
-        const pdfRes = await fetch(
-          `${AI_SERVICE_URL}/report/${reportId}/full${modeParam}`,
-          {
-            method: 'GET',
-            headers: {
-              'X-Service-Key': AI_SERVICE_KEY,
-              'X-User-Id': session.user.id,
-            },
+        const modeParam = mode === 'executive' || mode === 'technical' ? `?mode=${mode}` : '';
+        const pdfRes = await fetch(`${AI_SERVICE_URL}/report/${reportId}/full${modeParam}`, {
+          method: 'GET',
+          headers: {
+            'X-Service-Key': AI_SERVICE_KEY,
+            'X-User-Id': session.user.id,
           },
-        );
+        });
         if (!pdfRes.ok) {
           return apiError('Failed to retrieve report', pdfRes.status);
         }

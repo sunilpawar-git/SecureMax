@@ -13,15 +13,15 @@ Shared React components: landing sections, report widgets, security UI, legal do
 
 ## Component Organization
 
-| Folder / File | Purpose |
-|---|---|
-| `landing/` | Marketing page sections: HeroSection, HowItWorks, LandingHeader, TrustSignals |
-| `report/` | Report viewer: FindingCard, FreeSummaryView |
-| `security/` | TurnstileWidget (Cloudflare CAPTCHA) |
-| `legal/` | LegalDocument (reusable legal doc renderer) |
-| `AppHeader.tsx` | Authenticated app header with nav |
-| `AppLayoutShell.tsx` | Layout shell wrapper; auth redirect check |
-| `ResumePrompt.tsx` | "Resume your session" prompt banner |
+| Folder / File        | Purpose                                                                       |
+| -------------------- | ----------------------------------------------------------------------------- |
+| `landing/`           | Marketing page sections: HeroSection, HowItWorks, LandingHeader, TrustSignals |
+| `report/`            | Report viewer: FindingCard, FreeSummaryView                                   |
+| `security/`          | TurnstileWidget (Cloudflare CAPTCHA)                                          |
+| `legal/`             | LegalDocument (reusable legal doc renderer)                                   |
+| `AppHeader.tsx`      | Authenticated app header with nav                                             |
+| `AppLayoutShell.tsx` | Layout shell wrapper; auth redirect check                                     |
+| `ResumePrompt.tsx`   | "Resume your session" prompt banner                                           |
 
 ## Common Patterns
 

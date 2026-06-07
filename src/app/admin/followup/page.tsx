@@ -49,11 +49,19 @@ export default function FollowUpPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{FOLLOWUP_STRINGS.PAGE_TITLE}</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{FOLLOWUP_STRINGS.PAGE_DESCRIPTION}</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+          {FOLLOWUP_STRINGS.PAGE_TITLE}
+        </h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          {FOLLOWUP_STRINGS.PAGE_DESCRIPTION}
+        </p>
       </div>
 
-      {error && <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-md px-4 py-2">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-md px-4 py-2">
+          {error}
+        </p>
+      )}
 
       {loading ? (
         <p className="text-sm text-slate-400 dark:text-slate-500 py-8 text-center">Loading...</p>

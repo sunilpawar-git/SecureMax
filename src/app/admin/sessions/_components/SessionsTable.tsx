@@ -15,7 +15,11 @@ interface SessionsTableProps {
 
 export function SessionsTable({ sessions, onForceClose }: SessionsTableProps) {
   if (sessions.length === 0) {
-    return <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">No sessions found.</p>;
+    return (
+      <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">
+        No sessions found.
+      </p>
+    );
   }
 
   return (
@@ -23,20 +27,41 @@ export function SessionsTable({ sessions, onForceClose }: SessionsTableProps) {
       <table className="w-full text-sm">
         <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
           <tr>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Session</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">User</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Track</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Status</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Paid</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Report</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Created</th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Actions</th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Session
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              User
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Track
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Status
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Paid
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Report
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Created
+            </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
           {sessions.map((s) => (
-            <tr key={s.id} className="border-b border-slate-200 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700">
-              <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{s.id.slice(0, 8)}...</td>
+            <tr
+              key={s.id}
+              className="border-b border-slate-200 dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700"
+            >
+              <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">
+                {s.id.slice(0, 8)}...
+              </td>
               <td className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400 truncate max-w-[160px]">
                 {s.userEmail ?? '—'}
               </td>
@@ -54,8 +79,12 @@ export function SessionsTable({ sessions, onForceClose }: SessionsTableProps) {
                   {s.status.replace(/_/g, ' ')}
                 </span>
               </td>
-              <td className="px-4 py-3 text-xs text-slate-700 dark:text-slate-300">{s.paid ? 'Yes' : 'No'}</td>
-              <td className="px-4 py-3 text-xs text-slate-700 dark:text-slate-300">{s.reportReady ? 'Ready' : '—'}</td>
+              <td className="px-4 py-3 text-xs text-slate-700 dark:text-slate-300">
+                {s.paid ? 'Yes' : 'No'}
+              </td>
+              <td className="px-4 py-3 text-xs text-slate-700 dark:text-slate-300">
+                {s.reportReady ? 'Ready' : '—'}
+              </td>
               <td className="px-4 py-3 text-xs text-slate-400 dark:text-slate-500">
                 {new Date(s.createdAt).toLocaleDateString()}
               </td>

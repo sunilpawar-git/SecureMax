@@ -69,7 +69,9 @@ export default function PaymentPage() {
       <div className="max-w-md w-full space-y-6">
         <div className="text-center">
           <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">{APP.NAME}</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Unlock Your Full Security Report</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Unlock Your Full Security Report
+          </p>
         </div>
 
         <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 space-y-4">
@@ -115,7 +117,9 @@ export default function PaymentPage() {
               >
                 {devBypassing ? 'Unlocking...' : 'Bypass Payment (Dev)'}
               </button>
-              {devError && <p className="text-xs text-red-600 dark:text-red-400 text-center">{devError}</p>}
+              {devError && (
+                <p className="text-xs text-red-600 dark:text-red-400 text-center">{devError}</p>
+              )}
             </div>
           )}
         </div>
@@ -126,7 +130,9 @@ export default function PaymentPage() {
           </p>
         </div>
 
-        <p className="text-center text-xs text-slate-400 dark:text-slate-500">{TRUST_STACK.COMPLIANCE_SIGNAL}</p>
+        <p className="text-center text-xs text-slate-400 dark:text-slate-500">
+          {TRUST_STACK.COMPLIANCE_SIGNAL}
+        </p>
       </div>
     </div>
   );

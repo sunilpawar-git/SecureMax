@@ -38,7 +38,9 @@ export function FreeSummaryView({
       <div className="text-center space-y-2">
         <div className={`text-4xl font-bold ${riskColor}`}>{urgencyScore}/100</div>
         <div className={`text-sm font-semibold ${riskColor}`}>{riskLevel}</div>
-        <p className="text-sm text-slate-500 dark:text-slate-400">{REPORT_STRINGS.POSTURE_SCORE_LABEL}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {REPORT_STRINGS.POSTURE_SCORE_LABEL}
+        </p>
       </div>
 
       <div className="max-w-sm mx-auto">
@@ -47,8 +49,12 @@ export function FreeSummaryView({
 
       {track === 'enterprise' && complianceGapCount !== undefined && complianceGapCount > 0 && (
         <div className="rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-900/20 p-4 text-center">
-          <span className="text-2xl font-bold text-orange-700 dark:text-orange-300">{complianceGapCount}</span>
-          <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">ISO 27001 / PSARA compliance gaps detected</p>
+          <span className="text-2xl font-bold text-orange-700 dark:text-orange-300">
+            {complianceGapCount}
+          </span>
+          <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
+            ISO 27001 / PSARA compliance gaps detected
+          </p>
         </div>
       )}
 

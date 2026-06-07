@@ -52,7 +52,9 @@ export function DraftQueue() {
     }
   }, []);
 
-  useEffect(() => { void fetchDrafts(); }, [fetchDrafts]);
+  useEffect(() => {
+    void fetchDrafts();
+  }, [fetchDrafts]);
 
   const markPublished = async (id: string) => {
     try {

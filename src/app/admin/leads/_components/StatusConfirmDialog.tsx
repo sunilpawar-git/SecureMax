@@ -29,11 +29,22 @@ export function StatusConfirmDialog({
         aria-labelledby="dialog-title"
         className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-sm mx-4 p-6"
       >
-        <h2 id="dialog-title" className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">Confirm Status Change</h2>
+        <h2
+          id="dialog-title"
+          className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2"
+        >
+          Confirm Status Change
+        </h2>
         <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
           Move <span className="font-medium">{leadCompany}</span> from{' '}
-          <span className="font-medium">{LEAD_STATUS_LABEL[currentStatus] ?? currentStatus.replace(/_/g, ' ')}</span> to{' '}
-          <span className="font-medium">{LEAD_STATUS_LABEL[targetStatus] ?? targetStatus.replace(/_/g, ' ')}</span>?
+          <span className="font-medium">
+            {LEAD_STATUS_LABEL[currentStatus] ?? currentStatus.replace(/_/g, ' ')}
+          </span>{' '}
+          to{' '}
+          <span className="font-medium">
+            {LEAD_STATUS_LABEL[targetStatus] ?? targetStatus.replace(/_/g, ' ')}
+          </span>
+          ?
         </p>
         <div className="flex justify-end gap-3">
           <button

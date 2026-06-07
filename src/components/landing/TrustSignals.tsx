@@ -29,7 +29,9 @@ export function TrustSignals() {
       <div className="mx-auto max-w-5xl">
         <div className="text-center space-y-3 mb-12">
           <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Built on Trust</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto">{TRUST_STACK.CREDENTIAL}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
+            {TRUST_STACK.CREDENTIAL}
+          </p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -39,8 +41,12 @@ export function TrustSignals() {
               className="rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-5 space-y-3"
             >
               <s.icon />
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{s.title}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{s.description}</p>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                {s.title}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                {s.description}
+              </p>
             </div>
           ))}
         </div>

@@ -65,7 +65,9 @@ export default function LeadsPage() {
             onChange={(e) => data.setSearchQuery(e.target.value)}
             className="text-sm rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500 w-56"
           />
-          <span className="text-sm text-slate-400 dark:text-slate-500 self-center">{data.total} leads</span>
+          <span className="text-sm text-slate-400 dark:text-slate-500 self-center">
+            {data.total} leads
+          </span>
         </div>
       </div>
 

@@ -99,7 +99,9 @@ export default async function SignInPage({
         </p>
       </div>
 
-      <p className="text-center text-xs text-slate-400 dark:text-slate-500">{TRUST_STACK.CREDENTIAL}</p>
+      <p className="text-center text-xs text-slate-400 dark:text-slate-500">
+        {TRUST_STACK.CREDENTIAL}
+      </p>
     </div>
   );
 }

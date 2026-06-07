@@ -20,14 +20,18 @@ function isOverdue(dueAt: string | null): boolean {
 }
 
 export function LeadCard({ lead, onStatusChange, onEmail }: LeadCardProps) {
-  const statusStyle = LEAD_STATUS_STYLES[lead.status] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
+  const statusStyle =
+    LEAD_STATUS_STYLES[lead.status] ??
+    'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
   const transitions = VALID_LEAD_TRANSITIONS[lead.status] ?? [];
   const overdue = isOverdue(lead.followUpDueAt);
 
   return (
     <div
       className={`bg-white dark:bg-slate-800 rounded-lg border p-4 space-y-3 ${
-        overdue ? 'border-red-300 ring-1 ring-red-200 dark:border-red-700 dark:ring-red-900/50' : 'border-slate-200 dark:border-slate-700'
+        overdue
+          ? 'border-red-300 ring-1 ring-red-200 dark:border-red-700 dark:ring-red-900/50'
+          : 'border-slate-200 dark:border-slate-700'
       }`}
     >
       <div className="flex items-start justify-between gap-2">
@@ -40,9 +44,13 @@ export function LeadCard({ lead, onStatusChange, onEmail }: LeadCardProps) {
         </span>
       </div>
 
-      {lead.email && <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{lead.email}</p>}
+      {lead.email && (
+        <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{lead.email}</p>
+      )}
 
-      {overdue && <p className="text-xs text-red-600 dark:text-red-400 font-medium">Follow-up overdue</p>}
+      {overdue && (
+        <p className="text-xs text-red-600 dark:text-red-400 font-medium">Follow-up overdue</p>
+      )}
 
       <div className="flex flex-wrap gap-2">
         {transitions.map((target) => (

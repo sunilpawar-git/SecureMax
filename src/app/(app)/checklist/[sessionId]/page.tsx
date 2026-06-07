@@ -28,14 +28,22 @@ function ChecklistCard({
       <div className="flex items-start gap-3">
         <div
           className={`mt-0.5 w-5 h-5 rounded border-2 flex-shrink-0 flex items-center justify-center ${
-            item.checked
-              ? 'bg-emerald-600 border-emerald-600'
-              : 'border-slate-400'
+            item.checked ? 'bg-emerald-600 border-emerald-600' : 'border-slate-400'
           }`}
         >
           {item.checked && (
-            <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+            <svg
+              className="w-3 h-3 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={3}
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           )}
         </div>
@@ -57,8 +65,10 @@ export default function ChecklistPage() {
     : (params.sessionId ?? '');
   const reportId = searchParams.get('report') ?? sessionId;
 
-  const { items, loading, error, toggleItem, completedCount, totalCount } =
-    useChecklist(sessionId, reportId);
+  const { items, loading, error, toggleItem, completedCount, totalCount } = useChecklist(
+    sessionId,
+    reportId,
+  );
 
   const grouped = items.reduce<Record<string, ChecklistItem[]>>((acc, item) => {
     (acc[item.domain] ??= []).push(item);

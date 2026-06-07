@@ -43,7 +43,10 @@ export function KpiCards({ stats }: KpiCardsProps) {
     {
       label: 'Pending Leads',
       value: stats.pendingLeads.toString(),
-      className: stats.pendingLeads > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-900 dark:text-slate-100',
+      className:
+        stats.pendingLeads > 0
+          ? 'text-amber-600 dark:text-amber-400'
+          : 'text-slate-900 dark:text-slate-100',
     },
     {
       label: 'Reports Generated',

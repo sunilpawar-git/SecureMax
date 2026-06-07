@@ -43,8 +43,12 @@ export function HowItWorks() {
               <div className="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center text-sm font-bold mb-4">
                 {s.step}
               </div>
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">{s.title}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{s.description}</p>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                {s.title}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                {s.description}
+              </p>
             </div>
           ))}
         </div>

@@ -52,12 +52,16 @@ export default function SessionsPage() {
               </option>
             ))}
           </select>
-          <span className="text-sm text-slate-400 dark:text-slate-500 self-center">{data.total} sessions</span>
+          <span className="text-sm text-slate-400 dark:text-slate-500 self-center">
+            {data.total} sessions
+          </span>
         </div>
       </div>
 
       {data.error && (
-        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-md px-4 py-2">{data.error}</p>
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-md px-4 py-2">
+          {data.error}
+        </p>
       )}
       {data.loading ? (
         <p className="text-sm text-slate-400 dark:text-slate-500">Loading sessions...</p>

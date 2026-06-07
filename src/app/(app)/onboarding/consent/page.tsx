@@ -54,7 +54,9 @@ export default function ConsentPage() {
             <p>{TRUST_STACK.HNI_PRIVACY}</p>
 
             <div className="rounded-lg bg-slate-50 dark:bg-slate-700/50 p-4 space-y-2">
-              <p className="font-medium text-slate-700 dark:text-slate-200">How we use your data:</p>
+              <p className="font-medium text-slate-700 dark:text-slate-200">
+                How we use your data:
+              </p>
               <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-300">
                 <li>Your answers are encrypted at rest using AES-256-GCM</li>
                 <li>We generate a security audit report based on CPP Seven Precis methodology</li>
@@ -64,7 +66,9 @@ export default function ConsentPage() {
             </div>
 
             <div className="rounded-lg bg-slate-50 dark:bg-slate-700/50 p-4 space-y-2">
-              <p className="font-medium text-slate-700 dark:text-slate-200">Your rights under DPDPA:</p>
+              <p className="font-medium text-slate-700 dark:text-slate-200">
+                Your rights under DPDPA:
+              </p>
               <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-300">
                 <li>Right to access your personal data</li>
                 <li>Right to correction of inaccurate data</li>
@@ -110,7 +114,9 @@ export default function ConsentPage() {
           </button>
         </div>
 
-        <p className="text-center text-xs text-slate-400 dark:text-slate-500">{TRUST_STACK.CREDENTIAL}</p>
+        <p className="text-center text-xs text-slate-400 dark:text-slate-500">
+          {TRUST_STACK.CREDENTIAL}
+        </p>
       </div>
     </div>
   );

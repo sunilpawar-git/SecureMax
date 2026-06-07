@@ -19,7 +19,12 @@ export function ForceCloseDialog({ sessionId, onConfirm, onCancel }: ForceCloseD
         aria-labelledby="dialog-title"
         className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-sm mx-4 p-6"
       >
-        <h2 id="dialog-title" className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">Force Close Session</h2>
+        <h2
+          id="dialog-title"
+          className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2"
+        >
+          Force Close Session
+        </h2>
         <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
           This will mark session{' '}
           <span className="font-mono text-xs">{sessionId.slice(0, 8)}...</span> as abandoned. This

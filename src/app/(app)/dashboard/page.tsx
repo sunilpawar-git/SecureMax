@@ -52,11 +52,15 @@ export default function DashboardPage() {
           href="/questionnaire"
           className="block w-full rounded-lg border-2 border-dashed border-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 p-6 text-center hover:border-emerald-400 transition-colors"
         >
-          <span className="text-emerald-700 dark:text-emerald-300 font-medium">{NAV.START_AUDIT}</span>
+          <span className="text-emerald-700 dark:text-emerald-300 font-medium">
+            {NAV.START_AUDIT}
+          </span>
         </Link>
 
         {loading ? (
-          <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">{UI.LOADING}</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">
+            {UI.LOADING}
+          </p>
         ) : sessions.length === 0 ? (
           <div className="text-center py-8 text-slate-400 dark:text-slate-500">
             <p className="text-sm">{DASHBOARD.EMPTY_STATE}</p>
