@@ -16,3 +16,11 @@ export function safeInt(value: string | null | undefined, fallback: number): num
 export function isValidCuid(value: string): boolean {
   return /^c[a-z0-9]{24}$/.test(value);
 }
+
+/**
+ * Conditional className joiner. Filters out falsy parts (false, null, undefined,
+ * '') and joins the rest with a single space. The DRY foundation for UI primitives.
+ */
+export function cx(...parts: Array<string | false | null | undefined>): string {
+  return parts.filter(Boolean).join(' ');
+}
