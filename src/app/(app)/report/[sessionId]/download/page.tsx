@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { APP } from '@/config/strings';
+import { ChecklistDownload } from './_components/ChecklistDownload';
 
 type DownloadState =
   | 'loading'
@@ -12,6 +13,8 @@ type DownloadState =
   | 'payment_required'
   | 'pending_approval';
 
+type ReportMode = 'executive' | 'technical' | 'complete';
+
 export default function ReportDownloadPage() {
   const params = useParams();
   const sessionId = Array.isArray(params.sessionId)
@@ -20,6 +23,7 @@ export default function ReportDownloadPage() {
   const [state, setState] = useState<DownloadState>('loading');
   const [error, setError] = useState<string | null>(null);
   const [auditSessionId, setAuditSessionId] = useState<string | null>(null);
+  const [reportMode, setReportMode] = useState<ReportMode>('complete');
 
   useEffect(() => {
     if (!sessionId) return;
@@ -65,7 +69,10 @@ export default function ReportDownloadPage() {
   const handleDownload = useCallback(async () => {
     setState('downloading');
     try {
-      const res = await fetch(`/api/report?action=full&report_id=${encodeURIComponent(sessionId)}`);
+      const modeParam = reportMode !== 'complete' ? `&mode=${reportMode}` : '';
+      const res = await fetch(
+        `/api/report?action=full&report_id=${encodeURIComponent(sessionId)}${modeParam}`,
+      );
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setState('error');
@@ -110,20 +117,20 @@ export default function ReportDownloadPage() {
       setState('error');
       setError('Download failed. Please try again.');
     }
-  }, [sessionId]);
+  }, [sessionId, reportMode]);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center space-y-6">
-        <h1 className="text-xl font-bold text-slate-900">{APP.NAME}</h1>
+        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">{APP.NAME}</h1>
 
         {state === 'loading' && (
-          <p className="text-sm text-slate-500">Verifying report access...</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Verifying report access...</p>
         )}
 
         {state === 'ready' && (
           <div className="space-y-4">
-            <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
               <svg
                 className="w-8 h-8 text-emerald-600"
                 fill="none"
@@ -138,23 +145,50 @@ export default function ReportDownloadPage() {
                 />
               </svg>
             </div>
-            <p className="text-sm text-slate-600">Your report is ready.</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300">Your report is ready.</p>
+            <fieldset className="text-left space-y-2 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
+              <legend className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
+                Report Format
+              </legend>
+              {(
+                [
+                  { value: 'executive', label: 'Executive Brief (1 page)' },
+                  { value: 'technical', label: 'Technical Annex (full detail)' },
+                  { value: 'complete', label: 'Complete Report' },
+                ] as const
+              ).map((opt) => (
+                <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="report-mode"
+                    value={opt.value}
+                    checked={reportMode === opt.value}
+                    onChange={() => setReportMode(opt.value)}
+                    className="accent-emerald-700"
+                  />
+                  <span className="text-sm text-slate-700 dark:text-slate-200">{opt.label}</span>
+                </label>
+              ))}
+            </fieldset>
             <button
               onClick={handleDownload}
               className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
             >
               Download PDF Report
             </button>
+            <ChecklistDownload sessionId={sessionId} reportId={sessionId} />
           </div>
         )}
 
         {state === 'downloading' && (
-          <p className="text-sm text-slate-500">Downloading your report...</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Downloading your report...</p>
         )}
 
         {state === 'payment_required' && (
           <div className="space-y-4">
-            <p className="text-sm text-slate-600">Payment required to access the full report.</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Payment required to access the full report.
+            </p>
             <a
               href={`/payment/${auditSessionId ?? sessionId}`}
               className="block w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
@@ -166,11 +200,11 @@ export default function ReportDownloadPage() {
 
         {state === 'pending_approval' && (
           <div className="space-y-3">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 dark:text-slate-300">
               Your enterprise report is pending approval. Our team will unlock it after your
               proposal is processed.
             </p>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-400 dark:text-slate-500">
               You will be notified when the report is ready for download.
             </p>
           </div>
@@ -178,7 +212,7 @@ export default function ReportDownloadPage() {
 
         {state === 'error' && (
           <div className="space-y-3">
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
             <button
               onClick={() => window.location.reload()}
               className="text-sm text-emerald-700 underline"

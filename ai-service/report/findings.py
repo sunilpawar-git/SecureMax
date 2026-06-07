@@ -1,10 +1,12 @@
 """
 Report findings engine — derives security findings from session events.
 Pure functions: session events → classified findings ranked by severity.
+Integrates severity_matrix for per-question calibration with keyword fallback.
 """
 
 from answer_keywords import MODERATE_KEYWORDS, NEGATIVE_KEYWORDS
 from config import CPP_DOMAINS, SEVERITY_ORDER
+from severity_loader import get_question_severity
 
 SEVERITY_CRITICAL = "critical"
 SEVERITY_HIGH = "high"
@@ -30,11 +32,19 @@ def generate_findings(events: list[dict]) -> list[dict]:
         if isinstance(answer, list):
             answer = ", ".join(answer)
 
-        severity = classify_severity(answer, event.get("score_drop_trigger", False))
+        domain = event.get("domain", "")
+        node_id = event.get("question_node_id", "")
+        risk_impact: str | None = None
+
+        matrix_result = get_question_severity(domain, node_id, answer)
+        if matrix_result is not None:
+            severity, risk_impact = matrix_result
+        else:
+            severity = classify_severity(answer, event.get("score_drop_trigger", False))
+
         if severity == SEVERITY_LOW:
             continue
 
-        domain = event.get("domain", "")
         domain_name = CPP_DOMAINS.get(domain, domain)
 
         findings.append(
@@ -44,6 +54,7 @@ def generate_findings(events: list[dict]) -> list[dict]:
                 "question": event.get("question_text", ""),
                 "answer": answer,
                 "severity": severity,
+                "risk_impact": risk_impact,
                 "recommendation": _generate_recommendation(event, severity),
             }
         )

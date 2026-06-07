@@ -185,3 +185,14 @@ This product audits others' security — our own must be exemplary.
 ### Rule 15 — The Audit Trail Is Sacred
 
 Every session — questions asked, answers given, AI reasoning, findings generated — must be immutably logged with timestamps. The PDF is a summary; the DB log is the truth. Never delete or overwrite session data. Admin social posts must log what was posted, when, and to which platform.
+
+### Rule 16 — Database Safety: Role-Based Access Control
+
+Database is split by role to prevent accidental deletion or unauthorized writes:
+
+- **ai_readonly** (SELECT only): Claude AI queries, analytics, read-only operations
+- **app_user** (read + audit writes): FastAPI app, inserts/updates audit sessions, session events, reports
+- **scraper_user** (threat_intel writes): Playwright scraper, updates threat intelligence only
+- **db_admin** (full access): Emergencies, migrations, schema changes only
+
+Never run `DELETE`, `DROP`, or `TRUNCATE` commands via shell. Backups run hourly to `/backups/`. See `ai-service/CLAUDE.md` for full role permissions.

@@ -4,11 +4,12 @@
  */
 
 import crypto from 'crypto';
+import { env } from '@/lib/env';
 
 const RAZORPAY_API = 'https://api.razorpay.com/v1';
 
 function getSecret(): string {
-  return process.env.RAZORPAY_SECRET || '';
+  return env.RAZORPAY_SECRET;
 }
 
 export interface RazorpayOrder {
@@ -26,7 +27,7 @@ export interface PaymentVerification {
 }
 
 export async function createOrder(reportId: string, amountInPaise: number): Promise<RazorpayOrder> {
-  const keyId = process.env.RAZORPAY_KEY_ID || '';
+  const keyId = env.RAZORPAY_KEY_ID;
   const secret = getSecret();
   const authHeader = Buffer.from(`${keyId}:${secret}`).toString('base64');
 
@@ -68,5 +69,5 @@ export function verifySignature(payment: PaymentVerification): boolean {
 }
 
 export function getKeyId(): string {
-  return process.env.RAZORPAY_KEY_ID || '';
+  return env.RAZORPAY_KEY_ID;
 }

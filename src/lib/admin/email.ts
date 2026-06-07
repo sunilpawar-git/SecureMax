@@ -5,6 +5,7 @@
 
 import { APP } from '@/config/strings';
 import { logger } from '@/lib/logger';
+import { env } from '@/lib/env';
 
 interface SendEmailParams {
   to: string;
@@ -33,7 +34,7 @@ let resendClient: ResendLike | null = null;
 
 async function getResendClient(): Promise<ResendLike | null> {
   if (resendClient) return resendClient;
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = env.RESEND_API_KEY;
   if (!apiKey) {
     logger.error('RESEND_API_KEY not set', 'admin-email');
     return null;

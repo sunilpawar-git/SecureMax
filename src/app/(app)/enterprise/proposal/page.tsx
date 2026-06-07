@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { APP, CTA, TRUST_STACK } from '@/config/strings';
+import { TurnstileWidget } from '@/components/security/TurnstileWidget';
 
 interface FormData {
   companyName: string;
@@ -31,8 +32,8 @@ export default function EnterpriseProposalPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-          <p className="text-sm text-slate-400">Loading...</p>
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+          <p className="text-sm text-slate-400 dark:text-slate-500">Loading...</p>
         </div>
       }
     >
@@ -76,6 +77,10 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState('');
+
+  const captchaConfigured = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const handleVerify = useCallback((token: string) => setCaptchaToken(token), []);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -97,6 +102,7 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
           contactPhone: form.contactPhone || undefined,
           facilityCount: parseInt(form.facilityCount, 10) || 1,
           reportId: sessionId,
+          captchaToken: captchaToken || undefined,
         }),
       });
 
@@ -114,9 +120,9 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
         <div className="max-w-md w-full text-center space-y-4">
-          <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
             <svg
               className="w-8 h-8 text-emerald-600"
               fill="none"
@@ -132,27 +138,33 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
               />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-slate-900">Proposal Received</h2>
-          <p className="text-sm text-slate-600">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            Proposal Received
+          </h2>
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             Our team will contact you within 24 hours to discuss your enterprise security audit.
           </p>
-          <p className="text-xs text-slate-400">{TRUST_STACK.ENTERPRISE_SOVEREIGNTY}</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">
+            {TRUST_STACK.ENTERPRISE_SOVEREIGNTY}
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8 px-4">
       <div className="max-w-lg mx-auto space-y-6">
         <div className="text-center">
-          <h1 className="text-xl font-bold text-slate-900">{APP.NAME}</h1>
-          <p className="text-sm text-slate-500 mt-1">{CTA.ENTERPRISE_PROPOSAL}</p>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">{APP.NAME}</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            {CTA.ENTERPRISE_PROPOSAL}
+          </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-xl border border-slate-200 bg-white p-6 space-y-4"
+          className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 space-y-4"
         >
           <Field
             label="Company Name"
@@ -193,7 +205,10 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
           />
 
           <div>
-            <label htmlFor="field-notes" className="block text-sm font-medium text-slate-700 mb-1">
+            <label
+              htmlFor="field-notes"
+              className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1"
+            >
               Notes (optional)
             </label>
             <textarea
@@ -202,16 +217,18 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
               value={form.notes}
               onChange={handleChange}
               rows={3}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
               placeholder="Any specific security concerns or requirements..."
             />
           </div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          <TurnstileWidget onVerify={handleVerify} />
+
+          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || (captchaConfigured && !captchaToken)}
             className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white
               hover:bg-emerald-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -219,7 +236,9 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
           </button>
         </form>
 
-        <p className="text-center text-xs text-slate-400">{TRUST_STACK.ENTERPRISE_SOVEREIGNTY}</p>
+        <p className="text-center text-xs text-slate-400 dark:text-slate-500">
+          {TRUST_STACK.ENTERPRISE_SOVEREIGNTY}
+        </p>
       </div>
     </div>
   );
@@ -243,7 +262,10 @@ function Field({
   const inputId = `field-${name}`;
   return (
     <div>
-      <label htmlFor={inputId} className="block text-sm font-medium text-slate-700 mb-1">
+      <label
+        htmlFor={inputId}
+        className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1"
+      >
         {label}
       </label>
       <input
@@ -253,7 +275,7 @@ function Field({
         value={value}
         onChange={onChange}
         required={required}
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
       />
     </div>
   );

@@ -1,11 +1,10 @@
 """
 Enrichment functions for report findings.
 - CPP citation: attach relevant CPP chunk excerpts via pgvector search.
-- Threat intel: link matching threat intelligence articles by domain tags.
+- Threat intel: semantic pgvector search with JSONB tag fallback.
 Reuses cpp_repository for embedding search — no duplicate pgvector logic.
 """
 
-import asyncio
 import json
 import logging
 from typing import Any
@@ -14,42 +13,12 @@ import asyncpg
 
 from config import Settings
 from cpp_repository import get_relevant_chunks
-from gemini_client import GeminiClient
+from gemini_client import GeminiClient, GeminiError
 
 logger = logging.getLogger(__name__)
 
 _EXCERPT_MAX_LEN = 300
 _DEFAULT_MAX_ARTICLES = 5
-_CPP_EMBED_CONCURRENCY = 3  # max parallel Gemini embedding calls
-
-
-async def _enrich_single_finding_with_cpp(
-    finding: dict,
-    conn: asyncpg.Connection,
-    settings: Settings,
-    gemini: GeminiClient,
-    sem: asyncio.Semaphore,
-) -> dict:
-    """Enrich one finding with a CPP citation. Semaphore-bounded."""
-    copy = dict(finding)
-    query = f"{finding.get('question', '')} {finding.get('answer', '')}"
-    async with sem:
-        try:
-            chunks = await get_relevant_chunks(query, conn, settings, top_k=1, gemini=gemini)
-            if chunks:
-                chunk = chunks[0]
-                copy["cpp_citation"] = {
-                    "domain": chunk.domain,
-                    "section": chunk.section,
-                    "excerpt": chunk.chunk_text[:_EXCERPT_MAX_LEN],
-                }
-        except Exception:
-            logger.warning(
-                "CPP enrichment failed for domain %s",
-                finding.get("domain"),
-                exc_info=True,
-            )
-    return copy
 
 
 async def enrich_findings_with_cpp(
@@ -60,52 +29,145 @@ async def enrich_findings_with_cpp(
     gemini: GeminiClient,
 ) -> list[dict]:
     """Return a new list of findings with cpp_citation attached where available.
-    Parallel with bounded concurrency — does not mutate the original list."""
+    Sequential to respect asyncpg single-connection constraint."""
     if not findings:
         return []
-    sem = asyncio.Semaphore(_CPP_EMBED_CONCURRENCY)
-    tasks = [_enrich_single_finding_with_cpp(f, conn, settings, gemini, sem) for f in findings]
-    return list(await asyncio.gather(*tasks))
+    results = []
+    for finding in findings:
+        enriched = dict(finding)
+        query = f"{finding.get('question', '')} {finding.get('answer', '')}"
+        finding_domain = finding.get("domain")
+        finding_domains = [finding_domain] if finding_domain else None
+        try:
+            chunks = await get_relevant_chunks(
+                query, conn, settings, top_k=1, gemini=gemini, domains=finding_domains
+            )
+            if chunks:
+                chunk = chunks[0]
+                enriched["cpp_citation"] = {
+                    "domain": chunk.domain,
+                    "section": chunk.section,
+                    "excerpt": chunk.chunk_text[:_EXCERPT_MAX_LEN],
+                }
+        except Exception:
+            logger.warning(
+                "CPP enrichment failed for domain %s",
+                finding.get("domain"),
+                exc_info=True,
+            )
+        results.append(enriched)
+    return results
 
 
 async def enrich_findings_with_threat_intel(
     findings: list[dict],
     conn: asyncpg.Connection,
     max_articles: int = _DEFAULT_MAX_ARTICLES,
+    *,
+    city: str | None = None,
+    country: str | None = None,
+    gemini: GeminiClient | None = None,
+    settings: Settings | None = None,
 ) -> list[dict[str, Any]]:
-    """Query threat_intel table for articles matching finding domains.
-    Returns deduplicated list of articles, capped at max_articles."""
+    """Semantic pgvector search against threat_intel embeddings.
+    Falls back to JSONB domain_tags ?| if embeddings unavailable."""
     domains = sorted({f.get("domain", "") for f in findings if f.get("domain")})
     if not domains:
         return []
 
+    rows = await _threat_intel_semantic(
+        findings, conn, max_articles, gemini=gemini, settings=settings
+    )
+    if rows is None:
+        rows = await _threat_intel_tag_fallback(domains, conn, max_articles, city, country)
+
+    return _rows_to_articles(rows)
+
+
+async def _threat_intel_semantic(
+    findings: list[dict],
+    conn: asyncpg.Connection,
+    max_articles: int,
+    *,
+    gemini: GeminiClient | None,
+    settings: Settings | None,
+) -> list | None:
+    """Pgvector cosine search using finding text as query. Returns None to signal fallback."""
+    if not gemini or not settings:
+        return None
+    query_parts = [f"{f.get('question', '')} {f.get('answer', '')}" for f in findings[:5]]
+    query_text = " ".join(query_parts)[:500]
+    try:
+        embedding = await gemini.embed(query_text, model=settings.embedding_model)
+    except (GeminiError, ValueError):
+        logger.warning("Threat intel embedding failed — falling back to tag search")
+        return None
+
+    embedding_str = "[" + ",".join(str(v) for v in embedding) + "]"
     rows = await conn.fetch(
         """
         SELECT id, title, url, summary, domain_tags, source, scraped_at
         FROM threat_intel
-        WHERE soft_deleted = FALSE
-        ORDER BY scraped_at DESC
-        LIMIT $1
+        WHERE soft_deleted = FALSE AND embedding IS NOT NULL
+        ORDER BY embedding <=> $1::vector
+        LIMIT $2
         """,
-        max_articles * 3,
+        embedding_str,
+        max_articles,
     )
+    # Return the list even if empty — an empty result from a successful semantic
+    # search is valid; only return None to signal that the caller should fall back.
+    return list(rows)
 
-    seen_urls: set[str] = set()
+
+async def _threat_intel_tag_fallback(
+    domains: list[str],
+    conn: asyncpg.Connection,
+    max_articles: int,
+    city: str | None,
+    country: str | None,
+) -> list:
+    """JSONB tag-based fallback with optional location boost."""
+    location_clause = ""
+    params: list[Any] = [domains, max_articles]
+    if city or country:
+        location_terms = [t for t in (city, country) if t]
+        # Derive positional param indices dynamically so this is resilient
+        # to future changes in the number of preceding params.
+        location_clauses = []
+        for term in location_terms:
+            idx = len(params) + 1  # 1-indexed for asyncpg
+            params.append(term)
+            location_clauses.append(
+                f"(summary ILIKE '%' || ${idx} || '%' OR title ILIKE '%' || ${idx} || '%')"
+            )
+        location_clause = (
+            ", CASE WHEN " + " OR ".join(location_clauses) + " THEN 0 ELSE 1 END AS location_rank"
+        )
+
+    order_clause = "location_rank, scraped_at DESC" if location_clause else "scraped_at DESC"
+
+    query = (
+        f"SELECT id, title, url, summary, domain_tags, source, scraped_at"
+        f" {location_clause}"
+        f" FROM threat_intel"
+        f" WHERE soft_deleted = FALSE AND domain_tags ?| $1"
+        f" ORDER BY {order_clause}"
+        f" LIMIT $2"
+    )
+    return list(await conn.fetch(query, *params))
+
+
+def _rows_to_articles(rows: list) -> list[dict[str, Any]]:
     articles: list[dict[str, Any]] = []
-
     for row in rows:
-        if row["url"] in seen_urls:
-            continue
         try:
             raw_tags = row["domain_tags"]
             tags = json.loads(raw_tags) if isinstance(raw_tags, str) else raw_tags
         except (json.JSONDecodeError, TypeError):
             tags = []
 
-        if not any(d in tags for d in domains):
-            continue
-
-        seen_urls.add(row["url"])
+        scraped_at = row.get("scraped_at")
         articles.append(
             {
                 "id": row["id"],
@@ -114,10 +176,7 @@ async def enrich_findings_with_threat_intel(
                 "summary": row["summary"],
                 "domain_tags": tags,
                 "source": row["source"],
+                "scraped_at": scraped_at.isoformat() if scraped_at else None,
             }
         )
-
-        if len(articles) >= max_articles:
-            break
-
     return articles

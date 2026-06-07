@@ -28,6 +28,9 @@ const ACTION_LABELS: Record<string, string> = {
   [ADMIN_ACTION_TYPE.EMAIL_SENT]: 'Sent email',
   [ADMIN_ACTION_TYPE.THREAT_INTEL_ADDED]: 'Added threat intel',
   [ADMIN_ACTION_TYPE.THREAT_INTEL_DELETED]: 'Deleted threat intel',
+  [ADMIN_ACTION_TYPE.LINKEDIN_DRAFT_CREATED]: 'LinkedIn draft created',
+  [ADMIN_ACTION_TYPE.LINKEDIN_POST_STATUS_CHANGED]: 'LinkedIn post status changed',
+  [ADMIN_ACTION_TYPE.LINKEDIN_POST_COPIED]: 'LinkedIn post copied',
 };
 
 function formatRelativeTime(iso: string): string {
@@ -43,27 +46,31 @@ function formatRelativeTime(iso: string): string {
 
 export function RecentActivity({ actions }: RecentActivityProps) {
   if (actions.length === 0) {
-    return <p className="text-sm text-slate-400 italic">No recent activity.</p>;
+    return <p className="text-sm text-slate-400 dark:text-slate-500 italic">No recent activity.</p>;
   }
 
   return (
     <ul className="space-y-2">
       {actions.map((action) => {
-        const style = ACTION_TYPE_STYLES[action.actionType] ?? 'bg-gray-100 text-gray-800';
+        const style =
+          ACTION_TYPE_STYLES[action.actionType] ??
+          'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
         const label = ACTION_LABELS[action.actionType] ?? action.actionType;
         return (
           <li
             key={action.id}
-            className="flex items-center gap-3 text-sm py-2 border-b border-slate-100 last:border-0"
+            className="flex items-center gap-3 text-sm py-2 border-b border-slate-100 dark:border-slate-700 last:border-0"
           >
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${style}`}>
               {action.entityType}
             </span>
-            <span className="text-slate-700 flex-1 truncate">
+            <span className="text-slate-700 dark:text-slate-200 flex-1 truncate">
               {label}
-              <span className="text-slate-400 ml-1">#{action.entityId.slice(-6)}</span>
+              <span className="text-slate-400 dark:text-slate-500 ml-1">
+                #{action.entityId.slice(-6)}
+              </span>
             </span>
-            <span className="text-slate-400 text-xs whitespace-nowrap">
+            <span className="text-slate-400 dark:text-slate-500 text-xs whitespace-nowrap">
               {formatRelativeTime(action.createdAt)}
             </span>
           </li>

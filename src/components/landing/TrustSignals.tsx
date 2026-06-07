@@ -25,35 +25,41 @@ const SIGNALS = [
 
 export function TrustSignals() {
   return (
-    <section className="py-20 px-6 bg-white">
+    <section className="py-20 px-6 bg-white dark:bg-slate-800">
       <div className="mx-auto max-w-5xl">
         <div className="text-center space-y-3 mb-12">
-          <h2 className="text-2xl font-bold text-slate-900">Built on Trust</h2>
-          <p className="text-sm text-slate-500 max-w-lg mx-auto">{TRUST_STACK.CREDENTIAL}</p>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Built on Trust</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
+            {TRUST_STACK.CREDENTIAL}
+          </p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {SIGNALS.map((s) => (
             <div
               key={s.title}
-              className="rounded-xl border border-slate-100 bg-slate-50 p-5 space-y-3"
+              className="rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-5 space-y-3"
             >
               <s.icon />
-              <h3 className="text-sm font-semibold text-slate-900">{s.title}</h3>
-              <p className="text-xs text-slate-500 leading-relaxed">{s.description}</p>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                {s.title}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                {s.description}
+              </p>
             </div>
           ))}
         </div>
 
         <div className="mt-16 text-center">
-          <h3 className="text-sm font-semibold text-slate-700 mb-4">
+          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-4">
             Grounded in 7 CPP Security Domains
           </h3>
           <div className="flex flex-wrap justify-center gap-2">
             {Object.values(CPP_DOMAINS).map((d) => (
               <span
                 key={d.code}
-                className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs text-emerald-700"
+                className="rounded-full bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 px-3 py-1 text-xs text-emerald-700 dark:text-emerald-300"
               >
                 {d.code}: {d.name}
               </span>
@@ -68,7 +74,7 @@ export function TrustSignals() {
 function ShieldIcon() {
   return (
     <svg
-      className="w-6 h-6 text-emerald-600"
+      className="w-6 h-6 text-emerald-600 dark:text-emerald-400"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
@@ -86,7 +92,7 @@ function ShieldIcon() {
 function ServerIcon() {
   return (
     <svg
-      className="w-6 h-6 text-emerald-600"
+      className="w-6 h-6 text-emerald-600 dark:text-emerald-400"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
@@ -104,7 +110,7 @@ function ServerIcon() {
 function CheckIcon() {
   return (
     <svg
-      className="w-6 h-6 text-emerald-600"
+      className="w-6 h-6 text-emerald-600 dark:text-emerald-400"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
@@ -122,7 +128,7 @@ function CheckIcon() {
 function HandshakeIcon() {
   return (
     <svg
-      className="w-6 h-6 text-emerald-600"
+      className="w-6 h-6 text-emerald-600 dark:text-emerald-400"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}

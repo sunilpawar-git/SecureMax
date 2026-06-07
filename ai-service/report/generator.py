@@ -26,6 +26,7 @@ from report.narrative import (
     generate_executive_summary,
 )
 from report.schemas import Finding, FreeSummary, ReportData, ReportSection
+from report.trending import compute_trend, format_trend_summary, get_user_session_history
 from scoring import compute_radar_scores
 
 
@@ -63,13 +64,23 @@ async def generate_report_data(
     exec_summary = None
     board_summary = None
     if gemini:
-        exec_summary = await generate_executive_summary(enhanced_raw, track, gemini=gemini)
+        exec_summary = await generate_executive_summary(
+            enhanced_raw, track, gemini=gemini, radar_scores=radar_scores
+        )
         if track == TRACK_ENTERPRISE:
             board_summary = await generate_board_summary(
                 enhanced_raw,
                 gemini=gemini,
                 compliance_gap_count=compliance_gaps,
             )
+
+    trend_summary: str | None = None
+    user_id = session.get("user_id")
+    if conn and user_id:
+        history = await get_user_session_history(conn, user_id)
+        if len(history) > 1:
+            trend_data = compute_trend(history)
+            trend_summary = format_trend_summary(trend_data)
 
     compliance_mappings = []
     if track == TRACK_ENTERPRISE and gemini:
@@ -103,6 +114,7 @@ async def generate_report_data(
         threat_intel_articles=threat_intel_articles,
         compliance_mappings=compliance_mappings,
         radar_scores=radar_scores,
+        trend_summary=trend_summary,
         free_summary=free_summary,
     )
 

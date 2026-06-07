@@ -45,10 +45,19 @@ export const COLORS = {
     card: '#1E293B',
     border: '#334155',
     text: '#E2E8F0',
+    hover: '#334155',
   },
 } as const;
 
 export type ColorToken = typeof COLORS;
+
+/**
+ * Authenticated app header style tokens — used by AppHeader on dashboard/report/questionnaire pages.
+ */
+export const HEADER_STYLES = {
+  full: 'bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-700',
+  slim: 'bg-slate-50 border-b border-slate-200 dark:bg-slate-800 dark:border-slate-700',
+} as const;
 
 /**
  * Landing page header style tokens — public-facing, no session context.
@@ -63,6 +72,6 @@ export const LANDING_HEADER_STYLES = {
 } as const;
 
 export const TRACK_BADGE_STYLES: Record<string, string> = {
-  hni: 'bg-emerald-100 text-emerald-800',
-  enterprise: 'bg-slate-100 text-slate-800',
+  hni: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
+  enterprise: 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200',
 };

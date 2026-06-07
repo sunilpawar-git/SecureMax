@@ -8,7 +8,7 @@ boolean that reflects the session's paid/enterprise_report_unlocked state.
 import uuid
 
 import report_repository as rpt_repo
-from tests.conftest import run_db
+from tests.conftest import ensure_test_user, run_db
 
 
 def _create_session(
@@ -19,6 +19,7 @@ def _create_session(
     enterprise_unlocked: bool = False,
 ) -> str:
     session_id = str(uuid.uuid4())
+    ensure_test_user(db_conn, user_id)
     run_db(
         db_conn.execute(
             """

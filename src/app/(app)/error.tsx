@@ -14,9 +14,9 @@ export default function AppError({
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center space-y-4">
-        <div className="w-16 h-16 mx-auto rounded-full bg-red-50 flex items-center justify-center">
+        <div className="w-16 h-16 mx-auto rounded-full bg-red-50 dark:bg-red-900/30 flex items-center justify-center">
           <svg
             className="w-8 h-8 text-red-500"
             fill="none"
@@ -32,8 +32,10 @@ export default function AppError({
             />
           </svg>
         </div>
-        <h2 className="text-lg font-semibold text-slate-900">Something went wrong</h2>
-        <p className="text-sm text-slate-500">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+          Something went wrong
+        </h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           An unexpected error occurred. Our team has been notified.
         </p>
         <button

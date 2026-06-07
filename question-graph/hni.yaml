@@ -1,11 +1,11 @@
 # HNI Question Graph — SSOT
 # Raivan Global: Physical Security Audit for High Net Worth Individuals
-# Version: 1
+# Version: 2
 # DO NOT edit the database directly. Edit this file and re-run seed script.
 
 metadata:
   track: hni
-  version: 1
+  version: 2
   entry_node: hni_q1_property_type
 
 nodes:
@@ -15,7 +15,29 @@ nodes:
     text: 'What type of property are we auditing today?'
     question_type: single_choice
     cpp_domain_tag: CPP-07
-    options: [Villa, Apartment, Farmhouse, Penthouse, Home Office]
+    options: [Villa, Apartment, Farmhouse, Penthouse, 'Multiple properties', Home Office]
+    edges:
+      - target: hni_q1_multi_governance
+        condition: 'Multiple properties'
+      - target: hni_q2_existing_vendor
+        condition: any
+
+  - id: hni_q1_multi_governance
+    domain: CPP-07
+    text: 'For multiple properties, is there a single person or team responsible for security across all locations?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-07
+    options: ['Yes — dedicated security manager', 'Partially — different staff per property', 'No — ad hoc']
+    edges:
+      - target: hni_q1_multi_consistency
+        condition: any
+
+  - id: hni_q1_multi_consistency
+    domain: CPP-07
+    text: 'Are security policies consistent across all your properties, or does each have its own approach?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-07
+    options: ['Consistent policies', 'Varies by property', 'No formal policies anywhere']
     edges:
       - target: hni_q2_existing_vendor
         condition: any
@@ -80,6 +102,54 @@ nodes:
     cpp_domain_tag: CPP-01
     options: ['Fully lit', 'Partially lit', 'Not lit', 'Unsure']
     edges:
+      - target: hni_cpp01_access_control
+        condition: any
+
+  - id: hni_cpp01_access_control
+    domain: CPP-01
+    related_domains: [CPP-06]
+    text: 'What access control measures protect entry to your home (main doors, service entries)?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-01
+    score_drop_trigger: true
+    options: ['Biometric/smart lock', 'Keycard or digital code', 'Traditional lock only', 'No formal access control']
+    edges:
+      - target: hni_cpp01_visitor_screening
+        condition: 'Traditional lock only'
+      - target: hni_cpp01_visitor_screening
+        condition: 'No formal access control'
+      - target: hni_cpp06_staff_count
+        condition: any
+
+  # --- CPP-01 Deep-Dive: Access Control (triggered by negative answers) ---
+  - id: hni_cpp01_visitor_screening
+    domain: CPP-01
+    related_domains: [CPP-06]
+    text: 'Do you have any process to verify the identity of visitors before they enter the property?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-01
+    options: ['Yes — intercom/camera at gate', 'Ask guards to check', 'No — direct entry', 'Open compound']
+    edges:
+      - target: hni_cpp01_contractor_policy
+        condition: any
+
+  - id: hni_cpp01_contractor_policy
+    domain: CPP-01
+    text: 'When contractors (plumbers, electricians, renovation workers) visit, are they accompanied by staff?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-01
+    options: ['Always escorted', 'Sometimes', 'Never — work unsupervised', 'Depends on trust level']
+    edges:
+      - target: hni_cpp01_after_hours_protocol
+        condition: any
+
+  - id: hni_cpp01_after_hours_protocol
+    domain: CPP-01
+    text: 'Do you have a defined protocol for after-hours access (late night, early morning)?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-01
+    options: ['Yes — strict protocol', 'Informal arrangement', 'No — same as daytime', 'Property is always attended']
+    edges:
       - target: hni_cpp06_staff_count
         condition: any
 
@@ -101,6 +171,31 @@ nodes:
     cpp_domain_tag: CPP-06
     score_drop_trigger: true
     options: ['Yes — verified agency', 'Informal checks only', 'No']
+    edges:
+      - target: hni_cpp06_vetting_frequency
+        condition: 'Informal checks only'
+      - target: hni_cpp06_vetting_frequency
+        condition: 'No'
+      - target: hni_cpp06_access_zones
+        condition: any
+
+  # --- CPP-06 Deep-Dive: Personnel Vetting (triggered by negative answers) ---
+  - id: hni_cpp06_vetting_frequency
+    domain: CPP-06
+    text: 'How often do you re-verify or re-vet existing domestic staff?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-06
+    options: ['Annually', 'Only at hiring', 'Never re-verified', 'Plan to start']
+    edges:
+      - target: hni_cpp06_termination_procedure
+        condition: any
+
+  - id: hni_cpp06_termination_procedure
+    domain: CPP-06
+    text: 'When a staff member leaves (fired or resigns), is there a formal process to recover keys/codes and revoke access?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-06
+    options: ['Yes — documented procedure', 'Informal — collect keys', 'No formal process', 'Never had to do this']
     edges:
       - target: hni_cpp06_access_zones
         condition: any
@@ -145,6 +240,31 @@ nodes:
     cpp_domain_tag: CPP-05
     options: ['Yes — separate networks', 'No — same network', 'Unsure']
     edges:
+      - target: hni_cpp05_guest_wifi
+        condition: 'No — same network'
+      - target: hni_cpp05_guest_wifi
+        condition: 'Unsure'
+      - target: hni_cpp03_emergency_plan
+        condition: any
+
+  # --- CPP-05 Deep-Dive: Network Security (triggered by flat network) ---
+  - id: hni_cpp05_guest_wifi
+    domain: CPP-05
+    text: 'Do guests, visitors, or staff connect their personal devices to your main WiFi?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-05
+    options: ['Yes — same password for all', 'Yes — separate guest network', 'No — only family', 'Unsure']
+    edges:
+      - target: hni_cpp05_remote_access
+        condition: any
+
+  - id: hni_cpp05_remote_access
+    domain: CPP-05
+    text: 'Can your security system (cameras, alarms, locks) be controlled remotely via a phone app?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-05
+    options: ['Yes — app with 2FA', 'Yes — app without 2FA', 'No remote access', 'Unsure']
+    edges:
       - target: hni_cpp03_emergency_plan
         condition: any
 
@@ -156,6 +276,31 @@ nodes:
     cpp_domain_tag: CPP-03
     score_drop_trigger: true
     options: ['Yes — documented and rehearsed', 'Documented but not rehearsed', 'No plan exists']
+    edges:
+      - target: hni_cpp03_last_drill
+        condition: 'Documented but not rehearsed'
+      - target: hni_cpp03_last_drill
+        condition: 'No plan exists'
+      - target: hni_cpp03_safe_room
+        condition: any
+
+  # --- CPP-03 Deep-Dive: Emergency Preparedness ---
+  - id: hni_cpp03_last_drill
+    domain: CPP-03
+    text: 'When was the last time any emergency drill or discussion was held with household members?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-03
+    options: ['Within 6 months', '6-12 months ago', 'Over a year ago', 'Never']
+    edges:
+      - target: hni_cpp03_comms_tree
+        condition: any
+
+  - id: hni_cpp03_comms_tree
+    domain: CPP-03
+    text: 'Does your household have a defined communication tree (who calls whom) during an emergency?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-03
+    options: ['Yes — documented with phone numbers', 'Informally understood', 'No — everyone calls 100/police']
     edges:
       - target: hni_cpp03_safe_room
         condition: any
@@ -187,6 +332,31 @@ nodes:
     question_type: single_choice
     cpp_domain_tag: CPP-02
     options: ['Within last year', '1-3 years ago', 'Never', 'Unsure']
+    edges:
+      - target: hni_cpp02_risk_owner
+        condition: 'Never'
+      - target: hni_cpp02_risk_owner
+        condition: 'Unsure'
+      - target: hni_cpp02_review_trigger
+        condition: any
+
+  # --- CPP-02 Deep-Dive: Risk Governance ---
+  - id: hni_cpp02_risk_owner
+    domain: CPP-02
+    text: 'Is there a specific person in your household accountable for identifying and managing security risks?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-02
+    options: ['Yes — me personally', 'Yes — security manager', 'Shared vaguely', 'No one specifically']
+    edges:
+      - target: hni_cpp02_last_review_date
+        condition: any
+
+  - id: hni_cpp02_last_review_date
+    domain: CPP-02
+    text: 'Has any security-related decision (new locks, cameras, guards) been made in the past 6 months?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-02
+    options: ['Yes — significant investment', 'Yes — minor upgrades', 'No changes', 'Planning to invest']
     edges:
       - target: hni_cpp02_review_trigger
         condition: any

@@ -1,5 +1,5 @@
 import type { NextConfig } from 'next';
-import { SECURITY_HEADERS } from './src/config/security';
+import { SECURITY_HEADERS, buildContentSecurityPolicy } from './src/config/security';
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -7,21 +7,9 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   async headers() {
-    // Re-evaluate SECURITY_HEADERS at request time to ensure NODE_ENV is correct
-    // This ensures 'unsafe-eval' is included in dev mode for React debugging
-    const isDev = process.env.NODE_ENV !== 'production';
-    const cspValue = [
-      "default-src 'self'",
-      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://checkout.razorpay.com`,
-      "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: https:",
-      "font-src 'self'",
-      "connect-src 'self' https://api.razorpay.com",
-      'frame-src https://api.razorpay.com',
-      "object-src 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-    ].join('; ');
+    // Re-evaluate the CSP at request time so NODE_ENV is correct
+    // (this keeps 'unsafe-eval' out of production while allowing it in dev).
+    const cspValue = buildContentSecurityPolicy(process.env.NODE_ENV === 'production');
 
     const headersArray = Object.entries(SECURITY_HEADERS).map(([key, value]) => ({
       key,

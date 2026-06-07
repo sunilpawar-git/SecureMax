@@ -3,6 +3,32 @@
  * OWASP-aligned, DPDPA-compliant settings.
  */
 
+/** Third-party origins the app must talk to. */
+const RAZORPAY_CHECKOUT = 'https://checkout.razorpay.com';
+const RAZORPAY_API = 'https://api.razorpay.com';
+const TURNSTILE = 'https://challenges.cloudflare.com';
+
+/**
+ * Builds the Content-Security-Policy — SSOT consumed by both `SECURITY_HEADERS`
+ * and `next.config.ts`. `'unsafe-eval'` is only permitted outside production
+ * (React refresh in dev). Turnstile + Razorpay origins are explicitly allowlisted;
+ * no wildcards.
+ */
+export function buildContentSecurityPolicy(isProd: boolean): string {
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'unsafe-inline'${isProd ? '' : " 'unsafe-eval'"} ${RAZORPAY_CHECKOUT} ${TURNSTILE}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https:",
+    "font-src 'self'",
+    `connect-src 'self' ${RAZORPAY_API} ${TURNSTILE}`,
+    `frame-src ${RAZORPAY_API} ${TURNSTILE}`,
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join('; ');
+}
+
 export const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
@@ -10,18 +36,7 @@ export const SECURITY_HEADERS = {
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
   'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
-  'Content-Security-Policy': [
-    "default-src 'self'",
-    `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV !== 'production' ? " 'unsafe-eval'" : ''} https://checkout.razorpay.com`,
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https:",
-    "font-src 'self'",
-    "connect-src 'self' https://api.razorpay.com",
-    'frame-src https://api.razorpay.com',
-    "object-src 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-  ].join('; '),
+  'Content-Security-Policy': buildContentSecurityPolicy(process.env.NODE_ENV === 'production'),
 } as const;
 
 export const RATE_LIMITS = {

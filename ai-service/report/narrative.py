@@ -24,11 +24,18 @@ async def generate_executive_summary(
     track: str,
     *,
     gemini: GeminiClient,
+    radar_scores: dict[str, float] | None = None,
 ) -> str:
     """Generate an AI-written executive summary, or fall back to rule-based."""
     critical = [f for f in findings if f.get("severity") == "critical"]
     high = [f for f in findings if f.get("severity") == "high"]
     domains = sorted({f.get("domain", "") for f in findings})
+
+    worst_domain = "N/A"
+    worst_score = 100.0
+    if radar_scores:
+        worst_domain = min(radar_scores, key=radar_scores.get)
+        worst_score = radar_scores[worst_domain]
 
     prompt = EXECUTIVE_SUMMARY.safe_substitute(
         track=track,
@@ -36,6 +43,8 @@ async def generate_executive_summary(
         critical_count=len(critical),
         high_count=len(high),
         domains_with_gaps=", ".join(domains) if domains else "None",
+        worst_domain=worst_domain,
+        worst_domain_score=f"{worst_score:.1f}",
     )
 
     try:
@@ -77,6 +86,7 @@ async def generate_finding_recommendation(
     gemini: GeminiClient,
 ) -> str:
     """Generate an AI-written recommendation for a single finding."""
+    cpp_citation = finding.get("cpp_citation") or {}
     prompt = FINDING_RECOMMENDATION.safe_substitute(
         track=track,
         domain=finding.get("domain", ""),
@@ -84,6 +94,8 @@ async def generate_finding_recommendation(
         question=sanitize_for_prompt(finding.get("question", "")),
         answer=sanitize_for_prompt(finding.get("answer", "")),
         severity=finding.get("severity", ""),
+        risk_impact=finding.get("risk_impact", "Not specified"),
+        cpp_excerpt=sanitize_for_prompt(cpp_citation.get("excerpt", "")),
     )
 
     try:

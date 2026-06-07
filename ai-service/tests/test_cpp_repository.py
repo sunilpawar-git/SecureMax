@@ -62,6 +62,42 @@ class TestGetRelevantChunks:
         assert results == []
 
 
+class TestDomainPreFilter:
+    def test_domain_filter_passes_to_query(self, db_conn):
+        mock_gemini = _make_mock_gemini()
+        results = run_db(
+            get_relevant_chunks("test", db_conn, _settings, gemini=mock_gemini, domains=["CPP-01"])
+        )
+        assert isinstance(results, list)
+
+    def test_null_domains_returns_all(self, db_conn):
+        mock_gemini = _make_mock_gemini()
+        results = run_db(
+            get_relevant_chunks("test", db_conn, _settings, gemini=mock_gemini, domains=None)
+        )
+        assert isinstance(results, list)
+
+    def test_empty_domains_list_returns_all(self, db_conn):
+        mock_gemini = _make_mock_gemini()
+        results = run_db(
+            get_relevant_chunks("test", db_conn, _settings, gemini=mock_gemini, domains=[])
+        )
+        assert isinstance(results, list)
+
+    def test_multiple_domains_filter(self, db_conn):
+        mock_gemini = _make_mock_gemini()
+        results = run_db(
+            get_relevant_chunks(
+                "test",
+                db_conn,
+                _settings,
+                gemini=mock_gemini,
+                domains=["CPP-01", "CPP-05"],
+            )
+        )
+        assert isinstance(results, list)
+
+
 class TestGetRelevantChunksIntegration:
     @pytest.mark.integration
     def test_live_db_returns_results(self):

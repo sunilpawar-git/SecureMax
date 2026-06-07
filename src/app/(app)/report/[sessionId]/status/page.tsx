@@ -67,9 +67,9 @@ export default function ReportStatusPage() {
   }, [sessionId, router]);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center space-y-6">
-        <h1 className="text-xl font-bold text-slate-900">{APP.NAME}</h1>
+        <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">{APP.NAME}</h1>
 
         {status.status === 'failed' ? (
           <div className="space-y-4">
@@ -88,7 +88,7 @@ export default function ReportStatusPage() {
                 />
               </svg>
             </div>
-            <p className="text-sm text-red-600">{status.error}</p>
+            <p className="text-sm text-red-600 dark:text-red-400">{status.error}</p>
             <button
               onClick={() => window.location.reload()}
               className="text-sm text-emerald-700 underline"
@@ -98,7 +98,7 @@ export default function ReportStatusPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 flex items-center justify-center animate-pulse">
+            <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center animate-pulse">
               <svg
                 className="w-8 h-8 text-emerald-600"
                 fill="none"
@@ -113,8 +113,10 @@ export default function ReportStatusPage() {
                 />
               </svg>
             </div>
-            <p className="text-sm text-slate-600">Generating your security audit report...</p>
-            <p className="text-xs text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Generating your security audit report...
+            </p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">
               This usually takes 30-60 seconds. You&apos;ll be redirected automatically.
             </p>
           </div>

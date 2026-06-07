@@ -1,5 +1,6 @@
 import { signIn } from '@/lib/auth';
 import { APP, TRUST_STACK, VALID_TRACKS } from '@/config/strings';
+import { env } from '@/lib/env';
 
 /**
  * Validates the track param — only accepts known track values.
@@ -44,15 +45,14 @@ export default async function SignInPage({
   const callbackUrl = sanitizeCallbackUrl(params.callbackUrl);
   const redirectTo = buildRedirectTo(track, callbackUrl);
 
-  const googleEnabled =
-    isRealValue(process.env.GOOGLE_CLIENT_ID) && isRealValue(process.env.GOOGLE_CLIENT_SECRET);
+  const googleEnabled = isRealValue(env.GOOGLE_CLIENT_ID) && isRealValue(env.GOOGLE_CLIENT_SECRET);
   const microsoftEnabled =
-    isRealValue(process.env.AZURE_AD_CLIENT_ID) && isRealValue(process.env.AZURE_AD_CLIENT_SECRET);
+    isRealValue(env.AZURE_AD_CLIENT_ID) && isRealValue(env.AZURE_AD_CLIENT_SECRET);
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-900 text-center mb-6">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8 shadow-sm">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 text-center mb-6">
           Sign in to {APP.NAME}
         </h2>
 
@@ -66,7 +66,7 @@ export default async function SignInPage({
             >
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
               >
                 <GoogleIcon />
                 Continue with Google
@@ -83,7 +83,7 @@ export default async function SignInPage({
             >
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
               >
                 <MicrosoftIcon />
                 Continue with Microsoft
@@ -93,13 +93,15 @@ export default async function SignInPage({
         </div>
       </div>
 
-      <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4">
-        <p className="text-xs text-emerald-800 text-center leading-relaxed">
+      <div className="rounded-lg border border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 p-4">
+        <p className="text-xs text-emerald-800 dark:text-emerald-300 text-center leading-relaxed">
           {TRUST_STACK.HNI_PRIVACY}
         </p>
       </div>
 
-      <p className="text-center text-xs text-slate-400">{TRUST_STACK.CREDENTIAL}</p>
+      <p className="text-center text-xs text-slate-400 dark:text-slate-500">
+        {TRUST_STACK.CREDENTIAL}
+      </p>
     </div>
   );
 }

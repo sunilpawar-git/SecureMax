@@ -9,5 +9,5 @@ export type { AuthenticatedSession } from './guards';
 export { apiSuccess, apiError, apiValidationError } from './response';
 export type { ValidationError } from './response';
 
-export { parseBody, validateCuid } from './validate';
+export { parseBody, validateData, validateCuid } from './validate';
 export type { ParseResult } from './validate';

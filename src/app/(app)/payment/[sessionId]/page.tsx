@@ -59,7 +59,7 @@ export default function PaymentPage() {
   const isDisabled = isProcessing || !scriptReady;
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
       <Script
         src="https://checkout.razorpay.com/v1/checkout.js"
         strategy="afterInteractive"
@@ -68,14 +68,16 @@ export default function PaymentPage() {
       />
       <div className="max-w-md w-full space-y-6">
         <div className="text-center">
-          <h1 className="text-xl font-bold text-slate-900">{APP.NAME}</h1>
-          <p className="text-sm text-slate-500 mt-1">Unlock Your Full Security Report</p>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">{APP.NAME}</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Unlock Your Full Security Report
+          </p>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-6 space-y-4">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 space-y-4">
           <div className="text-center space-y-2">
-            <div className="text-3xl font-bold text-slate-900">{amount}</div>
-            <p className="text-sm text-slate-500">One-time payment</p>
+            <div className="text-3xl font-bold text-slate-900 dark:text-slate-100">{amount}</div>
+            <p className="text-sm text-slate-500 dark:text-slate-400">One-time payment</p>
           </div>
 
           <div className="border-t border-slate-100 pt-4 space-y-3">
@@ -99,7 +101,7 @@ export default function PaymentPage() {
             {(state === 'idle' || state === 'error') && `Pay ${amount}`}
           </button>
 
-          {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+          {error && <p className="text-sm text-red-600 dark:text-red-400 text-center">{error}</p>}
 
           {isDev && (
             <div className="border-t border-dashed border-amber-300 pt-4 space-y-2">
@@ -115,18 +117,22 @@ export default function PaymentPage() {
               >
                 {devBypassing ? 'Unlocking...' : 'Bypass Payment (Dev)'}
               </button>
-              {devError && <p className="text-xs text-red-600 text-center">{devError}</p>}
+              {devError && (
+                <p className="text-xs text-red-600 dark:text-red-400 text-center">{devError}</p>
+              )}
             </div>
           )}
         </div>
 
-        <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4">
-          <p className="text-xs text-emerald-800 text-center leading-relaxed">
+        <div className="rounded-lg border border-emerald-100 bg-emerald-50 dark:bg-emerald-900/30 p-4">
+          <p className="text-xs text-emerald-800 dark:text-emerald-300 text-center leading-relaxed">
             {TRUST_STACK.HNI_PRIVACY}
           </p>
         </div>
 
-        <p className="text-center text-xs text-slate-400">{TRUST_STACK.COMPLIANCE_SIGNAL}</p>
+        <p className="text-center text-xs text-slate-400 dark:text-slate-500">
+          {TRUST_STACK.COMPLIANCE_SIGNAL}
+        </p>
       </div>
     </div>
   );
@@ -144,7 +150,7 @@ function Feature({ text }: { text: string }) {
       >
         <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
       </svg>
-      <span className="text-sm text-slate-600">{text}</span>
+      <span className="text-sm text-slate-600 dark:text-slate-300">{text}</span>
     </div>
   );
 }

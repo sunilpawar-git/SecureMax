@@ -68,7 +68,7 @@ export default auth(async (req) => {
         ? RATE_LIMITS.AI_ENDPOINT_MAX_REQUESTS
         : RATE_LIMITS.GLOBAL_MAX_REQUESTS;
 
-    const result = checkRateLimit(`${ip}:${pathname}`, windowMs, maxReqs);
+    const result = await checkRateLimit(`${ip}:${pathname}`, windowMs, maxReqs);
     if (!result.allowed) {
       return NextResponse.json(
         { error: 'Too many requests' },

@@ -20,8 +20,8 @@ fi
 echo "🔐 Scanning for secrets in staged changes..."
 echo ""
 
-# .env.example is a committed template with placeholder values — exclude it from scans.
-DIFF=$(git diff --cached -- ':!.env.example')
+# .env.example templates use placeholder values — exclude from secret scans.
+DIFF=$(git diff --cached -- ':!.env.example' ':!ai-service/.env.example')
 
 # ============================================================================
 # 1. AWS Keys (AKIA...)

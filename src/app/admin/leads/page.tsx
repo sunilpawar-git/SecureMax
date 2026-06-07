@@ -44,12 +44,12 @@ export default function LeadsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-2xl font-bold text-slate-900">Enterprise Leads</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Enterprise Leads</h1>
         <div className="flex gap-3">
           <select
             value={data.statusFilter}
             onChange={(e) => data.setStatusFilter(e.target.value)}
-            className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-sm rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">All Statuses</option>
             {STATUS_OPTIONS.filter(Boolean).map((s) => (
@@ -63,16 +63,18 @@ export default function LeadsPage() {
             placeholder="Search company or name..."
             value={data.searchQuery}
             onChange={(e) => data.setSearchQuery(e.target.value)}
-            className="text-sm rounded-md border border-slate-300 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500 w-56"
+            className="text-sm rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500 w-56"
           />
-          <span className="text-sm text-slate-400 self-center">{data.total} leads</span>
+          <span className="text-sm text-slate-400 dark:text-slate-500 self-center">
+            {data.total} leads
+          </span>
         </div>
       </div>
 
       {data.loading ? (
-        <p className="text-sm text-slate-400">Loading leads...</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500">Loading leads...</p>
       ) : data.error ? (
-        <p className="text-sm text-red-600">{data.error}</p>
+        <p className="text-sm text-red-600 dark:text-red-400">{data.error}</p>
       ) : (
         <KanbanBoard
           leads={data.leads}

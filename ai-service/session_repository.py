@@ -28,20 +28,34 @@ async def create_session(
     conn: asyncpg.Connection,
     user_id: str,
     track: str,
+    graph_version: str | None = None,
 ) -> str:
     """Insert a new audit session. Returns the session ID."""
     session_id = str(uuid.uuid4())
-    await conn.execute(
-        f"""
-        INSERT INTO {TABLE_AUDIT_SESSIONS}
-            (id, user_id, track, status, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, NOW(), NOW())
-        """,
-        session_id,
-        user_id,
-        track,
-        SESSION_IN_PROGRESS,
-    )
+    try:
+        await conn.execute(
+            f"""
+            INSERT INTO {TABLE_AUDIT_SESSIONS}
+                (id, user_id, track, status, graph_version, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+            """,
+            session_id,
+            user_id,
+            track,
+            SESSION_IN_PROGRESS,
+            graph_version,
+        )
+    except asyncpg.UndefinedColumnError as exc:
+        logger.critical(
+            "Schema-code drift detected in create_session — column missing from "
+            "%s. Run pending migrations. Detail: %s",
+            TABLE_AUDIT_SESSIONS,
+            exc,
+        )
+        raise RuntimeError(
+            f"Database schema is out of date: {exc}. "
+            "Apply pending migrations and restart the service."
+        ) from exc
     return session_id
 
 

@@ -17,9 +17,11 @@ export function SearchDropdown({ data }: SearchDropdownProps) {
   const { results, hasResults } = data;
 
   return (
-    <div className="absolute top-full mt-1 w-full max-w-md bg-white rounded-lg shadow-xl border border-slate-200 z-50 max-h-[400px] overflow-y-auto">
+    <div className="absolute top-full mt-1 w-full max-w-md bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 z-50 max-h-[400px] overflow-y-auto">
       {!hasResults && (
-        <p className="text-sm text-slate-400 px-4 py-3">No results for &quot;{data.query}&quot;</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500 px-4 py-3">
+          No results for &quot;{data.query}&quot;
+        </p>
       )}
 
       {results.users.length > 0 && (
@@ -68,8 +70,10 @@ export function SearchDropdown({ data }: SearchDropdownProps) {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="border-b last:border-0">
-      <p className="text-xs font-semibold text-slate-400 uppercase px-4 pt-2 pb-1">{title}</p>
+    <div className="border-b dark:border-slate-700 last:border-0">
+      <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase px-4 pt-2 pb-1">
+        {title}
+      </p>
       {children}
     </div>
   );
@@ -77,9 +81,11 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function ResultRow({ label, sub }: { label: string; sub?: string | null }) {
   return (
-    <div className="flex items-center justify-between px-4 py-2 hover:bg-slate-50 cursor-pointer text-sm">
-      <span className="text-slate-700 truncate">{label}</span>
-      {sub && <span className="text-xs text-slate-400 ml-2 truncate">{sub}</span>}
+    <div className="flex items-center justify-between px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 cursor-pointer text-sm">
+      <span className="text-slate-700 dark:text-slate-200 truncate">{label}</span>
+      {sub && (
+        <span className="text-xs text-slate-400 dark:text-slate-500 ml-2 truncate">{sub}</span>
+      )}
     </div>
   );
 }

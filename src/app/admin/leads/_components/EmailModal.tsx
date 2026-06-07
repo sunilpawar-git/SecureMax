@@ -36,15 +36,28 @@ export function EmailModal({ lead, onSend, onClose }: EmailModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-1">Send Email</h2>
-        <p className="text-sm text-slate-500 mb-4">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dialog-title"
+        className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-lg mx-4 p-6"
+      >
+        <h2
+          id="dialog-title"
+          className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-1"
+        >
+          Send Email
+        </h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
           To: {lead.email ?? 'No email'} ({lead.company})
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email-subject" className="text-sm font-medium text-slate-700">
+            <label
+              htmlFor="email-subject"
+              className="text-sm font-medium text-slate-700 dark:text-slate-200"
+            >
               Subject
             </label>
             <input
@@ -52,13 +65,16 @@ export function EmailModal({ lead, onSend, onClose }: EmailModalProps) {
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="mt-1 w-full rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               maxLength={200}
               required
             />
           </div>
           <div>
-            <label htmlFor="email-body" className="text-sm font-medium text-slate-700">
+            <label
+              htmlFor="email-body"
+              className="text-sm font-medium text-slate-700 dark:text-slate-200"
+            >
               Body
             </label>
             <textarea
@@ -66,19 +82,19 @@ export function EmailModal({ lead, onSend, onClose }: EmailModalProps) {
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={6}
-              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+              className="mt-1 w-full rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
               maxLength={5000}
               required
             />
           </div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
           <div className="flex justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="text-sm px-4 py-2 rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50 transition-colors"
+              className="text-sm px-4 py-2 rounded-md border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               Cancel
             </button>

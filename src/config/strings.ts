@@ -19,6 +19,7 @@ export const CTA = {
   CALENDAR: 'Schedule a Consultation',
   ENTERPRISE_PROPOSAL: 'Request Enterprise Proposal',
   DOWNLOAD_SAMPLE: 'Download Sample Enterprise Report',
+  FREE_ASSESSMENT: 'Start Your Free Security Assessment',
 } as const;
 
 export const TRACK = {
@@ -113,6 +114,22 @@ export const LIMITS_ERR = {
     'You have reached the maximum number of sessions this month. Please try again next month.',
 } as const;
 
+/** SSOT for input-validation messages shared across API route schemas. */
+export const VALIDATION_ERR = {
+  INVALID_BODY: 'Invalid or missing JSON body',
+  INVALID_TRACK: 'Invalid audit track',
+  INVALID_SESSION_ID: 'Invalid session identifier',
+  REQUIRED_QUESTION_ID: 'question_id is required',
+  REQUIRED_ANSWER: 'answer is required',
+  REQUIRED_REPORT_ID: 'report_id is required',
+  REQUIRED_ORDER_ID: 'razorpay_order_id is required',
+  REQUIRED_PAYMENT_ID: 'razorpay_payment_id is required',
+  REQUIRED_SIGNATURE: 'razorpay_signature is required',
+  REQUIRED_COMPANY_NAME: 'Company name is required',
+  REQUIRED_CONTACT_NAME: 'Contact name is required',
+  REQUIRED_EMAIL: 'Valid email is required',
+} as const;
+
 export const PAYMENT_ERR = {
   GATEWAY_LOADING: 'Payment gateway is loading. Please try again in a moment.',
 } as const;
@@ -139,6 +156,11 @@ export const UI = {
   LOADING: 'Loading...',
 } as const;
 
+export const CAPTCHA = {
+  FAILED: 'CAPTCHA verification failed. Please try again.',
+  PROMPT: 'Please complete the verification below.',
+} as const;
+
 export const DASHBOARD = {
   SUBTITLE: 'Your security assessments',
   EMPTY_STATE: 'No assessments yet. Start one above.',
@@ -160,6 +182,13 @@ export const SESSION_STATUS_LABEL: Record<string, string> = {
   [SESSION_STATUS.COMPLETED]: 'Completed',
   [SESSION_STATUS.ABANDONED]: 'Abandoned',
 };
+
+export const REPORT_STRINGS = {
+  RISK_HIGH: 'HIGH RISK',
+  RISK_MODERATE: 'MODERATE RISK',
+  RISK_LOW: 'LOW RISK',
+  POSTURE_SCORE_LABEL: 'Physical Security Posture Score',
+} as const;
 
 export const DPDPA = {
   CONSENT_VERSION: 'v1',

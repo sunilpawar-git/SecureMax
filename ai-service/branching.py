@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from google import genai
 from google.genai import types
 
-from config import Settings
+from config import Settings, get_settings
 from prompts import build_branching_prompt
 from questionnaire import determine_next_node
 from schemas import CppChunkResult
@@ -20,7 +20,7 @@ from schemas import CppChunkResult
 logger = logging.getLogger(__name__)
 
 _AI_TIMEOUT_SECONDS = 5
-_GEMINI_MODEL = "gemini-2.0-flash"
+_GEMINI_MODEL = get_settings().generation_model_fast
 
 
 @dataclass(frozen=True, slots=True)
@@ -39,12 +39,35 @@ async def determine_next_node_with_ai(
     settings: Settings,
     session_id: str = "",
 ) -> BranchResult:
-    """Select the next node using Gemini AI or deterministic fallback."""
+    """Select the next node using Gemini AI or deterministic fallback.
+
+    Gemini is ONLY invoked for text_input questions with two or more DISTINCT
+    non-any branch targets — i.e., cases where a free-text answer must be
+    semantically interpreted to choose between different paths.
+
+    For single_choice / multi_choice nodes the answer is always an exact MCQ
+    option string; determine_next_node() handles that with exact matching and
+    Gemini adds no value (and can misroute, inflating the session length).
+    """
     edges = current_node.get("edges", [])
     answer_str = answer if isinstance(answer, str) else answer[0] if answer else ""
 
+    # MCQ: deterministic exact-match is always correct — skip Gemini entirely.
+    question_type = current_node.get("question_type", "")
+    if question_type in ("single_choice", "multi_choice"):
+        fallback_id = determine_next_node(current_node, answer, node_map)
+        return BranchResult(
+            target_id=fallback_id or "",
+            reasoning="MCQ — deterministic routing; AI skipped",
+            ai_used=False,
+        )
+
+    # For text_input: only invoke Gemini when there are 2+ DISTINCT non-any
+    # targets.  If all negative-condition edges share the same destination the
+    # decision is still binary (enter branch / skip branch) and is deterministic.
     non_any_edges = [e for e in edges if e.get("condition", "") != "any"]
-    if len(non_any_edges) < 2:
+    distinct_non_any_targets = {e["target"] for e in non_any_edges if e.get("target")}
+    if len(distinct_non_any_targets) < 2:
         fallback_id = determine_next_node(current_node, answer, node_map)
         return BranchResult(
             target_id=fallback_id or "",

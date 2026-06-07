@@ -30,6 +30,17 @@ NEGATIVE_KEYWORDS: set[str] = {
     "no formal cycle",
     "informal only",
     "no — property empty",
+    "no formal access control",
+    "traditional lock only",
+    "no — direct entry",
+    "open compound",
+    "never — work unsupervised",
+    "no formal process",
+    "never re-verified",
+    "no — ad hoc",
+    "no formal policies anywhere",
+    "yes — app without 2fa",
+    "yes — same password for all",
 }
 
 MODERATE_KEYWORDS: set[str] = {
@@ -48,4 +59,12 @@ MODERATE_KEYWORDS: set[str] = {
     "informal handover",
     "yes — informal role",
     "paper log",
+    "informal arrangement",
+    "depends on trust level",
+    "informally understood",
+    "over a year ago",
+    "shared vaguely",
+    "varies by property",
+    "only at hiring",
+    "informal — collect keys",
 }

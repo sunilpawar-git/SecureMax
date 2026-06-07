@@ -38,6 +38,10 @@ jobs:
         env:
           DATABASE_URL: 'postgresql://localhost/dummy'
 
+      - name: File-length guard (<300 lines)
+        run: npm run check:file-length
+        continue-on-error: false
+
       - name: ESLint
         run: npm run lint
         continue-on-error: false
@@ -316,6 +320,18 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/raivan_test
         continue-on-error: true
+
+      - name: Install Postgres client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Verify RLS tenant isolation (live Postgres)
+        run: npm run db:verify-rls
+        env:
+          PGHOST: localhost
+          PGPORT: '5432'
+          PGUSER: postgres
+          PGPASSWORD: postgres
+        continue-on-error: false
 
   # ============================================================================
   # INTEGRATION TESTS

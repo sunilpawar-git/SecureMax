@@ -46,12 +46,14 @@ function UserAvatar({ name, email }: { name: string | null; email: string }) {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="h-7 w-7 rounded-full bg-slate-200 flex items-center justify-center text-xs font-semibold text-slate-600 shrink-0">
+      <div className="h-7 w-7 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0">
         {initials}
       </div>
       <div className="min-w-0">
-        {name && <p className="text-xs font-medium text-slate-800 truncate">{name}</p>}
-        <p className="text-xs text-slate-400 truncate">{email}</p>
+        {name && (
+          <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">{name}</p>
+        )}
+        <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{email}</p>
       </div>
     </div>
   );
@@ -59,40 +61,47 @@ function UserAvatar({ name, email }: { name: string | null; email: string }) {
 
 export function UsersTable({ users }: UsersTableProps) {
   if (users.length === 0) {
-    return <p className="text-sm text-slate-400 text-center py-8">{USERS_PAGE.EMPTY_STATE}</p>;
+    return (
+      <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">
+        {USERS_PAGE.EMPTY_STATE}
+      </p>
+    );
   }
 
   return (
-    <div className="bg-white rounded-lg border overflow-x-auto">
+    <div className="bg-white dark:bg-slate-800 rounded-lg border dark:border-slate-700 overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="bg-slate-50 border-b">
+        <thead className="bg-slate-50 dark:bg-slate-900 border-b dark:border-slate-700">
           <tr>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
               {USERS_PAGE.COL_USER}
             </th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
               {USERS_PAGE.COL_TRACK}
             </th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
               {USERS_PAGE.COL_ROLE}
             </th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
               {USERS_PAGE.COL_SESSIONS}
             </th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
               {USERS_PAGE.COL_PAID}
             </th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
               {USERS_PAGE.COL_LAST_ACTIVE}
             </th>
-            <th className="text-left px-4 py-3 font-medium text-slate-600">
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
               {USERS_PAGE.COL_JOINED}
             </th>
           </tr>
         </thead>
         <tbody>
           {users.map((u) => (
-            <tr key={u.id} className="border-b last:border-0 hover:bg-slate-50">
+            <tr
+              key={u.id}
+              className="border-b dark:border-slate-700 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-700"
+            >
               <td className="px-4 py-3 max-w-[200px]">
                 <UserAvatar name={u.name} email={u.email} />
               </td>
@@ -112,7 +121,9 @@ export function UsersTable({ users }: UsersTableProps) {
                   </span>
                 )}
               </td>
-              <td className="px-4 py-3 text-xs text-slate-600">{u.sessionCount}</td>
+              <td className="px-4 py-3 text-xs text-slate-600 dark:text-slate-300">
+                {u.sessionCount}
+              </td>
               <td className="px-4 py-3">
                 {u.paidSessionCount > 0 ? (
                   <span
@@ -121,13 +132,17 @@ export function UsersTable({ users }: UsersTableProps) {
                     {u.paidSessionCount}
                   </span>
                 ) : (
-                  <span className="text-xs text-slate-400">{USERS_PAGE.PAID_NONE}</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-500">
+                    {USERS_PAGE.PAID_NONE}
+                  </span>
                 )}
               </td>
-              <td className="px-4 py-3 text-xs text-slate-400">
+              <td className="px-4 py-3 text-xs text-slate-400 dark:text-slate-500">
                 {formatRelativeDate(u.lastActiveAt, USERS_PAGE.NEVER)}
               </td>
-              <td className="px-4 py-3 text-xs text-slate-400">{formatShortDate(u.joinedAt)}</td>
+              <td className="px-4 py-3 text-xs text-slate-400 dark:text-slate-500">
+                {formatShortDate(u.joinedAt)}
+              </td>
             </tr>
           ))}
         </tbody>

@@ -16,7 +16,7 @@ from report.constants import (
     REPORT_JOB_PENDING,
     REPORT_JOB_PROCESSING,
 )
-from tests.conftest import run_db
+from tests.conftest import ensure_test_user, run_db
 
 
 def _create_session(db_conn, user_id: str = "rpt-user-1", track: str = "hni") -> str:
@@ -24,6 +24,7 @@ def _create_session(db_conn, user_id: str = "rpt-user-1", track: str = "hni") ->
     import uuid
 
     session_id = str(uuid.uuid4())
+    ensure_test_user(db_conn, user_id)
     run_db(
         db_conn.execute(
             """

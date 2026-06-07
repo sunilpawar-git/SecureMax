@@ -20,6 +20,9 @@ ERR_SESSION_ALREADY_EXISTS = "Active session already exists. Resume or abandon i
 ERR_WRONG_QUESTION = "Expected answer for {expected}, got {got}"
 ERR_NODE_NOT_IN_GRAPH = "Current node not in graph"
 ERR_ACCESS_DENIED = "Access denied"
+ERR_USER_NOT_FOUND = (
+    "User not found. Ensure ai-service DATABASE_URL uses the same database as Next.js."
+)
 ERR_REPORT_NOT_FOUND = "Report not found"
 ERR_REPORT_STILL_GENERATING = "Report still generating"
 ERR_PAYMENT_REQUIRED = "Payment required to access full report"

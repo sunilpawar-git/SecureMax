@@ -7,8 +7,9 @@ via TRUNCATE after completion. TestClient creates per-request connections.
 import asyncio
 import os
 
-os.environ.setdefault("ALLOW_INSECURE_LOCAL", "true")
-os.environ.setdefault("DEV_BYPASS_SESSION_CHECK", "false")
+os.environ["ALLOW_INSECURE_LOCAL"] = "true"
+os.environ["DEV_BYPASS_SESSION_CHECK"] = "false"
+os.environ["AI_SERVICE_KEY"] = "test"
 
 import asyncpg
 import pytest
@@ -18,29 +19,36 @@ from config import get_settings
 from db import get_db
 
 _settings = get_settings()
-_DSN = _settings.database_url.replace("+asyncpg", "").split("?")[0]
+# Use postgres superuser for test setup (local dev only)
+# App itself uses app_user role at runtime
+_DSN = "postgresql://postgres@localhost:5432/raivan_global"
 
 TEST_SCHEMA = "test_ai"
 
 _DDL = f"""
-CREATE EXTENSION IF NOT EXISTS vector;
+-- vector extension already exists in shared database
+-- CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE SCHEMA IF NOT EXISTS {TEST_SCHEMA};
 
 SET search_path TO {TEST_SCHEMA};
 
-DROP TABLE IF EXISTS {TEST_SCHEMA}.session_events CASCADE;
-DROP TABLE IF EXISTS {TEST_SCHEMA}.audit_sessions CASCADE;
-DROP TABLE IF EXISTS {TEST_SCHEMA}.cpp_chunks CASCADE;
-
-CREATE TABLE {TEST_SCHEMA}.audit_sessions (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.users (
     id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL,
+    email TEXT NOT NULL DEFAULT 'test@example.com',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.audit_sessions (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL REFERENCES {TEST_SCHEMA}.users(id) ON DELETE CASCADE,
     track TEXT NOT NULL DEFAULT 'hni',
     status TEXT NOT NULL DEFAULT 'in_progress',
     property_type TEXT,
     facility_type TEXT,
     current_node_id TEXT,
+    graph_version TEXT,
     domain_scores JSONB,
     module_scores JSONB,
     paid BOOLEAN DEFAULT FALSE,
@@ -57,7 +65,7 @@ CREATE TABLE {TEST_SCHEMA}.audit_sessions (
 CREATE INDEX IF NOT EXISTS idx_test_sessions_user_status
     ON {TEST_SCHEMA}.audit_sessions(user_id, status);
 
-CREATE TABLE {TEST_SCHEMA}.session_events (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.session_events (
     id TEXT PRIMARY KEY,
     session_id TEXT NOT NULL
         REFERENCES {TEST_SCHEMA}.audit_sessions(id) ON DELETE CASCADE,
@@ -76,7 +84,7 @@ CREATE TABLE {TEST_SCHEMA}.session_events (
 CREATE INDEX IF NOT EXISTS idx_test_events_session
     ON {TEST_SCHEMA}.session_events(session_id);
 
-CREATE TABLE {TEST_SCHEMA}.cpp_chunks (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.cpp_chunks (
     id TEXT PRIMARY KEY,
     domain TEXT NOT NULL,
     section TEXT NOT NULL,
@@ -89,11 +97,9 @@ CREATE TABLE {TEST_SCHEMA}.cpp_chunks (
 CREATE INDEX IF NOT EXISTS idx_test_chunks_domain
     ON {TEST_SCHEMA}.cpp_chunks(domain);
 
-DROP TABLE IF EXISTS {TEST_SCHEMA}.report_artifacts CASCADE;
-DROP TABLE IF EXISTS {TEST_SCHEMA}.report_jobs CASCADE;
-DROP TABLE IF EXISTS {TEST_SCHEMA}.threat_intel CASCADE;
+-- Additional tables for reporting and threat intel
 
-CREATE TABLE {TEST_SCHEMA}.report_jobs (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.report_jobs (
     id TEXT PRIMARY KEY,
     session_id TEXT NOT NULL UNIQUE
         REFERENCES {TEST_SCHEMA}.audit_sessions(id) ON DELETE CASCADE,
@@ -103,7 +109,7 @@ CREATE TABLE {TEST_SCHEMA}.report_jobs (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE {TEST_SCHEMA}.report_artifacts (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.report_artifacts (
     id TEXT PRIMARY KEY,
     session_id TEXT NOT NULL UNIQUE
         REFERENCES {TEST_SCHEMA}.audit_sessions(id) ON DELETE CASCADE,
@@ -115,7 +121,7 @@ CREATE TABLE {TEST_SCHEMA}.report_artifacts (
     generated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE {TEST_SCHEMA}.threat_intel (
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.threat_intel (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
     url TEXT NOT NULL UNIQUE,
@@ -124,12 +130,29 @@ CREATE TABLE {TEST_SCHEMA}.threat_intel (
     domain_tags JSONB NOT NULL,
     industry_tags JSONB NOT NULL,
     source TEXT NOT NULL DEFAULT 'unknown',
+    relevance_score DOUBLE PRECISION NOT NULL DEFAULT 0.0,
     soft_deleted BOOLEAN NOT NULL DEFAULT FALSE,
-    scraped_at TIMESTAMPTZ DEFAULT NOW()
+    scraped_at TIMESTAMPTZ DEFAULT NOW(),
+    embedding public.vector(3072)
 );
 
 CREATE INDEX IF NOT EXISTS idx_test_threat_intel_soft_deleted
     ON {TEST_SCHEMA}.threat_intel(soft_deleted);
+
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.scraper_runs (
+    id TEXT PRIMARY KEY,
+    source TEXT,
+    status TEXT NOT NULL DEFAULT 'running',
+    articles_found INTEGER NOT NULL DEFAULT 0,
+    articles_stored INTEGER NOT NULL DEFAULT 0,
+    duplicates INTEGER NOT NULL DEFAULT 0,
+    errors JSONB,
+    started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    completed_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_test_scraper_runs_started
+    ON {TEST_SCHEMA}.scraper_runs(started_at);
 """
 
 
@@ -162,7 +185,10 @@ def _setup_test_schema():
     async def _setup():
         conn = await asyncpg.connect(_DSN)
         try:
-            # Execute the entire DDL script as a single transaction
+            # Drop and recreate the test schema so the DDL is always current.
+            # CREATE TABLE IF NOT EXISTS would silently skip column additions
+            # added since the schema was first created.
+            await conn.execute(f"DROP SCHEMA IF EXISTS {TEST_SCHEMA} CASCADE")
             await conn.execute(_DDL)
             # Verify the tables were created
             result = await conn.fetch(
@@ -191,7 +217,9 @@ def _cleanup_test_data():
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.threat_intel CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.session_events CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.audit_sessions CASCADE")
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.users CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.cpp_chunks CASCADE")
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.scraper_runs CASCADE")
         finally:
             await conn.close()
 
@@ -247,6 +275,15 @@ def test_client():
     app.state.pool = _TestPool(_DSN, TEST_SCHEMA)
     app.dependency_overrides[get_db] = _override_get_db
     with TestClient(app, raise_server_exceptions=True) as client:
+        original_request = client.request
+
+        def _request_with_service_key(method, url, **kwargs):
+            headers = dict(kwargs.get("headers") or {})
+            headers.setdefault("X-Service-Key", os.environ["AI_SERVICE_KEY"])
+            kwargs["headers"] = headers
+            return original_request(method, url, **kwargs)
+
+        client.request = _request_with_service_key  # type: ignore[method-assign]
         yield client
     app.dependency_overrides.clear()
 
@@ -263,3 +300,14 @@ def db_conn():
 def run_db(coro):
     """Helper for sync tests to execute async repo operations."""
     return _run(coro)
+
+
+async def seed_test_user(conn: asyncpg.Connection, user_id: str) -> None:
+    """Insert a minimal user row — mirrors production FK on audit_sessions.user_id."""
+    sql = f"INSERT INTO {TEST_SCHEMA}.users (id, email) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING"  # noqa: S608
+    await conn.execute(sql, user_id, f"{user_id}@test.local")
+
+
+def ensure_test_user(db_conn: asyncpg.Connection, user_id: str) -> None:
+    """Sync helper — seed users row before inserting audit_sessions."""
+    run_db(seed_test_user(db_conn, user_id))

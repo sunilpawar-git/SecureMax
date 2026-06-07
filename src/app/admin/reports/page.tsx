@@ -31,7 +31,7 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Report Management</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Report Management</h1>
         <button
           onClick={data.refresh}
           disabled={data.loading}
@@ -42,7 +42,7 @@ export default function ReportsPage() {
       </div>
 
       {data.error ? (
-        <p className="text-sm text-red-600">{data.error}</p>
+        <p className="text-sm text-red-600 dark:text-red-400">{data.error}</p>
       ) : (
         <ReportsTable
           reports={data.reports}

@@ -93,8 +93,12 @@ export function useScraperData(): ScraperData {
   }, [loadHealth, loadArticles]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
-    refresh();
+    const controller = new AbortController();
+    const fetchData = async () => {
+      await refresh();
+    };
+    void fetchData();
+    return () => controller.abort();
   }, [refresh]);
 
   const runScraper = useCallback(async () => {

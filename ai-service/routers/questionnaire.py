@@ -10,7 +10,7 @@ import asyncpg
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 
 import session_repository as repo
-from branching import determine_next_node_with_ai
+from branching import BranchResult, determine_next_node_with_ai
 from config import Settings, get_settings
 from constants import (
     ERR_ACCESS_DENIED,
@@ -19,6 +19,7 @@ from constants import (
     ERR_SESSION_ALREADY_COMPLETED,
     ERR_SESSION_ALREADY_EXISTS,
     ERR_SESSION_NOT_FOUND,
+    ERR_USER_NOT_FOUND,
     ERR_WRONG_QUESTION,
     SESSION_ABANDONED,
     SESSION_COMPLETED,
@@ -34,7 +35,7 @@ from models import (
     SubmitAnswerRequest,
     SubmitAnswerResponse,
 )
-from questionnaire import get_entry_node_id, get_node_map, node_to_response
+from questionnaire import get_entry_node_id, get_graph_version, get_node_map, node_to_response
 
 router = APIRouter(prefix="/questionnaire", tags=["questionnaire"])
 logger = logging.getLogger(__name__)
@@ -84,8 +85,19 @@ async def start_session(
 
     entry_id = get_entry_node_id(req.track)
     node_map = get_node_map(req.track)
+    graph_version = get_graph_version(req.track)
 
-    session_id = await repo.create_session(conn, req.user_id, req.track)
+    try:
+        session_id = await repo.create_session(conn, req.user_id, req.track, graph_version)
+    except asyncpg.ForeignKeyViolationError as exc:
+        if "user_id" in str(exc):
+            logger.error(
+                "User not found starting session (check DATABASE_URL): user=%s",
+                req.user_id[:12],
+            )
+            raise HTTPException(status_code=404, detail=ERR_USER_NOT_FOUND) from exc
+        raise
+
     await repo.set_current_node(conn, session_id, entry_id)
 
     return StartSessionResponse(
@@ -110,7 +122,11 @@ async def submit_answer(
     domain = current_node["domain"]
     score_drop = current_node.get("score_drop_trigger", False)
 
-    chunks, citations = await _safe_retrieve_cpp(answer_str, conn, _settings)
+    related = current_node.get("related_domains", [])
+    retrieval_domains = [domain] + related
+    chunks, citations = await _safe_retrieve_cpp(
+        answer_str, conn, _settings, domains=retrieval_domains
+    )
 
     # Build AI context from events already in the DB (prior to this answer)
     raw_prior = await repo.get_events(conn, req.session_id)
@@ -233,7 +249,7 @@ def _decrypt_context_events(
     for ev in raw_events:
         try:
             answer = decrypt(ev["answer_encrypted"], enc_key)
-        except (ValueError, Exception):
+        except Exception:
             answer = ""
         node = node_map.get(ev["question_node_id"], {})
         result.append(
@@ -249,9 +265,11 @@ async def _safe_retrieve_cpp(
     answer_text: str,
     conn: asyncpg.Connection,
     settings: Settings,
+    *,
+    domains: list[str] | None = None,
 ) -> tuple[list, list[str]]:
     try:
-        chunks = await get_relevant_chunks(answer_text, conn, settings)
+        chunks = await get_relevant_chunks(answer_text, conn, settings, domains=domains)
         citations = [f"{c.domain}: {c.section}" for c in chunks]
         return chunks, citations
     except Exception:
@@ -262,7 +280,7 @@ async def _safe_retrieve_cpp(
 async def _build_answer_response(
     conn: asyncpg.Connection,
     session_id: str,
-    branch,
+    branch: BranchResult,
     node_map: dict,
     enc_key: bytes,
     citations: list[str],

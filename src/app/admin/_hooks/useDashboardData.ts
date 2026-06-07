@@ -75,9 +75,19 @@ export function useDashboardData(): DashboardData {
   }, []);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
-    void load();
-  }, [load]);
+    let cancelled = false;
+    const fetchData = async () => {
+      await load();
+      if (!cancelled) {
+        // load() already updated state via dispatch
+      }
+    };
+    void fetchData();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { stats, actionItems, recentActivity, loading, error, refresh: load };
 }

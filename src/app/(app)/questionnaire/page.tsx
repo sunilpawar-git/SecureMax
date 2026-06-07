@@ -9,10 +9,11 @@ export default async function QuestionnairePage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { consentAt: true },
+    select: { consentAt: true, city: true },
   });
 
   if (!user?.consentAt) redirect('/onboarding/consent');
+  if (!user?.city) redirect('/onboarding/profile');
 
   return <QuestionnaireClient />;
 }

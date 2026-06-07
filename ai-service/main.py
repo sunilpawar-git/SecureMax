@@ -15,10 +15,13 @@ from auth_middleware import ServiceAuthMiddleware
 from config import get_settings
 from db import init_pool
 from gemini_client import GeminiClient
+from routers.assistant import router as assistant_router
+from routers.cpp_admin import router as cpp_admin_router
 from routers.linkedin import router as linkedin_router
 from routers.questionnaire import router as questionnaire_router
 from routers.report import router as report_router
 from routers.scraper import router as scraper_router
+from schema_guard import assert_schema_ready
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +46,7 @@ def _get_allowed_origins() -> list[str]:
 async def lifespan(app: FastAPI):
     settings = get_settings()
     pool = await init_pool(settings)
+    await assert_schema_ready(pool)
     gemini = GeminiClient(settings) if settings.gemini_api_key else None
     app.state.pool = pool
     app.state.settings = settings
@@ -55,10 +59,39 @@ async def lifespan(app: FastAPI):
             from scraper.pipeline import run_pipeline
 
             process_fn = _make_gemini_tagger(gemini) if gemini else None
-            stats = await run_pipeline(pool, process_fn=process_fn)
+            embed_fn = gemini.embed if gemini else None
+            stats = await run_pipeline(pool, process_fn=process_fn, embed_fn=embed_fn)
             logger.info("Scheduled scraper completed: %s", stats)
         except Exception:
             logger.exception("Scheduled scraper failed")
+
+    async def scheduled_weekly_briefing():
+        """Monday 09:00 IST (03:30 UTC) — synthesize weekly LinkedIn briefing."""
+        try:
+            from linkedin.weekly_briefing import synthesize_weekly_briefing
+
+            if not gemini:
+                logger.warning("Weekly briefing skipped — Gemini not configured")
+                return
+            async with pool.acquire() as conn:
+                rows = await conn.fetch(
+                    """SELECT title, summary, domain_tags, source
+                    FROM threat_intel
+                    WHERE soft_deleted = FALSE
+                      AND scraped_at >= NOW() - INTERVAL '7 days'
+                    ORDER BY scraped_at DESC LIMIT 10"""
+                )
+                articles = [dict(r) for r in rows]
+                briefing_text = await synthesize_weekly_briefing(articles, gemini=gemini)
+                await conn.execute(
+                    """INSERT INTO linkedin_posts
+                       (id, draft_text, status, platform, created_at, updated_at)
+                       VALUES (gen_random_uuid(), $1, 'draft', 'linkedin', NOW(), NOW())""",
+                    briefing_text,
+                )
+            logger.info("Weekly LinkedIn briefing drafted (%d chars)", len(briefing_text))
+        except Exception:
+            logger.exception("Weekly LinkedIn briefing failed")
 
     scheduler.add_job(
         scheduled_scrape,
@@ -68,9 +101,21 @@ async def lifespan(app: FastAPI):
         id="daily_scraper",
         replace_existing=True,
     )
+    scheduler.add_job(
+        scheduled_weekly_briefing,
+        "cron",
+        day_of_week="mon",
+        hour=3,
+        minute=30,
+        id="weekly_linkedin_briefing",
+        replace_existing=True,
+    )
     scheduler.start()
     app.state.scheduler = scheduler
-    logger.info("APScheduler started — daily scraper at 18:45 UTC (00:15 IST)")
+    logger.info(
+        "APScheduler started — daily scraper 18:45 UTC, "
+        "weekly LinkedIn briefing Mon 03:30 UTC (09:00 IST)"
+    )
 
     yield
 
@@ -95,6 +140,8 @@ app.add_middleware(
     allow_headers=["Content-Type", "X-Service-Key", "X-User-Id"],
 )
 
+app.include_router(assistant_router)
+app.include_router(cpp_admin_router)
 app.include_router(linkedin_router)
 app.include_router(questionnaire_router)
 app.include_router(report_router)

@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { authConfig } from './config';
 import { handleJwt } from './callbacks';
 import { USER_ROLE } from '@/config/strings';
+import { env } from '@/lib/env';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -13,7 +14,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // On first sign-in both user and account are populated by OAuth.
       // Upsert the user row and hydrate the JWT with DB-sourced fields.
       if (user?.email && account) {
-        const isAdminEmail = user.email === process.env.ADMIN_EMAIL;
+        const isAdminEmail = !!env.ADMIN_EMAIL && user.email === env.ADMIN_EMAIL;
         const dbUser = await prisma.user.upsert({
           where: { email: user.email },
           update: {

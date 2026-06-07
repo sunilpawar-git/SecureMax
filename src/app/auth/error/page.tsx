@@ -21,14 +21,15 @@ export default async function AuthErrorPage({ searchParams }: ErrorPageProps) {
   const message = ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.Default;
 
   return (
-    <div className="rounded-xl border border-red-200 bg-white p-8 shadow-sm text-center space-y-4">
-      <div className="mx-auto w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+    <div className="rounded-xl border border-red-200 dark:border-red-800 bg-white dark:bg-slate-800 p-8 shadow-sm text-center space-y-4">
+      <div className="mx-auto w-12 h-12 rounded-full bg-red-50 dark:bg-red-900/30 flex items-center justify-center">
         <svg
           className="w-6 h-6 text-red-500"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"
@@ -38,8 +39,10 @@ export default async function AuthErrorPage({ searchParams }: ErrorPageProps) {
         </svg>
       </div>
 
-      <h2 className="text-lg font-semibold text-slate-900">Authentication Error</h2>
-      <p className="text-sm text-slate-600">{message}</p>
+      <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+        Authentication Error
+      </h2>
+      <p className="text-sm text-slate-600 dark:text-slate-300">{message}</p>
 
       <div className="pt-2 space-y-2">
         <Link
@@ -50,7 +53,7 @@ export default async function AuthErrorPage({ searchParams }: ErrorPageProps) {
         </Link>
         <Link
           href="/"
-          className="block text-sm text-slate-500 hover:text-slate-700 transition-colors"
+          className="block text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
         >
           Back to {APP.NAME}
         </Link>

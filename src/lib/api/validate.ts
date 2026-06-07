@@ -5,6 +5,7 @@
 
 import type { ZodSchema, ZodError } from 'zod';
 import type { ValidationError } from './response';
+import { VALIDATION_ERR } from '@/config/strings';
 
 const CUID_PATTERN = /^c[a-z0-9]{7,39}$/;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -29,6 +30,18 @@ function zodToValidationErrors(zodError: ZodError): ValidationError[] {
   }));
 }
 
+/**
+ * Validates an already-parsed value against a schema. Pure — no request I/O.
+ * Lets callers read the body once and validate per-branch with correct types.
+ */
+export function validateData<T>(raw: unknown, schema: ZodSchema<T>): ParseResult<T> {
+  const result = schema.safeParse(raw);
+  if (!result.success) {
+    return { success: false, errors: zodToValidationErrors(result.error) };
+  }
+  return { success: true, data: result.data };
+}
+
 export async function parseBody<T>(
   request: Request,
   schema: ZodSchema<T>,
@@ -39,14 +52,9 @@ export async function parseBody<T>(
   } catch {
     return {
       success: false,
-      errors: [{ field: 'body', message: 'Invalid or missing JSON body' }],
+      errors: [{ field: 'body', message: VALIDATION_ERR.INVALID_BODY }],
     };
   }
 
-  const result = schema.safeParse(raw);
-  if (!result.success) {
-    return { success: false, errors: zodToValidationErrors(result.error) };
-  }
-
-  return { success: true, data: result.data };
+  return validateData(raw, schema);
 }
