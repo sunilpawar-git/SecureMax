@@ -1,6 +1,7 @@
 'use client';
 
 import { SEVERITY } from '@/config/strings';
+import { SEVERITY_STYLES } from '@/config/colors';
 
 export const REDACTED_PLACEHOLDER = '[Unlock full report to view]';
 export const LOCKED_BANNER_TEXT = 'Unlock full report to see details';
@@ -18,17 +19,6 @@ interface FindingCardProps {
   finding: Finding;
   locked: boolean;
 }
-
-const SEVERITY_STYLES: Record<string, string> = {
-  [SEVERITY.CRITICAL]:
-    'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800',
-  [SEVERITY.HIGH]:
-    'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800',
-  [SEVERITY.MEDIUM]:
-    'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800',
-  [SEVERITY.LOW]:
-    'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600',
-};
 
 /**
  * Redact sensitive fields client-side as a defense-in-depth measure.
