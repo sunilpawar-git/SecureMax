@@ -67,9 +67,19 @@ describe('QuestionnaireLayout — choice question (fixed CTA bar)', () => {
 
     // Choice questions render the Continue button inside the fixed bottom CTA bar,
     // not inline under the question — assertion #11 of the overhaul plan.
-    expect(continueBtn.parentElement?.className).toEqual(
-      expect.stringContaining('fixed'),
-    );
+    const ctaBar = continueBtn.parentElement;
+    expect(ctaBar?.className).toEqual(expect.stringContaining('fixed'));
+
+    // Containing-block guard: a `position: fixed` element pins to the viewport
+    // only if NO ancestor has a non-`none` transform. `animate-question-in`
+    // leaves `transform: translateY(0)` behind via `animation-fill-mode: both`,
+    // so the CTA bar must not be a descendant of any element carrying that
+    // class — otherwise it pins to the card instead of the screen (a bug
+    // `className` string-matching alone cannot catch, since jsdom never
+    // computes layout/containing-blocks).
+    for (let node = ctaBar?.parentElement; node; node = node.parentElement) {
+      expect(node.className).not.toEqual(expect.stringContaining('animate-question-in'));
+    }
   });
 });
 

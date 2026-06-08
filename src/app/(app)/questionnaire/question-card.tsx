@@ -68,61 +68,67 @@ export function QuestionCard({ question, onSubmit, isLoading, questionNumber }: 
       data-testid="question-card"
       onKeyDownCapture={handleKeyDownCapture}
       className={cx(
-        'animate-question-in bg-white dark:bg-slate-800 rounded-xl shadow-sm',
+        'bg-white dark:bg-slate-800 rounded-xl shadow-sm',
         'border border-gray-100 dark:border-slate-700 p-6',
         !isText && 'pb-24 md:pb-6',
       )}
     >
-      <div className="flex items-center gap-2 mb-4">
-        <Badge variant="emerald">{domainLabel}</Badge>
-        <span className={QUESTION_STYLES.meta}>
-          {QUESTION_CARD.QUESTION_PREFIX}
-          {questionNumber}
-        </span>
-      </div>
-
-      <h2 className={cx(QUESTION_STYLES.question, 'mb-6')} aria-live="polite">
-        {question.text}
-      </h2>
-
-      {isText ? (
-        <textarea
-          value={textInput}
-          onChange={(e) => setTextInput(e.target.value)}
-          placeholder={QUESTION_CARD.TEXT_PLACEHOLDER}
-          aria-label={QUESTION_CARD.TEXT_ARIA}
-          rows={3}
-          className={QUESTION_STYLES.textarea}
-        />
-      ) : (
-        <div
-          role={isSingle ? 'radiogroup' : 'group'}
-          aria-label={QUESTION_CARD.OPTIONS_ARIA}
-          className="space-y-2"
-        >
-          {question.options?.map((option) => {
-            const selected = selectedOptions.includes(option);
-            return (
-              <button
-                key={option}
-                type="button"
-                data-testid="question-option"
-                onClick={() => handleOptionClick(option)}
-                role={isSingle ? 'radio' : undefined}
-                aria-checked={isSingle ? selected : undefined}
-                aria-pressed={isMulti ? selected : undefined}
-                className={cx(
-                  QUESTION_STYLES.option.base,
-                  selected ? QUESTION_STYLES.option.selected : QUESTION_STYLES.option.unselected,
-                )}
-              >
-                {selected && <CheckIcon className="h-4 w-4 shrink-0" aria-hidden="true" />}
-                <span>{option}</span>
-              </button>
-            );
-          })}
+      {/* Slide-in lives on this inner wrapper, NOT the card itself: a
+          non-`none` `transform` (left behind by `animation-fill-mode: both`)
+          would make the card a containing block for the `position: fixed`
+          CTA bar below, pinning it to the card instead of the viewport. */}
+      <div className="animate-question-in">
+        <div className="flex items-center gap-2 mb-4">
+          <Badge variant="emerald">{domainLabel}</Badge>
+          <span className={QUESTION_STYLES.meta}>
+            {QUESTION_CARD.QUESTION_PREFIX}
+            {questionNumber}
+          </span>
         </div>
-      )}
+
+        <h2 className={cx(QUESTION_STYLES.question, 'mb-6')} aria-live="polite">
+          {question.text}
+        </h2>
+
+        {isText ? (
+          <textarea
+            value={textInput}
+            onChange={(e) => setTextInput(e.target.value)}
+            placeholder={QUESTION_CARD.TEXT_PLACEHOLDER}
+            aria-label={QUESTION_CARD.TEXT_ARIA}
+            rows={3}
+            className={QUESTION_STYLES.textarea}
+          />
+        ) : (
+          <div
+            role={isSingle ? 'radiogroup' : 'group'}
+            aria-label={QUESTION_CARD.OPTIONS_ARIA}
+            className="space-y-2"
+          >
+            {question.options?.map((option) => {
+              const selected = selectedOptions.includes(option);
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  data-testid="question-option"
+                  onClick={() => handleOptionClick(option)}
+                  role={isSingle ? 'radio' : undefined}
+                  aria-checked={isSingle ? selected : undefined}
+                  aria-pressed={isMulti ? selected : undefined}
+                  className={cx(
+                    QUESTION_STYLES.option.base,
+                    selected ? QUESTION_STYLES.option.selected : QUESTION_STYLES.option.unselected,
+                  )}
+                >
+                  {selected && <CheckIcon className="h-4 w-4 shrink-0" aria-hidden="true" />}
+                  <span>{option}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       <div className={isText ? 'mt-6' : QUESTION_STYLES.ctaBar}>
         <Button
