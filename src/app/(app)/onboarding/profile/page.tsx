@@ -71,7 +71,7 @@ export default function ProfilePage() {
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
                   required
-                  className="w-full min-h-[44px] rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm
+                  className="w-full min-h-[48px] rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm
                     focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                 >
                   <option value="">{ONBOARDING.COUNTRY_PLACEHOLDER}</option>
@@ -97,7 +97,7 @@ export default function ProfilePage() {
                   onChange={(e) => setCity(e.target.value)}
                   placeholder={ONBOARDING.CITY_PLACEHOLDER}
                   required
-                  className="w-full min-h-[44px] rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm
+                  className="w-full min-h-[48px] rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm
                     focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 dark:placeholder-slate-500"
                 />
               </div>

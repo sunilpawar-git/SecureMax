@@ -73,6 +73,17 @@ export const LANDING_HEADER_STYLES = {
     'rounded-lg border border-white/30 bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors',
 } as const;
 
+/**
+ * Auth page shell tokens — used by src/app/auth/layout.tsx (sign-in/error pages).
+ */
+export const AUTH_LAYOUT_STYLES = {
+  shell:
+    'min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-900 ' +
+    'flex flex-col items-center justify-center px-4',
+  title: 'text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100',
+  tagline: 'mt-1 text-sm text-slate-500 dark:text-slate-400',
+} as const;
+
 export const TRACK_BADGE_STYLES: Record<string, string> = {
   hni: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
   enterprise: 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200',
