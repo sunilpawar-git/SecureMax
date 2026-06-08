@@ -62,8 +62,6 @@ function QuestionnaireContent() {
   useEffect(() => {
     if (sessionState === 'active' && currentTrack) {
       setMeta({ track: currentTrack, questionNumber: questionsAnswered + 1 });
-    } else {
-      setMeta({ track: null, questionNumber: null });
     }
     return () => setMeta({ track: null, questionNumber: null });
   }, [sessionState, currentTrack, questionsAnswered, setMeta]);
