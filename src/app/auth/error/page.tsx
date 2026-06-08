@@ -40,7 +40,9 @@ export default async function AuthErrorPage({ searchParams }: ErrorPageProps) {
         </svg>
       </div>
 
-      <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{AUTH.ERROR_TITLE}</h2>
+      <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+        {AUTH.ERROR_TITLE}
+      </h2>
       <p className="text-sm text-slate-600 dark:text-slate-300">{message}</p>
 
       <div className="pt-2 space-y-2">

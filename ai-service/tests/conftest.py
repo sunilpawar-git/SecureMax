@@ -22,9 +22,7 @@ _settings = get_settings()
 # Use postgres superuser for test setup (local dev only)
 # App itself uses app_user role at runtime
 _DSN = clean_database_dsn(
-    os.environ.get(
-        "DATABASE_URL", "postgresql://postgres@localhost:5432/raivan_global"
-    )
+    os.environ.get("DATABASE_URL", "postgresql://postgres@localhost:5432/raivan_global")
 )
 
 TEST_SCHEMA = "test_ai"

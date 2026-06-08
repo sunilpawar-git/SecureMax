@@ -54,7 +54,8 @@ nodes:
     text: 'Are temporary/shift workers issued unique access credentials (not shared group cards)?'
     question_type: single_choice
     cpp_domain_tag: CPP-06
-    options: ['Yes — individual credentials', 'Shared group card', 'No access credentials', 'Biometric']
+    options:
+      ['Yes — individual credentials', 'Shared group card', 'No access credentials', 'Biometric']
     edges:
       - target: ent_facility_dock_cctv
         condition: any
@@ -75,7 +76,13 @@ nodes:
     text: 'Does each site have a designated security officer, or is one person responsible for all?'
     question_type: single_choice
     cpp_domain_tag: CPP-07
-    options: ['Dedicated officer per site', 'One person covers all sites', 'No formal appointment', 'Regional security managers']
+    options:
+      [
+        'Dedicated officer per site',
+        'One person covers all sites',
+        'No formal appointment',
+        'Regional security managers',
+      ]
     edges:
       - target: ent_facility_group_audit_freq
         condition: any
@@ -95,7 +102,13 @@ nodes:
     text: 'Is there a unified security incident reporting system across all sites?'
     question_type: single_choice
     cpp_domain_tag: CPP-07
-    options: ['Yes — centralised platform', 'Each site has its own', 'No formal system', 'Paper-based only']
+    options:
+      [
+        'Yes — centralised platform',
+        'Each site has its own',
+        'No formal system',
+        'Paper-based only',
+      ]
     edges:
       - target: ent_q2_existing_vendor
         condition: any
@@ -276,7 +289,13 @@ nodes:
     text: 'Is there a defined crisis communication plan with pre-identified spokespersons and escalation paths?'
     question_type: single_choice
     cpp_domain_tag: CPP-03
-    options: ['Yes — documented and trained', 'Informally understood', 'No', 'Part of wider corporate plan']
+    options:
+      [
+        'Yes — documented and trained',
+        'Informally understood',
+        'No',
+        'Part of wider corporate plan',
+      ]
     edges:
       - target: ent_cpp03_fire_officer
         condition: any
@@ -338,7 +357,13 @@ nodes:
     text: 'Is there a dedicated annual budget for physical security improvements at this facility?'
     question_type: single_choice
     cpp_domain_tag: CPP-02
-    options: ['Yes — defined budget line', 'Ad hoc spending only', 'No budget', 'Part of general facilities']
+    options:
+      [
+        'Yes — defined budget line',
+        'Ad hoc spending only',
+        'No budget',
+        'Part of general facilities',
+      ]
     edges:
       - target: ent_cpp02_risk_review_freq
         condition: any
@@ -385,7 +410,8 @@ nodes:
     text: 'When incidents occur, is a root cause analysis conducted and corrective actions tracked to closure?'
     question_type: single_choice
     cpp_domain_tag: CPP-04
-    options: ['Yes — formal process', 'Sometimes — depends on severity', 'No — incidents not investigated']
+    options:
+      ['Yes — formal process', 'Sometimes — depends on severity', 'No — incidents not investigated']
     edges:
       - target: ent_cpp04_trend_analysis
         condition: any

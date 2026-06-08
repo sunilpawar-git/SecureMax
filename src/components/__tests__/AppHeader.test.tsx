@@ -29,9 +29,7 @@ jest.mock('next-auth/react', () => ({
 describe('AppHeader (slim) — questionnaire progress', () => {
   it('shows "Question N" with no fake denominator', () => {
     render(<AppHeader variant="slim" track="hni" questionNumber={3} />);
-    expect(
-      screen.getByText(`${QUESTIONNAIRE.QUESTION_LABEL} 3`),
-    ).toBeInTheDocument();
+    expect(screen.getByText(`${QUESTIONNAIRE.QUESTION_LABEL} 3`)).toBeInTheDocument();
     expect(screen.queryByText(/of\s+\d+/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/~\s*\d+/)).not.toBeInTheDocument();
   });

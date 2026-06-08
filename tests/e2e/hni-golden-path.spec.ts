@@ -24,9 +24,7 @@ const MOBILE_VIEWPORT = { width: 390, height: 844 };
 test.describe('Mobile nav drawer (landing page)', () => {
   test.use({ viewport: MOBILE_VIEWPORT });
 
-  test('hamburger opens the drawer; Sign In link navigates; Escape closes it', async ({
-    page,
-  }) => {
+  test('hamburger opens the drawer; Sign In link navigates; Escape closes it', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 

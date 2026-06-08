@@ -54,7 +54,9 @@ export default function ReportSummaryPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <p className="text-sm text-slate-500 dark:text-slate-400">{REPORT_STRINGS.SUMMARY_LOADING}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {REPORT_STRINGS.SUMMARY_LOADING}
+        </p>
       </div>
     );
   }

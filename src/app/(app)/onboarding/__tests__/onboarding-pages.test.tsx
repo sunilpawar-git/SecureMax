@@ -54,9 +54,7 @@ describe('ConsentPage (restyled, copy unchanged)', () => {
 
   it('disables the consent CTA until the attestation box is checked', () => {
     render(<ConsentPage />);
-    expect(
-      screen.getByRole('button', { name: /I Agree — Continue to Assessment/ }),
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: /I Agree — Continue to Assessment/ })).toBeDisabled();
   });
 
   it('has no axe violations', async () => {
