@@ -1,6 +1,8 @@
 import { signIn } from '@/lib/auth';
-import { APP, TRUST_STACK, VALID_TRACKS } from '@/config/strings';
+import { APP, AUTH, TRUST_STACK, VALID_TRACKS } from '@/config/strings';
 import { env } from '@/lib/env';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 
 /**
  * Validates the track param — only accepts known track values.
@@ -51,9 +53,9 @@ export default async function SignInPage({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-8 shadow-sm">
+      <Card className="p-8">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 text-center mb-6">
-          Sign in to {APP.NAME}
+          {AUTH.SIGN_IN_TITLE_PREFIX} {APP.NAME}
         </h2>
 
         <div className="space-y-3">
@@ -64,13 +66,10 @@ export default async function SignInPage({
                 await signIn('google', { redirectTo });
               }}
             >
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-              >
+              <Button type="submit" variant="secondary" size="lg" className="w-full gap-3">
                 <GoogleIcon />
-                Continue with Google
-              </button>
+                {AUTH.CONTINUE_GOOGLE}
+              </Button>
             </form>
           )}
 
@@ -81,17 +80,14 @@ export default async function SignInPage({
                 await signIn('microsoft-entra-id', { redirectTo });
               }}
             >
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-              >
+              <Button type="submit" variant="secondary" size="lg" className="w-full gap-3">
                 <MicrosoftIcon />
-                Continue with Microsoft
-              </button>
+                {AUTH.CONTINUE_MICROSOFT}
+              </Button>
             </form>
           )}
         </div>
-      </div>
+      </Card>
 
       <div className="rounded-lg border border-emerald-100 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 p-4">
         <p className="text-xs text-emerald-800 dark:text-emerald-300 text-center leading-relaxed">

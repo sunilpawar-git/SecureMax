@@ -1,5 +1,10 @@
 import { AppLayoutShell } from '@/components/AppLayoutShell';
+import { AppHeaderProvider } from '@/components/app-header-context';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  return <AppLayoutShell>{children}</AppLayoutShell>;
+  return (
+    <AppHeaderProvider>
+      <AppLayoutShell>{children}</AppLayoutShell>
+    </AppHeaderProvider>
+  );
 }

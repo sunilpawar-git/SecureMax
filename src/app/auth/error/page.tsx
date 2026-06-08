@@ -1,24 +1,25 @@
 import Link from 'next/link';
-import { APP } from '@/config/strings';
-
-const ERROR_MESSAGES: Record<string, string> = {
-  Configuration: 'There is a problem with the server configuration.',
-  AccessDenied: 'You do not have permission to sign in.',
-  Verification: 'The verification link may have expired or already been used.',
-  Default: 'An unexpected authentication error occurred.',
-  OAuthSignin: 'Could not start the sign-in process. Please try again.',
-  OAuthCallback: 'Sign-in was interrupted. Please try again.',
-  OAuthAccountNotLinked: 'This email is already linked to another sign-in method.',
-};
+import { APP, AUTH, AUTH_ERROR_MESSAGES } from '@/config/strings';
+import { BUTTON_STYLES } from '@/config/colors';
+import { cx } from '@/lib/utils';
 
 interface ErrorPageProps {
   searchParams: Promise<{ error?: string }>;
 }
 
+// "Try again" is a navigation (Link), not a form action, so it can't use the
+// Button primitive (a <button>); it pulls the same SSOT tokens via BUTTON_STYLES.
+const TRY_AGAIN_LINK = cx(
+  BUTTON_STYLES.base,
+  BUTTON_STYLES.variant.primary,
+  BUTTON_STYLES.size.lg,
+  'w-full',
+);
+
 export default async function AuthErrorPage({ searchParams }: ErrorPageProps) {
   const params = await searchParams;
   const errorCode = params.error ?? 'Default';
-  const message = ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.Default;
+  const message = AUTH_ERROR_MESSAGES[errorCode] ?? AUTH_ERROR_MESSAGES.Default;
 
   return (
     <div className="rounded-xl border border-red-200 dark:border-red-800 bg-white dark:bg-slate-800 p-8 shadow-sm text-center space-y-4">
@@ -40,22 +41,19 @@ export default async function AuthErrorPage({ searchParams }: ErrorPageProps) {
       </div>
 
       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-        Authentication Error
+        {AUTH.ERROR_TITLE}
       </h2>
       <p className="text-sm text-slate-600 dark:text-slate-300">{message}</p>
 
       <div className="pt-2 space-y-2">
-        <Link
-          href="/auth/signin"
-          className="block w-full rounded-lg bg-emerald-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
-        >
-          Try again
+        <Link href="/auth/signin" className={TRY_AGAIN_LINK}>
+          {AUTH.ERROR_TRY_AGAIN}
         </Link>
         <Link
           href="/"
           className="block text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
         >
-          Back to {APP.NAME}
+          {AUTH.ERROR_BACK_PREFIX} {APP.NAME}
         </Link>
       </div>
     </div>

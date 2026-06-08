@@ -36,10 +36,6 @@ jest.mock('@/lib/env', () => ({
   env: { AI_SERVICE_URL: 'http://localhost:8000', AI_SERVICE_KEY: 'test-key' },
 }));
 
-jest.mock('@/components/report/FindingCard', () => ({
-  REDACTED_PLACEHOLDER: '[REDACTED]',
-}));
-
 // --- Imports after mocks ---
 
 import type { NextRequest } from 'next/server';

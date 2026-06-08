@@ -1,9 +1,9 @@
 'use client';
 
-import { SEVERITY } from '@/config/strings';
-
-export const REDACTED_PLACEHOLDER = '[Unlock full report to view]';
-export const LOCKED_BANNER_TEXT = 'Unlock full report to see details';
+import { SEVERITY, REPORT_STRINGS } from '@/config/strings';
+import { SEVERITY_STYLES } from '@/config/colors';
+import { Badge } from '@/components/ui/Badge';
+import { cx } from '@/lib/utils';
 
 export interface Finding {
   domain: string;
@@ -19,17 +19,6 @@ interface FindingCardProps {
   locked: boolean;
 }
 
-const SEVERITY_STYLES: Record<string, string> = {
-  [SEVERITY.CRITICAL]:
-    'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800',
-  [SEVERITY.HIGH]:
-    'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800',
-  [SEVERITY.MEDIUM]:
-    'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800',
-  [SEVERITY.LOW]:
-    'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600',
-};
-
 /**
  * Redact sensitive fields client-side as a defense-in-depth measure.
  * The API should already return redacted data for unpaid reports —
@@ -37,7 +26,7 @@ const SEVERITY_STYLES: Record<string, string> = {
  */
 function safeText(text: string, isLocked: boolean): string {
   if (!isLocked) return text;
-  return REDACTED_PLACEHOLDER;
+  return REPORT_STRINGS.REDACTED_PLACEHOLDER;
 }
 
 export function FindingCard({ finding, locked }: FindingCardProps) {
@@ -49,9 +38,9 @@ export function FindingCard({ finding, locked }: FindingCardProps) {
         <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
           {finding.domain}
         </span>
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${severityStyle}`}>
+        <Badge variant={null} className={cx('border font-semibold', severityStyle)}>
           {finding.severity.toUpperCase()}
-        </span>
+        </Badge>
       </div>
 
       <div className="px-4 py-3 space-y-2">
@@ -71,7 +60,7 @@ export function FindingCard({ finding, locked }: FindingCardProps) {
         {locked && (
           <div className="flex items-center justify-center py-2">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-600">
-              {LOCKED_BANNER_TEXT}
+              {REPORT_STRINGS.LOCKED_BANNER_TEXT}
             </span>
           </div>
         )}

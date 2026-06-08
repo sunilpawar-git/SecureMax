@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { APP, DPDPA, TRUST_STACK } from '@/config/strings';
 import { LEGAL_LINKS } from '@/config/legal-strings';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 
 export default function ConsentPage() {
   const router = useRouter();
@@ -44,7 +46,7 @@ export default function ConsentPage() {
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Data Privacy Consent</p>
         </div>
 
-        <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 space-y-4">
+        <Card className="p-6 space-y-4">
           <h2 className="font-semibold text-slate-900 dark:text-slate-100">Before we begin</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400">
             Purpose: {DPDPA.CONSENT_DESCRIPTION} (Consent {DPDPA.CONSENT_VERSION})
@@ -104,15 +106,16 @@ export default function ConsentPage() {
 
           {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
-          <button
+          <Button
+            size="lg"
+            className="w-full"
             onClick={handleConsent}
-            disabled={!agreed || isSubmitting}
-            className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white
-              hover:bg-emerald-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            loading={isSubmitting}
+            disabled={!agreed}
           >
             {isSubmitting ? 'Recording consent...' : 'I Agree — Continue to Assessment'}
-          </button>
-        </div>
+          </Button>
+        </Card>
 
         <p className="text-center text-xs text-slate-400 dark:text-slate-500">
           {TRUST_STACK.CREDENTIAL}

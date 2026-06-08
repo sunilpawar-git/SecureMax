@@ -9,7 +9,7 @@ import { NextRequest } from 'next/server';
 import { requireAuth, unauthorizedResponse, apiSuccess, apiError, validateCuid } from '@/lib/api';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
 import { env } from '@/lib/env';
-import { REDACTED_PLACEHOLDER } from '@/components/report/FindingCard';
+import { REPORT_STRINGS } from '@/config/strings';
 
 interface ReportFinding {
   domain: string;
@@ -31,8 +31,8 @@ function redactFindings(payload: SummaryPayload): SummaryPayload {
     ...payload,
     findings: payload.findings.map((f) => ({
       ...f,
-      answer: REDACTED_PLACEHOLDER,
-      recommendation: REDACTED_PLACEHOLDER,
+      answer: REPORT_STRINGS.REDACTED_PLACEHOLDER,
+      recommendation: REPORT_STRINGS.REDACTED_PLACEHOLDER,
     })),
   };
 }

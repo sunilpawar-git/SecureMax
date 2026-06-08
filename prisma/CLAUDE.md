@@ -14,17 +14,18 @@ Database schema, migrations, generated client. PostgreSQL + pgvector.
 
 ## Key Models
 
-| Model | Purpose | Mutation Allowed |
-|-------|---------|------------------|
-| `AuditSession` | Questionnaire run | CU (no DELETE) |
-| `SessionEvent` | Immutable answer + AI reasoning log | C only (Rule 15) |
-| `AdminAction` | Immutable admin audit trail | C only (Rule 15) |
-| `ReportArtifact` | Encrypted PDF report | C only (immutable) |
-| `CppChunk` | pgvector embeddings of CPP PDFs | CU (seeded) |
+| Model            | Purpose                             | Mutation Allowed   |
+| ---------------- | ----------------------------------- | ------------------ |
+| `AuditSession`   | Questionnaire run                   | CU (no DELETE)     |
+| `SessionEvent`   | Immutable answer + AI reasoning log | C only (Rule 15)   |
+| `AdminAction`    | Immutable admin audit trail         | C only (Rule 15)   |
+| `ReportArtifact` | Encrypted PDF report                | C only (immutable) |
+| `CppChunk`       | pgvector embeddings of CPP PDFs     | CU (seeded)        |
 
 ## RLS Enforcement
 
 All queries go through either:
+
 - `withUserContext(userId, fn)` — sets `app.current_user_id` in transaction scope
 - `withRlsBypass(fn)` — admin-only, crosses tenant boundaries (document why it's needed)
 
@@ -32,13 +33,14 @@ RLS policies automatically filter by `app.current_user_id` GUC.
 
 ## Encryption
 
-| Table.Column | Content | Encryption |
-|---|---|---|
-| `SessionEvent.answerEncrypted` | User's answer to question | AES-256-GCM (key per session) |
-| `SessionEvent.aiReasoningEncrypted` | AI's branching reasoning | AES-256-GCM (key per session) |
-| `ReportArtifact.pdfEncrypted` | PDF report bytes | AES-256-GCM (key per artifact) |
+| Table.Column                        | Content                   | Encryption                     |
+| ----------------------------------- | ------------------------- | ------------------------------ |
+| `SessionEvent.answerEncrypted`      | User's answer to question | AES-256-GCM (key per session)  |
+| `SessionEvent.aiReasoningEncrypted` | AI's branching reasoning  | AES-256-GCM (key per session)  |
+| `ReportArtifact.pdfEncrypted`       | PDF report bytes          | AES-256-GCM (key per artifact) |
 
 Decrypt via:
+
 - Python: `decrypt(ciphertext, session_id)` in `ai-service/crypto.py`
 - TypeScript: `decrypt(ciphertext, sessionId)` in `src/lib/encryption.ts`
 

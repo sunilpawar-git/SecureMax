@@ -53,14 +53,14 @@ export function FreeSummaryView({
             {complianceGapCount}
           </span>
           <p className="text-sm text-orange-600 dark:text-orange-400 mt-1">
-            ISO 27001 / PSARA compliance gaps detected
+            {REPORT_STRINGS.COMPLIANCE_GAPS_DETECTED}
           </p>
         </div>
       )}
 
       <div>
         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3">
-          Findings ({(findings ?? []).length})
+          {REPORT_STRINGS.FINDINGS_HEADING} ({(findings ?? []).length})
         </h3>
         <div className="space-y-3">
           {(findings ?? []).map((f, i) => (

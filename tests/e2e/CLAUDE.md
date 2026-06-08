@@ -13,11 +13,11 @@ Playwright E2E test suite: golden-path user journeys for HNI, Enterprise, and Ad
 
 ## Test Files
 
-| File | Scope | Fixture |
-|------|-------|---------|
-| `hni-golden-path.spec.ts` | HNI user journey start → questionnaire → payment → report | `golden_sessions/hni-high-risk.json`, `hni-low-risk.json` |
-| `enterprise-golden-path.spec.ts` | Enterprise user journey | `golden_sessions/enterprise-high-risk.json` |
-| `admin-golden-path.spec.ts` | Admin dashboard, session review, report unlock | None (admin-specific) |
+| File                             | Scope                                                     | Fixture                                                   |
+| -------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- |
+| `hni-golden-path.spec.ts`        | HNI user journey start → questionnaire → payment → report | `golden_sessions/hni-high-risk.json`, `hni-low-risk.json` |
+| `enterprise-golden-path.spec.ts` | Enterprise user journey                                   | `golden_sessions/enterprise-high-risk.json`               |
+| `admin-golden-path.spec.ts`      | Admin dashboard, session review, report unlock            | None (admin-specific)                                     |
 
 ## Running Tests
 

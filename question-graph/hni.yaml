@@ -27,7 +27,12 @@ nodes:
     text: 'For multiple properties, is there a single person or team responsible for security across all locations?'
     question_type: single_choice
     cpp_domain_tag: CPP-07
-    options: ['Yes — dedicated security manager', 'Partially — different staff per property', 'No — ad hoc']
+    options:
+      [
+        'Yes — dedicated security manager',
+        'Partially — different staff per property',
+        'No — ad hoc',
+      ]
     edges:
       - target: hni_q1_multi_consistency
         condition: any
@@ -112,7 +117,13 @@ nodes:
     question_type: single_choice
     cpp_domain_tag: CPP-01
     score_drop_trigger: true
-    options: ['Biometric/smart lock', 'Keycard or digital code', 'Traditional lock only', 'No formal access control']
+    options:
+      [
+        'Biometric/smart lock',
+        'Keycard or digital code',
+        'Traditional lock only',
+        'No formal access control',
+      ]
     edges:
       - target: hni_cpp01_visitor_screening
         condition: 'Traditional lock only'
@@ -128,7 +139,8 @@ nodes:
     text: 'Do you have any process to verify the identity of visitors before they enter the property?'
     question_type: single_choice
     cpp_domain_tag: CPP-01
-    options: ['Yes — intercom/camera at gate', 'Ask guards to check', 'No — direct entry', 'Open compound']
+    options:
+      ['Yes — intercom/camera at gate', 'Ask guards to check', 'No — direct entry', 'Open compound']
     edges:
       - target: hni_cpp01_contractor_policy
         condition: any
@@ -148,7 +160,13 @@ nodes:
     text: 'Do you have a defined protocol for after-hours access (late night, early morning)?'
     question_type: single_choice
     cpp_domain_tag: CPP-01
-    options: ['Yes — strict protocol', 'Informal arrangement', 'No — same as daytime', 'Property is always attended']
+    options:
+      [
+        'Yes — strict protocol',
+        'Informal arrangement',
+        'No — same as daytime',
+        'Property is always attended',
+      ]
     edges:
       - target: hni_cpp06_staff_count
         condition: any
@@ -195,7 +213,13 @@ nodes:
     text: 'When a staff member leaves (fired or resigns), is there a formal process to recover keys/codes and revoke access?'
     question_type: single_choice
     cpp_domain_tag: CPP-06
-    options: ['Yes — documented procedure', 'Informal — collect keys', 'No formal process', 'Never had to do this']
+    options:
+      [
+        'Yes — documented procedure',
+        'Informal — collect keys',
+        'No formal process',
+        'Never had to do this',
+      ]
     edges:
       - target: hni_cpp06_access_zones
         condition: any
@@ -253,7 +277,8 @@ nodes:
     text: 'Do guests, visitors, or staff connect their personal devices to your main WiFi?'
     question_type: single_choice
     cpp_domain_tag: CPP-05
-    options: ['Yes — same password for all', 'Yes — separate guest network', 'No — only family', 'Unsure']
+    options:
+      ['Yes — same password for all', 'Yes — separate guest network', 'No — only family', 'Unsure']
     edges:
       - target: hni_cpp05_remote_access
         condition: any
@@ -300,7 +325,12 @@ nodes:
     text: 'Does your household have a defined communication tree (who calls whom) during an emergency?'
     question_type: single_choice
     cpp_domain_tag: CPP-03
-    options: ['Yes — documented with phone numbers', 'Informally understood', 'No — everyone calls 100/police']
+    options:
+      [
+        'Yes — documented with phone numbers',
+        'Informally understood',
+        'No — everyone calls 100/police',
+      ]
     edges:
       - target: hni_cpp03_safe_room
         condition: any
@@ -346,7 +376,8 @@ nodes:
     text: 'Is there a specific person in your household accountable for identifying and managing security risks?'
     question_type: single_choice
     cpp_domain_tag: CPP-02
-    options: ['Yes — me personally', 'Yes — security manager', 'Shared vaguely', 'No one specifically']
+    options:
+      ['Yes — me personally', 'Yes — security manager', 'Shared vaguely', 'No one specifically']
     edges:
       - target: hni_cpp02_last_review_date
         condition: any
@@ -356,7 +387,8 @@ nodes:
     text: 'Has any security-related decision (new locks, cameras, guards) been made in the past 6 months?'
     question_type: single_choice
     cpp_domain_tag: CPP-02
-    options: ['Yes — significant investment', 'Yes — minor upgrades', 'No changes', 'Planning to invest']
+    options:
+      ['Yes — significant investment', 'Yes — minor upgrades', 'No changes', 'Planning to invest']
     edges:
       - target: hni_cpp02_review_trigger
         condition: any

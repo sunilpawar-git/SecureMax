@@ -5,16 +5,24 @@
  */
 
 import Link from 'next/link';
-import { useRef, useEffect } from 'react';
-import { APP, NAV } from '@/config/strings';
+import { useRef, useEffect, useState } from 'react';
+import { Bars3Icon } from '@heroicons/react/24/outline';
+import { APP, NAV, NAV_DRAWER } from '@/config/strings';
 import { ADMIN_NAV_ITEMS } from '@/config/admin-strings';
 import { ADMIN_EXIT_LINK_STYLE } from '@/config/admin-colors';
+import { MobileNavDrawer, type NavDrawerItem } from '@/components/MobileNavDrawer';
 import { useGlobalSearch } from '../_hooks/useGlobalSearch';
 import { SearchDropdown } from './SearchDropdown';
 
 export function AdminNav() {
   const search = useGlobalSearch();
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const items: NavDrawerItem[] = ADMIN_NAV_ITEMS.map((item) => ({
+    label: item.label,
+    href: item.href,
+  }));
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -27,8 +35,8 @@ export function AdminNav() {
   }, [search]);
 
   return (
-    <nav className="bg-slate-900 text-white px-6 py-3">
-      <div className="max-w-7xl mx-auto flex items-center gap-6">
+    <nav className="bg-slate-900 text-white px-3 sm:px-6 py-3">
+      <div className="max-w-7xl mx-auto flex items-center gap-3 md:gap-6">
         <div className="flex items-center gap-3 flex-shrink-0">
           <span className="font-bold text-sm whitespace-nowrap">{APP.NAME} Admin</span>
           <Link href="/dashboard" className={ADMIN_EXIT_LINK_STYLE}>
@@ -36,7 +44,7 @@ export function AdminNav() {
           </Link>
         </div>
 
-        <div className="flex gap-4 overflow-x-auto flex-shrink-0">
+        <div className="hidden md:flex gap-4 overflow-x-auto flex-shrink-0">
           {ADMIN_NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
@@ -48,7 +56,10 @@ export function AdminNav() {
           ))}
         </div>
 
-        <div ref={wrapperRef} className="relative ml-auto w-full max-w-xs flex-shrink">
+        <div
+          ref={wrapperRef}
+          className="hidden md:block relative ml-auto w-full max-w-xs flex-shrink"
+        >
           <input
             type="text"
             value={search.query}
@@ -62,7 +73,18 @@ export function AdminNav() {
           />
           <SearchDropdown data={search} />
         </div>
+
+        <button
+          type="button"
+          onClick={() => setDrawerOpen(true)}
+          aria-label={NAV_DRAWER.OPEN}
+          className="md:hidden rounded-lg p-2.5 text-gray-300 hover:text-white hover:bg-slate-800 transition-colors"
+        >
+          <Bars3Icon className="h-6 w-6" aria-hidden="true" />
+        </button>
       </div>
+
+      <MobileNavDrawer items={items} open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </nav>
   );
 }

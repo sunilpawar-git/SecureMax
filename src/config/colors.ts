@@ -4,6 +4,8 @@
  * All color decisions live here.
  */
 
+import { SEVERITY } from './strings';
+
 export const COLORS = {
   brand: {
     primary: '#0F172A',
@@ -71,7 +73,120 @@ export const LANDING_HEADER_STYLES = {
     'rounded-lg border border-white/30 bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors',
 } as const;
 
+/**
+ * Auth page shell tokens — used by src/app/auth/layout.tsx (sign-in/error pages).
+ */
+export const AUTH_LAYOUT_STYLES = {
+  shell:
+    'min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-900 ' +
+    'flex flex-col items-center justify-center px-4',
+  title: 'text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100',
+  tagline: 'mt-1 text-sm text-slate-500 dark:text-slate-400',
+} as const;
+
 export const TRACK_BADGE_STYLES: Record<string, string> = {
   hni: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
   enterprise: 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200',
 };
+
+/**
+ * Audit-finding severity badge tokens. Relocated from FindingCard.tsx so the
+ * Badge primitive and FindingCard read one source (SSOT). Each pair is WCAG AA
+ * (≥4.5:1) in both light and dark: e.g. red-800-on-red-100 ≈ 7:1,
+ * red-300-on-red-900/30 ≈ 6:1.
+ */
+export const SEVERITY_STYLES: Record<string, string> = {
+  [SEVERITY.CRITICAL]:
+    'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800',
+  [SEVERITY.HIGH]:
+    'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800',
+  [SEVERITY.MEDIUM]:
+    'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800',
+  [SEVERITY.LOW]:
+    'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600',
+};
+
+/**
+ * Button primitive tokens (src/components/ui/Button.tsx). `base` holds layout +
+ * focus-ring geometry (no color); each `variant` carries its own AA-verified
+ * color pair + ring color. Touch targets ≥44px (md) / 48px (lg) per WCAG 2.5.5.
+ *
+ * Contrast (text vs bg, light → dark):
+ *   primary     white on emerald-700 ≈ 5.5:1  (both modes)
+ *   secondary   slate-900 on white ≈ 17:1 / slate-100 on slate-800 ≈ 14:1
+ *   ghost       slate-700 on transparent (white) ≈ 8.6:1 / slate-200 on slate-900
+ *   destructive white on red-600 ≈ 4.8:1 / white on red-700 ≈ 6:1
+ */
+export const BUTTON_STYLES = {
+  base:
+    'inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-colors ' +
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ' +
+    'ring-offset-white dark:ring-offset-slate-900 ' +
+    'disabled:opacity-50 disabled:cursor-not-allowed',
+  variant: {
+    primary:
+      'bg-emerald-700 text-white hover:bg-emerald-800 focus-visible:ring-emerald-600 ' +
+      'dark:bg-emerald-700 dark:hover:bg-emerald-800',
+    secondary:
+      'bg-white text-slate-900 border border-slate-300 hover:bg-slate-50 focus-visible:ring-slate-400 ' +
+      'dark:bg-slate-800 dark:text-slate-100 dark:border-slate-600 dark:hover:bg-slate-700',
+    ghost:
+      'bg-transparent text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-400 ' +
+      'dark:text-slate-200 dark:hover:bg-slate-800',
+    destructive:
+      'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500 ' +
+      'dark:bg-red-700 dark:hover:bg-red-800',
+  },
+  size: {
+    sm: 'min-h-[36px] px-3 text-sm',
+    md: 'min-h-[44px] px-4 text-sm',
+    lg: 'min-h-[48px] px-6 text-base',
+  },
+} as const;
+
+/** Card primitive tokens (src/components/ui/Card.tsx). Keys map 1:1 to the `variant` prop. */
+export const CARD_STYLES = {
+  default:
+    'rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800',
+  flat: 'rounded-xl bg-slate-50 dark:bg-slate-800/60',
+} as const;
+
+/** Badge primitive color tokens (src/components/ui/Badge.tsx). All pairs WCAG AA in both modes. */
+export const BADGE_STYLES = {
+  emerald: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
+  slate: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200',
+  amber: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
+} as const;
+
+/**
+ * Questionnaire question-card tokens (question-card.tsx). `option.base` is
+ * color-free layout (52px touch target per WCAG 2.5.5); `selected`/`unselected`
+ * carry AA-verified pairs in both modes. Kept here so the card holds no inline
+ * color blobs (SSOT/DRY).
+ */
+export const QUESTION_STYLES = {
+  option: {
+    base: 'w-full text-left px-4 min-h-[52px] flex items-center gap-2 rounded-lg border text-sm transition-colors',
+    selected:
+      'border-emerald-600 bg-emerald-50 text-emerald-800 font-medium ' +
+      'dark:border-emerald-500 dark:bg-emerald-900/30 dark:text-emerald-300',
+    unselected:
+      'border-slate-200 text-slate-700 hover:border-slate-300 ' +
+      'dark:border-slate-600 dark:text-slate-200 dark:hover:border-slate-500',
+  },
+  textarea:
+    'w-full rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-900 ' +
+    'focus:border-transparent focus:ring-2 focus:ring-emerald-500 resize-none ' +
+    'dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500',
+  meta: 'text-xs text-slate-400 dark:text-slate-500',
+  question: 'text-lg font-semibold text-slate-900 dark:text-slate-100',
+  /**
+   * Mobile fixed CTA bar surface for choice questions (assertion #11). On
+   * desktop (md+) it collapses to a transparent inline footer so the Continue
+   * button flows under the card.
+   */
+  ctaBar:
+    'fixed inset-x-0 bottom-0 z-10 border-t border-slate-200 bg-white/95 p-4 pb-safe ' +
+    'backdrop-blur dark:border-slate-700 dark:bg-slate-900/95 ' +
+    'md:static md:z-auto md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none md:dark:bg-transparent',
+} as const;

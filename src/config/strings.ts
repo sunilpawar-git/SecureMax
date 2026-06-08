@@ -175,6 +175,29 @@ export const QUESTIONNAIRE = {
   VIEW_REPORT_STATUS: 'View Report Status',
   SECURITY_SCORE: 'Security Score',
   RESUME_EXISTING: 'Resume existing session',
+  QUESTION_LABEL: 'Question',
+  ANSWERED_PREFIX: 'You answered',
+  ANSWERED_SUFFIX: 'questions.',
+  TRUST_SIGNAL: 'Encrypted end-to-end. Grounded in CPP Seven Precis.',
+  SCORE_OUT_OF: '/ 100',
+  RADAR_ARIA: 'Live security posture across the seven CPP domains',
+} as const;
+
+/** Question-card copy and accessibility labels (questionnaire active state). */
+export const QUESTION_CARD = {
+  CONTINUE: 'Continue',
+  PROCESSING: 'Processing...',
+  TEXT_PLACEHOLDER: 'Type your answer...',
+  TEXT_ARIA: 'Your answer',
+  QUESTION_PREFIX: 'Q',
+  OPTIONS_ARIA: 'Answer options',
+} as const;
+
+/** Mobile navigation drawer labels (presentational MobileNavDrawer). */
+export const NAV_DRAWER = {
+  ARIA_LABEL: 'Navigation menu',
+  OPEN: 'Open menu',
+  CLOSE: 'Close menu',
 } as const;
 
 export const SESSION_STATUS_LABEL: Record<string, string> = {
@@ -183,12 +206,13 @@ export const SESSION_STATUS_LABEL: Record<string, string> = {
   [SESSION_STATUS.ABANDONED]: 'Abandoned',
 };
 
-export const REPORT_STRINGS = {
-  RISK_HIGH: 'HIGH RISK',
-  RISK_MODERATE: 'MODERATE RISK',
-  RISK_LOW: 'LOW RISK',
-  POSTURE_SCORE_LABEL: 'Physical Security Posture Score',
-} as const;
+// Report-viewer strings live in report-strings.ts (keeps this file under the
+// 300-line gate); re-exported here so `@/config/strings` stays the import path.
+export { REPORT_STRINGS } from './report-strings';
+
+// Auth + onboarding-profile strings live in auth-strings.ts (same 300-line-gate
+// rationale); re-exported so `@/config/strings` stays the single import path.
+export { AUTH, AUTH_ERROR_MESSAGES, ONBOARDING, ONBOARDING_COUNTRIES } from './auth-strings';
 
 export const DPDPA = {
   CONSENT_VERSION: 'v1',
@@ -196,3 +220,43 @@ export const DPDPA = {
   CONSENT_DESCRIPTION:
     'Processing of personal data for AI-driven physical security audit, report generation, and threat intelligence enrichment under DPDPA 2023.',
 } as const;
+
+/** Landing-page section headings and inline copy (marketing sections). */
+export const LANDING = {
+  HERO_FREE_SUMMARY: 'Free executive summary',
+  HOW_IT_WORKS_TITLE: 'How It Works',
+  HOW_IT_WORKS_SUBTITLE_SUFFIX: 'to a complete security posture assessment',
+  TRUST_TITLE: 'Built on Trust',
+  CPP_DOMAINS_TITLE: 'Grounded in 7 CPP Security Domains',
+  SIGNAL_ENCRYPTION_TITLE: 'End-to-End Encryption',
+  SIGNAL_DATA_TITLE: 'India-Hosted Data',
+  SIGNAL_STANDARDS_TITLE: 'Standards-Based',
+  SIGNAL_VENDOR_TITLE: 'Non-Disruptive',
+} as const;
+
+/** "How It Works" four-step explainer (title + description per step). */
+export const LANDING_STEPS = [
+  {
+    step: '1',
+    title: 'Answer the Assessment',
+    description:
+      'AI-guided questionnaire based on CPP Seven Precis methodology. Takes about 12 minutes.',
+  },
+  {
+    step: '2',
+    title: 'Get Your Free Summary',
+    description:
+      'Instant executive summary with a security posture score and risk radar across 7 domains.',
+  },
+  {
+    step: '3',
+    title: 'Unlock Full Report',
+    description:
+      'Detailed findings, compliance gaps, remediation roadmap, and current threat intelligence.',
+  },
+  {
+    step: '4',
+    title: 'Book Physical Audit',
+    description: 'Priority access to on-site assessment by certified security professionals.',
+  },
+] as const;

@@ -1,23 +1,23 @@
-import { TRUST_STACK, CPP_DOMAINS } from '@/config/strings';
+import { TRUST_STACK, CPP_DOMAINS, LANDING } from '@/config/strings';
 
 const SIGNALS = [
   {
-    title: 'End-to-End Encryption',
+    title: LANDING.SIGNAL_ENCRYPTION_TITLE,
     description: TRUST_STACK.HNI_PRIVACY,
     icon: ShieldIcon,
   },
   {
-    title: 'India-Hosted Data',
+    title: LANDING.SIGNAL_DATA_TITLE,
     description: TRUST_STACK.ENTERPRISE_SOVEREIGNTY,
     icon: ServerIcon,
   },
   {
-    title: 'Standards-Based',
+    title: LANDING.SIGNAL_STANDARDS_TITLE,
     description: TRUST_STACK.COMPLIANCE_SIGNAL,
     icon: CheckIcon,
   },
   {
-    title: 'Non-Disruptive',
+    title: LANDING.SIGNAL_VENDOR_TITLE,
     description: TRUST_STACK.VENDOR_POSITIONING,
     icon: HandshakeIcon,
   },
@@ -28,7 +28,9 @@ export function TrustSignals() {
     <section className="py-20 px-6 bg-white dark:bg-slate-800">
       <div className="mx-auto max-w-5xl">
         <div className="text-center space-y-3 mb-12">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Built on Trust</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            {LANDING.TRUST_TITLE}
+          </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
             {TRUST_STACK.CREDENTIAL}
           </p>
@@ -53,7 +55,7 @@ export function TrustSignals() {
 
         <div className="mt-16 text-center">
           <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-4">
-            Grounded in 7 CPP Security Domains
+            {LANDING.CPP_DOMAINS_TITLE}
           </h3>
           <div className="flex flex-wrap justify-center gap-2">
             {Object.values(CPP_DOMAINS).map((d) => (

@@ -3,11 +3,13 @@
 import { useState, useCallback, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { RadarChart } from './radar-chart';
-import { QuestionCard } from './question-card';
+import { QuestionnaireLayout } from './questionnaire-layout';
 import { APP, CTA, TRACK, VALID_TRACKS, UI, QUESTIONNAIRE } from '@/config/strings';
 import { startSession, resumeSession, submitAnswer } from './questionnaire-service';
 import { useReportTrigger } from './use-report-trigger';
 import { ResumePrompt } from '@/components/ResumePrompt';
+import { useAppHeaderMeta } from '@/components/app-header-context';
+import { Button } from '@/components/ui/Button';
 import type { QuestionNode, RadarScores, SessionState } from './types';
 
 function getErrorMessage(err: unknown): string {
@@ -53,6 +55,16 @@ function QuestionnaireContent() {
   const [currentTrack, setCurrentTrack] = useState<string | null>(urlTrack);
 
   const reportTrigger = useReportTrigger(sessionId, sessionState === 'completed');
+  const { setMeta } = useAppHeaderMeta();
+
+  // Surface track + current question number to the slim AppHeader; clear it
+  // whenever the questionnaire is not in its active answering state.
+  useEffect(() => {
+    if (sessionState === 'active' && currentTrack) {
+      setMeta({ track: currentTrack, questionNumber: questionsAnswered + 1 });
+    }
+    return () => setMeta({ track: null, questionNumber: null });
+  }, [sessionState, currentTrack, questionsAnswered, setMeta]);
 
   useEffect(() => {
     if (!urlSessionId || !urlTrack || sessionState !== 'idle') return;
@@ -205,7 +217,7 @@ function QuestionnaireContent() {
             {QUESTIONNAIRE.COMPLETE_TITLE}
           </h2>
           <p className="text-gray-600 dark:text-slate-300">
-            You answered {questionsAnswered} questions.
+            {QUESTIONNAIRE.ANSWERED_PREFIX} {questionsAnswered} {QUESTIONNAIRE.ANSWERED_SUFFIX}
             {reportTrigger.triggered
               ? reportTrigger.error
                 ? ` ${reportTrigger.error}`
@@ -214,41 +226,33 @@ function QuestionnaireContent() {
           </p>
           <RadarChart scores={radarScores} />
           {reportTrigger.triggered && !reportTrigger.error && (
-            <button
+            <Button
               onClick={() => router.push(`/report/${reportTrigger.reportId ?? sessionId}/status`)}
-              className="inline-block rounded-lg bg-emerald-700 px-6 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
             >
               {QUESTIONNAIRE.VIEW_REPORT_STATUS}
-            </button>
+            </Button>
           )}
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-[calc(100vh-3rem)] bg-gray-50 dark:bg-slate-900 p-4">
-      <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
-        <div className="md:col-span-2">
-          {currentQuestion && (
-            <QuestionCard
-              question={currentQuestion}
-              onSubmit={handleAnswer}
-              isLoading={isLoading}
-              questionNumber={questionsAnswered + 1}
-            />
-          )}
-          {error && <p className="text-red-600 dark:text-red-400 text-sm mt-2">{error}</p>}
-        </div>
-        <div className="md:col-span-1">
-          <div className="sticky top-4">
-            <h3 className="text-sm font-medium text-gray-500 dark:text-slate-400 mb-2">
-              {QUESTIONNAIRE.SECURITY_SCORE}
-            </h3>
-            <RadarChart scores={radarScores} />
-          </div>
-        </div>
+  if (!currentQuestion) {
+    return (
+      <div className="min-h-[calc(100vh-3rem)] bg-gray-50 dark:bg-slate-900 flex items-center justify-center">
+        <p className="text-sm text-slate-400 dark:text-slate-500">{UI.LOADING}</p>
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <QuestionnaireLayout
+      question={currentQuestion}
+      onSubmit={handleAnswer}
+      isLoading={isLoading}
+      questionNumber={questionsAnswered + 1}
+      radarScores={radarScores}
+      error={error}
+    />
   );
 }

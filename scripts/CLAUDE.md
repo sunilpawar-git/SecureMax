@@ -13,15 +13,15 @@ Code quality and ops shell scripts: secrets scanning, file length enforcement, Y
 
 ## Scripts
 
-| Script | Purpose | Trigger |
-|--------|---------|---------|
-| `pre-commit-check.sh` | Runs on git pre-commit; calls secrets scan, file length check, YAML validation | Automatic (git hook) |
-| `check-secrets.sh` | Scan for leaked secrets (API keys, tokens, private keys) | Before every PR; manual `bash scripts/check-secrets.sh` |
-| `check-file-length.sh` | Enforce max file length policy (typically 300 lines) | Part of pre-commit |
-| `validate-yaml.sh` | Validate YAML files in `question-graph/` | When YAMLs change; calls `question-graph/validate.py` |
-| `tech-debt-audit.sh` | Count TODO/FIXME/HACK comments; surface debt before sprint review | Manual before sprint planning |
-| `rls-verify.sql` | SQL script to verify Postgres RLS policies are active | After migrations touching auth/users |
-| `verify-rls.sh` | Shell wrapper around `rls-verify.sql` | After migrations touching auth/users |
+| Script                 | Purpose                                                                        | Trigger                                                 |
+| ---------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| `pre-commit-check.sh`  | Runs on git pre-commit; calls secrets scan, file length check, YAML validation | Automatic (git hook)                                    |
+| `check-secrets.sh`     | Scan for leaked secrets (API keys, tokens, private keys)                       | Before every PR; manual `bash scripts/check-secrets.sh` |
+| `check-file-length.sh` | Enforce max file length policy (typically 300 lines)                           | Part of pre-commit                                      |
+| `validate-yaml.sh`     | Validate YAML files in `question-graph/`                                       | When YAMLs change; calls `question-graph/validate.py`   |
+| `tech-debt-audit.sh`   | Count TODO/FIXME/HACK comments; surface debt before sprint review              | Manual before sprint planning                           |
+| `rls-verify.sql`       | SQL script to verify Postgres RLS policies are active                          | After migrations touching auth/users                    |
+| `verify-rls.sh`        | Shell wrapper around `rls-verify.sql`                                          | After migrations touching auth/users                    |
 
 ## Running Scripts
 
@@ -56,6 +56,7 @@ git commit --no-verify  # NOT RECOMMENDED; violates Rule 14
 ## File Length Enforcement
 
 `check-file-length.sh` limits:
+
 - TypeScript/JavaScript: 300 lines
 - Python: 300 lines
 - YAML: 500 lines (configs may be longer)

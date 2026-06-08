@@ -3,9 +3,9 @@
 <details>
 <summary><b>📖 Book Publication Details & Disclaimers</b></summary>
 
-* **Publisher:** Raivan Global | [www.raivanglobal.com](https://www.raivanglobal.com)
-* **Disclaimer:** This *Physical Security Audit Manual (PSAM)* is furnished for training and ready reference purposes. While every effort has been made to ensure the accuracy of the contents herein, Raivan Global assumes no responsibility for errors or omissions.
-* **Copyright:** © Raivan Global. All rights reserved. Prepared for internal training and security audit operations.
+- **Publisher:** Raivan Global | [www.raivanglobal.com](https://www.raivanglobal.com)
+- **Disclaimer:** This _Physical Security Audit Manual (PSAM)_ is furnished for training and ready reference purposes. While every effort has been made to ensure the accuracy of the contents herein, Raivan Global assumes no responsibility for errors or omissions.
+- **Copyright:** © Raivan Global. All rights reserved. Prepared for internal training and security audit operations.
 
 </details>
 
@@ -13,111 +13,115 @@
 
 ## Table of Contents
 
-* [Preface: Introduction to Physical Security Audit Manual (PSAM)](#preface-introduction-to-physical-security-audit-manual-psam)
-* [Introduction: History of Investigations](#introduction-history-of-investigations)
-  * [Before Public Investigating](#before-public-investigating)
-  * [Thief-Takers](#thief-takers)
-  * [Bow Street Runners](#bow-street-runners)
-  * [France (The Sûreté)](#france-the-sûreté)
-  * [England (Scotland Yard)](#england-scotland-yard)
-  * [United States (Pinkerton & Federal Agencies)](#united-states-pinkerton--federal-agencies)
-* [Chapter 1: Investigations Management](#chapter-1-investigations-management)
-  * [1.1 The Nature of Investigation Management](#11-the-nature-of-investigation-management)
-  * [1.2 Qualities of an Effective Investigation](#12-qualities-of-an-effective-investigation)
-  * [1.3 Public Sector vs. Private Sector Investigations](#13-public-sector-vs-private-sector-investigations)
-  * [1.4 Management Issues in Investigations](#14-management-issues-in-investigations)
-  * [1.5 Organizing for Investigations](#15-organizing-for-investigations)
-  * [1.6 Fitting the Investigative Mission into the Organization](#16-fitting-the-investigative-mission-into-the-organization)
-  * [1.7 Outsourcing Investigations](#17-outsourcing-investigations)
-  * [1.8 Investigative Resources and Infrastructure](#18-investigative-resources-and-infrastructure)
-  * [1.9 Managing Investigations](#19-managing-investigations)
-  * [1.10 Other Management Matters](#110-other-management-matters)
-  * [1.11 Case Management](#111-case-management)
-  * [1.12 Other Investigative Management Issues](#112-other-investigative-management-issues)
-  * [1.13 Types of Investigations](#113-types-of-investigations)
-  * [1.14 Investigative Techniques and Tools](#114-investigative-techniques-and-tools)
-* [Appendix 1A: Security Incident Reports](#appendix-1a-security-incident-reports)
-* [Chapter 2: Undercover Investigations](#chapter-2-undercover-investigations)
-  * [2.1 What Is Undercover Investigation?](#21-what-is-undercover-investigation)
-  * [2.2 The History of Undercover Investigations](#22-the-history-of-undercover-investigations)
-  * [2.3 When Should Undercover Be Used?](#23-when-should-undercover-be-used)
-  * [2.4 When Undercover Operations Are Not Appropriate](#24-when-undercover-operations-are-not-appropriate)
-  * [2.5 The Need for Undercover Investigation](#25-the-need-for-undercover-investigation)
-  * [2.6 The Five Phases of the Investigation](#26-the-five-phases-of-the-investigation)
-  * [2.7 Removing an Operative](#27-removing-an-operative)
-  * [2.8 Types of Undercover Investigations](#28-types-of-undercover-investigations)
-  * [2.9 The Cost of Undercover Operations](#29-the-cost-of-undercover-operations)
-  * [2.10 The Future of Undercover Investigations](#210-the-future-of-undercover-investigations)
-* [Appendix 2A: Chronological Report (Daily Log)](#appendix-2a-chronological-report-undercover-daily-log)
-* [Appendix 2B: Narrative Report](#appendix-2b-narrative-report)
-* [Appendix 2C: Investigative Summary Report](#appendix-2c-investigative-summary-report)
-* [Appendix 2D: Special Report](#appendix-2d-special-report)
-* [Chapter 3: Due Diligence Investigations](#chapter-3-due-diligence-investigations)
-  * [3.1 Definitions of Due Diligence](#31-definitions-of-due-diligence)
-  * [3.2 Relevance to Assets Protection and Security Risk Management](#32-relevance-to-assets-protection-and-security-risk-management)
-  * [3.3 Applications of Due Diligence Investigations](#33-applications-of-due-diligence-investigations)
-  * [3.4 Digital and Cyber Aspects of Due Diligence](#34-digital-and-cyber-aspects-of-due-diligence-investigations)
-  * [3.5 Techniques and Steps in Due Diligence Investigations](#35-techniques-and-steps-in-due-diligence-investigations)
-* [Appendix 3A: Sample Due Diligence Checklist](#appendix-3a-sample-due-diligence-investigation-checklist)
-* [Appendix 3B: Securities Regulatory Bodies — Selected National Bodies](#appendix-3b-securities-regulatory-bodies-selected-national-bodies)
-* [Appendix 3C: Securities Regulatory Bodies — Selected International Bodies](#appendix-3c-securities-regulatory-bodies-selected-international-bodies)
-* [Chapter 4: Background Investigations and Preemployment Screening](#chapter-4-background-investigations-and-preemployment-screening)
-  * [4.1 The Need for Background Investigations](#41-the-need-for-background-investigations)
-  * [4.2 Issues That Require Investigation](#42-issues-that-require-investigation)
-  * [4.3 Benefits of Preemployment Screening](#43-benefits-of-preemployment-screening)
-  * [4.4 Developing a Screening Program](#44-developing-a-screening-program)
-  * [4.5 Data Collection: The Basic Information Gathering](#45-data-collection-the-basic-information-gathering)
-  * [4.6 Early Application Review and Initial Interview](#46-early-application-review-and-initial-interview)
-  * [4.7 Final Selection Phase](#47-final-selection-phase)
-  * [4.8 In-House vs. Contract Screening](#481-using-the-security-or-assets-protection-department)
-  * [4.9 Future of Background Investigations](#49-future-of-background-investigations-and-preemployment-screening)
-* [Appendix 4A: Sample Application Form](#appendix-4a-sample-application-form)
-* [Appendix 4B: Sample Preemployment Reference Check](#appendix-4b-sample-preemployment-reference-check)
-* [Chapter 5: Interview and Interrogation](#chapter-5-interview-and-interrogation)
-  * [5.1 Definitions](#51-definitions)
-  * [5.2 Psychosocial Aspects](#52-psychosocial-aspects)
-  * [5.3 Planning the Interview](#53-planning-the-interview)
-  * [5.4 Documentation of the Interview](#54-documentation-of-the-interview)
-  * [5.5 Subject Factors](#55-subject-factors)
-  * [5.6 Conducting the Interview](#56-conducting-the-interview)
-  * [5.7 Closing Procedures](#57-closing-procedures)
-  * [5.8 General Legal Aspects](#58-general-legal-aspects)
-  * [5.9 Conclusion](#59-conclusion)
-* [Chapter 6: Physical and Technical Evidence](#chapter-6-physical-and-technical-evidence)
-  * [6.1 Oral Evidence](#61-oral-evidence)
-  * [6.2 Documentary Evidence](#62-documentary-evidence)
-  * [6.3 Physical Evidence](#63-physical-evidence)
-  * [6.4 Incident Scene Safety](#64-incident-scene-safety)
-* [Appendix 6A: Crime Lab Organizations](#appendix-6a-crime-lab-organizations)
-* [Appendix 6B: Sample Policy on Computer Evidence](#appendix-6b-sample-policy-on-computer-evidence)
-* [Chapter 7: Testimony and Courtroom Procedures](#chapter-7-testimony-and-courtroom-procedures)
-  * [7.1 The Journey](#71-the-journey)
-  * [7.2 Courtroom Participants](#72-courtroom-participants)
-  * [7.3 Testifying](#73-testifying)
-  * [7.4 Expert Witnesses](#74-expert-witnesses)
-* [Chapter 8: Leveraging Investigative Results](#chapter-8-leveraging-investigative-results)
-  * [8.1 Investigative Force Multipliers](#81-investigative-force-multipliers)
-  * [8.2 Report Writing](#82-report-writing)
-  * [8.3 Leveraging Investigative Results](#83-leveraging-investigative-results)
-  * [8.4 Projections](#84-projections)
-* [Appendix: Standards in Security](#appendix-standards-in-security)
+- [Preface: Introduction to Physical Security Audit Manual (PSAM)](#preface-introduction-to-physical-security-audit-manual-psam)
+- [Introduction: History of Investigations](#introduction-history-of-investigations)
+  - [Before Public Investigating](#before-public-investigating)
+  - [Thief-Takers](#thief-takers)
+  - [Bow Street Runners](#bow-street-runners)
+  - [France (The Sûreté)](#france-the-sûreté)
+  - [England (Scotland Yard)](#england-scotland-yard)
+  - [United States (Pinkerton & Federal Agencies)](#united-states-pinkerton--federal-agencies)
+- [Chapter 1: Investigations Management](#chapter-1-investigations-management)
+  - [1.1 The Nature of Investigation Management](#11-the-nature-of-investigation-management)
+  - [1.2 Qualities of an Effective Investigation](#12-qualities-of-an-effective-investigation)
+  - [1.3 Public Sector vs. Private Sector Investigations](#13-public-sector-vs-private-sector-investigations)
+  - [1.4 Management Issues in Investigations](#14-management-issues-in-investigations)
+  - [1.5 Organizing for Investigations](#15-organizing-for-investigations)
+  - [1.6 Fitting the Investigative Mission into the Organization](#16-fitting-the-investigative-mission-into-the-organization)
+  - [1.7 Outsourcing Investigations](#17-outsourcing-investigations)
+  - [1.8 Investigative Resources and Infrastructure](#18-investigative-resources-and-infrastructure)
+  - [1.9 Managing Investigations](#19-managing-investigations)
+  - [1.10 Other Management Matters](#110-other-management-matters)
+  - [1.11 Case Management](#111-case-management)
+  - [1.12 Other Investigative Management Issues](#112-other-investigative-management-issues)
+  - [1.13 Types of Investigations](#113-types-of-investigations)
+  - [1.14 Investigative Techniques and Tools](#114-investigative-techniques-and-tools)
+- [Appendix 1A: Security Incident Reports](#appendix-1a-security-incident-reports)
+- [Chapter 2: Undercover Investigations](#chapter-2-undercover-investigations)
+  - [2.1 What Is Undercover Investigation?](#21-what-is-undercover-investigation)
+  - [2.2 The History of Undercover Investigations](#22-the-history-of-undercover-investigations)
+  - [2.3 When Should Undercover Be Used?](#23-when-should-undercover-be-used)
+  - [2.4 When Undercover Operations Are Not Appropriate](#24-when-undercover-operations-are-not-appropriate)
+  - [2.5 The Need for Undercover Investigation](#25-the-need-for-undercover-investigation)
+  - [2.6 The Five Phases of the Investigation](#26-the-five-phases-of-the-investigation)
+  - [2.7 Removing an Operative](#27-removing-an-operative)
+  - [2.8 Types of Undercover Investigations](#28-types-of-undercover-investigations)
+  - [2.9 The Cost of Undercover Operations](#29-the-cost-of-undercover-operations)
+  - [2.10 The Future of Undercover Investigations](#210-the-future-of-undercover-investigations)
+- [Appendix 2A: Chronological Report (Daily Log)](#appendix-2a-chronological-report-undercover-daily-log)
+- [Appendix 2B: Narrative Report](#appendix-2b-narrative-report)
+- [Appendix 2C: Investigative Summary Report](#appendix-2c-investigative-summary-report)
+- [Appendix 2D: Special Report](#appendix-2d-special-report)
+- [Chapter 3: Due Diligence Investigations](#chapter-3-due-diligence-investigations)
+  - [3.1 Definitions of Due Diligence](#31-definitions-of-due-diligence)
+  - [3.2 Relevance to Assets Protection and Security Risk Management](#32-relevance-to-assets-protection-and-security-risk-management)
+  - [3.3 Applications of Due Diligence Investigations](#33-applications-of-due-diligence-investigations)
+  - [3.4 Digital and Cyber Aspects of Due Diligence](#34-digital-and-cyber-aspects-of-due-diligence-investigations)
+  - [3.5 Techniques and Steps in Due Diligence Investigations](#35-techniques-and-steps-in-due-diligence-investigations)
+- [Appendix 3A: Sample Due Diligence Checklist](#appendix-3a-sample-due-diligence-investigation-checklist)
+- [Appendix 3B: Securities Regulatory Bodies — Selected National Bodies](#appendix-3b-securities-regulatory-bodies-selected-national-bodies)
+- [Appendix 3C: Securities Regulatory Bodies — Selected International Bodies](#appendix-3c-securities-regulatory-bodies-selected-international-bodies)
+- [Chapter 4: Background Investigations and Preemployment Screening](#chapter-4-background-investigations-and-preemployment-screening)
+  - [4.1 The Need for Background Investigations](#41-the-need-for-background-investigations)
+  - [4.2 Issues That Require Investigation](#42-issues-that-require-investigation)
+  - [4.3 Benefits of Preemployment Screening](#43-benefits-of-preemployment-screening)
+  - [4.4 Developing a Screening Program](#44-developing-a-screening-program)
+  - [4.5 Data Collection: The Basic Information Gathering](#45-data-collection-the-basic-information-gathering)
+  - [4.6 Early Application Review and Initial Interview](#46-early-application-review-and-initial-interview)
+  - [4.7 Final Selection Phase](#47-final-selection-phase)
+  - [4.8 In-House vs. Contract Screening](#481-using-the-security-or-assets-protection-department)
+  - [4.9 Future of Background Investigations](#49-future-of-background-investigations-and-preemployment-screening)
+- [Appendix 4A: Sample Application Form](#appendix-4a-sample-application-form)
+- [Appendix 4B: Sample Preemployment Reference Check](#appendix-4b-sample-preemployment-reference-check)
+- [Chapter 5: Interview and Interrogation](#chapter-5-interview-and-interrogation)
+  - [5.1 Definitions](#51-definitions)
+  - [5.2 Psychosocial Aspects](#52-psychosocial-aspects)
+  - [5.3 Planning the Interview](#53-planning-the-interview)
+  - [5.4 Documentation of the Interview](#54-documentation-of-the-interview)
+  - [5.5 Subject Factors](#55-subject-factors)
+  - [5.6 Conducting the Interview](#56-conducting-the-interview)
+  - [5.7 Closing Procedures](#57-closing-procedures)
+  - [5.8 General Legal Aspects](#58-general-legal-aspects)
+  - [5.9 Conclusion](#59-conclusion)
+- [Chapter 6: Physical and Technical Evidence](#chapter-6-physical-and-technical-evidence)
+  - [6.1 Oral Evidence](#61-oral-evidence)
+  - [6.2 Documentary Evidence](#62-documentary-evidence)
+  - [6.3 Physical Evidence](#63-physical-evidence)
+  - [6.4 Incident Scene Safety](#64-incident-scene-safety)
+- [Appendix 6A: Crime Lab Organizations](#appendix-6a-crime-lab-organizations)
+- [Appendix 6B: Sample Policy on Computer Evidence](#appendix-6b-sample-policy-on-computer-evidence)
+- [Chapter 7: Testimony and Courtroom Procedures](#chapter-7-testimony-and-courtroom-procedures)
+  - [7.1 The Journey](#71-the-journey)
+  - [7.2 Courtroom Participants](#72-courtroom-participants)
+  - [7.3 Testifying](#73-testifying)
+  - [7.4 Expert Witnesses](#74-expert-witnesses)
+- [Chapter 8: Leveraging Investigative Results](#chapter-8-leveraging-investigative-results)
+  - [8.1 Investigative Force Multipliers](#81-investigative-force-multipliers)
+  - [8.2 Report Writing](#82-report-writing)
+  - [8.3 Leveraging Investigative Results](#83-leveraging-investigative-results)
+  - [8.4 Projections](#84-projections)
+- [Appendix: Standards in Security](#appendix-standards-in-security)
+
 ---
 
 # Preface: Introduction to Physical Security Audit Manual (PSAM)
 
-The *Physical Security Audit Manual (PSAM)* is intended for a security professional to find current, accurate, and practical treatment of the broad range of asset protection subjects, strategies, and solutions in a single source.
+The _Physical Security Audit Manual (PSAM)_ is intended for a security professional to find current, accurate, and practical treatment of the broad range of asset protection subjects, strategies, and solutions in a single source.
 
 The need for such a comprehensive resource is widespread according to the editors, writers, and many professional colleagues whose advice has been sought in compiling this text. The growing size and frequency of all forms of asset losses, coupled with the related increasing cost and complexity of countermeasures selection, demand a systematic and unified presentation of protection doctrine in all relevant areas, as well as standards and specifications as they are issued.
 
-It is a fundamental objective of the *Physical Security Audit Manual (PSAM)* to draw upon as large a qualified source base as can be developed. The writers, peer reviewers, and editors attempt to distill from the available data common or recurrent characteristics, trends, and other factors, which identify or signal valid protection strategies. The objective is to provide a source document where information on any protection problem can be obtained.
+It is a fundamental objective of the _Physical Security Audit Manual (PSAM)_ to draw upon as large a qualified source base as can be developed. The writers, peer reviewers, and editors attempt to distill from the available data common or recurrent characteristics, trends, and other factors, which identify or signal valid protection strategies. The objective is to provide a source document where information on any protection problem can be obtained.
 
 ### Readership
-The *Physical Security Audit Manual (PSAM)* is intended for a wide readership: all security professionals and business managers with asset protection responsibility. The coherent discussion and pertinent reference material in each subject area should help the reader conduct unique research that is effective and organized. Of particular significance are the various forms, matrices, and checklists that give the reader a practical start toward application of the security theory to his or her own situation. The PSAM also serves as a central reference for students pursuing a program in security or asset protection.
+
+The _Physical Security Audit Manual (PSAM)_ is intended for a wide readership: all security professionals and business managers with asset protection responsibility. The coherent discussion and pertinent reference material in each subject area should help the reader conduct unique research that is effective and organized. Of particular significance are the various forms, matrices, and checklists that give the reader a practical start toward application of the security theory to his or her own situation. The PSAM also serves as a central reference for students pursuing a program in security or asset protection.
 
 ### Dialogue
-We hope that the *Physical Security Audit Manual (PSAM)* becomes an important source of professional insight for those who read it and that it stimulates serious dialogue among security professionals. Any reader who is grappling with an unusual, novel, or difficult security problem and would appreciate the opinions of others is encouraged to write a succinct statement describing the problem and share it with the professional security community.
+
+We hope that the _Physical Security Audit Manual (PSAM)_ becomes an important source of professional insight for those who read it and that it stimulates serious dialogue among security professionals. Any reader who is grappling with an unusual, novel, or difficult security problem and would appreciate the opinions of others is encouraged to write a succinct statement describing the problem and share it with the professional security community.
 
 ### Supplemental Training
+
 Readers with supervisory or management responsibility for other security and asset protection personnel will find the PSAM to be a useful resource from which to assign required readings. Such readings could be elements of a formal training syllabus and could be assigned as part of related course sessions.
 
 ---
@@ -182,8 +186,11 @@ Investigators deal with relevance daily. The appropriate depth of detail is diff
 The mental processes that collect and sort data from the human senses often produce errors. The mountain seen in the clear air of Arizona may appear to be half a mile away but it is actually three miles away. Was the person seen leaving a crime scene short and fat, medium height, running with a limp, wearing a long coat, wearing no coat? Witnesses frequently report conflicting data. Another example of this phenomenon can be taken from a training exercise: a suspect was described by one observer as “a short, chubby male with a green golf shirt, light brown hair, and a mustache.’ Another observer on the same exercise described him as “a thin male of medium height wearing a blue T-shirt and having dark hair and a mustache” In the corporate environment, much credible information on losses, sexual harassment, and other reportable incidents comes from employee tips; however, workers are also the source of many incorrect or misinterpreted tips. Sound investigative techniques dictate frequent tests for verification, like financial auditing where evaluation of the accuracy, timeliness, and completeness of business records are critical. If information is susceptible to physical measurement, it must be measured. If an informant is the only source of key data, the informant should be tested at least for consistency. In addition, the information itself must be tested for inherent contradictions. For example, a person may claim to have traveled in an automobile from one place at a certain time and arrived at a destination at a certain later time, but examination of the distance and elapsed time indicates that the person would have needed to travel at 135 miles per hour to do so. In addition, the investigator should examine the motives of an informant. In many cases, an individual’s reasons for reporting or cooperating may color the completeness and accuracy of the information they provide. All investigative input should be carefully evaluated. It should not be accepted at face value, even if it appears to be straightforward. For example, date/time stamps such as those on computers, cameras (still or video), and mobile devices may be inaccurate if the internal clock on the device is set incorrectly. Similarly, an access control system record that indicates that a particular individual entered a certain door at a given date and time should be considered suspect. It must first be determined whether the system can be manipulated or spoofed and whether another individual could have used the first person’s access card on that occasion. Accuracy is also a key elementin personnel background and preemployment investigations. Some individuals believe that information provided by personal (listed) references is of no value because they are friends and would only say good things about the subject. Actual experience shows that this is often not true. Personal references may provide information unfavorable to the person who listed them. That fact, in itself, should cause the investigator to consider the possible motivations of the interviewee.
 
 Timeliness: The ability to complete an investigation quickly, but not too quickly, and to resist pressure by outside forces to inappropriately either rush or stall a case, thereby damaging the quality of the resolution.
+
 #### 1.2.5 Timeliness
+
 Investigations must be pursued without delay to capitalize on memories and evidence before they fade. In investigations, it is important to:
+
 - Open an investigation as soon as possible,
 - Complete an investigation as quickly as possible, and
 - Avoid closing an investigation prematurely. Although these aspects may sound contradictory, once again balance is the key. “Investigations should be conducted as soon as possible, consistent with jurisdictional requirements, and to avoid degradation of human, physical, or electronic evidence.” (recognized security standards). In addition, witnesses and others who possess relevant information provide the best information when an incident is fresh in their memory. Over time, their memory commonly begins to fade, or the information they provide may begin to be tainted by their rationalizations as they have more time to think about the incident and the implication of their answers to the investigator's questions. Their recollection may also be colored by media reports, conversations with other witnesses, or other input. Surveillance video may be lost by a protracted delay in the investigation. Many systems record a preset number of days before overwriting previous events. Once an investigation is underway, it should be completed in an expedient manner to conserve resources, allow operations to return to normal as soon as possible, and deter other potential wrongdoers. Finally, timely and decisive investigations reflect on the professionalism of the investigations or security staff, thereby enhancing their overall effectiveness. However, care must be taken not to rush an investigation at the expense of quality, thoroughness, or accuracy. Investigators may be pressured to close a case due to time or resource constraints or because of publicity or political factors. Bowing to these pressures should be avoided whenever possible. The investigative unit chief or security director may need to educate upper management on the potential adverse impact of a rushed investigation, including the possibility of increased liability risk.
@@ -194,8 +201,9 @@ In addition, senior decision makers and corporate executives must be made aware 
 
 > [!IMPORTANT]
 > **Study Pointer — Public vs. Private Investigations:**
-> * **Public Sector:** Driven by public law, primary metric is arrests/convictions, subject to constitutional restrictions (e.g. 4th Amendment search and seizure rules).
-> * **Private Sector:** Driven by assets protection and risk reduction, primary metric is recovery/mitigation, subject to employment law, consent, and contract rules.
+>
+> - **Public Sector:** Driven by public law, primary metric is arrests/convictions, subject to constitutional restrictions (e.g. 4th Amendment search and seizure rules).
+> - **Private Sector:** Driven by assets protection and risk reduction, primary metric is recovery/mitigation, subject to employment law, consent, and contract rules.
 
 Although tools, techniques, and processes are similar, there is a fundamental distinction between the investigative function in the public sector (generally law enforcement) and in private security. Public sector organizations exist to serve and protect society in general. Their activities are often measured in terms of numbers of arrests and convictions. For example, public sector investigative units will address a series of robberies either in a proactive strategy with surveillance or a reactive strategy with assigning more manpower to solve cases. A crime scene investigation is an example of a reactive measure. Examples of public sector agencies with an investigative mission include law enforcement agencies at national and local levels; regional or special-purpose units (e.g., airport, transportation, or park authorities); intelligence and counterintelligence agencies; inspector general offices; and regulatory agencies that enforce regulations or administrative statutes. The primary purpose of a private sector security organization, however, is to protect the interests of the employing enterprise. Private sector players generally fit into one of two categories:
 
@@ -265,6 +273,7 @@ between the investigator or unit and the victim, suspect, or other key player or
 - Mistreating liaison contacts (e.g., providing misleading or false information or
 
 inappropriately exploiting the relationship)
+
 - Lying during judicial or administrative proceedings Any of the preceding activities should result in the harshest punishment for the offender. Such behavior by a member of an investigative team can damage any prior investigations upon which the person worked. Everything the investigator has done in an official capacity before the discovery of the unethical behavior is now suspect. Moreover, it is discoverable and often admissible in litigation. Unethical behavior often leads senior executives to make changes in the IU leadership. A senior vice president of corporate investigations was terminated after it was revealed that
 
 memos directed to local management were not disclosed to other employees in a timely manner, The jury found the company negligent for failure to warn. Besides diminishing effectiveness, unethical behavior can leave an organization open to civil or criminal liability. [U chiefs must make ethics an underlying pillar of their operations, procedures, and relationships, as well as instilling the importance of ethical behavior in investigative personnel. Experienced investigators know that a case is more likely to be solved through persistent pursuit of the truth than from heavy-handed tactics or trickery.
@@ -300,7 +309,7 @@ flowchart TD
     Hybrid --> H1[Combines Internal Familiarity with External Expertise]:::hybrid
 ```
 
- Solutions, LLC, 2020)
+Solutions, LLC, 2020)
 
 for equipment, supplies, outside services, travel (both local and out-of-area), administrative support, and contract or personnel management should also be factored in. Section provides more information on funding investigations. Outsourced investigations can be managed in a way that passes the charges for the investigation over to the business unit where or on whose behalf the investigation is performed. This cost then affects the budget of the user and only for the actual cost of services. IU leadership should place budgetary constraints on outside consultants as well. Creating timelines and benchmarks allows for a review of available information and a cost-benefit analysis. Figure 1.2 summarizes the major advantages and disadvantages of outsourcing investigative needs and maintaining an internal IU or capability.
 
@@ -315,6 +324,7 @@ security director or CSO
 - A separate IU with the unit chief (or senior investigator) reporting to the risk
 
 management or assets protection director
+
 - A separate IU with the unit chief (or senior investigator) reporting to the legal department
 
 - Specialized investigations supported by internal audit or IT
@@ -365,6 +375,7 @@ chain for investigative information or results is critical and can affect both t
 - Investigations where the perception of a conflict of interest exist.
 
 Whether a full-scope or a specialized service provider is needed, finding the right vendor or combination of vendors can be a challenge. The size of the preferred vendor and whether the required services will be distinct or bundled are two key decisions. A large, nationally or internationally recognized provider can bring a significant set of resources to the project. However, smaller firms also have advantages and may offer a more personalized service commitment or local experience. In addition, the use of smaller firms may be recommended for specialized or expert support services. There may also be a cost and availability variance between larger and smaller providers. One should be wary of smaller or local firms that boast of being expert in all aspects of investigations. It is extremely rare for a firm to have significant expertise in areas as diverse as computer forensics, ballistic analysis, BIs, and executive kidnapping cases. Regardless of the size and scope of the preferred vendor, clear criteria for potential service providers should be established and enforced. It is recommended that vendors be preapproved through a vetting process. The following are some important questions to consider in the vendor identification and selection process:
+
 - Does the provider have a reputation for ethical and honest service?
 - Does the provider have the demonstrated technical expertise necessary to meet the client’s particular requirements?
 - Is the provider licensed in all the geographic areas to which the client’s investigative needs might lead?
@@ -375,6 +386,7 @@ Whether a full-scope or a specialized service provider is needed, finding the ri
 - Does the provider have the personnel and physical resources to respond to the client’s
 
 short-notice, long-term, and high-demand investigative needs?
+
 - Does the provider have a talented, experienced, and stable investigative workforce?
 - What is the provider’s billing structure (including peripheral, as-needed, and subcontracted services as well as reimbursable expenses)?
 
@@ -391,6 +403,7 @@ performance feedback?
 - Is the provider known for safeguarding information and protecting the interests of its
 
 clients?
+
 - For full-scope providers, does the firm have internal capabilities for specialized and as-needed support, such as surveillance, technical services, computer forensics, etc.?
 
 - What is the professional background of the firm’s principals and key personnel?
@@ -428,9 +441,11 @@ Office Space. Although it may not be the first thing to come to mind when consid
 Financial resources. Budgets and financial management are always important issues, particularly when establishing a new function or unit. Budgets should be carefully planned and based on the best possible projections. Within some organizational structures and cultures, it makes sense to collaborate with other departments (e.g., facilities, security, safety, legal, risk management, etc.) to leverage one another’s budget allocations. Information assets. The lifeblood of the investigative mission is information, and a wide variety of information assets must be established at the outset and maintained throughout the life of an IU. Among these assets are recruitment, handling and case wrap-up of informants, liaison contacts, databases (internal and external), access to key personnel within the organization, open-source information, and operational data. In addition, the IU should establish (or arrange for access to) an employee hotline for complaints, allegations, tips, and other relevant information. An employee hotline is a costeffective way to obtain information with regard to employee malfeasance and garner other anonymous tips. Geographic assets. Many organizations today span a large geographic area, and many operate globally. Having information sources, liaison contacts, contingency vendors, and other resources available to support investigations in each general area where the organization operates makes good business sense and creates efficiencies. Prearranging these relationships and pre-staging equipment, supplies, and perhaps investigative personnel can contribute greatly to efficient and successful investigative operations. For both new and well-established investigative functions, numerous management issues warrant attention at both the strategic and day-to-day levels. This section explores four key management areas: investigative functions, investigative resources, unit management, and case Management. Most Us focus on a particular function or set of functions, They may range from relatively simple activities such as documenting facts surrounding a security force response to a workplace incident to complex procurement fraud investigations. These functions are generally referred to as types of investigations, and frequently the unit’s incident management system is organized according to incident types. The following are typical types of investigations in the corporate and organizational arena:
 
 Incident or accident; Employee misconduct; Misuse or abuse of computer or IT system; Substance abuse; Due diligence; Regulatory compliance violation; Lifestyle or financial inquiries for corporate executives and personnel; Personnel security or background; Theft, pilferage, or misappropriation; Lapping (crediting one account with money from another account); Assaults and crimes against persons; Property damage and vandalism; Inventory discrepancies or unexplained shrinkage Sabotage; Industrial espionage; Embezzlement or defalcation (appropriation of property by a person to whom it has been entrusted); Fraud (general, procurement, insurance, travel, accounting, etc.); Product tampering (actual and hoax); Diverted or counterfeit product; Skimming (keeping some of the cash); Communicating threats; Harassment (including sexual harassment); Workplace violence (actual or potential); and
+
 - Litigation support (varying according to whether the enterprise is the complainant or respondent in a particular case), Other types of investigations are conducted in various industries and environments. In some sectors an IU may be employed to directly support the core mission of the organization. For example, a real estate firm may use its unit to determine the whereabouts of unknown property owners or conduct difficult title searches. Similarly, [Us are sometimes used to support market research, competitive intelligence, and other corporate functions. The bottom line in many organizations is that the IU is seen as a corporate resource and is employed in ways that support overall business objectives. IU managers (and security directors where applicable) must understand how the investigative capability fits into the organization and how the executive leadership envisions its application (i.e., the big picture). Optimally, the investigations unit manager or security director plays a key role in defining that fit and the nature of the investigative functions. This role may vary from direct to subtle depending on the environment and leadership style, but wherever possible, investigators and security professionals should exert as strong an influence as possible, recognizing the overall business objective. Section 1.13 provides more detailed information on some of the more significant types of investigations in the private sector. Among those are incident investigations (which are the most common type of investigation in many organizations), compliance investigations, background investigations, and substance abuse investigations. One particularly important but often neglected investigation type is the due diligence investigation (see Chapter 3). Before entering into a new business relationship, a prudent organization will conduct an inquiry to verify the information provided by the proposed business associate. This activity is normally requested at the close of business negotiations and must be completed in a timely manner, ‘The skilled investigator can confirm the assets, liabilities, legal problems, potential conflicts of interest, and any undisclosed affiliations or identities of the subject quickly. The principal resources of an IU are people, information, credibility, physical assets, and financial assets. The primary functional focus dictates how the unit is structured and how the resources are allocated and applied. For example, the focus affects what types of investigators are hired, what information acquisition mechanisms are put in place, how and where the unit is structured, and the type of equipment and supplies it requires. Focus also largely frames the IU’s budget requests to the parent organization.
 
 Investigative funding needs are often difficult to project because they can be drastically affected by one or a few major cases as well as new regulatory requirements or legislation. Therefore, justifying investigative budget requests is a daunting task. One of the best ways to help achieve a favorable budget request is to show value to the organization or to demonstrate that the unit pays for itself. Support for budget justifications can be bolstered by any or all of the following:
+
 - Proper investigative focus to support the organizational mission as well as strategic and business goals;
 - Accurate and detailed tracking of investigative costs;
 
@@ -442,7 +457,7 @@ Investigative funding needs are often difficult to project because they can be d
 
 IU managers face a significant challenge in balancing the administrative and operational responsibilities of their positions, Figure 1.3 shows the life cycle of the investigative process. It illustrates many of the functions that occur at the unit level and fall under the broad responsibilities of the IU manager. ‘The chart is divided into four phases. The first shows various ways by which an investigation is initiated (e.g., incidentreport, complaint, discrepancy report, or request for investigation). It includes both the reason for the investigation and the mechanism by which the case is opened.
 
-The second phase is the investigation itself, and the chart provides examples of case types for both incident/ allegation/situation investigations and level of trust investigations. The next phase deals with reporting the findings but also includes further use of the resultant information, Most investigative information is formally retained (often in an automated database) in specified field, summary, or full format. incident Allegation _ Situation Nee for Level of Trust neident Report Complaint — _Audit or Discrepancy Request for investigation (known or unknown subject) _ / Criminal Investigation Background Administrative Inquiry Misconduct Investigation Due Diligence incident Investigation. -Financial/Lifestyle Compliance Investigation Retention and/or Report of Database Investigation Database Adjudication/ Determination **Figure 1.3: The Investigative Life Cycle**
+The second phase is the investigation itself, and the chart provides examples of case types for both incident/ allegation/situation investigations and level of trust investigations. The next phase deals with reporting the findings but also includes further use of the resultant information, Most investigative information is formally retained (often in an automated database) in specified field, summary, or full format. incident Allegation _ Situation Nee for Level of Trust neident Report Complaint — \_Audit or Discrepancy Request for investigation (known or unknown subject) _ / Criminal Investigation Background Administrative Inquiry Misconduct Investigation Due Diligence incident Investigation. -Financial/Lifestyle Compliance Investigation Retention and/or Report of Database Investigation Database Adjudication/ Determination **Figure 1.3: The Investigative Life Cycle**
 
 ```mermaid
 flowchart LR
@@ -471,7 +486,9 @@ flowchart LR
     P3 -.-> D3
     P4 -.-> D4
 ```
- The final phase addresses the use of the resultant information on a case-specific basis (e.g, disciplinary action, referral to the law enforcement or judicial system, or adjudication) and also on an aggregate or follow-on basis. Examples of aggregate or follow-on use of the data include statistical analysis, program evaluation, strategic planning, and budgetary forecasting. The IU manager is responsible for designing and implementing systems to manage the activity within each of the four phases of the investigative life cycle. Although it is easy to get bogged down in the day-to-day operations of the unit and specific investigative activity, it is important to keep up with unit management and administrative tasks. Initiation In the case initiation phase, an important issue in most settings is some sort of reporting mechanism whereby employees and others may conveniently provide information that they feel may warrant investigation or support an ongoing case. Whistleblowers, employee tips (anonymous and not), and complaints channeled through supervisors account for a significant amount of credible information on incidents and conditions that can result in losses, liability, and other problems (including potential violence). Dismissing anonymous complaints is contrary to best practices in any organization. That said, the possibility of false allegations, retaliation or misinformation must also be considered. Laws in various jurisdictions protect whistleblowers from retaliation, but their protections vary from country to country. The United Nations adopted the Convention Against Corruption in 2003, which made whistleblower protection part of international law. (National Whistleblower Center 2020) In the United States, the Federal Sentencing Guidelines and Sarbanes-Oxley Act of 2002 require, as an integral part of an effective compliance and ethics program, that publicly traded companies (in the case of Sarbanes-Oxley) and companies convicted of criminal activity (in the case of the Federal Sentencing Guidelines) have in place a nonretaliatory internal reporting system for employees to report suspected violations. Many corporations, organizations, and agencies have established channels for reporting fraud, waste, abuse, threats, security violations, and other potential adverse situations. It is also important to maintain an awareness program. Companies are required to have a process in place to evaluate each communication and to investigate those deemed to require follow-up. Companies must make every effort to prevent any retaliation to the reporter, so it is prudent to make all reports anonymous. In some organizations, the reporting mechanism can be shared with departments that track reports of safety hazards, computer threats, or Investigation Management responsibilities in the investigation phase include implementation of a case management system and appropriate administrative controls. Most organizations use automated case management systems, many of which are integrated with the security department’s incident management system. This allows seamless integration of security, investigative, human resources, and facilities data if the system is properly configured and appropriate permissions are in place. Such systerns provide an efficient means of data collection and retention, report writing (and sharing), and coordination among corporate functions such as legal and finance. These programs can also assist with another critical task—case assignment and workload management—although the task can be accomplished manually in smaller units. Case assignment in larger units (with several or widely dispersed investigators) may be based on caseload, experience, specialization, geography, or a combination of these factors. Regardless of which factors are used to make case assignments, the process should be done carefully and deliberately. Poor case assignment can quickly lead to investigator disenchantment and degrade the IU’s effectiveness and its ability to resolve cases successfully. Some investigators could be overloaded while others have too light a caseload. Similarly, investigators with special expertise may be working general cases while investigations requiring their special skills are assigned to others. Case assignment warrants close attention by the IU manager. Oversight and administrative controls are essential in an IU. Managing an investigative assignment ledger falls under the function of the controller or manager. Aspects of each case, both operational and administrative (e.g., costs) require close scrutiny by the manager and should be evaluated at least monthly. Checks and balances should be in place to ensure the following at a minimum:
+
+The final phase addresses the use of the resultant information on a case-specific basis (e.g, disciplinary action, referral to the law enforcement or judicial system, or adjudication) and also on an aggregate or follow-on basis. Examples of aggregate or follow-on use of the data include statistical analysis, program evaluation, strategic planning, and budgetary forecasting. The IU manager is responsible for designing and implementing systems to manage the activity within each of the four phases of the investigative life cycle. Although it is easy to get bogged down in the day-to-day operations of the unit and specific investigative activity, it is important to keep up with unit management and administrative tasks. Initiation In the case initiation phase, an important issue in most settings is some sort of reporting mechanism whereby employees and others may conveniently provide information that they feel may warrant investigation or support an ongoing case. Whistleblowers, employee tips (anonymous and not), and complaints channeled through supervisors account for a significant amount of credible information on incidents and conditions that can result in losses, liability, and other problems (including potential violence). Dismissing anonymous complaints is contrary to best practices in any organization. That said, the possibility of false allegations, retaliation or misinformation must also be considered. Laws in various jurisdictions protect whistleblowers from retaliation, but their protections vary from country to country. The United Nations adopted the Convention Against Corruption in 2003, which made whistleblower protection part of international law. (National Whistleblower Center 2020) In the United States, the Federal Sentencing Guidelines and Sarbanes-Oxley Act of 2002 require, as an integral part of an effective compliance and ethics program, that publicly traded companies (in the case of Sarbanes-Oxley) and companies convicted of criminal activity (in the case of the Federal Sentencing Guidelines) have in place a nonretaliatory internal reporting system for employees to report suspected violations. Many corporations, organizations, and agencies have established channels for reporting fraud, waste, abuse, threats, security violations, and other potential adverse situations. It is also important to maintain an awareness program. Companies are required to have a process in place to evaluate each communication and to investigate those deemed to require follow-up. Companies must make every effort to prevent any retaliation to the reporter, so it is prudent to make all reports anonymous. In some organizations, the reporting mechanism can be shared with departments that track reports of safety hazards, computer threats, or Investigation Management responsibilities in the investigation phase include implementation of a case management system and appropriate administrative controls. Most organizations use automated case management systems, many of which are integrated with the security department’s incident management system. This allows seamless integration of security, investigative, human resources, and facilities data if the system is properly configured and appropriate permissions are in place. Such systerns provide an efficient means of data collection and retention, report writing (and sharing), and coordination among corporate functions such as legal and finance. These programs can also assist with another critical task—case assignment and workload management—although the task can be accomplished manually in smaller units. Case assignment in larger units (with several or widely dispersed investigators) may be based on caseload, experience, specialization, geography, or a combination of these factors. Regardless of which factors are used to make case assignments, the process should be done carefully and deliberately. Poor case assignment can quickly lead to investigator disenchantment and degrade the IU’s effectiveness and its ability to resolve cases successfully. Some investigators could be overloaded while others have too light a caseload. Similarly, investigators with special expertise may be working general cases while investigations requiring their special skills are assigned to others. Case assignment warrants close attention by the IU manager. Oversight and administrative controls are essential in an IU. Managing an investigative assignment ledger falls under the function of the controller or manager. Aspects of each case, both operational and administrative (e.g., costs) require close scrutiny by the manager and should be evaluated at least monthly. Checks and balances should be in place to ensure the following at a minimum:
+
 - Requests for investigation are documented and responded to.
 
 - Appropriate authorizations are in place to open a case.
@@ -509,11 +526,13 @@ intense questioning, berating, and second-guessing by attorneys or other officia
 - Investigators may commit extensive time and effort on cases that are later shown to
 
 be based on false allegations, reports, or information, thereby making them feel their effort was wasted.
+
 - Investigations—some of which require a great deal of investigative effort—may not be resolved, may be terminated prior to resolution, or may result in what the investigator perceives as an inappropriate disposition.
 
 - Some investigations (e.g., fraud and white-collar crime) may stretch out for a long
 
 time—in some cases, for years—causing investigators to feel they are not making enough progress.
+
 - Investigators may be subject to ethical temptations (e.g., dealing with unethical people who may be financially successful due to their wrongdoing, the possibility of being offered bribes, using privileged information for personal gain, abusing their authority, using improper or illegal investigative techniques, etc.).
 - Witnesses, interviewees, and liaison contacts may be uncooperative or frustrating to deal with.
 - Executive management decisions not to pursue a matter (either before or after an investigation) may frustrate investigators who believe that significant case potential exists,
@@ -530,6 +549,7 @@ Training can be used to benefit both the unit and the individual investigator. A
 - Computer investigations and forensics;
 
 Surveillance technology; Evidence handling; White-collar crime;
+
 - Forensic auditing;
 - Criminal intelligence analysis;
 - Safety investigations;
@@ -575,12 +595,14 @@ Administratively, the case file should include the following information, which 
 - Value of assets lost or stolen;
 
 Assigned investigators;
+
 - Date opened (and location opened if applicable);
 - Due date for a report or other action;
 
 - Dates of any interim reports;
 
 Date of the final or closing report; and
+
 - Value of assets recovered.
 
 #### 1.11.2 Following The Progress Of A Case
@@ -612,6 +634,7 @@ Disseminated reports and other investigative information, whether in hard copy o
 #### 7.12.1 Legal Issues
 
 The legal issues outlined in this section relate to investigations in the United States, but similar legal issues will apply in most jurisdictions. Legal matters must be considered for two reasons:
+
 - To protect the company against liability and
 - To ensure that an appropriate conclusion can be reached if the case goes to court or another legal forum. Other legal considerations include the following:
 - Compliance with laws regarding the licensing of private investigators and conduct of private investigations;
@@ -642,10 +665,10 @@ impacts of criminal activity or other types of loss events. For example, it may 
 
 **Figure 1.4: Suggested Liaison Contacts**
 
-| Channel Type | Internal Contacts | External Contacts |
-| :--- | :--- | :--- |
-| **Formal Channels** | • Human Resources / Employee Relations<br>• Legal Counsel / Compliance Department<br>• Internal Audit / Finance Officers<br>• IT Security / Network Administrators<br>• Facilities Management / Operations | • Federal Agencies (e.g., FBI corporate relations representatives, computer crimes, economic espionage)<br>• State & Local Law Enforcement Agencies<br>• Regulatory Bodies (SEC, EPA, OSHA)<br>• Industry Associations (recognized security associations, ISACA) |
-| **Informal Networks** | • Department Supervisors & Floor Managers<br>• Peer Security Staff & Investigators<br>• Long-term Company Employees<br>• Health and Safety Committees | • Private Security Managers in adjacent facilities<br>• Local Business Communities & Merchants<br>• Community Outreach & Civic Groups<br>• Personal Professional Networks | Criminal intelligence analysis in the private sector can be strategic or tactical (operational) in nature. Although strategic analysis informs management issues such as resource allocation, risk category focus/priorities and long-term planning, it is also useful in directly supporting investigative operations. One important aspect of strategic analysis, in this regard, is a formal process which is very similar to the National Security Intelligence Cycle. Figure 1.5 illustrates one version of a criminal intelligence cycle that might be employed by law enforcement agencies (at all levels), investigative organizations, or even corporate investigative units that are faced with large-scale, complex, or interconnected investigations.
+| Channel Type          | Internal Contacts                                                                                                                                                                                          | External Contacts                                                                                                                                                                                                                                                |
+| :-------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Formal Channels**   | • Human Resources / Employee Relations<br>• Legal Counsel / Compliance Department<br>• Internal Audit / Finance Officers<br>• IT Security / Network Administrators<br>• Facilities Management / Operations | • Federal Agencies (e.g., FBI corporate relations representatives, computer crimes, economic espionage)<br>• State & Local Law Enforcement Agencies<br>• Regulatory Bodies (SEC, EPA, OSHA)<br>• Industry Associations (recognized security associations, ISACA) |
+| **Informal Networks** | • Department Supervisors & Floor Managers<br>• Peer Security Staff & Investigators<br>• Long-term Company Employees<br>• Health and Safety Committees                                                      | • Private Security Managers in adjacent facilities<br>• Local Business Communities & Merchants<br>• Community Outreach & Civic Groups<br>• Personal Professional Networks                                                                                        | Criminal intelligence analysis in the private sector can be strategic or tactical (operational) in nature. Although strategic analysis informs management issues such as resource allocation, risk category focus/priorities and long-term planning, it is also useful in directly supporting investigative operations. One important aspect of strategic analysis, in this regard, is a formal process which is very similar to the National Security Intelligence Cycle. Figure 1.5 illustrates one version of a criminal intelligence cycle that might be employed by law enforcement agencies (at all levels), investigative organizations, or even corporate investigative units that are faced with large-scale, complex, or interconnected investigations. |
 
 **Figure 1.5: The Intelligence Collection Cycle**
 
@@ -710,15 +733,18 @@ Ideally, the analysts and collectors will communicate back and forth as necessar
 An important aspect of investigative management, which often receives less attention than is warranted, particularly in the private sector, is that of protecting case-specific investigative information. Once an investigation is completed and the information is compiled, the contents contained therein and outcome are permanent. Protecting such information is important because of the potential that its compromise could damage the
 
 future effectiveness of the investigators or IU involved, lead to potential civil liability against the organization, damage the reputations and careers of individuals (such as subjects, witnesses, interviewees, managers, coworkers, etc.), and damage important liaison relationships. In addition, improper handling of investigative information can energize the rumor mill, harming the investigation, stock prices, market share, and corporate reputation. In many jurisdictions, investigations involving electronic and other documented information require extraordinary protection and security. Organizations and investigators are subject to regulatory sanctions if appropriate measures are not taken to secure personal information obtained from investigations and surveillance. Investigations in most European countries, Australia, and Canada are subject to laws that strictly govern an individual’s personal information privacy. One example is the European Union’s General Data Protection Regulation (GDPR) which was implemented in 2018. It places significant restrictions on the personal information that can be collected, shared, and accessed by others, and is meant to protect the privacy of individuals. The stipulations affect security professionals and investigators attempting to gather information, even for preemployment background investigations, even if the company or investigator is not located within the European Union. Particularly important applications for investigative information protection include the following:
+
 - Cases in which the subjects are senior executives or high-profile persons; Joint task forces;
 - Major compliance or regulatory investigations;
 
 - Cases involving sensitive issues, such as terrorism, child pornography, workplace
 
 violence, major fraud, or product safety; and
+
 - Cases involving information defined as protected, personal information that requires safeguards pursuant to privacy legislation. Itis particularly difficult to protect investigative information in joint task force environments because each participating agency may have different policies, definitions, perspectives, and attitudes toward what is sensitive and warrants protection, or how exactly to protect it. In fact, protecting critical information is a key element of any investigation. This is even true in personnel background investigations (Bls) as is evidenced by the well-known tenet that the investigator does not reveal derogatory information received from interviewees or other sources to subsequent interviewees.
 
 Besides formal protocols (such as government classification systems), operational security and operations security represent effective means to identify and protect valuable Operational security is the totality of all security and planning measures employed to ensure a successful outcome for a particular operation or activity as well as the safety of the investigators involved. It includes such measures as cover stories, backstopping (actions taken to support covers or contrived identities), communications protocols, agent infiltration plans, countersurveillance, covert meet security (measures to conceal a secret meeting), the use of carding (practice of keeping data about sources of information), and technical monitoring. In both the public and the private sectors, operational security is generally applied to special activities, such as undercover or sting operations. This topic is examined in Chapter 2. By contrast, operations security (OPSEC) is a simple and systematic method of employing safeguards to protect critical information. The OPSEC process includes five cyclical steps:
+
 - Identify assets (critical information).
 - Define the threat (collectors, capabilities, motivations).
 - Analyze the risk (impact, priority, existing countermeasures, etc.). Develop and implement countermeasures. A key but often overlooked step is to realistically determine what information at each phase of the investigation or operation is sensitive and therefore warrants protection. This is the process of defining critical information. In the case of joint task force operations, for example, a deliberate process should be undertaken at the outset to define critical information and to reach an agreement among all participating agencies, Defining the threat entails identifying, within reason, all potential information collectors or adversaries who may target an investigation or operation using legal or illegal means. The following are among likely candidates as potential adversaries:
@@ -734,6 +760,7 @@ Besides formal protocols (such as government classification systems), operationa
 - Potential copycats or others engaging in similar wrongdoing.
 
 An important rule of thumb is never to underestimate the lengths to which adversaries will go to get what they want. Many criminals (and others) apply the same surveillance and human collection techniques that law enforcement and legitimate investigators use. They may monitor communications (radio, landlines, social media, cell phones, etc.), collect information from courtrooms and proceedings (public records), conduct social engineering, exploit public affairs offices, use open sources (such as news sources and the Internet), gather information from trash, and target computers and mobile devices (in some cases, even IoT devices). Vulnerabilities can be direct (such as physical or electronic interception of investigative information) or indirect (such as increased activity in the security department just prior to an important operation). Both should be carefully considered. Investigators should ask themselves whether they are exhibiting predictable patterns of behavior or doing anything that could be used by the adversary to block the success of their operation. A risk analysis—based on the nature of the critical information, the credible threats, the identified vulnerabilities, and the consequences of an information compromise— assigns levels or priorities to the information risks. These risks can then be addressed by appropriate countermeasures, Essentially, a countermeasure is anything that effectively negates or reduces an adversary’s ability to exploit information or vulnerabilities. It can be something as simple as a change in behavior or routines. Other countermeasures include the following:
+
 - Restricting conversations in situations where others can overhear;
 - Limiting the use of information that can be viewed on social media (Twitter, Instagram, Facebook, LinkedIn);
 
@@ -759,6 +786,7 @@ companies;
 #### 1.12.5 Working In Multicultural Or International Environments
 
 In the climate of globalization, both public and private sector investigators must be able to operate in a multicultural environment. Cultural issues can become a factor in an investigation in almost any type of company, industry, or organization. Examples include the following:
+
 - A corporate investigation within a domestic firm where the investigation involves subjects or witnesses who are of a different ethnic background or are citizens of another country;
 
 - A corporate investigation that takes place or follows leads in another country;
@@ -768,6 +796,7 @@ A corporate investigation that involves partner firms, subsidiaries, joint ventu
 - Due diligence investigations involving firms or individuals somehow affiliated with a
 
 foreign country;
+
 - An investigation involving international or multinational organizations; and
 - A joint task force involving agencies from more than one country.
 
@@ -780,19 +809,19 @@ flowchart TD
     classDef monitor fill:#1e293b,stroke:#475569,stroke-width:2px,color:#94a3b8;
 
     Start([Start: Protect Investigative Information]) --> Q1{Is the information sensitive?}:::decision
-    
+
     Q1 -- Yes --> Q2{Are there adversaries?}:::decision
     Q1 -- No --> M1[Monitor for changes in information sensitivity]:::monitor
-    
+
     Q2 -- Yes --> Q3{Do they have motivation?}:::decision
     Q2 -- No --> M2[Monitor for development of potential adversaries]:::monitor
-    
+
     Q3 -- Yes --> Q4{Do they have capability?}:::decision
     Q3 -- No --> M3[Continue to monitor to see if motivation develops]:::monitor
-    
+
     Q4 -- Yes --> A1[Identify & determine capabilities to collect against target based on specific activity]:::action
     Q4 -- No --> M4[Continue to monitor to see if capability develops]:::monitor
-    
+
     A1 --> A2[Select and implement countermeasures]:::action
     A2 --> A3[Determine effectiveness of countermeasures]:::action
     A3 --> Loop([Restart/Monitor Process])
@@ -812,6 +841,7 @@ The overall objective is a successful investigative outcome or resolution of a c
 As mentioned in Section 1.9.1, most [Us emphasize one or a few particular case types that represent their most prevalent matters or the bulk of their caseload. Typical case types for the corporate and organizational environment are listed in that section. Some case types, however, warrant specific discussion. For example, background investigations deserve detailed discussion because they represent a distinct investigative function in terms of approach, resources, reporting, case disposition, and associated legal issues. In every case effective and reliable investigations are timely and accurate. Although some discussions are more detailed than others, each of the following subsections discusses how the case type is distinct, which special techniques might be applied, and associated issues that investigators and IU managers should understand.
 
 The initiation event in a private sector incident investigation is generally a security force incident report. Appendix 1A at the end of this chapter shows two examples of incident report formats commonly used by security forces in commercial and government facilities. Other initiation events for incident investigations include direct complaints, whistleblower reports, and security audits or assessments. For this reason, they are sometimes referred to as complaint investigations. This is the most common type of investigation in many business and organizational settings. In fact, incident investigations are needed in almost all organizations, many of which do not maintain formal investigative units or capabilities. Thus, this type of inquiry is often performed by a security supervisor or the security director rather than by a full-time, Detailed, directprocedural guidance is recommended forincidentinvestigations. Checklists, forms, and an incident investigation manual should be tailored to the organization and setting so that they meet the particular needs of the entity, are consistent with the culture of the organization, and satisfy applicable legal factors. Like Bls, incident investigations require a particularly methodical and systematic approach, whereas other types of investigations often call for a more creative problem-solving strategy or a flexible, situation-based approach. Firms and organizations, especially those without an JU or full-time investigator, should develop straightforward procedures (protocols) for conducting and reporting on incident investigations. Those with an IU might consider establishing guidelines (or including guidelines in their investigative policy statement) to delineate responsibilities for such inquiries. The following is a sample guideline: The following incidents will be investigated by or under the auspices of the senior security supervisor:
+
 - Theft (estimated loss < $10,000)
 - Unknown loss (estimated loss < $10,000)
 - Simple assault
@@ -822,6 +852,7 @@ The initiation event in a private sector incident investigation is generally a s
 - Unsecured area
 
 ‘The following situations will be referred to the investigative unit for action:
+
 - Theft (estimated loss > $10,000)
 
 - Unknown loss (estimated loss > $10,000)
@@ -842,6 +873,7 @@ The initiation event in a private sector incident investigation is generally a s
 - Unsecured area or forced entry The preceding thresholds may also apply to law enforcement or legal referral. Even if there is law enforcement interest, it may take considerable effort to establish the existence of a specific crime or initiate a criminal investigation. This situation varies from one jurisdiction to the next and may depend on such factors as local law enforcement emphasis, capabilities, caseload, and past experience. In many jurisdictions, the police [Us are overworked and often will not undertake an inquiry unless it involves a clear threat to public order or a loss above a certain threshold. Each enterprise should establish its own loss thresholds to determine whether an investigation is warranted and, if so, what its parameters should be. The same facts that establish a crime can also establish a tort or other actionable civil misconduct. A for-profit entity may be as interested in civil remedies as in criminal convictions. In either case—criminal or civil—a thorough and accurate investigation is necessary. For example, during an embezzlement investigation, cash disbursements are the most common form of workplace embezzlement. Therefore, the accounts payable ledger reflecting dates and amounts paid to company suppliers should be reviewed. In addition, investigative results can be crucial in any administrative or personnel proceedings. The investigative unit can work with the departments to ensure that there is a separation of
 
 duties so that an accounts payable clerk doesn’t have access to add or delete names to the master vendor file. Investigative Process for Incident Investigations Investigative protocols should be approved by executive management in order to lend credibility and authority to the process, regardless of whether the organization has a separate IU or full-time investigator. A protocol should generally include a decision logic matrix to quickly identify who has responsibility for the inquiry, who should be notified, and whether immediate referral to law enforcement or the legal department is appropriate. The protocol should then outline the prescribed investigative steps. The following sample provides a general idea of recommended contents for a protocol:
+
 - Assess the credibility of the source of the information and the information itself.
 - Determine whether physical evidence is present and warrants collection (i.e., is there a scene to be processed?).
 - Conduct initial witness interviews.
@@ -867,6 +899,7 @@ List all security, corporate staff, and other officials who were involved in the
 Security officers and staff should receive training on applicable investigative protocols, including the need to protect investigative information. Particular care should be taken with anonymous reports or complaint calls. Callers should be made to feel that the information they provide is important and appreciated and that the matter will be investigated. Failure to do so may discourage future reporting of valuable information. At the same time, potentially sensitive information must not be provided to complainants or others because complaints may lead to the initiation of undercover operations or other investigative activities that must be kept confidential. The report of investigation for this type of inquiry is often a standardized form. It is particularly important that reports be properly filed or entered in a database so the information they contain is retrievable later. The report should note whether a follow-up is required or recommended and whether referral to the IU or an outside investigative services firm or law enforcement agency is advisable or required. An important subcategory of constructive incident investigations is the misconduct investigation. This is generally an internal investigation conducted when an employee or other individual closely affiliated with the organization is suspected of violating a written corporate policy, a directive, terms of employment, or a federal, state, or local law. An important characteristic of workplace misconduct investigations is that they leave the employer particularly open to legal action by employees or former employees who feel they have been treated unfairly. Among the alleged causes for legal action are discrimination, wrongful termination, sexual harassment, defamation, and false arrest. The best way to prepare for such investigations is to coordinate the matter as soon as possible with the human resources director and corporate legal counsel (or equivalent officials). This recommendation pertains to most types of private sector investigations but is particularly important in employee misconduct cases.
 
 Investigative Techniques and Issues in Misconduct Cases In general, those involved in a misconduct investigation should consider the differing perspectives of the parties on both sides—complainant and subject. From the employer’s perspective, the issue is a routine policy or disciplinary matter. From the subject’s perspective, it may be traumatic situation. Subjects may feel their career, livelihood, and reputation are at risk. Experienced corporate investigators do not use techniques that may induce an innocent person to confess to guilt. The use of coercive interview techniques can significantly impair the reputation of fairness in a corporate setting—and thus damage the credibility of and confidence in the IU and individual investigator. Some individuals are easily intimidated and, although innocent, may confess to crimes and wrongdoing when confronted with unfounded promises of leniency or fabricated and supposedly overwhelming evidence. The use of inappropriate techniques and failure to protect personal or confidential information during the investigation can lead to embarrassment for the corporation, erroneous investigative conclusions, and lawsuits against the enterprise. Suggested practices in misconduct investigations include the following:
+
 - Determine the proposed outcome or disciplinary action (should the allegation be proven) at the outset of the investigation. This helps prevent claims of personal discrimination or the appearance that the intended action was modified during the investigation based on what or who was shown to be involved.
 - Use information sources both internal and external to the organization to help prove or disprove allegations. Relying solely on internal sources may limit the scope of the information collected and may conceal critical facts or data points.
 - Gather relevant information from previous employers of the individual in question. The information may show patterns of behavior and reveal significant data that can be used to direct the investigative efforts, strengthen the case, explain existing known facts, and provide additional leads. High turnover rates, common today, make it even more important to conduct thorough background checks and consider interviewing past coworkers, supervisors, colleagues, and other associates.
@@ -878,12 +911,14 @@ records, access requests, logons, file downloads, and remote access sessions. Th
 monitoring to gather intelligence) it is important to remember that it is difficult and vulnerable to discovery if conducted while moving, However, an overt surveillance, whose main goal is to prevent crime or misconduct, may be effective. Effects may include diminished workforce productivity, strained interoffice relationships, and threats and intimidation. An internal investigation (or even a rumor of one) may turn coworker against coworker, create other frictions in the office, and have a short- or long-term impact on workplace comfort level and trust relationships. Although the potential for side effects cannot be allowed to dictate the aggressiveness or outcome of an internal investigation, it should be considered in terms of the overall investigative strategy, information dissemination, treatment of individuals, and professional demeanor of those involved in the case. Examples of Misconduct Cases Misconduct investigations often focus on conflict of interest, corporate resource abuse, employee theft, workplace violence, and substance abuse. For each issue, the existence of an attitude toward a specific corporate policy is critical to effective detection, successful investigative outcomes, and legal sufficiency. Several features of corporate policy can help protect the assets of the enterprise as well as the rights of individuals who may be accused or implicated in wrongdoing. It is important that management make corporate policy clear and ensure that no employee or manager can plausibly claim not to have been well informed of its meaning and consequences. In addition, such policies should encourage or require employees to help the company detect early warning signs from other workers, vendors, or customers by reporting suspicious, threatening, or inappropriate behavior and should obligate the employee to cooperate in any investigation, including cases of alleged misconduct. Besides sound, clearly communicated policy, the investigative process itself is also critical to deterring, detecting, and resolving misconduct. In fact, while some types of investigations are prohibited by law, others are mandated. For example, harassment charges must be investigated in many jurisdictions. The IU manager must be familiar with investigative prohibitions and requirements at the international, federal, and local levels. In addition, before conducting an investigation of employee conduct, an employer should determine whether the conduct is a legitimate subject of discipline and inquiry under local and national laws. Some factors in making that determination include whether an incident occurred on or off the employer’s property, whether an employee’s conduct was during duty hours or after hours, and whether the offender represented himself or herself as a representative of the organization.
 
 Once an investigation has been initiated, the company must make several decisions, including whether any offense or infraction actually occurred, whether reporting to law enforcement is required, and how to communicate with the employee during the investigation and adjudication process. Such decisions are generally made as the investigation proceeds and should be reached in close coordination with legal counsel and other organizational officials. Conflict of Interest. The definition of this case type can vary widely and be influenced by the organization’s mission, structure, and culture. Generally, conflict of interest (Col) issues ate clearly defined in corporate policy and employee materials. From a legal perspective, it is essential that all employees and affiliates (consultants, contractors, subcontractors, vendors, etc.) be made fully aware of Col definitions, policies, and consequences. In instances where an investigator has a conflict of interest, this must be disclosed to the client, and the investigator should not be associated with this assignment in any way. Corporate Resource Abuse and Employee Theft. This phenomenon can represent a significant loss and is therefore significant from a corporate investigative perspective. The following are among the issues that may be addressed as abuse or misuse of corporate resources:
+
 - Personal use of information technology resources; Misuse of computers (e.g. downloading pornography, accessing unauthorized information, spamming, phishing, etc.); Personal use of company vehicles; Unauthorized or inappropriate use of company information; and
 - Inappropriate use of company aircraft. Principal characteristics of internal theft include diversion, conversion, disguise, and divergence. Workplace Violence. Workplace violence can range from simple bullying to significant violence resulting in loss oflife. Investigation is a major component ofany workplace violence situation and may include peripheral issues such as property damage, computer systems abuse, sexual harassment, and verbal or physical assault. Like many other misconduct issues, workplace violence incidents are usually preceded by indicators or warning signs (which are, unfortunately, often recognized only after the fact). The best prevention of exposure to workplace violence is a preemployment background investigation program; however, that does not guarantee that a person will not become violent. Investigations should be
 
 initiated as soon as possible when warning signs are reported. In most circumstances, the investigator(s) will work closely with the threat assessment teams and generally share information to the extent possible. Substance Abuse. Workers with a substance abuse problem are costly to employers. NORC (2020) estimates that employers spend nearly $9,000 annually on each employee with an untreated substance use disorder. These costs include absenteeism, reduced productivity, accidents, theft, and increased healthcare costs. Substance abuse in the workplace can also represent a threat to public safety and worksite security, cause friction among coworkers, and lead to drug trafficking on the job. Meanwhile, in the United Kingdom, the yearly cost to businesses of drug abuse is estimated at 100 billion euros. (UK Addiction Treatment Centers, 2020) Some sources also suggest that although employees should be encouraged to make use of a corporate employee assistance program (EAP), the initiation of discipline following a drug or alcohol infraction should not be postponed during the employee's involvement in the program. In Canada, an employee with substance abuse issues is deemed to have a physical disability and the employer must be aware of the legal requirements for providing reasonable accommodation (e.g., EAP and time for recovery) to the employee. In substance abuse cases, as in all types of investigations, false allegations represent a significant nuisance to the IU and consume valuable investigative resources. In addition, they can damage individuals’ reputations, cause mistrust within an organization, and affect investigators’ morale. False allegations may be unintentional, resulting from an observer’s misinterpretation of certain actions as a crime where, in fact, no actual crime or infraction was committed. The false reports can also be intentional, resulting from a disturbed complainant's attempt to get attention, gain revenge, or cover up his or her own wrongdoing by diverting attention to another individual. Investigators must follow all reasonable investigative leads to resolve a matter, whether or not they believe a false allegation might be involved. However, security and investigative professionals should remain alert to the possibility of false allegations and be prepared to take appropriate action in response. Compliance investigations share many characteristics with incident and misconduct investigations and can, in fact, fall into either of those categories as well. Compliance issues are increasingly significant to organizations as well as the individuals who run them.
 
 For many companies, it makes good business sense to have an internal capability to investigate compliance issues—and in some cases it is clearly mandated by government requirements. Team members should be trained on current regulatory issues and investigative methods and have a strong understanding of business practices and procedures in their industry and in business generally. Even small and medium-sized companies are turning to formal compliance programs and internal JUs to limit their risk of exposure to government investigations. In the United States, legislation such as the Sarbanes-Oxley Act and Federal Sentencing Guidelines for Organizational Crime, for example, emphasize corporate compliance programs and executive visibility, The purpose of a corporate compliance program is to protect the organization against violations of law, lapses in business ethics, and concomitant legal sanctions. An effective program encourages enforcement, monitoring, and employee training. A compliance program should be built on a clear corporate policy, often couched in a comprehensive code of conduct. The following are some policy issues that may be covered under an organization’s compliance code of conduct:
+
 - Equal employment opportunity;
 - Harassment; s Workplace safety;
 - Confidential and proprietary information;
@@ -907,11 +942,11 @@ Exploratory investigations are launched to answer questions or explain a situati
 
 **Figure 1.7: Examples of Regulatory Agencies with Enforcement Authority**
 
-| Jurisdiction | Regulatory / Enforcement Agency | Primary Focus and Enforcement Authority |
-| :--- | :--- | :--- |
-| **International** | • Interpol / Europol<br>• World Trade Organization (WTO)<br>• Financial Action Task Force (FATF) | • Cross-border criminal coordination and threat intelligence.<br>• International trade compliance and dispute monitoring.<br>• Global standards for anti-money laundering and terrorist financing. |
-| **U.S. Federal** | • Securities and Exchange Commission (SEC)<br>• Federal Trade Commission (FTC)<br>• Environmental Protection Agency (EPA)<br>• Occupational Safety and Health Administration (OSHA)<br>• Office of Foreign Assets Control (OFAC)<br>• Federal Election Commission (FEC) | • Securities fraud, insider trading, and corporate financial reporting.<br>• Consumer protection, antitrust violations, and unfair business practices.<br>• Environmental compliance, toxic waste dumping, and pollution control.<br>• Workplace safety violations, occupational hazards, and whistleblower protection.<br>• Enforcement of economic sanctions, trade embargoes, and terrorist financing.<br>• Monitoring political campaign contributions and election finance compliance. |
-| **State & Local** | • Secretary of State (Corporations Division)<br>• State Licensing Boards<br>• Local Health & Environmental Departments | • Corporate registration, business filings, and corporate legal standing.<br>• Professional licensing (e.g., private investigators, medical, legal) and disciplinary actions.<br>• Building codes, local fire codes, public health inspections, and local business licenses. |
+| Jurisdiction      | Regulatory / Enforcement Agency                                                                                                                                                                                                                                         | Primary Focus and Enforcement Authority                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| :---------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **International** | • Interpol / Europol<br>• World Trade Organization (WTO)<br>• Financial Action Task Force (FATF)                                                                                                                                                                        | • Cross-border criminal coordination and threat intelligence.<br>• International trade compliance and dispute monitoring.<br>• Global standards for anti-money laundering and terrorist financing.                                                                                                                                                                                                                                                                                          |
+| **U.S. Federal**  | • Securities and Exchange Commission (SEC)<br>• Federal Trade Commission (FTC)<br>• Environmental Protection Agency (EPA)<br>• Occupational Safety and Health Administration (OSHA)<br>• Office of Foreign Assets Control (OFAC)<br>• Federal Election Commission (FEC) | • Securities fraud, insider trading, and corporate financial reporting.<br>• Consumer protection, antitrust violations, and unfair business practices.<br>• Environmental compliance, toxic waste dumping, and pollution control.<br>• Workplace safety violations, occupational hazards, and whistleblower protection.<br>• Enforcement of economic sanctions, trade embargoes, and terrorist financing.<br>• Monitoring political campaign contributions and election finance compliance. |
+| **State & Local** | • Secretary of State (Corporations Division)<br>• State Licensing Boards<br>• Local Health & Environmental Departments                                                                                                                                                  | • Corporate registration, business filings, and corporate legal standing.<br>• Professional licensing (e.g., private investigators, medical, legal) and disciplinary actions.<br>• Building codes, local fire codes, public health inspections, and local business licenses.                                                                                                                                                                                                                |
 
 One common form of exploratory investigation is the personnel background investigation or level of trust determination. These include preemployment, in-employment, and continuous screening of individuals; these investigations are meant to assess the integrity and qualifications of a person who is placed in a position of trust and assist in mitigating the insider threat to an organization. Specific aspects of this investigative type, as well as recommended tools and techniques are detailed in Chapter 4 and in the recognized Preemployment Background Screening guidelines, which provide useful perspectives, information, and recommended practices. Another common form of “exploratory investigation” is the due diligence investigation which is covered in detail in Chapter 3. Exploratory investigations might also be used in determining the origin of inventory discrepancies, adverse shrinkage trends, productivity/performance variations, accounting anomalies or other enigmatic conditions. They may even involve tracking down potential reputational damage or misinformation spread on social media, online platforms, or by website (or browser) hijacking. In these situations, the explanation may or may not be related to a crime or security issue; however, the answer to the investigational question is a key objective. The exploratory category also includes investigations that are designed to identify and explore situations that facilitate or support criminal activity, rather than to examine a criminal incident itself. Efforts by a business to seek out or uncover conditions that may contribute to human trafficking are one example. Human trafficking generally involves the exploitation of individuals for sex or forced labor purposes, and is a very serious concern in certain sectors, particularly the lodging and travel industries. Lodging accommodations (including hotels, motels, resorts, and short-term rentals) are commonly used, sometimes with the knowledge or complicity of owners or managers, by human trafficking operations. While the investigative activity into the human trafficking itself is usually a law enforcement (LE) issue, corporate entities and other private sector organizations, including nonprofits, often work closely with law enforcement agencies. According to open sources, the LE agencies, commonly working as joint task forces on special issues such as this, rely heavily on networking with nongovernmental organizations (NGOs), schools, churches, healthcare centers, civic groups, and businesses. These entities may assist with victim support and care, background information, leads, data searches, surveillance, public awareness campaigns, and employee training—-and in some cases, they may provide more direct investigative support. Businesses may also conduct internal investigations to uncover conditions that foster nefarious or corrupt activity within their facilities or to mitigate the potential reputational risk of being associated with criminal enterprises or operations such as human trafficking.
 
@@ -955,41 +990,46 @@ The two sample formats that follow are representative of those used by governmen
 ```
 
 #### Complaint & Incident Details
-* **Name:** Ms. / Mr. __________________________________________________
-* **Emergency Contact Person:** ________________________________________
-* **Home Address:** __________________________________ **Phone:** _________
-* **Work Address:** __________________________________ **Phone:** _________
-* **Injury Sustained:** [ ] Yes  [ ] No
-* **Cause of Injury:** [ ] Falling Object  [ ] Slipped  [ ] Tripped  [ ] Type of Shoe  [ ] Fell  [ ] Other
-* **Condition of Area:** [ ] Liquid Spill  [ ] Food Spill  [ ] Dark Area  [ ] Uneven Surface  [ ] No Adverse Conditions  [ ] Other
-* **Medical Services Contacted?** [ ] Yes  [ ] No
-* **Responding Unit:** _________________ **Transported to:** _____________ [ ] If no, why not? ____________
+
+- **Name:** Ms. / Mr. ************************\_\_************************
+- **Emergency Contact Person:** ******************\_\_\_\_******************
+- **Home Address:** ****************\_\_**************** **Phone:** ****\_****
+- **Work Address:** ****************\_\_**************** **Phone:** ****\_****
+- **Injury Sustained:** [ ] Yes [ ] No
+- **Cause of Injury:** [ ] Falling Object [ ] Slipped [ ] Tripped [ ] Type of Shoe [ ] Fell [ ] Other
+- **Condition of Area:** [ ] Liquid Spill [ ] Food Spill [ ] Dark Area [ ] Uneven Surface [ ] No Adverse Conditions [ ] Other
+- **Medical Services Contacted?** [ ] Yes [ ] No
+- **Responding Unit:** ********\_******** **Transported to:** ******\_****** [ ] If no, why not? ****\_\_\_\_****
 
 #### Property Description (Stolen / Missing / Damaged / Recovered)
-* **Description:** ______________________________________________________
-* **Serial #:** _______________________ **Value:** $ ___________________
+
+- **Description:** **************************\_\_**************************
+- **Serial #:** **********\_\_\_********** **Value:** $ ********\_\_\_********
 
 #### Suspect / Person of Interest Information
-* **Name:** Ms. / Mr. __________________________________________________
-* **Home Address:** __________________________________ **Phone:** _________
-* **Work Address:** __________________________________ **Phone:** _________
-* **Physical Description:** ____________________________________________
-* **Barring Notice Issued?** [ ] Yes  [ ] No
+
+- **Name:** Ms. / Mr. ************************\_\_************************
+- **Home Address:** ****************\_\_**************** **Phone:** ****\_****
+- **Work Address:** ****************\_\_**************** **Phone:** ****\_****
+- **Physical Description:** ********************\_\_\_\_********************
+- **Barring Notice Issued?** [ ] Yes [ ] No
 
 #### Witness Information
-* **Name:** Ms. / Mr. __________________________________________________
-* **Home Address:** __________________________________ **Phone:** _________
-* **Work Address:** __________________________________ **Phone:** _________
-* **Written Statement Requested?** [ ] Yes  [ ] No
+
+- **Name:** Ms. / Mr. ************************\_\_************************
+- **Home Address:** ****************\_\_**************** **Phone:** ****\_****
+- **Work Address:** ****************\_\_**************** **Phone:** ****\_****
+- **Written Statement Requested?** [ ] Yes [ ] No
 
 #### Incident Narrative & Signatures
-* **Incident Description & Actions Taken:**
-  ______________________________________________________________________
-  ______________________________________________________________________
-  ______________________________________________________________________
-* **Notifications Made:** ______________________________________________
-* **Reporting Officer:** _________________________ **Signature:** ____________
-* **Supervisor:** ______________________________ **Police Officer:** __________ **Badge:** _______
+
+- **Incident Description & Actions Taken:**
+  ***
+  ***
+  ***
+- **Notifications Made:** **********************\_\_**********************
+- **Reporting Officer:** ************\_************ **Signature:** ****\_\_\_\_****
+- **Supervisor:** **************\_\_************** **Police Officer:** ****\_\_**** **Badge:** **\_\_\_**
 
 ---
 
@@ -1006,13 +1046,20 @@ GENERAL NATURE OF INCIDENT: __________________________________
 ```
 
 #### Details & Narrative (Who was involved? What happened? Where? Actions taken?)
-______________________________________________________________________
-______________________________________________________________________
-______________________________________________________________________
-______________________________________________________________________
-______________________________________________________________________
-______________________________________________________________________
-*Page ____ of _____*
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+_Page \_**\_ of \_\_\_**_
 
 ---
 
@@ -1045,6 +1092,7 @@ Undercover investigation should be the exception, not the rule. The technique sh
 - Actual work practices need to be compared with required or stated policies, and
 
 routine auditing is not possible.
+
 - Management believes embedding operatives will produce significant results, and all other reasonable options have been ruled out.
 
 ### 2.4 When Undercover Operations Are Not Appropriate
@@ -1091,6 +1139,7 @@ flowchart TD
 ```
 
 Before approving an undercover operation, the investigative team should review key operational and legal questions to assess feasibility:
+
 - **Covert Feasibility:** Can the operation stay secret? If leaks are likely, undercover is not recommended.
 - **Confidentiality:** Establish cover stories, hiring procedures, and secure communication channels.
 - **Duration of Cover:** Anticipate external disclosures that might force an early end.
@@ -1128,6 +1177,7 @@ These objectives are not only achievable but also the hallmark of any successful
 - Request a copy of the agency’s license, insurance coverage, and required permits. In
 
 many jurisdictions, private investigators and their agencies must be licensed.
+
 - Ask to see an agency’s training curriculum and operative training files. The agency selected should conduct thorough preemployment screening and periodic drug testing after hire and should provide professional training to its investigators.
 - Elicit answers to difficult questions regarding the agency’s knowledge of and experience with investigations similar to the type under consideration.
 - Ask for references and check them thoroughly. The best agencies are well known in the business community and are active in their trade associations.
@@ -1158,11 +1208,13 @@ While the details will need to be tailored to the specific situation, an operati
 - Aconnection with the operative’s actual past. In the best circumstances, the operative
 
 will have held a similar job before.
+
 - Asound “back story” that includes personal details that are not true, but which are known to the targeted employee. For example, the operative might claim that he or she attended a specific school, worked at a certain location, or lived in the same neighborhood as the target.
 
 - Back-up for the actions contemplated by the investigative plan. For example, if the
 
 operative must ask the target to meet his or her “fence,” then the operative must have such a connection. Or if the operative claims to own a custom sport utility vehicle, then he or she must drive such an automobile.
+
 - Documents that support the cover story. The operative should be able to produce the normal documents needed by any employee in a similar situation. However, no documentation that indicates the investigator's actual identity should ever be carried while on an assignment. An alternative, as one example, is the operative may need to conceal his or her driver’s license while driving a company, assigned, rental, or personal vehicle.
 
 #### 2.6.2 Phase Two: Information Gathering
@@ -1210,6 +1262,7 @@ behavior.
 - Clear and decisive action when an employee engages in inappropriate behavior.
 
 Waiting for the annual review to address minor issues appears to be punitive and unfair by the employee. Fairness is an essential key that every employee expects and deserves. The quality of supervision managing that environment and those people. A toxic work environment may create the motive for misconduct when an offended employee feels a need to even the score.
+
 - The initial and recurring policy and procedure training programs. An effective technique is to personalize the policy and procedure. Here are some examples:
 
 - Write down three situations where you think that it is okay to (steal, use
@@ -1243,6 +1296,7 @@ While undercover investigations can reveal a host of loss prevention issues, dru
 - Qualify the dealer. Entrapment is best defined as inducing a person to commit a
 
 crime. To overcome any potential allegation of entrapment (which is not a crime, but a criminal defense), the operative should qualify each person from whom he intends to purchase. Qualifying can be done through a simple report covering two points. First, the operative should establish that the behavior or activity in question was preexisting, or that the dealer had sold drugs previously. Second, the operative should establish why the dealer wants to sell to him or her. The perfect motive would be financial gain. By establishing a proper motive, dealers cannot claim that they were improperly induced into engaging in an activity that they knew was wrong. To avoid any allegation of entrapment, the operative should never invite another employee to commit criminal activity.
+
 - Coordinate with law enforcement. All workplace drug buys should be done under the control and supervision of law enforcement. Although this step is not always possible, every attempt should be made to ensure that the appropriate law enforcement agencies are aware of and approve the drug purchase. This is especially true during a “buy-bust” at the conclusion of an undercover operation. Without this immunity, the operative and the investigative agency could be faced with criminal prosecution for the possession, transport, or purchase of a suspected controlled substance.
 
 - Buy down, not up. As a matter of practice, law enforcement agents typically buy
@@ -1260,6 +1314,7 @@ use illegal drugs. To help preserve the operative’s credibility in the eyes of
 a preferred recourse, because prosecution, from a business perspective, only further erodes the corporate bottom line. Employers should make discharge decisions independently of the criminal justice system. Factors such as plea bargains and evidentiary issues are not relevant to an employer’s disciplinary decision. (King 2015) Undercover investigations are often used to determine if theft is occurring at the workplace. Theft investigations mirror any other undercover investigation. However, special care should be taken during the planning phase. Strategy and tactics play important roles in almost every successful theft investigation. The investigator must become visible and accessible to those who are stealing. Because the identity of the perpetrators may not be known at the beginning of the investigation, this part of the investigation can be particularly difficult, expensive, and time consuming. As an alternative, operatives should tryto attract the thieves to them. In one of the most basic tactics used to investigate employee theft, the operative appears to already be involved in some form of criminal activity. Employees who are involved in breaking the law in one way will often find it easy to join the operative in trying to break the law in other ways as well, a phenomenon known as cognitive consistency. A well-known undercover axiom says that where one finds substance abuse, one will also find theft. Therefore, the prudent undercover investigator looking to solve a theft problem should also look for a substance abuse problem. By seemingly being in the middle of the client’s substance abuse problem, the operative can gain direct access to those involved in theft or diversion of company assets. Another investigator, or third party, can pose as a shady associate of the operative with criminal connections. Without a great deal of lead time or preparation, this associate can be brought into and out of play. Without actually calling the associate a fence, a thief, or drug dealer, the operative carefully casts him or her as a highly trusted friend, relative, or gang member. In theft investigations, it is perfectly acceptable for operatives to participate in a scheme to steal. But because their credibility is at stake, all theft activity should be done with an explicit purpose and be preapproved by the project management team. Everybody likes to get something for nothing, and criminals are no different. Offering small electronics, cigarettes, or common hand tools at ridiculously low prices is one such ruse to enhance the operative's criminal credibility by making coworkers think the products are stolen. Event tickets are another popular giveaway or item to sell.
 
 One caution, however: Introducing weapons of any form into an investigation is unnecessarily dangerous and most likely unlawful. An investigator engaged in selling offprice merchandise might be asked to provide a handgun, for example. The investigator should not be allowed to do anything that will diminish his or her safety or that of the workplace or do anything else that is unlawful or otherwise inappropriate. A case can be worked in many ways without placing people at risk. Retail Theft Theft can occur in any kind of enterprise, but it is especially common in retail. Retail shrink reached an all-time high in 2019, accounting for 1.62 percent of a retailer’s bottom line and costing U.S. retailers roughly $62 billion. (National Retail Federation 2020) Organized retail crime (ORC) is a major problem for retailers and continues to evolve due to the new channels and forms of commerce available for selling stolen goods. ORC is more organized, and the thefts and frauds committed have become mote intricate and lucrative. Matas (2020) defines ORC: Organized retail crime is any organized criminal, conspiratorial attack on the retail establishment. ORC involves the association of two or more persons engaged in illegally or fraudulently obtaining retail merchandise, tender, confidential data, and customer personally identifiable information for the sole purpose of converting it into criminal financial gain. Typically coordinated under well-planned procedures, rules, and technical expertise, organized retail crime can operate on a local, regional, national, and/or international scale. These intricate and highly technical criminal operations are responsible for hundreds of billions of dollars in global losses each year. Undercover investigation is one resource in the toolbox to use against organized retail crime, because often an employee is the inside person helping the ring facilitate the criminal enterprise. The impact of ORC is seen at almost every level in the retail environment, including:
+
 - Shoplifting, Sophisticated fraud schemes,
 
 - Deep supply chain theft,
@@ -1272,6 +1327,7 @@ One caution, however: Introducing weapons of any form into an investigation is u
 - Complex return frauds,
 
 @ Shipping and transportation theft,
+
 - Creative con games, 2 Cyber frauds, and Often, public-private partnerships are formed to combat ORC. For example, one undercover investigation resulted in the recovery of $2 million in retail merchandise in Chicago. The CVS Organized Retail Crime Team, along with the Wilmette and Evanston police departments and the Illinois Department of Revenue Criminal Investigations Division completed an I1-month investigation. Law enforcement executed 11 search warrants resulting in the recovery of property and three arrests of suspects fencing the stolen goods. (WLS-TV 2019) \ / Organized retail rings commonly hire hackers, mathematicians, and programmers to infiltrate a company’s cyber infrastructure to identify account algorithms in order to launch cyber point-of-sale attacks, Web application and e-commerce attacks, insider threats, and well-choreographed attacks against a retailer’s databases and proprietary operating systems, according to Matas. An effective alternative to undercover operations is the use of visible loss prevention agents. A study by John Jay College of Criminal Justice found visible loss prevention agents reduced shrink better than undercover loss prevention agents. (Seivold 2018) Buy-Busts and Sting Operations The buy-bust is nothing more than arresting the perpetrator at the time he or she is either buying or selling the property in question. Usually, the other party to the transaction is a member of law enforcement or a designated agent. On some prearranged signal, the suspect is confronted and arrested on the spot. Arresting the offender at this stage of the investigation prevents the loss or destruction of valuable evidence and eliminates the need to chase down dangerous offenders later.
 
 In theft cases, just as in most drug cases, this technique works best toward the end of the investigation. Because buy-busts usually culminate the investigation, the true identity of undercover operatives and law enforcement agents can, by design, be exposed during the bust, although this is not always the case, nor it is always necessary. Sting operations, on the other hand, are similar, but the term generally connotes a longer, more complicated investigative effort. Sting operations usually involve elaborate setups and buy-busts. They might include the actual setup and operation of a business as a front or place where stolen goods are sold or traded. Because of their complexity, good sting operations are usually expensive and time consuming. Property Markers Invisible property markers and sprays have been around for years. These products allow the user to surreptitiously mark property so that if it is stolen and then recovered, its rightful owner can be identified. These products can be applied to vulnerable items in the investigation. Corroborating Evidence In most theft cases, corroborating evidence beyond that provided by the undercover investigator is often invaluable, The most common and economical form of corroborating evidence is video. By carefully choreographing the action, the operative and the thief can be placed in perfect positions to be captured on video. In this way, the stolen property, the money, and entire transaction can be documented. Multiple Buys As in drug investigations, making multiple buys from the thief builds a stronger case. As a matter of practice, the operative should always try to make more than one purchase from each player. Multiple purchases help eliminate the claim that the activity was spontaneous or an anomaly. Multiple purchases also help prove that the perpetrator is a true offender and not just someone who made a one-time mistake. Initially, the investigator should purchase a minimal amount. Recoveries Recoveries can be a big part of theft investigations. While determining who is stealing and what they are taking is important, of equal value is why are they stealing and how the stolen property is being disposed of. If other parties are receiving the property, civil recovery may be possible. Once additional thieves are identified, the investigation can be engineered to
@@ -1293,52 +1349,58 @@ The future of undercover operations is solid as more organizations realize that 
 # Appendix 2A: Chronological Report (Undercover Daily Log)
 
 **THE XYZ INVESTIGATION COMPANY**
-*Daily Chronological Log*
+_Daily Chronological Log_
 
-* **Day:** Thursday
-* **Date:** August 20, 2020
+- **Day:** Thursday
+- **Date:** August 20, 2020
 
-- **0600:** Operative arrived at workplace and clocked in.
-- **0745:** Operative took break and observed Ben Richards (Employee, Suspect #1) and Mike Miller (Employee, Suspect #2) meet in a suspicious manner.
-- **1000:** Operative went on break (unscheduled) and talked about not being able to slack off at work anymore because the supervisor, Chris Watts (Employee, Suspect #3), had returned from vacation on Wednesday, 08/19/20. Watts said Friday would be a 12-hour shift.
-- **1200:** Operative clocked out and departed for lunch with Mike Kilner (Employee).
-- **1230:** Operative left his work area to talk to John (LNU, Janitor).
-- **1310:** Operative returned to his work area. This was not a scheduled break time. Normal break time is 1345–1355 Hrs.
-- **1315:** Operative purchased marijuana from Ronny Sanders (Employee, Suspect #7). See Incident Report #7.
-- **1500:** Operative cleaned up his work area.
-- **1530:** Operative clocked out and departed workplace.
-- **1600:** Operative went to J.J.'s Bar & Grill and drank beer with several employees.
+* **0600:** Operative arrived at workplace and clocked in.
+* **0745:** Operative took break and observed Ben Richards (Employee, Suspect #1) and Mike Miller (Employee, Suspect #2) meet in a suspicious manner.
+* **1000:** Operative went on break (unscheduled) and talked about not being able to slack off at work anymore because the supervisor, Chris Watts (Employee, Suspect #3), had returned from vacation on Wednesday, 08/19/20. Watts said Friday would be a 12-hour shift.
+* **1200:** Operative clocked out and departed for lunch with Mike Kilner (Employee).
+* **1230:** Operative left his work area to talk to John (LNU, Janitor).
+* **1310:** Operative returned to his work area. This was not a scheduled break time. Normal break time is 1345–1355 Hrs.
+* **1315:** Operative purchased marijuana from Ronny Sanders (Employee, Suspect #7). See Incident Report #7.
+* **1500:** Operative cleaned up his work area.
+* **1530:** Operative clocked out and departed workplace.
+* **1600:** Operative went to J.J.'s Bar & Grill and drank beer with several employees.
 
-*End of Report*
+_End of Report_
 
 ---
 
 # Appendix 2B: Narrative Report
 
-* **Case Name:** Diamond Back
-* **Case Number:** 000-000-000
-* **Date:** Thursday, August 20, 2020
-* **Off Clock:** 0.5 (report writing)
-* **Expenses:** Social Activities ($20.00 for beer and tip)
+- **Case Name:** Diamond Back
+- **Case Number:** 000-000-000
+- **Date:** Thursday, August 20, 2020
+- **Off Clock:** 0.5 (report writing)
+- **Expenses:** Social Activities ($20.00 for beer and tip)
 
 #### Operative Daily Report
 
 ##### Suspected Drug Activity
+
 On Thursday, August 20, 2020, at approximately 7:45 a.m., while in the production area, the operative observed Ben Richards leave his assigned machine accompanied by Mike Miller (production supervisor). Richards and Miller then entered the supplies closet and closed the door behind them. Both employees remained in the closet for approximately 3 minutes. Richards returned to his machine. Miller departed from the department. The operative intends to follow up and talk to Richards about this incident tomorrow.
 
 ##### Message from Management
+
 On Thursday, August 20, 2020, at approximately 10:00 a.m., while in the production area, Chris Watts (floor supervisor) informed the production department that Friday, August 21, 2020, was going to be a 12-hour mandatory shift due to excessive customer orders. Watts warned all the production employees not to be absent or tardy. Approximately 15 production employees complained about the overtime to Watts. Watts stated to everyone that it was normal to work long hours the first quarter of the year. The meeting ended and production resumed work.
 
 ##### False Time Records
+
 On Thursday, August 20, 2020, at approximately 1:10 p.m., while in the production area, John (last name unknown/Janitor/temporary) was observed clocking in three timecards. The operative asked John to whom the timecards belonged. John explained they belonged to other janitors (names unknown) who were late. No further questions were asked due to John’s behavior. John departed from the area and discontinued the conversation. John is described as a white male, approximately 22 years of age, 6'1", 200 pounds, brown short hair, brown eyes, and wore a blue janitorial jumpsuit uniform and white tennis shoes.
 
 ##### Marijuana Sale
+
 On Thursday, August 20, 2020, at approximately 1:15 p.m., while in the receiving department, Ronny Sanders (receiving clerk) handed what Sanders identified to be 1/16 of an ounce of bud (marijuana) to Mike Lance (forklift operator) in exchange for $20 (two ten-dollar bills). Lance placed the marijuana in his right-side pants pocket. Lance thanked Sanders and exited the department through dock door 11. Sanders stated that Lance buys marijuana from him at least once a week at work. Sanders was paged over the intercom by Tony Lucas (receiving manager) to receive an order at dock door 14. Sanders responded to the page and discontinued the conversation. Sanders provided no further information concerning the marijuana transaction.
 
 ##### Absenteeism
+
 On Thursday, August 20, 2020, at approximately 2:10 p.m., while in the production area, John (last name unknown/Janitor/temporary) stated that he planned on calling in sick on Saturday (August 22, 2020). John further stated that he was going hunting for elk with several friends (nonemployees/names unknown). John concluded the conversation by saying he often misses work. No further details were disclosed. John is described as a white male, approximately 22 years of age, 6'1", 200 pounds, brown short hair, brown eyes, and wore a blue janitorial jumpsuit uniform with white tennis shoes.
 
 ##### Sabotage
+
 On Thursday, August 20, 2020 (labeled August 26, 2005 in historical records), at approximately 3:30 p.m., while at J.J.’s Bar & Grill (Cedar Springs, Colorado), Kenny Sanchez (truck driver) stated that he and two other drivers (names unknown) frequently puncture their work truck tires to avoid driving to certain delivery locations (locations unknown). Sanchez further stated that he has punctured the tires on his assigned truck on 3 occasions in a 12-month period. Sanchez changed the topic of conversation because Randy Clark (shipping lead) sat at the table with the operative and Sanchez. The conversation was changed to current affairs and sports. No further information was obtained.
 
 **Submitted by:** Operative code name
@@ -1348,7 +1410,7 @@ On Thursday, August 20, 2020 (labeled August 26, 2005 in historical records), at
 # Appendix 2C: Investigative Summary Report
 
 **THE VERY BIG XYZ COMPANY**
-*Any Street, Any Town, USA 55555*
+_Any Street, Any Town, USA 55555_
 
 **Re:** Diamond-Back
 
@@ -1357,38 +1419,43 @@ On Thursday, August 20, 2020 (labeled August 26, 2005 in historical records), at
 The following Investigative Summary reflects the results of our investigative efforts at the Cedar Springs facility. The dates included are from Monday, August 17, 2020, through Friday, August 21, 2020. The operative developed information concerning the sale of cocaine and the talk of use/sales. Additionally, information was documented involving security/safety issues, employee misconduct, and employer/employee relations.
 
 ##### Summary of Findings
+
 To date, our efforts have yielded:
-* **12** cocaine purchases on company time and property.
-* **6** cocaine purchases on company time off company property.
-* **7** marijuana purchases on company time and property.
+
+- **12** cocaine purchases on company time and property.
+- **6** cocaine purchases on company time off company property.
+- **7** marijuana purchases on company time and property.
 
 Additionally, we have identified:
-* **16** employees using cocaine on company time and property.
-* **12** employees using marijuana on company time and property.
+
+- **16** employees using cocaine on company time and property.
+- **12** employees using marijuana on company time and property.
 
 ##### Detailed Incidents
 
 ###### Cocaine Sale (Tuesday, August 18, 2020)
+
 At approximately 11:35 a.m., while in the rail assembly area of the facility, Ben Richards (insert operator/temporary) motioned to the operative to step out the exit located behind the rail blaster. The operative walked out the exit, at which time Richards reached into his left shirt pocket and pulled out a cigarette wrapper and dumped from it a large white rock wrapped in cellophane, and handed it to the operative. Richards explained that the operative could break off a piece, put it in a pipe, and smoke it the way it is because it was so pure and better than the last “stuff” (cocaine) that he had sold the operative on Friday, August 7, 2020.
 
-* **11:40 a.m.:** The operative took possession of the cocaine Ben Richards had given him.
-* **11:45 a.m.:** The operative put the cocaine obtained from Ben Richards into an evidence bag that Special Agent Kenny Berger left with him, and then locked it in the evidence box in the trunk of his vehicle. The operative then proceeded to the First State Bank to rendezvous with Special Agent Berger.
-* **12:00 p.m.:** The operative met Special Agent Berger and surrendered the locked evidence box. Special Agent Berger opened the box and removed the evidence bag. Upon satisfactory inspection of the bag and the evidence within it, Special Agent Berger provided the operative with a receipt (see Exhibit A) and returned the unlocked evidence box. Special Agent Berger allowed the operative to photograph the package after examining it himself (see Exhibit C). The operative placed the unlocked box in the trunk of his vehicle. Special Agent Berger retained the only key to the box.
-* **12:10 p.m.:** The operative left the bank parking lot and returned to the facility.
-* **12:35 p.m.:** While in the rail assembly area of the facility, the operative gave Ben Richards $300, completing the cocaine transaction. The operative handed Richards three one-hundred-dollar bills provided by the Colorado State Police Narcotics Task Force. The serial numbers of the bills are AB675470081, AL04508146D, and AJ35735194A (see Exhibit B).
+- **11:40 a.m.:** The operative took possession of the cocaine Ben Richards had given him.
+- **11:45 a.m.:** The operative put the cocaine obtained from Ben Richards into an evidence bag that Special Agent Kenny Berger left with him, and then locked it in the evidence box in the trunk of his vehicle. The operative then proceeded to the First State Bank to rendezvous with Special Agent Berger.
+- **12:00 p.m.:** The operative met Special Agent Berger and surrendered the locked evidence box. Special Agent Berger opened the box and removed the evidence bag. Upon satisfactory inspection of the bag and the evidence within it, Special Agent Berger provided the operative with a receipt (see Exhibit A) and returned the unlocked evidence box. Special Agent Berger allowed the operative to photograph the package after examining it himself (see Exhibit C). The operative placed the unlocked box in the trunk of his vehicle. Special Agent Berger retained the only key to the box.
+- **12:10 p.m.:** The operative left the bank parking lot and returned to the facility.
+- **12:35 p.m.:** While in the rail assembly area of the facility, the operative gave Ben Richards $300, completing the cocaine transaction. The operative handed Richards three one-hundred-dollar bills provided by the Colorado State Police Narcotics Task Force. The serial numbers of the bills are AB675470081, AL04508146D, and AJ35735194A (see Exhibit B).
 
 ##### Suspected Drug Activity
-* **Thursday, August 13, 2020, at approximately 11:00 a.m.:** While in the rail assembly area of the facility, the operative was engaged in conversation with Ben Richards. Richards told the operative that Chris Watts (floor supervisor) likes to use crystal methamphetamine because it leaves the body’s system in two to three days. Richards further told the operative that when Watts’ hand was cut open at work and he received stitches, he was not tested for drugs like other employees who are injured at work.
-* **Thursday, August 20, 2020, at approximately 7:45 a.m.:** While in the production area, the operative observed Ben Richards leave his assigned machine accompanied by Mike Miller (production supervisor). Richards and Miller then entered the supplies closet and closed the door behind them. Both employees remained in the closet for approximately 3 minutes. Richards returned to his machine. Miller departed from the department.
 
-*End of Report*
+- **Thursday, August 13, 2020, at approximately 11:00 a.m.:** While in the rail assembly area of the facility, the operative was engaged in conversation with Ben Richards. Richards told the operative that Chris Watts (floor supervisor) likes to use crystal methamphetamine because it leaves the body’s system in two to three days. Richards further told the operative that when Watts’ hand was cut open at work and he received stitches, he was not tested for drugs like other employees who are injured at work.
+- **Thursday, August 20, 2020, at approximately 7:45 a.m.:** While in the production area, the operative observed Ben Richards leave his assigned machine accompanied by Mike Miller (production supervisor). Richards and Miller then entered the supplies closet and closed the door behind them. Both employees remained in the closet for approximately 3 minutes. Richards returned to his machine. Miller departed from the department.
+
+_End of Report_
 
 ---
 
 # Appendix 2D: Special Report
 
 **THE VERY BIG XYZ COMPANY**
-*Any Street, Any Town, USA 55555*
+_Any Street, Any Town, USA 55555_
 
 **Re:** Diamond-Back
 
@@ -1396,16 +1463,16 @@ At approximately 11:35 a.m., while in the rail assembly area of the facility, Be
 
 On Tuesday, August 11, 2020, at approximately 11:35 a.m., while in the rail assembly area of the facility, Ben Richards (insert operator/temporary, male Caucasian, 5'11", 200 pounds, brown shoulder-length hair, blue eyes, and large blue dragon tattoo on left forearm) motioned to Confidential Informant #1 to step out the exit located behind the rail blaster. Confidential Informant #1 walked out the exit, at which time Richards reached into his left shirt pocket and pulled out a cigarette wrapper and dumped from it a large white rock wrapped in cellophane, and handed it to Confidential Informant #1. Richards explained that Confidential Informant #1 could break off a piece, put it in a pipe, and smoke it the way it is because it was so pure and better than the last “stuff” (cocaine) that he had sold Confidential Informant #1 on Friday, August 7, 2020.
 
-* **11:40 a.m.:** Confidential Informant #1 took possession of the cocaine Ben Richards had given him.
-* **11:45 a.m.:** Confidential Informant #1 put the cocaine obtained from Ben Richards into an evidence bag that Special Agent Kenny Berger left with him, and then locked it in the evidence box in the trunk of his vehicle. Confidential Informant #1 then proceeded to the First State Bank to rendezvous with Special Agent Berger.
-* **12:00 p.m.:** Confidential Informant #1 met Special Agent Berger and surrendered the locked evidence box. Special Agent Berger opened the box and removed the evidence bag. Upon satisfactory inspection of the bag and the evidence within it, Special Agent Berger provided Confidential Informant #1 with a receipt (see Exhibit A) and returned the unlocked evidence box. Special Agent Berger allowed Confidential Informant #1 to photograph the package after examining it himself (see Exhibit C). Confidential Informant #1 placed the unlocked box in the trunk of his vehicle. Special Agent Berger retained the only key to the box.
-* **12:10 p.m.:** Confidential Informant #1 left the bank parking lot and returned to the facility.
-* **12:35 p.m.:** While in the rail assembly area of the facility, Confidential Informant #1 gave Ben Richards $300, completing the cocaine transaction. Confidential Informant #1 handed Richards three one-hundred-dollar bills provided by the Colorado State Police Narcotics Task Force. The serial numbers of the bills are AB675470081, AL04508146D, and AJ35735194A (see Exhibit B).
+- **11:40 a.m.:** Confidential Informant #1 took possession of the cocaine Ben Richards had given him.
+- **11:45 a.m.:** Confidential Informant #1 put the cocaine obtained from Ben Richards into an evidence bag that Special Agent Kenny Berger left with him, and then locked it in the evidence box in the trunk of his vehicle. Confidential Informant #1 then proceeded to the First State Bank to rendezvous with Special Agent Berger.
+- **12:00 p.m.:** Confidential Informant #1 met Special Agent Berger and surrendered the locked evidence box. Special Agent Berger opened the box and removed the evidence bag. Upon satisfactory inspection of the bag and the evidence within it, Special Agent Berger provided Confidential Informant #1 with a receipt (see Exhibit A) and returned the unlocked evidence box. Special Agent Berger allowed Confidential Informant #1 to photograph the package after examining it himself (see Exhibit C). Confidential Informant #1 placed the unlocked box in the trunk of his vehicle. Special Agent Berger retained the only key to the box.
+- **12:10 p.m.:** Confidential Informant #1 left the bank parking lot and returned to the facility.
+- **12:35 p.m.:** While in the rail assembly area of the facility, Confidential Informant #1 gave Ben Richards $300, completing the cocaine transaction. Confidential Informant #1 handed Richards three one-hundred-dollar bills provided by the Colorado State Police Narcotics Task Force. The serial numbers of the bills are AB675470081, AL04508146D, and AJ35735194A (see Exhibit B).
 
-*End of Report*
+_End of Report_
 
 **Submitted by:** Confidential Informant #1
-**Date:** ________________________
+**Date:** **********\_\_\_\_**********
 
 ---
 
@@ -1420,11 +1487,13 @@ In common business usage, due diligence describes the investigative process for 
 ### 3.2 Relevance to Assets Protection and Security Risk Management
 
 One of the most important reasons for conducting due diligence investigations is to protect an organization’s assets. Not having a clear understanding of the degree to which a person, business, organization or situation is legitimate and trustworthy can significantly increase the risk involved in any business transaction or decision. In essence, due diligence is the intersection ofinvestigations and security risk management. It is an investigative process that serves to manage organizational risk. Due diligence may be voluntary (i.e., an advisable or prudent practice) or it may be a requirement in some cases according to law, regulation, or policy. Also, it may be a very informal process such as vetting a prospective vendor, a very formal and lengthy process in preparation for a major joint venture agreement/partnership, or anything in between. In every case, however, the objective is to be as informed as possible before entering a situation in order to protect the organization. Due diligence is often a critical requirement for the protection of enterprise assets, particularly in transactions with outside parties. For example, if a manufacturer seeks a distributor for its products, it must vet potential vendors by ensuring that candidates are competent to complete sales, have financial and logistical capabilities to maintain inventory, have a positive reputation so the manufacturer is not tainted by the association, and have secure and adequate warehouse facilities, among other matters, Without assurances about the distributor, the manufacturer risks losing product, time, and reputation, all of which have a cost to the manufacturer. In addition to direct loss, such as loss of product, the manufacturer may also suffer cost in terms of lost opportunity, loss of market share, and reputational damage. Even a fairly straightforward security risk such as an unsecured warehouse, can create the potential for an existing threat to exploit vulnerabilities and cause harm or damage to an asset and the organization itself. In this example, as in many due diligence situations, before contracting with the distributor, the manufacturer may want to know the following:
+
 - Business history of the potential distributor. How long has it been in business? What is its level of success? What products does it currently distribute?
 
 - Distribution method. How is the product distributed? Does the distributor own
 
 trucks? How many?
+
 - Product tracking. What system will the distributor use to track product and ensure safety from warehouse to distribution points? Are there methods of identifying the product to ensure its security throughout the distribution system? What are they?
 - Security and insurance. How safe is the storage facility? The distribution network? What types of insurance does the distributor carry?
 
@@ -1439,6 +1508,7 @@ Do the suits reflect the general ‘cost of doing business’ or do they appear 
 - Reputation. What is the reputation of the company? What is the reputation of the
 
 managers, officers, and other decision makers in the company? Will it hurt or help the manufacturer to be associated with the distributor?
+
 - Financial and credit issues, What is the current situation of the company regarding finances and credit? What is its credit and financial history? Does the distributor have enough resources to retain inventory? What are the source and extent of funds available to the company? How much debt does the company carry? Has the company ever filed for bankruptcy?
 
 - Sales and marketing. Will the distributor assist with the sales and marketing of the
@@ -1466,11 +1536,13 @@ its operating efficiency)? In finding reliable answers to these questions, the m
 Comprehensive, cohesive due diligence investigations are not only effective but also critical in weighing the pros and cons of a wide variety of business transactions. Some examples include:
 
 Mergers and acquisitions; Divestiture actions;
+
 - Joint ventures; Hiring and executive placement; Fiduciary level of trust determinations; Financial and real estate investments; and
 
 - Key outsourcing decisions (such as data center/cloud providers).
 
 Even within an organization, due diligence may be performed to verify that policies, procedures, standards, governance processes, and documentation are in line with the organization’s greater goals and responsibilities—for example, to make sure thatinformation assets protection and privacy protection protocols are in place across the enterprise. Another common application for due diligence initiatives is in support of market entry planning. This process is relevant in certain business circumstances such as:
+
 - Introduction of a new product or service line;
 - Entry ofa product or service line into a new market, region or country; Establishment of a new partner or joint venture agreement; ° Opening of a new office, R&D, manufacturing, or distribution facility;
 - Establishing a new supply chain partner or strategy; and
@@ -1481,6 +1553,7 @@ Even within an organization, due diligence may be performed to verify that polic
 - Reviewing the validity of contracts, agreements, security plans, licensing, registrations,
 
 insurance coverage, and management practices; and
+
 - Engaging a trusted consultant/advisor who is familiar with the culture, customs, language, laws, and regulations of each region or country involved. Because there is no single checklist for due diligence, the specific approach and results can vary widely. While a good due diligence investigation is the necessary cornerstone for making decisions, a poorly executed process can completely mislead parties. Effective due diligence goes beyond verifying information provided by parties and includes uncovering new information, raising questions, and highlighting new areas to consider for investigation. Failure to investigate fully can produce disastrous consequences (for example, failing to uncover an internal investigation into the chief financial officer’s fraudulent accounting activity could be a deal breaker). Parties involved in any transaction with other parties—even parties they believe they know—should undertake an unbiased, thorough due diligence investigation before proceeding. A thorough due diligence investigation may also aid in the identification of risks that could prevent an organization from achieving its objectives. In the United States, the USA Patriot Act of 2001 placed new responsibilities on financial institutions and multinational companies, which must make every effort to detect violations of the Foreign Corrupt Practices Act and Patriot Act. The U.S. Department of Justice (DOJ) published three versions (2017, 2019, and 2020) of the Evaluation of Corporate Compliance Programs (ECCP) guidance, which requires companies to conduct due diligence for mergers and acquisitions and third-party relationships to determine if evidence exists of compliance failures, fraud, or other misconduct. A thorough due diligence investigation provides information to assist in making a good decision, even if it does not include a review of every piece of information. While a due diligence investigation does not guarantee the success of a venture, it provides valuable insight. Even incomplete or missing information can be useful. For example, if it is virtually impossible to obtain financials on a company, the company may have reasons to obfuscate financial information such as to conceal fraudulent activity. Gaps in an individual’s employment are technically a lack of information but can speak volumes about an individual's history. Likewise, ifa compahnays no reputation in its sector, no press coverage, and no recognition in trade journals, it may not have the track record it advertises. At a minimum, a strong due diligence investigation can raise issues for further research, verify or contradict given information, and point parties to new sources of information.
 
 A due diligence investigation is not a guarantee of success, nor is it always possible to obtain all the information that would preclude making errors in judgment. However, if best practices are followed, the due diligence report serves as a foundation for further consultation and negotiation. a ‘) The Bernard Madoff scandal clearly demonstrated the need for due diligence. In this case, Madoff lured investors to his hedge fund by promising returns higher than any other fund or securities investment. In late 2008, authorities discovered he was not actually making the investments he claimed. Instead, his fund was a $50 billion Ponzi scheme. The strong reputation of the Madofff und made potential investors giddy (and greedy) over the possible returns, so they ignored the usual due diligence process in exchange for fast action, high returns, and entry into the fund. A proper investigation likely would have shown that it was virtually impossible for the fund to realize the level of gains Madoff represented. In fact, according to the Wall Street Journal, some of the analysts who performed due diligence investigations on Madoff were unable to replicate the fund’s historic returns, conducting the same trades he reportedly made. They concluded it was doubtful that Madoff made all or any of the required trades his strategy dictated. Barron’s raised the possibility that his returns were most likely due to front running his firm’s brokerage clients. Investors chose to ignore warnings and not to undertake additional due diligence because Madoff discouraged investigation and suggested that questioning him could limit individuals’ ability to invest. This case highlights one reason to use outside investigation experts, legal counsel, and accountingfi rms to perform thorough and unbiased due diligence investigations.
@@ -1502,6 +1575,7 @@ In today’s technology age, with its seemingly endless cyber risk landscape, co
 ### 3.5 Techniques And Steps In Due Diligence Investigations
 
 There is no single, objective criterion for a due diligence investigation. The investigator must first look at the question at hand and determine what is important for assessing the particular situation. Therefore, the first step in any due diligence investigation is to examine the issue at hand—the deal, the person, the investment, etc.—and understand what factors to focus on to answer the question. A due diligence strategy should include at least the following questions:
+
 - What is the nature of the situation? What is at risk? (assets, reputation, market share, etc.)
 - What is the background of the situation? How well do the parties know each other?
 - Who are the main players?
@@ -1511,6 +1585,7 @@ There is no single, objective criterion for a due diligence investigation. The i
 - What potential problems would be most costly? What other minor problems could
 
 affect the issue?
+
 - What type of transaction do the parties expect? What is the size of the transaction? How complex is it?
 
 - What is the cost of the investigation in terms of time and money? How difficult will it be to obtain information?
@@ -1522,6 +1597,7 @@ fails?
 - Isthe objective within the organization's risk appetite, risk tolerance, and risk capacity?
 
 The key to a good due diligence investigation is to understand the needs of the client and the transaction at hand. If investigators lack an understanding of the object of the investigation, they almost certainly will fail in their due diligence because they will not ask the right questions. Numerous investigative resources are available for conducting due diligence investigations. In general, resources can be broken down into primary and secondary research tools. Primary sources include:
+
 - Interviews with individuals and
 - Direct observations of people, places, or events. Secondary sources include:
 - Government-maintained public records,
@@ -1538,6 +1614,7 @@ s State criminal and civil records, Local and municipal records, and
 Many secondary resources are readily available on the Internet. However, the entity and individuals performing the investigation should corroborate information from the original source. While this section uses U.S. organizations as examples of sources, similar agencies keep corresponding records in other nations.
 
 In the United States, some types of investigations fall under the Fair Credit Reporting Act (FCRA) because results are considered a consumer report. Some sites require users to have a valid private investigator license to access them, while others are available to the general public. Because access and available records change daily, investigators should regularly survey resources to ascertain the types and locations of available information. One advantage of government records is that they tend to be unbiased. The following are information sources that due diligence investigators may wish to consult:
+
 - Clerk records. Each county clerk maintains records on liens, judgments, litigation, marriage, divorce, property ownership, mortgages, and other vital information. These records are important because they also show relationships, addresses, and patterns of behavior. They also often provide leads on other places to look for information.
 - Securities and Exchange Commission filings. The U.S. Securities and Exchange Commission (SEC) maintains records on public companies, providing valuable information concerning those companies. It also maintains records on licensed broker-dealers and investment funds. Public companies regulated by securities laws must file a variety of reports with the SEC. The annual report (10-K) and quarterly reports (10-Q) are extremely informative. The 10-K provides information on company organization, business activities, finances, legal activities, officers, and other issues related to the company. The quarterly reports update the annual reports and contain any substantive changes since the annual report was filed. Private companies are not required to file reports with the SEC. SEC reports are available online at www.sec.gov, or in person at SEC public reading rooms. Individuals wishing to access SEC filings can also request documents by mail. Appendix 3B contains a list of security regulatory bodies in various other countries.
 - Secretary of State or Division of Corporations. Each U.S. state has a Secretary of State or Division of Corporations that records and holds documents related to companies incorporated in that state. Depending on the state, these records may include annual reports and name change documents and may also provide information on mergers and acquisitions, date of incorporation, status, and names and addresses of officers. Many states provide access online, by phone or mail, or in person.
@@ -1557,6 +1634,7 @@ Act (FOIA) allows the public to request documents from government agencies that 
 - Criminal records. In the United States, the public can access state and local level
 
 criminal history records through most county clerks’ offices. For federal offenses, the public can search federal court dockets and records through PACER. gov. There is no legal method for the public to conduct a universal nationwide search for all criminal history and court records at once, because each state and county has its own recordkeeping and access procedures. Investigative teams should rely on reputable background screening or professional investigation firms to perform criminal history searches. Several online sources offer international searches for more than 200 countries. However, some of the information may be difficult to verify, and the process can be slow and expensive.
+
 - Property records. Most U.S. counties have a property appraiser, assessor, recorder, or auditor’s office that provides information on property ownership, property value, sales information, deed transfers, and previous ownership. Google Maps and other free satellite services also offer overhead and street-level views of properties.
 - Patent records. The U.S. Patent and Trademark Office offers free online access to patents. Other sites, such as Google Patents, also allow free patent searches.
 
@@ -1595,6 +1673,7 @@ Due diligence investigations are carried out and reported in different ways depe
 This checklist provides a framework for conducting due diligence investigations in corporate transactions, mergers, acquisitions, or key partnerships.
 
 #### Corporate Organization
+
 - [ ] Articles of incorporation
 - [ ] Bylaws
 - [ ] Recent changes in corporate structure
@@ -1604,39 +1683,47 @@ This checklist provides a framework for conducting due diligence investigations 
 - [ ] Minutes of board of directors’ meetings
 
 #### Business Information
+
 - [ ] Product offerings
 - [ ] Depreciation method
 - [ ] Patents
 - [ ] Management information system
 
 #### Business Plan
+
 - [ ] Most recent five-year business plan
 - [ ] Prior business plan
 
 #### Capital Expenditures
+
 - [ ] Last five years
 - [ ] Five-year gross projection
 - [ ] Detailed priority list with as much analysis as possible
 
 #### Competition
+
 - [ ] Competitors by product line (name, address, phone number, size of overall company, size of the competitor business unit, market share, and competitive advantages/disadvantages)
 - [ ] Trade publications (name, address, and phone numbers)
 
 #### Contracts
+
 - [ ] Major contracts listed by product lines (terms)
 
 #### Debt and Leases
+
 - [ ] Lender
 - [ ] Terms
 - [ ] Interest rate
 - [ ] Payment schedule
 
 #### Employee Relations
+
 - [ ] Unions (name of union, name of local president, address and phone number, and copy of contract)
 - [ ] Description of employee relations history
 - [ ] Pension plans and retiree benefits funding status
 
 #### Environmental & Property
+
 - [ ] Environmental studies
 - [ ] Five-year projected remediation cost
 - [ ] Five-year projected compliance cost
@@ -1644,31 +1731,37 @@ This checklist provides a framework for conducting due diligence investigations 
 - [ ] Equipment list, age, and appraisal (orderly liquidation value/replacement value)
 
 #### Financial Statements
+
 - [ ] Five years of historical audited statements (income statement, balance sheet, statement of cash flows, change in equity statement)
 - [ ] Year-to-date internally generated monthly statements
 - [ ] Most recent five-year projections
 - [ ] Monthly sales projections taking seasonality into account
 
 #### Information Technology & Security
+
 - [ ] IT policies and procedures
 - [ ] Electronic record retention policies
 - [ ] Cyber security history and assessments
 
 #### Insurance
+
 - [ ] Property insurance
 - [ ] Liability insurance
 - [ ] Workers’ compensation
 - [ ] Other specialized insurance policies
 
 #### Last Corporate Transactions
+
 - [ ] Description of each recent transaction
 - [ ] Purchase and sale agreement of each transaction
 
 #### Litigation
+
 - [ ] Current litigation (description, potential damages)
 - [ ] Potential or threatened litigation (description, potential damages)
 
 #### Management
+
 - [ ] Organizational chart
 - [ ] Resumes of key personnel
 - [ ] Ownership interest of management
@@ -1677,6 +1770,7 @@ This checklist provides a framework for conducting due diligence investigations 
 - [ ] Profit- or gain-sharing policies
 
 #### Marketing & Operating Data
+
 - [ ] Pricing strategy and promotions tactics
 - [ ] Patents and distribution channels
 - [ ] Customer base (top 10 customers by product line, showing volume)
@@ -1686,6 +1780,7 @@ This checklist provides a framework for conducting due diligence investigations 
 - [ ] Backlog (by product line, five-year history, current, seasonal issues)
 
 #### Tax Status
+
 - [ ] Historical tax rate
 - [ ] Net operating losses
 
@@ -1693,54 +1788,54 @@ This checklist provides a framework for conducting due diligence investigations 
 
 # Appendix 3B: Securities Regulatory Bodies — Selected National Bodies
 
-| Country/Region | Regulatory Body | Website |
-| :--- | :--- | :--- |
-| Australia | Australian Securities and Investments Commission | [www.asic.gov.au](http://www.asic.gov.au/asic/asic.nsf) |
-| Brazil | Comissão de Valores Mobiliários | [www.cvm.gov.br](http://www.cvm.gov.br/ingl/indexing.asp) |
-| Canada | Canadian Securities Administrators | [www.securities-administrators.ca](http://www.securities-administrators.ca/) |
-| France | Autorité des marchés financiers | [www.amf-france.org](http://www.amf-france.org) |
-| Germany | Bundesbank and German Financial Supervisory Authority | [www.bafin.de](http://www.bafin.de) |
-| Greece | Hellenic Capital Market Commission | [www.hcmc.gr](http://www.hcmc.gr) |
-| Hong Kong | Securities and Futures Commission | [www.sfc.hk](http://www.sfc.hk/en) |
-| Hungary | Hungarian Financial Supervisory Authority | [www.pszaf.hu](http://www.pszaf.hu/english/start.html) |
-| India | Securities and Exchange Board of India | [www.sebi.gov.in](http://www.sebi.gov.in) |
-| Italy | Commissione Nazionale per le Società
-- la Borsa | [www.consob.it](http://www.consob.it) |
-| Japan | Financial Services Agency | [www.fsa.go.jp](http://www.fsa.go.jp/en/index.html) |
-| Jersey | Jersey Financial Services Commission | [www.jerseyfsc.org](http://www.jerseyfsc.org) |
-| Lithuania | Securities Commission of the Republic of Lithuania | [www.vpk.lt](http://www.vpk.lt/) |
-| Malta | Malta Financial Services Authority | [www.mfsa.mt](http://www.mfsa.mt) |
-| Mexico | Comisión Nacional Bancaria y de Valores | [www.cnbv.gob.mx](http://www.cnbv.gob.mx) |
-| Netherlands | Authority for the Financial Markets | [www.afm.nl](http://www.afm.nl/en) |
-| New Zealand | Financial Markets Authority | [www.fma.govt.nz](http://www.fma.govt.nz) |
-| Poland | Polish Financial Supervision Authority | [www.knf.gov.pl](http://www.knf.gov.pl) |
-| Portugal | Comissão do Mercado de Valores Mobiliários | [www.cmvm.pt](http://www.cmvm.pt/en) |
-| South Africa | Financial Sector Conduct Authority | [www.fsca.co.za](http://www.fsca.co.za) |
-| Spain | Comisión Nacional del Mercado de Valores | [www.cnmv.es](http://www.cnmv.es/index.htm) |
-| Switzerland | Swiss Financial Market Supervisory Authority | [www.finma.ch](http://www.finma.ch/en) |
-| Turkey | Capital Markets Board of Turkey | [www.cmb.gov.tr](http://www.cmb.gov.tr) |
-| United Kingdom | Financial Services Authority | [www.fsa.gov.uk](http://www.fsa.gov.uk) |
-| United States | U.S. Commodity Futures Trading Commission | [www.cftc.gov](http://www.cftc.gov) |
-| United States | U.S. Securities and Exchange Commission | [www.sec.gov](http://www.sec.gov) |
+| Country/Region | Regulatory Body                                       | Website                                                                      |
+| :------------- | :---------------------------------------------------- | :--------------------------------------------------------------------------- |
+| Australia      | Australian Securities and Investments Commission      | [www.asic.gov.au](http://www.asic.gov.au/asic/asic.nsf)                      |
+| Brazil         | Comissão de Valores Mobiliários                       | [www.cvm.gov.br](http://www.cvm.gov.br/ingl/indexing.asp)                    |
+| Canada         | Canadian Securities Administrators                    | [www.securities-administrators.ca](http://www.securities-administrators.ca/) |
+| France         | Autorité des marchés financiers                       | [www.amf-france.org](http://www.amf-france.org)                              |
+| Germany        | Bundesbank and German Financial Supervisory Authority | [www.bafin.de](http://www.bafin.de)                                          |
+| Greece         | Hellenic Capital Market Commission                    | [www.hcmc.gr](http://www.hcmc.gr)                                            |
+| Hong Kong      | Securities and Futures Commission                     | [www.sfc.hk](http://www.sfc.hk/en)                                           |
+| Hungary        | Hungarian Financial Supervisory Authority             | [www.pszaf.hu](http://www.pszaf.hu/english/start.html)                       |
+| India          | Securities and Exchange Board of India                | [www.sebi.gov.in](http://www.sebi.gov.in)                                    |
+| Italy          | Commissione Nazionale per le Società                  |
+| - la Borsa     | [www.consob.it](http://www.consob.it)                 |
+| Japan          | Financial Services Agency                             | [www.fsa.go.jp](http://www.fsa.go.jp/en/index.html)                          |
+| Jersey         | Jersey Financial Services Commission                  | [www.jerseyfsc.org](http://www.jerseyfsc.org)                                |
+| Lithuania      | Securities Commission of the Republic of Lithuania    | [www.vpk.lt](http://www.vpk.lt/)                                             |
+| Malta          | Malta Financial Services Authority                    | [www.mfsa.mt](http://www.mfsa.mt)                                            |
+| Mexico         | Comisión Nacional Bancaria y de Valores               | [www.cnbv.gob.mx](http://www.cnbv.gob.mx)                                    |
+| Netherlands    | Authority for the Financial Markets                   | [www.afm.nl](http://www.afm.nl/en)                                           |
+| New Zealand    | Financial Markets Authority                           | [www.fma.govt.nz](http://www.fma.govt.nz)                                    |
+| Poland         | Polish Financial Supervision Authority                | [www.knf.gov.pl](http://www.knf.gov.pl)                                      |
+| Portugal       | Comissão do Mercado de Valores Mobiliários            | [www.cmvm.pt](http://www.cmvm.pt/en)                                         |
+| South Africa   | Financial Sector Conduct Authority                    | [www.fsca.co.za](http://www.fsca.co.za)                                      |
+| Spain          | Comisión Nacional del Mercado de Valores              | [www.cnmv.es](http://www.cnmv.es/index.htm)                                  |
+| Switzerland    | Swiss Financial Market Supervisory Authority          | [www.finma.ch](http://www.finma.ch/en)                                       |
+| Turkey         | Capital Markets Board of Turkey                       | [www.cmb.gov.tr](http://www.cmb.gov.tr)                                      |
+| United Kingdom | Financial Services Authority                          | [www.fsa.gov.uk](http://www.fsa.gov.uk)                                      |
+| United States  | U.S. Commodity Futures Trading Commission             | [www.cftc.gov](http://www.cftc.gov)                                          |
+| United States  | U.S. Securities and Exchange Commission               | [www.sec.gov](http://www.sec.gov)                                            |
 
 ---
 
 # Appendix 3C: Securities Regulatory Bodies — Selected International Bodies
 
-| International Body | Website |
-| :--- | :--- |
-| Bank for International Settlements | [www.bis.org](http://www.bis.org/index.htm) |
-| European Securities and Markets Authority | [www.esma.europa.eu](http://www.esma.europa.eu) |
-| Financial Stability Board | [www.financialstabilityboard.org](http://www.financialstabilityboard.org) |
-| International Accounting Standards Board | [www.ifrs.org](http://www.ifrs.org) |
-| International Organization of Securities Commissions | [www.iosco.org](http://www.iosco.org) |
-| International Federation of Accountants | [www.ifac.org](http://www.ifac.org) |
-| International Finance Corporation | [www.ifc.org](http://www.ifc.org) |
-| International Monetary Fund | [www.imf.org](http://www.imf.org) |
-| North American Securities Administrators Association | [www.nasaa.org](http://www.nasaa.org) |
-| Organisation for Economic Co-operation and Development | [www.oecd.org](http://www.oecd.org) |
-| The World Bank | [www.worldbank.org](http://www.worldbank.org) |
-| World Federation of Exchanges | [www.world-exchanges.org](http://www.world-exchanges.org) |
+| International Body                                     | Website                                                                   |
+| :----------------------------------------------------- | :------------------------------------------------------------------------ |
+| Bank for International Settlements                     | [www.bis.org](http://www.bis.org/index.htm)                               |
+| European Securities and Markets Authority              | [www.esma.europa.eu](http://www.esma.europa.eu)                           |
+| Financial Stability Board                              | [www.financialstabilityboard.org](http://www.financialstabilityboard.org) |
+| International Accounting Standards Board               | [www.ifrs.org](http://www.ifrs.org)                                       |
+| International Organization of Securities Commissions   | [www.iosco.org](http://www.iosco.org)                                     |
+| International Federation of Accountants                | [www.ifac.org](http://www.ifac.org)                                       |
+| International Finance Corporation                      | [www.ifc.org](http://www.ifc.org)                                         |
+| International Monetary Fund                            | [www.imf.org](http://www.imf.org)                                         |
+| North American Securities Administrators Association   | [www.nasaa.org](http://www.nasaa.org)                                     |
+| Organisation for Economic Co-operation and Development | [www.oecd.org](http://www.oecd.org)                                       |
+| The World Bank                                         | [www.worldbank.org](http://www.worldbank.org)                             |
+| World Federation of Exchanges                          | [www.world-exchanges.org](http://www.world-exchanges.org)                 |
 
 ---
 
@@ -1751,6 +1846,7 @@ This checklist provides a framework for conducting due diligence investigations 
 A dishonest employee can wreak havoc in an enterprise. Just one bad hiring decision—one thief, drug abuser, or violent criminal—can significantly harm a company’s productivity, earnings, reputation, and morale. A comprehensive, legally permissible, fairly executed background investigation and preemployment screening program that is confirmatory and investigative in nature finds the most appropriate person for a particular job, and can go a long way toward preventing losses and mitigating the damage caused by a bad hiring decision. Losses due to employee theft and fraud, workplace violence, and illegal drug and alcohol use are staggering. Applicant screening and employee socialization are primary loss prevention strategies. The best way to reduce internal theft and exposure to workplace violence is to hire employees who possess integrity. The grim fact is that crime does occur in the workplace and employees are often involved as perpetrators or victims. A common saying in HR is, “It takes days, if not weeks, to hire someone, but it often takes years to get rid of the wrong candidate” A sound background investigation helps mitigate the risk of claims of negligent hiring, discrimination, and costly hiring mistakes, Background investigations are essential to an organization's brand, employee morale, safety and security, and asset protection.
 
 The terms background check, background investigation or screening, personal risk assessment (PRA), and preemployment screening are often used interchangeably. In reality, they are related but distinct disciplines. Generally, a background check is a confirmatory type of investigation. This would include verification of information provided by an applicant, such as education and job history. Background investigation or screening actively searches for information, performing such tasks as developing references or searching criminal records. The goal is to uncover information that an applicant might try to hide, such as criminal activity or previous terminations. Recognized security glossaries define background screening as an “inquiry into the history and behaviors of an individual under consideration for employment, credit, access to sensitive assets (such as national defense information), and other reasons.” A background investigation or screening can vary widely, from merely checking prior employment experience and educational credentials to checking civil, criminal, and medical histories. Preemployment screening is a process for determining whether a prospective employee is trustworthy or capable of performing the functions required for a particular job. It can include all of the above and may also include any of the following:
+
 - Drug or alcohol screening;
 - Psychological testing (personality and integrity testing);
 - General intelligence or aptitude testing; Medical screening and physical abilities tests; Polygraph tests; and Specific job-related tests. The legality of particular types of screening and the stages at which tests may be given are closely regulated in many places. Itis best to consult legal counsel for specific requirements. Background investigations and reference checks are employers’ primary means of obtaining useable information about applicants from sources other than the candidates themselves. A background investigation generally involves determining whether an applicant may be unqualified for a position due to a relevant record of criminal conviction, motor vehicle violations, job-specific poor credit history, or misrepresentations concerning education or work history. A reference check involves contacting applicants’ former employers, supervisors, coworkers, and educators to verify previous employment, education, and information about the candidate’s character, attendance, knowledge, skills, and abilities.
@@ -1798,6 +1894,7 @@ In the United States, the 2019 National Survey of Drug Use and Health found that
 ### 4.3 Benefits of Preemployment Screening
 
 The primary purpose of a background investigation is to prevent losses and mitigate damages. From a legal perspective, preemployment investigations protect organizations from negligent hiring and discrimination. A bad hiring decision imposes many costs. For example, ifa poorly chosen employee steals from the company, losses will include the value of the property or service stolen; the cost of the investigation; and the cost of recruiting, hiring, and training a replacement employee. Once the costs are totaled, it becomes clear that an assets protection program needs to gather and analyze as much relevantinformation about employment candidates as is lawful. The policy should be cost-effective, and the most expensive components of the process should be implemented last. Comprehensive preemployment screening programs arm managers with the critical information they need to make a successful hiring decision and should be conducted and evaluated prior to offering the potential employee a position. A preemployment screening program benefits businesses in several ways:
+
 - It discourages applicants with something to hide and encourages applicants to be honest during the interview process. Applicants know that the information they provide will be scrutinized.
 
 - It demonstrates that a company has exercised due diligence, which may provide legal protection in a lawsuit and may also encourage good candidates to apply. This is especially true since most professionals prefer to be associated with an organization where a safe and secure work environment exists.
@@ -1806,6 +1903,7 @@ The primary purpose of a background investigation is to prevent losses and mitig
 ### 4.4 Developing A Screening Program
 
 Developing an effective background investigation and preemployment screening program requires the participation of many individuals and departments of the organization. This investigative function serves the corporate organization by screening applicants in an effort to hire the best people. Upper management must first sanction and support the policy. Then, ideally, a team of security and human resources professionals should be tasked with developing and implementing the policy. Other functions of the organization, such as procurement or purchasing, may be instrumental in analyzing bid packages if the investigation is outsourced. Finally, because of the myriad judicial and compliance issues associated with collecting and using personal information, legal counsel must review and endorse the program. Screening programs vary from organization to organization depending on the following factors:
+
 - Access to information,
 - Nature of the position,
 
@@ -1830,18 +1928,21 @@ Some positions allow little margin for error. Ship captains, pilots, doctors, ch
 - Data collection: using a standardized, company-specific application and
 
 supplemental paperwork.
+
 - Background investigation and screening: following standardized, written policies and processes.
 - Data analysis and hiring decisions.
 
 #### 4.4.5 A Comprehensive Preemployment Screening Policy
 
 The following steps can help in developing a legal, effective, and fair preemployment screening policy: 1, Create clearly written, well-defined job descriptions for all positions. The job description describes the duties to be performed in a position and the personal qualifications required for the successful completion of those duties. In compiling the job description, one must limit personal qualifications to those that are clearly required for the position. A prerequisite that cannot be shown as necessary for the successful completion of the prescribed duties can open the door to a complaint to a regulatory authority or even a civil action. In the United States, employers with atleast 15 employees must comply with the provisions of the Americans with Disabilities Act in defining the necessary applicant qualifications. Because the requirements set out in the job description are the standards for preliminary screening of the applicant, an accurate, well-written job description is crucial to the success of the program. Assess the risk of each job classification in terms of reasonable (or foreseeable) potential for problems. The following questions may aid in that assessment:
+
 - Will the employee have access to financial instruments or sensitive information?
 - Will the employee have regular or unsupervised contact with the public? (Examples of jobs with significant public contact include meter reader, appliance repair person, carpet installer, and many others.)
 
 - Will the employee be given keys, alarm codes, and after-hours access to buildings?
 
 ° Does the position require the person to possess specific credentials, licenses, or professional standing?
+
 - Will the employee be required to handle a firearm?
 - Will the employee have access to dangerous materials, such as explosives or certain chemicals?
 - Will the employee be required to drive a motor vehicle? Based on the preceding risk assessment, determine the scope of preemployment screening for each job classification. ‘Ihis means establishing standardized and consistent screening measures for temporary, permanent, full-time, part-time, contract, and volunteer workers in various positions. The company screening policy must be administered scrupulously across the entire job classification to avoid charges of unfair or illegal hiring practices. Nevertheless, different levels of screening may be used for different positions if the level of screening is appropriate and is administered consistently and fairly. For example, a credit check may be warranted for an accountant but not a food service worker. If that is the policy, then all accountant applicants will be subjected to a credit check and all food service workers will not. The policy should also specify appropriate periods for each component of the program. For example, the policy might state that a seven-year felony check will be performed for all applicants in a particular job class. (In some cases, the standard may be mandated by law.) 4. Work with human resources and legal personnel to develop an hiring packet. This packet should include a thorough application and relevant authorization and release forms, Legal counsel can help ensure that the packet's contents comply with applicable laws. If, during the preemployment background investigation, inconsistencies in the candidate’s background are discovered, the human resource department should be advised that further investigation may be necessary. 5. Establish criteria for evaluating information. It is important to determine what will constitute disqualifying information and who will make the hiring determination. The criteria should specify, for example, what types of prior criminal behavior are significant enough to bar an applicant from employment for given positions. Many companies use a team of human resources, security, and legal personnel to review negative findings. The standard of proof necessary to refuse to hire the applicant is “good faith.” 6. Communicate the preemployment screening policy and its purpose to the workforce. The policy and explanations can be posted on bulletin boards, on intranet sites, in the employee handbook, or in whatever place best fits the culture of the organization. The policy explanations should emphasize the benefits of increased safety and security, reduced turnover, and increased operational effectiveness. 7. Periodically review policy compliance. This step ensures that the policy is followed consistently throughout the enterprise.
@@ -1853,6 +1954,7 @@ TOOLS A background investigation initially focuses on information provided by th
 #### 4.5.1 Resume
 
 A résumé provides the first indication of whether an applicant is qualified for a position. As such, it is an important element in prescreening applicants. Ifthe résumé does not show the necessary experience or education, the applicant should be removed from the hiring pool. Arésumeé is a promotional device, and it is difficult to hold an applicant strictly accountable for the information it contains. Therefore, it is important for a company not to accept a résumé in lieu of an employment application or complete work history. A résumé can be an important source of additional information about an applicant and should always be reviewed as part of the preemployment screening process. However, the employer’s own application form must be the main source for data gathering and should be reviewed prior to conducting the pre-hire investigation. Employment applications are the basic starting point for preemployment screening. The body of the job application consists of questions used to elicit information that will help the employer determine whether the applicant meets the minimum criteria for the position being filled. In drafting this section, the security manager can be instrumental in helping determine that the application contains sufficient information to chart an applicant's history and that only lawful questions are included. In the United States, applications are considered tests in the same sense as any other tool used to determine suitability. As a result, applications must be shown to have no adverse impact on applicants who are protected by federal employment discrimination laws. Legal counsel can help in making that determination. See Appendix 4A for a sample application. Ideally, applications should address the following items:
+
 - Material omissions and misstatements. An application should state that material (important or consequential) omissions and misstatements are grounds to terminate the hiring process whenever discovered.
 
 - Applicant’s correct and full name. The application should also request any other
@@ -1868,7 +1970,6 @@ address (and permanent or legal address if different from the current one), but 
 ~ Name and address of school;
 
 - Course or program pursued;
-
   - Dates of attendance;
   - Final status (e.g., graduated, degree awarded, withdrawn, etc.);
   - Specific degree or certificate awarded, if any;
@@ -1903,6 +2004,7 @@ U.S. military service. Outside the United States, one should first check with le
 - Rank or rating at time of discharge
 
 The Privacy Act and related regulations have imposed restrictions on what the military services may disclose about an applicant's unfavorable military service without a subpoena, but an applicant may voluntarily disclose such information. Therefore, an applicant should be asked to disclose an honorable or dishonorable discharge on the application form. The applicant can also be asked to produce the discharge document to confirm the character of separation.
+
 - Criminal history. A criminal records check is the most common preemployment screening method. Because laws vary from jurisdiction to jurisdiction, it makes sense to contact legal counsel before formulating the application’s questions on criminal history. Ideally, criminal information should be requested in the broadest possible context such as requesting information on convictions, guilty pleas, and nolo contendere for a certain length of time (i.e., seven years or 10 years). The application should also state that a criminal conviction is not automatic grounds for rejection. The United States has seen a significant trend to protect the rights of convicted criminals called “Ban-the-Box.’ Federal contractors, numerous states, and municipal governments prohibit asking applicants about their criminal history on the employment application, until after a conditional job offer has been made. The U.S. Equal Employment Opportunity Commission (EEOC) has prosecuted employers who have a blanket ban on hiring people with felony convictions, because this ban violates an EEOC requirement for “individualized assessment” of the circumstances of any past convictions. Legal counsel should be involved in formulating policies and procedures for criminal history checks.
 
 - Release. The application form should indicate that the applicant consents to
@@ -1912,12 +2014,14 @@ preemployment screening and that the release is valid for future screening for r
 ### 4.6 Early Application Review And Initial Interview
 
 The initial application review is an important tool in the preemployment screening process. Applicant falsifications generally fall into two categories:
+
 - Willful omissions of material facts, and
 - Misrepresentations of material facts. An applicant may attempt to omit information that could be a hindrance to employment. In fact, the applicant may have been falsifying the same information for years and become convinced that a prospective employer will not check it. All too often, the applicant is correct.
 
 #### 4.6.1 Red Flags In Early Application Review
 
 Some of the most common misrepresentations or omissions found in employment applications are listed below:
+
 - Unsigned forms.
 
 - Incomplete addresses or post office box numbers. Some applicants list the names
@@ -1965,6 +2069,7 @@ After some countries and some U.S. states began legalizing marijuana—first for
 The main goal of prehire selection tools is to help an employer make informed hiring decisions. Personality and Integrity Tests Personality tests provide a psychological measure of an individual’s basic characteristics, such as attitudes, emotional adjustment, motivations, interpersonal skills, and interests. This type of testing is particularly helpful in determining an applicant’s compatibility with a position. For example, an individual who tests as shy or introverted might not be a good fit for a sales position. Integrity or honesty testing measures an applicant's propensity toward undesirable behaviors, such as lying, stealing, and drug or alcohol abuse. ‘This type of testing is generally broken into two categories. Overt or direct testing asks explicit questions about an applicant’s past dishonest acts or behaviors, while personalityoriented or indirect tests examine concepts such as dependability and respect for authority. Another type of test is biographical questionnaires, which ask open-ended questions, These questions elicit self-disclosures from the candidate that help the create follow-up questions. For example, “How many times have you hit a co-worker out of anger in the last 24 months?” These types of questions are objective in nature. The tests are usually written or conducted through specialized computer software. It is imperative that the test be administered, scored, and interpreted correctly. The results of psychological testing should be used as only one of the factors in making a hiring decision. As with other types of screening, improper use of these tests could have negative consequences for the organization. Before beginning a testing program, it is prudent to seek legal counsel. Intelligence and Aptitude Tests Intelligence tests are sometimes part of preemployment assessments because intelligence is a good predictor of job performance. Intelligence tests may consist of logic problems, word problems, pattern identification, and other kinds of questions. Aptitude tests measure cognitive ability in a particular area, such as memory recall, vocabulary, or numerical perception. Intelligence and aptitude tests can be useful if administered and scored correctly, but they are not infallible and should be used as only one factor in making a hiring decision. The use of these tests should be discussed with legal counsel in advance. Medical Screening and Physical Ability Tests Medical screening is a sensitive area because of the personal nature of the tests and the legal risks they create. In general, medical screening may be performed if it specifically relates to a requirement of the job. If a medical exam discloses an illness or disability that is not directly related to the position for which the individual is applying, the organization may not refuse to employ that person. Physical ability tests measure specific characteristics, such as strength, endurance, or capacity for movement. Such tests tell an employer whether applicants would be able to perform the essential functions of a position without risking injury to themselves or others. This type of testing and the program directing it must be reviewed and endorsed by legal counsel before implementation because of the potential for discrimination or disparate impact claims. Therefore, medical record information review is not found in a typical preemployment background investigation. Also, in the United States, this type of testing could be considered a medical exam and in some states can only be administered after an offer of employment is made. Polygraph Tests In the United States, before the passage of the Employee Polygraph Protection Act of 1988, which prohibits the use of a preemployment polygraph examination, the polygraph was used for verifying background information on applicants. The polygraph is still used in the United States by some government agencies as well as some law enforcement agencies on the local, state, and federal levels. The validity of polygraph testing and results has been called into question particularly when used as evidence during court proceedings.
 
 An employer may wish to test an applicant on skills and knowledge that will be used in the execution of a job. For example, a writing test may be appropriate for someone who will be writing reports, or a subject matter expert may undergo a knowledge assessment. Once the decision has been made to conduct preemployment screening and the policy is in place, one must determine how the screening will be accomplished. The three most common resources are these:
+
 - Security or assets protection department,
 - Human resources department, and
 
@@ -1993,6 +2098,7 @@ The number of firms offering preemployment screening services has grown phenomen
 - Does the firm provide information to the client (the security manager’s company) and
 
 the subjects in compliance with applicable laws (e.g., FCRA in the United States and PIPEDA in Canada)?
+
 - Can the firm provide the client with regulatory guidance?
 - Is the information supplied the most current and accurate available?
 - Does the firm provide all the screening services needed by the client, or will the client need to use more than one vendor?
@@ -2014,6 +2120,7 @@ for similar services of competing firms?
 - Does the firm have adequate procedures to ensure the security and confidentiality of
 
 the information?
+
 - Has the firm provided similar services to organizations in the client’s industry?
 
 Will the firm provide customer references that the client can contact?
@@ -2023,6 +2130,7 @@ Will the firm provide customer references that the client can contact?
 - Does the firm provide its clients with resource materials or updates relating to legal
 
 and practical issues in preemployment screening?
+
 - Will the firm provide a sample report?
 
 #### 4.8.4 Data Analysis
@@ -2035,106 +2143,116 @@ When all the screening results are returned, the process of analysis begins. In 
 
 Privacy legislation will significantly affect the future of background investigations and preemployment screening. Many countries are wrestling with the issues of data collection and storage and the secure transfer of information while balancing privacy and human rights, Technological advances are streamlining the verification and investigation process and improving the economics of conducting research worldwide. Many databases can be accessed online, enabling almost instantaneous turnaround time. However, because these databases can have severe limitations and may contain unconfirmed information, the information they provide should be treated as supplemental. Technology is also improving how information is gathered and disseminated throughout the enterprise. These technological improvements can make a time-consuming and sometimes tedious process simpler and help ensure that employment information is collected, protected, and shared in an efficient and secure manner. Preemployment screening will continue to be an essential component of any good security program. Security practitioners focus much attention on preventing employee theft, workplace violence, and other security incidents. Preemployment investigations/screening may help prevent some of the aforementioned incidents from occurring in the first place.
 
-
 ---
 
 # Appendix 4A: Sample Application Form
 
-*Please Print Clearly*
+_Please Print Clearly_
 
-| Personal Information | |
-| :--- | :--- |
-| **Last Name:** ________________________ | **First Name:** ________________________ |
-| **Middle Name:** ______________________ | **Any Name Changes?** _________________ |
-| **Date Available:** __________________ | **Position Applied For:** _______________ |
-| **Present Address:** __________________________________________________ |
-| **Street, City, State, Zip:** ___________________________________________ |
-| **How Long at Present Address?** ________ | **Phone Number:** (___) _______________ |
-| **Email Address:** ____________________________________________________ |
-| **Eligible to work in USA?** [ ] Yes  [ ] No | **Are you 18 or older?** [ ] Yes  [ ] No |
-| **Are you over 21?** [ ] Yes  [ ] No | **Worked for us before?** [ ] Yes  [ ] No |
-| **How did you hear about us?** ________________________________________ |
+| Personal Information                                                         |                                              |
+| :--------------------------------------------------------------------------- | :------------------------------------------- |
+| **Last Name:** **********\_\_\_\_**********                                  | **First Name:** **********\_\_\_\_********** |
+| **Middle Name:** **********\_\_**********                                    | **Any Name Changes?** ********\_********     |
+| **Date Available:** ********\_\_********                                     | **Position Applied For:** ******\_\_\_****** |
+| **Present Address:** ************************\_\_************************    |
+| **Street, City, State, Zip:** ********************\_\_\_******************** |
+| **How Long at Present Address?** **\_\_\_\_**                                | **Phone Number:** (**\_) ******\_********    |
+| **Email Address:** ************************\_\_\_\_************************  |
+| **Eligible to work in USA?** [ ] Yes [ ] No                                  | **Are you 18 or older?** [ ] Yes [ ] No      |
+| **Are you over 21?** [ ] Yes [ ] No                                          | **Worked for us before?** [ ] Yes [ ] No     |
+| **How did you hear about us?** ******************\_\_\_\_******************  |
 
 #### Additional Qualifications
-*Are there any experiences, skills, or qualifications which may be of special benefit in the position for which you are applying?*
-______________________________________________________________________
-______________________________________________________________________
 
-* **Desired Starting Pay:** $ _________ / hour
-* **Preferred Contact Method:** [ ] E-mail  [ ] Home Phone  [ ] Cell Phone  [ ] Message Phone
+_Are there any experiences, skills, or qualifications which may be of special benefit in the position for which you are applying?_
+
+---
+
+---
+
+- **Desired Starting Pay:** $ ****\_**** / hour
+- **Preferred Contact Method:** [ ] E-mail [ ] Home Phone [ ] Cell Phone [ ] Message Phone
 
 #### Education
-* **High School Name:** _______________________ **City, State:** _________________
-  * **Years Completed:** ________ **Did you graduate?** [ ] Yes  [ ] No
-* **College/Vocational:** _____________________ **City, State:** _________________
-  * **Years Completed:** ________ **Did you graduate?** [ ] Yes  [ ] No
+
+- **High School Name:** **********\_\_\_********** **City, State:** ********\_********
+  - **Years Completed:** **\_\_\_\_** **Did you graduate?** [ ] Yes [ ] No
+- **College/Vocational:** **********\_********** **City, State:** ********\_********
+  - **Years Completed:** **\_\_\_\_** **Did you graduate?** [ ] Yes [ ] No
 
 #### Military Service Record
-* **Were you in the U.S. Armed Forces?** [ ] Yes  [ ] No
-* **If yes, what branch?** _____________________ **Dates of Service:** ______________
-* **DD-214 Available?** [ ] Yes  [ ] No
-* **Relevant Military Training:** _________________________________________
+
+- **Were you in the U.S. Armed Forces?** [ ] Yes [ ] No
+- **If yes, what branch?** **********\_********** **Dates of Service:** ******\_\_******
+- **DD-214 Available?** [ ] Yes [ ] No
+- **Relevant Military Training:** ********************\_********************
 
 > [!NOTE]
 > **Job Requirement Warning:**
 > Security work involves: walking, standing, lifting, climbing ladders/stairs, and prolonged moderate physical activity; night and weekend work in adverse weather conditions; keen attention to detail; and quick, effective response to emergencies.
-> *Please state any reason why you may not be able to meet these job requirements:*
-> ______________________________________________________________________
+> _Please state any reason why you may not be able to meet these job requirements:_
+>
+> ---
 
 #### Previous Employment
-*Please list all positions you have held for the last 10 years, starting with the most recent. Include all temporary jobs, contract work, and/or unpaid volunteer work. Explain all gaps in employment.*
 
-1. **Employer:** _______________________ **Phone:** ___________________
-   * **Address:** ____________________________________________________
-   * **Dates:** From (mm/dd/yy) ______________ To (mm/dd/yy) ______________
-   * **Position:** _____________________ **Reason for Leaving:** ______________
-   * **May we contact this employer?** [ ] Yes  [ ] No
-2. **Employer:** _______________________ **Phone:** ___________________
-   * **Address:** ____________________________________________________
-   * **Dates:** From (mm/dd/yy) ______________ To (mm/dd/yy) ______________
-   * **Position:** _____________________ **Reason for Leaving:** ______________
-   * **May we contact this employer?** [ ] Yes  [ ] No
+_Please list all positions you have held for the last 10 years, starting with the most recent. Include all temporary jobs, contract work, and/or unpaid volunteer work. Explain all gaps in employment._
+
+1. **Employer:** **********\_\_\_********** **Phone:** ********\_\_\_********
+   - **Address:** ************************\_\_\_\_************************
+   - **Dates:** From (mm/dd/yy) ******\_\_****** To (mm/dd/yy) ******\_\_******
+   - **Position:** **********\_********** **Reason for Leaving:** ******\_\_******
+   - **May we contact this employer?** [ ] Yes [ ] No
+2. **Employer:** **********\_\_\_********** **Phone:** ********\_\_\_********
+   - **Address:** ************************\_\_\_\_************************
+   - **Dates:** From (mm/dd/yy) ******\_\_****** To (mm/dd/yy) ******\_\_******
+   - **Position:** **********\_********** **Reason for Leaving:** ******\_\_******
+   - **May we contact this employer?** [ ] Yes [ ] No
 
 #### Personal References
-*Please list three personal references (NOT former employers or relatives)*
+
+_Please list three personal references (NOT former employers or relatives)_
 
 | Name and Occupation | Email Address | Years Known | Phone Number |
-| :--- | :--- | :--- | :--- |
-| 1. | | | |
-| 2. | | | |
-| 3. | | | |
+| :------------------ | :------------ | :---------- | :----------- |
+| 1.                  |               |             |              |
+| 2.                  |               |             |              |
+| 3.                  |               |             |              |
 
 #### Consent for Applicant Preemployment Backgrounding Process
+
 The Company engages in a rigorous, comprehensive background check for all applicants. This can include preemployment testing on all factors required to qualify for security guard licensure and necessary to perform the duties of a security officer, including preemployment criminal history searches, consumer credit checks, drug testing, DMV records, social security number verification, reference checks, and physical fitness, all in accordance with the laws and our customer contracts.
 
 I acknowledge this process, give my consent to the company to fully investigate my background, and freely provide the information to conduct these preemployment background checks.
 
-**Printed Name:** ________________________
-**Signature:** ___________________________
-**Date:** ______________________________
+**Printed Name:** **********\_\_\_\_**********
+**Signature:** ************\_\_\_************
+**Date:** **************\_\_**************
 
 > [!NOTE]
 > **Criminal History Disclosure:**
 > Criminal history information is only asked for and collected as required by the department of licensing to determine eligibility for licensure as a security guard. This information will not be used against you in the hiring process, unless you are deemed ineligible for licensure because of it.
 >
-> *Do you currently have any open criminal cases or have you ever been convicted of any crime? (This includes any crime to which you have pled guilty to or been found guilty of committing, even if given a deferred or suspended sentence with court-ordered obligations that were met).*
-> **[ ] Yes   [ ] No**
+> _Do you currently have any open criminal cases or have you ever been convicted of any crime? (This includes any crime to which you have pled guilty to or been found guilty of committing, even if given a deferred or suspended sentence with court-ordered obligations that were met)._
+> **[ ] Yes [ ] No**
 >
-> *If yes, please list the details and provide official court documents verifying all aspects of the offense, including court of jurisdiction, crime offense code, crime classification, plea or verdict, sentence, and final disposition.*
+> _If yes, please list the details and provide official court documents verifying all aspects of the offense, including court of jurisdiction, crime offense code, crime classification, plea or verdict, sentence, and final disposition._
 > **Explanation:**
-> ______________________________________________________________________
+>
+> ---
 
-**Printed Name:** ________________________
-**Signature:** ___________________________
-**Date:** ______________________________
+**Printed Name:** **********\_\_\_\_**********
+**Signature:** ************\_\_\_************
+**Date:** **************\_\_**************
 
-* **Name on Driver's License:** __________________________________________
-* **Driver's License Number:** ___________________ **State:** ___ **Exp Date:** _______
-* **Residence Address on License:** ______________________________________
-* **Social Security Number:** ______-____-______ **Email:** ___________________
-* **Date of Birth:** ____/____/____
+- **Name on Driver's License:** ********************\_\_********************
+- **Driver's License Number:** ********\_\_\_******** **State:** **\_ **Exp Date:** **\_****
+- **Residence Address on License:** ******************\_\_******************
+- **Social Security Number:** **\_\_**-\_**\_-\_\_\_\_** **Email:** ********\_\_\_********
+- **Date of Birth:** \_**\_/\_\_**/\_\_\_\_
 
 #### Application Agreement
+
 I certify that the information contained in this application is correct and accurate to the best of my knowledge. I understand that falsification of this information is considered grounds for dismissal.
 
 I agree that if I am employed by the Company now or at any time in the future, my employment is at will, which means that my employment may be terminated by said Company or me at any time with or without cause or notice and without liability to me for wages or salary, except any such wages or salary earned prior to the date of my termination.
@@ -2145,11 +2263,11 @@ I authorize The Company and its representatives to contact the persons or compan
 
 I further authorize a background investigation to be made by The Company and its selected agents to solicit information about my background including but not limited to, information about my employment, education, driving record, criminal record, as required to determine licensure eligibility, and general public records history.
 
-**Signature:** ___________________________
-**Date:** ______________________________
+**Signature:** ************\_\_\_************
+**Date:** **************\_\_**************
 
-**Application Reviewer Name/Sig:** ________________________
-**Date:** ______________________________
+**Application Reviewer Name/Sig:** **********\_\_\_\_**********
+**Date:** **************\_\_**************
 
 ---
 
@@ -2157,33 +2275,35 @@ I further authorize a background investigation to be made by The Company and its
 
 The individual below has listed you as a prior employer and has authorized our security company to obtain information regarding prior work history. Please fill out the following information and return it via fax, mail, or email as soon as possible. Your information will be strictly confidential. Thank you.
 
-* **Employee Name:** ________________________
-* **Name of Former Employer:** ________________________
-* **Was employed by your company?** [ ] Yes  [ ] No
-* **Dates of Employment:** From ____/____/____ To ____/____/____
-* **Reason for Separation:** ________________________
-* **Eligible for Rehire?** [ ] Yes  [ ] No
+- **Employee Name:** **********\_\_\_\_**********
+- **Name of Former Employer:** **********\_\_\_\_**********
+- **Was employed by your company?** [ ] Yes [ ] No
+- **Dates of Employment:** From \_**\_/\_\_**/\_**\_ To \_\_**/\_**\_/\_\_**
+- **Reason for Separation:** **********\_\_\_\_**********
+- **Eligible for Rehire?** [ ] Yes [ ] No
 
 #### Performance Evaluation
 
 Please rate the employee on the following attributes:
 
-| Attribute | Good | Fair | Poor | Comments |
-| :--- | :---: | :---: | :---: | :--- |
-| **Work Performance** | [ ] | [ ] | [ ] | |
-| **Attendance** | [ ] | [ ] | [ ] | |
-| **Punctuality** | [ ] | [ ] | [ ] | |
-| **Professionalism** | [ ] | [ ] | [ ] | |
-| **Cooperation with Others** | [ ] | [ ] | [ ] | |
-| **Honesty** | [ ] | [ ] | [ ] | |
-| **Attitude** | [ ] | [ ] | [ ] | |
+| Attribute                   | Good | Fair | Poor | Comments |
+| :-------------------------- | :--: | :--: | :--: | :------- |
+| **Work Performance**        | [ ]  | [ ]  | [ ]  |          |
+| **Attendance**              | [ ]  | [ ]  | [ ]  |          |
+| **Punctuality**             | [ ]  | [ ]  | [ ]  |          |
+| **Professionalism**         | [ ]  | [ ]  | [ ]  |          |
+| **Cooperation with Others** | [ ]  | [ ]  | [ ]  |          |
+| **Honesty**                 | [ ]  | [ ]  | [ ]  |          |
+| **Attitude**                | [ ]  | [ ]  | [ ]  |          |
 
 **Additional Comments:**
-______________________________________________________________________
-______________________________________________________________________
 
-**Completed By (Name/Title - Optional):** ________________________
-**Date:** ____/____/____
+---
+
+---
+
+**Completed By (Name/Title - Optional):** **********\_\_\_\_**********
+**Date:** \_**\_/\_\_**/\_\_\_\_
 
 ---
 
@@ -2202,6 +2322,7 @@ pertains to the matter under investigation. All persons in an investigation shou
 - Confrontational interview: confrontational questioning of a person suspected of
 
 committing an offense or serious breach of corporate policy. This process should be reserved for individuals whose involvement in the issue under investigation is reasonably certain. This discussion of interviews uses the following definitions of subject and witness: Subject: a person who is believed to have committed an offense based on accumulated evidence, proximity to the incident, motive, access to restricted areas, witness statements, etc. While this person is commonly referred to as a suspect, investigators prefer the term subject. Witness: any person, other than a subject, with information concerning an incident. The witness may not have directly observed the incident but may have facts that pertain to the matter under investigation, or he or she may be a one-time informant | who is eager to provide information based on moral grounds. Caution needs to be | taken with anonymous informants, because they are the most likely to provide false or biased information. The safety and security of the informant is a priority. In the most basic sense, the purpose of an interview is to aid an investigation into the truth, Questioning techniques should use objective, factual questions focused on obtaining evidence. However, the process has a variety of objectives, which are defined by the circumstances or the nature of the matter under investigation. John E. Reid and Associates, Inc., a firm that teaches interviewing and interrogation techniques, refers to at least four objectives in an interview):
+
 - To obtain valuable facts,
 - To eliminate the innocent,
 - To identify the guilty, and
@@ -2212,27 +2333,29 @@ There are significant differences between the general interview and the confront
 
 ### 5.2 Psychosocial Aspects
 
-An interview is a process of human interaction between the interviewer and the interviewee. Each party brings emotions, experiences, and desires to the interview. To achieve the goal of the interview—truthful information—the interviewer must recognize the emotions and feelings of the interviewee. Moreover, the interviewer must be able to deal with those emotions and feelings with dignity and sensitivity. What follows is alook at the psychosocial needs, actions, and reactions of the interviewer and the interviewee. *Varies by country.
+An interview is a process of human interaction between the interviewer and the interviewee. Each party brings emotions, experiences, and desires to the interview. To achieve the goal of the interview—truthful information—the interviewer must recognize the emotions and feelings of the interviewee. Moreover, the interviewer must be able to deal with those emotions and feelings with dignity and sensitivity. What follows is alook at the psychosocial needs, actions, and reactions of the interviewer and the interviewee. \*Varies by country.
 **Figure 5.1: Differences between General and Confrontational Interviews**
 
-| Characteristics | General (Informational / Administrative) Interview | Confrontational (Investigative) Interview / Interrogation |
-| :--- | :--- | :--- |
-| **Purpose** | To gather facts, eliminate the innocent, and obtain information. | To obtain a truthful admission or confession from a suspect. |
-| **Tone** | Nonaccusatory, conversational, and free-flowing. | Accusatory, highly structured, and persuasive. |
-| **Target Audience** | Victims, witnesses, complainants, and potential subjects. | Suspects/Subjects whose involvement is reasonably certain. |
-| **Environment** | Flexible, typically informal and comfortable. | Controlled environment (to minimize distractions and psychological barriers). |
-| **Flow of Control** | Driven by the interviewee's narrative; open-ended questions. | Controlled strictly by the interviewer; focused and directive. |
-| **Pre-requisites** | Can be conducted at any stage, often early. | Conducted after sufficient evidence has been gathered. |
+| Characteristics     | General (Informational / Administrative) Interview               | Confrontational (Investigative) Interview / Interrogation                     |
+| :------------------ | :--------------------------------------------------------------- | :---------------------------------------------------------------------------- |
+| **Purpose**         | To gather facts, eliminate the innocent, and obtain information. | To obtain a truthful admission or confession from a suspect.                  |
+| **Tone**            | Nonaccusatory, conversational, and free-flowing.                 | Accusatory, highly structured, and persuasive.                                |
+| **Target Audience** | Victims, witnesses, complainants, and potential subjects.        | Suspects/Subjects whose involvement is reasonably certain.                    |
+| **Environment**     | Flexible, typically informal and comfortable.                    | Controlled environment (to minimize distractions and psychological barriers). |
+| **Flow of Control** | Driven by the interviewee's narrative; open-ended questions.     | Controlled strictly by the interviewer; focused and directive.                |
+| **Pre-requisites**  | Can be conducted at any stage, often early.                      | Conducted after sufficient evidence has been gathered.                        |
 
 #### 5.2.1 Behavioral Science
 
 The studies and theories of Abraham H. Maslow are instructive in this topic. Maslow names the following human needs (Maslow 1987): Physiological or survival needs, such as food, drink, and health;
+
 - Safety or physical and emotional needs, such as clothing, shelter, and protection against attack;
 - Affection needs, such as belonging to a family or other small group;
 - Esteem needs, such as self-respect, accomplishment, and achievement recognized and appreciated by someone else; and
 - Self-fulfillment needs, that is, being able to use one’s potential to the maximum in working with and for one’s fellow beings. Maslow theorizes that once the primary needs are satisfied, they are no longer driving needs and are replaced by needs higher in the order. Thus, when primary needs are satisfied, higher-order needs are predominant. These needs exist in every part of a person’s life, including the interview. If the interviewer understands the needs of the interviewee and can relate to them, they can more effectively communicate with the interviewee. A successful interviewer fulfills as many of the interviewee’s needs as possible. All behavior is motivated by and directed to the attainment of some goal. The driving force is to satisfy a need. The direction of behavior is always toward a perceived reward or away from perceived punishment, Explanations of why people steal have historically referred to the theft triangle, which consists of need or want (desire), rationalization (motive), and opportunity. The person must have a need or desire for the asset, be able to rationalize a basis for taking the asset and have access to the asset (opportunity). For example, a bookkeeper who works excessive hours and seldom takes a vacation may be engaged in a dishonest activity and not want others to gain access to records. Regarding the rationalization side of the triangle, need and want are not necessarily synonymous. A person might need a procedure to address a threatening illness but want a new, large-screen television. The person might rationalize that the pride that comes with owning the television exceeds the worry about dying. Another factor in the rationalization might be the perception of a low probability of theft detection or of minimal punishment when detected. A major factor in obtaining a confession is the interviewer’s ability to help the subject form a socially acceptable rationalization for having committed the offense. The interviewer must appear professional, display confidence, and interact well with others. When possible, the interview should be held in a venue where the subject will feel comfortable and secure. The interviewer’s demeanor sets the tone of the interview. A negative attitude quickly translates into negative results. By contrast, making positive comments on the investigation and the interview indicates professionalism and an expectation of a successful interview. Interviewers must know their own skills and emotions and recognize the personal characteristics of the interviewee while eliciting information from that person. Interviewers must develop the skills to evaluate the truthfulness of the information furnished and simultaneously to formulate additional lines of questioning. By using the floatingpoint strategy of continuously reevaluating a hypothesis as information is obtained, an investigator can adjust questions accordingly. Inexperienced investigators often neglect the skill of listening when interviewing suspects. Active listening includes attentiveness, concentration, acceptance, detachment, and patience. Interviewers must be able to assess facts previously established in the light of information provided by the interviewee. Enlisting the cooperation of the interviewee is the key to a successful interview. The most important factor of a successful interview is the ability of the interviewer to establish a favorablerapportwith the interviewee. The successful interviewer recognizes the personality characteristics of the interviewee that can be used to garner the required cooperation. The successful interviewer will make attempts to understand the interviewee’s behavior and to satisfy the needs underlying the behavior. The ability to persevere and listen attentively is critical. The interviewer must resist the temptation to mentally formulate the next logical question while the interviewee responds to the previous question. An inexperienced investigative interviewer is often impatient. Attentive or active listening is an acquired ability that takes patience and extensive practice. A good interviewer does not assume an adversarial role but should remain an objective and neutral fact finder. Untruthful interviewees often experience a high degree of stress during interviews. They may exhibit their anxiety through a variety of verbal and nonverbal behaviors. Interviewers must be able to evaluate those behaviors to assess the truthfulness of subjects’ responses.
 
 An investigator should take a number of actions in preparation for an interview. ‘The most critical of these preliminary actions is to learn the case information thoroughly. The investigator normally has enough advance notice to take the appropriate measures. However, sometimes the need to investigate an incident immediately makes it impossible to complete all the steps. The investigator should become familiar with all available historical information on the matter at hand before conducting an interview. Under ideal conditions, the investigator has time to research the matter in detail. Sometimes, however, it is only possible to take a few minutes to mentally review known facts. The investigator must use any available time to prepare for the interview. Optimally, before the interview, the interviewer knows the following in detail:
+
 - Who will be interviewed?
 - What is the interview about?
 - What are the conditions under which the interview will be conducted?
@@ -2260,6 +2383,7 @@ The interview room should be free of unnecessary, distracting objects. Thus, the
 - Time scheduled for interviews in other investigations,
 
 ° Availability of the interviewee,
+
 - Availability of the interviewer, and Anticipated length of the interview.
 
 In an incident investigation, the interviews should be conducted as soon as possible after the event to capture witnesses’ recollections while they are fresh. Important details and nuances are quickly forgotten. In a routine investigation, the considerate interviewer does not schedule an interview at an inconvenient time for the interviewee. In a business situation, the interview should be conducted during normal business hours when the interviewee is expected to be working. However, various circumstances may require different scheduling. The length of time required for a general interview usually does not pose a problem. In interviewing a witness, the interviewer gathers the information and prepares a statement fairly quickly. Informational interviews of possible perpetrators, however, can take several hours. Nonetheless, these longer interviews must be completed in a reasonable length of time to preclude allegations of duress.
@@ -2269,6 +2393,7 @@ In an incident investigation, the interviews should be conducted as soon as poss
 - Persons who are not likely to be readily available later, such as an employee scheduled
 
 to be transferred to a distant location.
+
 - Persons believed to have the most pertinent information concerning the matter under investigation.
 - Persons who are likely to be hostile witnesses. ‘The offender or offending group is interviewed last. The theory of the case helps in identifying the person or persons, Information gathered from persons not suspected of wrongdoing may assist in confirming or refuting a subject’s guilt—before that subject is questioned.
 
@@ -2283,6 +2408,7 @@ to be transferred to a distant location.
 An audio or video recording of the interview is a valuable tool for confirming statements made by everyone present. It helps confirm the voluntary participation of the interviewee and preclude charges of coercion. With modern camera equipment, the recording process can be unobtrusive and is ideal for retaining information because recording is most reliable for verbatim documentation of evidence from an interview. The equipment should be tested before any interview. Because the recording may eventually reach a judicial proceeding, the audio must be reasonably clear, and any video recordings must contain images that distinguish the interview participants. In both video and audio recordings, the participants’ voices must be understandable. A video recording device also serves as a neutral thirdparty to the interview.
 
 To be useful in the case and to avoid damaging the case, the recording must be made in conformance with the law and under circumstances that a court would consider fair, If the case requires audio recording, it is best if the interviewee consents and the recording is conducted openly. It may help to explain to the interviewee that the recording protects all participants. When an interview needs to be recorded without the interviewee’s knowledge, prior consultation with legal counsel is critical. It is poor practice to record the interview and assume that no one will know. If the interviewee does not consent and discreet recording is not feasible, the interviewer must take notes. An interview recording should capture at least the following:
+
 - Consent of the interviewee at the beginning;
 - Date, time, and place of the interview;
 - Complete identification of the interviewee;
@@ -2326,6 +2452,7 @@ The elderly may digress during interviews or relish the interviewer's company. A
 #### 5.6.1 Opening Procedures
 
 The following are key steps to take at the beginning of an interview:
+
 - Identify the interviewee. The person who is to be interviewed is identified by name, home address, date and place of birth, and, if applicable, job title, and place of employment.
 - Identify the interviewer. The interviewee is told the interviewer’s name, job title, and place of employment, as well as the name and function of others present.
 - Clarify the interview topic. The topic of the interview must be made clear to the interviewee. This is best accomplished by asking for the interviewee’s understanding of the reason for the interview. The interviewee’s reply, using particular terms or nuances, may give insight into the matter under investigation. Any misconceptions on the part of the interviewee as to the purpose of the interview must be clarified. Details of the investigation are not necessary at this point. Further explanation can be given as the interview progresses.
@@ -2354,12 +2481,14 @@ the truth. Each behavior characteristic displayed must be considered in the cont
 - Behavioral indications should be evaluated based on when they occur (timing) and
 
 how often they occur (consistency). To be reliable indicators of truth or deception, behavioral changes should occur immediately in response to a question or simultaneously with the subject’s answer.
+
 - Evaluation of behavior symptoms should consider the subject’s intelligence, sense of social responsibility, and maturity. As a general rule, the more reliable behaviors are displayed by persons who are socially responsible—who have more at stake in the outcome of a case (such as their family, job, or reputation)—or are more mature. Caution must be used in evaluating the behavior of persons who are emotionally or
 - Some behavioral characteristics that suggest deception may also be displayed by a truthful subject who feels fear, anxiety, anger, or mistrust. Verbal Responses Generally, a truthful person answers questions in a direct, straightforward, spontaneous, and sincere manner, particularly if the question is simple and unambiguous. Conversely, a deceptive person may delay response or repeat the question to gain time to contrive a false answer. For example, the subject may say, “Let me see now,’ trying to remember previous statements or camouflage reactions with pretended, serious thought. The truthful person does not have to ponder over an answer and an effective interviewer will use silence to enhance the interview. Truthful subjects have only one answer for any given question, and it will be substantially the same answer regardless of any repetition of the inquiry. In contrast, if a deceptive subject is asked whether he stole money from a safe, he may give an evasive answer, such as “I was home all day” or “I don’t even know the combination” Some deceptive subjects may answer questions too quickly, even before the question is completed.
 
 A lying subject will sometimes speak in an irrational manner or use fragmented or incomplete sentences, such as “It’s important that...” “If you think...” or “I hope that you...” A deceiver may also develop a memory failure when confronted with a probing question and may respond with a half-lie, such as “I don’t remember,” “As far as I know,’ or “I don’t recall.” They may try to bolster an answer with such phrases as “To be perfectly honest with you...” or “To be quite frank...” More sophisticated liars usually plan ahead and give their answers a protective verbal coating, such as “At this point in time,” “IfI recall correctly...” “It is my understanding...” “Ifmy memory serves me right...” or “I may be mistaken, but...” By these tactics, deceptive subjects seek to establish an escape hatch rather than risk an outright lie. Some lying subjects may exhibit an unreasonably good or selective memory. The end result, however, is usually so implausible as to reveal the attempted deception. Deceptive subjects respond to questions with complicated, detailed explanations that include factual information and are overly broad for the question. Pathological liars are likely to invent stories when relating the actual facts would be simpler and more convenient. Truthful subjects tend to use harsh, realistic words, such as steal, rape, kill, rob, or stab, while deceptive subjects usually avoid such language in order to assuage their guilty feeling. A person who uses an insincere facade of religion or oaths to support an answer is, in many instances, not telling the truth. Typical examples of expressions used by lying subjects who try to make their statements believable are “I swear to God...” or “I'll swear on a stack of Bibles...” or “With God as my witness.’ Some may even state, “On my poor mother’s grave.” A subject who uses religion as a defense—stating, for example, “I couldn’t do something like that. 1ama [religious affiliation]”—is usually not telling the truth. Truthful persons not only respond directly but also speak clearly, for example, “No, I didn’t steal the money.’ Some liars mumble or talk so softly that they cannot be heard clearly, while others may speak rapidly or display erratic changes in the tone or pitch of their voice. Similarly, a verbal response coupled with nervous laughter or a wisecrack is a common attempt to camouflage deception. Deceptive subjects are more likely to challenge minute details of factual information on a case, perhaps saying, “They said this thing happened at 1:30 and I didn’t come back until 1:45.” Deceptive subjects tend to offer excuses or justifications to support their claims of innocence and may give very specific denials: “I did not take that $12,437.18” The truthful subject will generally offer much more general denials: “I did not steal that $12,000 or whatever it is. I didn’t steal a penny of it.”
 
 In summation, the verbal behavior of a person who is telling the truth differs from that of one who is withholding relevant information. The truthful person: ° Makes general, sweeping denials; @ Offers unqualified, direct, and spontaneous answers; Exhibits a reasonable memory; and Responds to questions in a rational manner and a clear tone of voice. The deceptive person:
+
 - Offers very specific denials;
 
 - Avoids realistic words;
@@ -2378,6 +2507,7 @@ In summation, the verbal behavior of a person who is telling the truth differs f
 - Supportive gestures. Among these are placing a hand over the mouth or eyes when
 
 speaking, crossing arms or legs, hiding the hands or feet, holding the forehead with a hand, or placing the hands under or between the legs. When a suspect repeatedly combines any of these nonverbal reactions with verbal responses, there is a strong indication the verbal responses may not be truthful. Comparative Postures Truthful people tend to exhibit a different posture than deceptive people do. A truthful person:
+
 - Sits upright but not rigid;
 
 - Positions himself or herself in front of the questioner;
@@ -2407,6 +2537,7 @@ cards?” Truthful subjects often volunteer suspicion: “Not for sure, but I ha
 - Suspicion question: “Who do you suspect may have stolen these missing credit
 
 cards?” The truthful subject gives the question careful thought and when offering a suspicion can substantiate its basis. A deceptive response would be, “I don’t have any idea,’ without giving the question any careful thought. Deceivers may name improbable suspects, such as people without opportunity or access.
+
 - Vouch question: “Is there anyone with whom you work who you feel is above suspicion and would not do anything like this?” This question is also known as a “Trust” question. The truthful subject will give the question thought and typically eliminate possible suspects. The deceptive one, however, will not vouch for others so as not to narrow the field of suspects. Doing so could increase the chance of exposure. By incorporating these types of behavior-provoking questions into the interview process, in conjunction with the investigative questions, the investigator can develop a greater insight into a subject’s probable truthfulness or deception. The investigator can more confidently eliminate people from suspicion and conduct a confrontational interview of the suspected guilty person. When all the appropriate general interviews have been conducted and the accumulated evidence points to a specific person as the likely perpetrator, a confrontational interview or interrogation should be conducted. Reid Method The following is a description of what is often considered the most effective process for persuading a deceptive subject to tell the truth about the act under investigation: the Reid Nine Steps of Interrogation. The process should be conducted only when the investigator is reasonably certain about the subject’s involvement in the act.
 
 **Step One: Positive Confrontation.** Most interrogators enter the room with a file summarizing the investigation results, After an exchange of greetings, the interrogator confronts the suspect with an accusation of guilt. This type of accusation is made only when the suspect’s guilt seems very clear. Otherwise, the statement should be less direct. Following the confrontation, the interrogator pauses to evaluate the suspect's reaction to the statement, then repeats the initial statement of involvement. Then the interrogator sets the investigation file aside, sits down directly opposite the suspect, and makes a transition to a sympathetic and understanding manner.
@@ -2426,12 +2557,14 @@ cards?” The truthful subject gives the question careful thought and when offer
 **Step Eight: Having the Subject Relate Details.** Once the alternative question has been answered, the interviewer responds with a statement of reinforcement. Essentially, this is a statement that acknowledges the subject’s admission of guilt. The objective is to obtain a brief oral review of the basic sequence of events while obtaining sufficient detail to corroborate the suspect’s guilt. In seeking a confession, it is important to help the interviewee rationalize actions and avoid embarrassment. In attempting to obtain a confession, the investigator should not ask ambiguous questions. Questions asked at this time should be brief and clear, calling for only limited verbal responses from the subject. It is premature to say, “Well, just tell me everything that happened.’ Questions should be open-ended and free of emotionally charged words. Once the interviewer has obtained a brief statement about the crime sequence, he or she should ask detailed questions to obtain information that can be corroborated by subsequent investigation. After this full statement is complete, it may be necessary to return to the subject's choice of alternatives, or to some other subject statement, to establish the actual purpose and intent at the time of the crime.
 
 **Step Nine: Converting an Oral Confession.** After advising the subject, the interviewer leaves the room, ostensibly to check on something. He or she returns with a witness, who may be introduced as someone who has been involved in the investigation. The interviewer repeats the essential details of the subject’s confession, and then the witness asks a few confirming questions. This is the time to convert an oral confession into a written one. One of four formats can be used:
+
 - Statement written by the subject;
 - Statement authored by the interviewer, but read and signed by the subject;
 
 - Statement taken down by the witness and transcribed into a typed document for the
 
 subject to read and sign; or
+
 - Recorded statement (audio or video) by the subject. The statement of guilt must be legible and understandable by someone who is not familiar with what the subject has done. Therefore, it must include a recitation of the facts or events. The statement should be made using the general vocabulary, grammatical irregularities, profanity, and idiomatic abnormalities that the person making the statement would use in everyday speech. Any errors, changes, or crossed-out words should be initialed with an OK written in the margin by the subject. The statement should reflect that the subject was treated properly, that no threats or promises were made, and that the statement was freely given by the subject. A subject who has completed reading the written statement is instructed to “write your name here” while the interviewer points to the signature line. It is better to avoid asking the subject to “sign here” because “sign” connotes too much Jegal significance. The subject signs each page of the statement in front of the interviewer and the witness, and then both of them sign as well. For a written statement or confession to be credible and admissible in U.S. court, it must be given voluntarily, be trustworthy, and include the following essential information:
 - Date, time, and place where the statement was prepared;
 - Complete identification of the person making the statement: full name, date and place of birth, and residence address;
@@ -2445,6 +2578,7 @@ statement;
 - Initialing of any additions to, deletions from, or alterations of the statement by the
 
 person making the statement; and
+
 - Signature, on the last page of the statement, of the person making the statement, the interviewer, and a witness. Obtaining the written confession at the end of the interrogation is not the capstone. Every effort should be made to verify the statement and obtain the supporting evidence necessary for trial. Prior to going to trial, a formal deposition, given under oath, may be requested by either counsel to determine how the investigator conducted the investigation, what evidence was obtained, and what the witness(es) and subject(s) said during the investigation.
 
 #### 5.6.7 Other Suspect Interviewing Techniques
@@ -2514,6 +2648,7 @@ doing?” contributes to rapport and may also alert the investigator to physical
 - Use open-ended questions (“What can you tell me about the car?”), augmented
 
 with closed-ended questions (“What color was the car?”), and avoid leading questions (“Was the car red. Leading questions suggest an answer and may distort the witness's perception or memory. The investigator needs to determine only what the witness knows, uninfluenced by what the investigator might expect or know from other sources.
+
 - Clarify the information with the witness. This step helps ensure that the investigator has understood and accurately recorded the information.
 - Document information obtained from the witness, including the witness’s identity. This information will be necessary when the witness is contacted for a follow-up interview.
 
@@ -2536,6 +2671,7 @@ Pre-Interview Preparations and Decisions Principle: Preparing for an interview m
 - Review available information. This information may include police reports and
 
 incident scene information. The interview can then be tailored to elicit the maximum amount of information from the witness.
+
 - Plan to conduct the interview as soon as the witness is physically and emotionally capable.
 - Select an environment that minimizes distractions and is comfortable for the witness.
 - Obtain key materials (e.g., notepad, recorder, camera) in advance so the interview will not be interrupted.
@@ -2548,6 +2684,7 @@ incident scene information. The interview can then be tailored to elicit the max
 - Communication between the interviewer and witness; and EUANONE aE OEE
 
 Social Dynamics The interviewer should maintain or reestablish rapport with the witness and encourage the witness to actively and voluntarily report information, rather than passively respond to questions. A rapport is especially helpful when the investigator seeks personal or intimate information from a witness. The interviewer should show understanding and concern by asking about the witness's health, empathizing with the witness's situation, avoiding judgmental comments, and establishing common ground with the witness. The interviewer should also personalize the interview by treating the witness as an individual. This can be accomplished by avoiding questions that sound programmed or artificial (e.g., “Is there anything you can tell me that would further assist this investigation?”) and referring to the witness by name. The interviewer should also ask questions that follow up on the witness’s previous responses, repeat the witness’s concerns, lean forward, and make eye contact. To encourage the witness to volunteer information without prompting, the interviewer should do the following:
+
 - State expectations. The witness may not know what to expect or may have incorrect expectations of his or her role in the interview. The interviewer should state explicitly that the witness is expected to volunteer information.
 - Ask open-ended questions. These questions allow the witness to do most of the talking.
 - Avoid interruptions. Interruptions discourage the witness from playing an active role and disrupt his or her memory. The interviewer should make a note and follow up later with any questions that arise during a witness’s narration.
@@ -2560,6 +2697,7 @@ not available, then conduct interviews via teleconferencing rather than by audio
 - Minimize distractions. The interviewer should ensure that physical distractions, such
 
 as noise or the presence of other persons, are minimized. In addition, the interviewer can encourage the witness to block out distractions by closing his or her eyes and concentrating on the memory.
+
 - Encourage the witness to mentally recreate the incident. The interviewer should instruct the witness to mentally recreate the circumstances surrounding the incident (e.g., by thinking about his or her thoughts or feelings at the time of the incident),
 - Tailor questions to the witness's narrative. The interviewer's questions should be tailored to the witness's current thoughts and narrative. For example, if the witness is thinking or talking about the perpetrator’s face, the questions should be about the face and not about other aspects of the incident, such as a license plate. The interviewer should try to understand what aspect of the incident the witness is thinking about. The interviewer should then ask an open-ended question about that topic and then follow up with non-leading, closed-ended questions related to the topic. Communication Between the Interviewer and Witness The interviewer is concerned with many issues, such as resolving an incident, enforcing corporate rules, and preparing for civil litigation. The witness knows details about the incident. For the most productive interview, both individuals should communicate their needs and information to each other. Oral evidence is given great weight by jurors and judges. It is paramount for the security employee tasked with investigating an incidentto possess the professional skills for obtaining oral evidence to be used in later proceedings. It is also important that the investigator make no promises or offers of a reward to encourage a witness to make a statement. This will not only void the statement if discovered, but it may also lead to a charge of witness tampering against the investigator.
 
@@ -2578,6 +2716,7 @@ Examination of handwriting characteristics can sometimes determine the origin or
 - Do not allow the writer to see the previous exemplars or the questioned writing.
 
 ° Allow subject to complete numerous repetitions until normal writing has been produced.
+
 - Obtain exemplars from the right and left hands.
 
 - Obtain hand printing exemplars in both uppercase and lowercase letters.
@@ -2597,6 +2736,7 @@ canceled checks, False signatures fall into three main types:
 to copy another person’s writing style.
 
 Evidence thatis typewritten rarely occurs today, butit may be relevant in some investigations involving situations where a typewriter (or impact printer) was in use, or in older (often referred to as “cold”) cases that may have been dormant for a number of years, but where new information has come to light. Questioned typewriting can occasionally be matched to the typewriter that produced it. Photocopies can sometimes be matched to the machine producing them if the exemplars and questioned copies are relatively contemporaneous. Investigators gathering exemplars should obtain 10 copies using each of these methods:
+
 - No document on the glass plate, cover down
 - No document on the glass plate, cover up
 - Document on the glass plate, cover down
@@ -2617,6 +2757,7 @@ Documentary evidence must be preserved in the condition in which it was found. I
 ### 6.3 Physical Evidence
 
 Physical evidence is tangible. It may consist of air particulates, a puddle of liquid, dirt or dust, clothing, tools, electronic devices, weapons, vehicles, bodily fluids, or anything else that can be touched or sensed physically or technologically. Physical evidence can be divided into categories: © Corpus delicti relates to the evidence that proves a crime has been committed, such as the body at a homicide scene.
+
 - Associative evidence (also known as circumstantial evidence) links a suspect with the scene of a crime, such as fingerprints or DNA.
 - Identifying evidence is the associative evidence that establishes the identity of a suspect such as a fingerprints, bite impressions, or blood found at the scene.
 
@@ -2633,6 +2774,7 @@ lab includes fibers, paints, dyes, glass, and similar elements.
 #### 6.3.1 Evidence Searches
 
 Success in the use of physical evidence increases when an incident scene search is planned, coordinated, and executed by knowledgeable security employees, who must keep in mind the following:
+
 - ‘The best search options are often the most difficult and time-consuming.
 - Physical evidence cannot be overdocumented.
 - A search may be either a cautious search of visible areas (avoiding evidence loss or contamination) or a vigorous search of concealed areas.
@@ -2644,9 +2786,11 @@ The photographer: ~ Photographs and logs evidence and scene The sketch preparer:
 - The evidence recorder:
 
 ~ Serves as evidence custodian and logs evidence.
+
 - The scene supervisor: Establishes communication with the appropriate corporate executives, including legal counsel if necessary, so issues arising from incident scene searches can be resolved. Coordinates agreements with all departments in multidepartmental incident scene searches. Obtains evidence collection and packaging materials and equipment. Prepares the paperwork to document the search. ! Provides appropriate protective clothing, communication, lighting, shelter, transportation, equipment, food, water, medical assistance, and security for search personnel. In prolonged searches, uses shifts of two or more teams. Transfers paperwork and responsibility in a preplanned manner from one team to the next. Is alert for evidence. Takes extensive notes. i Considers the safety of all personnel. Procedures The sections below describe the main tasks that the on-site team should perform. Secure and Protect the Scene Team members should take control of the scene immediately and determine how well the scene has been protected. Personnel who know its original condition should be consulted.
 
 Unauthorized personnel should not be allowed to enter the area, and the team should record who enters and leaves, The team should designate a person to be in charge of final decision making and problem resolution. One or more persons should take extensive notes. Conduct a Preliminary Survey The preliminary survey is a tool for planning a search. Begin by cautiously walking through the scene and taking preliminary photographs. Delineate the extent of the search area and be prepared to expand the initial perimeter. Recognize special problem areas. Organize methods and procedures. Select a narrative technique—written, audio, or video— and identify and develop a general theory of the incident. Take extensive notes to document the scene, physical and environmental conditions, and personnel movements. Identify and protect transient physical evidence. Determine personnel and equipment needs, making specific assignments. Throughout the survey, maintain administrative and emotional control. Evaluate Evidence Possibilities Focus first on evidence that could be lost. Leave the least transient evidence for last. Search the easily accessible areas and progress to out-of-view locations. Look for hidden items. Ensure that the collection and packaging materials and equipment are sufficient. All personnel should consider the many varieties of possible evidence, not only evidence within their specialties. They should assess whether evidence appears to have been moved, and also consider whether the scene appears contrived. Produce a Narrative The narrative is a running description of the incident scene. It should be created using a systematic approach. The team should consider everything that warrants attention to be worth recording, and photographs and sketches are used to supplement, not substitute for the narrative. In general, evidence is not collected during the narrative. ‘The narrative must include, at a minimum:
+
 - Case identifier;
 
 - Date, time, and location;
@@ -2763,11 +2907,13 @@ Cigarette butts should be collected with gloved hands or clean forceps. Do not s
 **Chemicals (General Unknowns).** General unknowns include powders, liquids, and stains that are of indeterminate origin or cannot be readily classified. Full identification of an unknown may not be possible, but general classification of a substance usually is. When comparison samples are available, it may be possible to comment on the consistency of the unknown substance with a known comparison sample. Powder and liquid samples should be submitted in leakproof containers. Large stained evidence should not be submitted; when possible sumit a small sarnple in a heat-sealed or resealable plastic bag. Collect an unstained control sample, package separately, and submit it with the stained evidence. When cutting is not possible, transfer questioned stains by rubbing with a clean cotton swab (dry or alcohol-dipped). Air-dry the swab and packina heat-sealed or resealable plastic bag. Submit an unstained swab as a control.
 
 **Computers.** The examination of computer hardware, software, media, and peripherals is critical to the typical investigation today. Examiners can determine what type of data files are resident on a computer, compare data files to known documents and data files, determine when and in what order files were created, recover deleted files via a bit stream backup, convert files into different formats, search files for word or phrases, recover passwords, decrypt encoded files, and analyze source code. The FBI’s Computer Analysis Response Team uses both investigations and laboratory support to conduct computer forensic examinations to handle malware. Investigators will seize printouts and other data copies and mark and control them so that the forensic team can conduct a sterile examination to maintain the integrity of the original media. It is critical to:
+
 - Determine the type of computers and operating systems.
 
 - If applicable, determine the type of network software, the location of the network
 
 servers, and the number of computers on the network.
+
 - Determine whether encryption or password protection is used.
 
 - Decide whether to seize computers and media or conduct an on-site examination.
@@ -2798,6 +2944,7 @@ and “KEEP AWAY FROM MAGNETS OR MAGNETIC FIELDS” Appendix 6B contains a sampl
 **Glass.** Glass comparison examinations can determine whether particles of glass originated from a broken source of glass. Glass fracture examinations can determine the direction and type of the breaking force and the sequencing of shots.
 
 **Comparison.**
+
 - Submit samples of glass from each broken window or source in leakproof containers such as film canisters or plastic pill bottles. Do not use paper or glass containers.
 
 - Submit samples of laminated glass (e.g., windshield) from each side of the glass. Label
@@ -2815,6 +2962,7 @@ such as film canisters or plastic pill bottles. Do not use paper or glass contai
 - Search for particles in vehicles by vacuuming each section of the vehicle separately.
 
 Do not use tape for recovering glass particles. Submit vacuum sweepings in leakproof containers. Do not use paper or glass containers.
+
 - Ship known and questioned debris separately to avoid contamination.
 
 - Do not process evidence for latent prints.
@@ -2840,6 +2988,7 @@ plywood or sturdy cardboard. Do not place any objects into the impact area.
 When using latent print development processes, refer to the manufacturer’s instructions and any safety guidance. Use personal protective equipment (e.g., safety glasses, masks, gloves, smocks). Consult the FBI’s Processing Guide for Developing Latent Prints (2001), a comprehensive list of latent print processes and protocols. Following this guide will maximize the potential to develop latent prints and preserve evidence if other forensic examinations are required.
 
 **Lubricants.** Lubricants include a range of substances, including petroleum products, natural fatty ester oils, and polyalkylene glycol oils. Automotive fluids (e.g., engine oil, brake fluid), certain cosmetics (e.g., bath oils, lotions), and some polishes contain lubricants. Lubricant examinations may be conducted in sexual assault, vehicular homicide, or heavy equipment sabotage cases.
+
 - Submit entire items (e.g., clothing) when possible. Air-dry the evidence and package separately in paper bags.
 - Absorb lubricants onto a clean cotton cloth or swab. Leave a portion of the cloth or swab unstained as a control. Air-dry the swab and pack in a heat-sealed or resealable plastic bag.
 
@@ -2884,6 +3033,7 @@ Plastics in wire insulation and miscellaneous plastics such as buttons can be co
 **Shoeprints and Tire Treads.** Shoeprint or tire tread impressions are routinely left at incident scenes. These impressions are retained on surfaces in two- and three-dimensional forms. Almost all impressions, including partial impressions, have value for forensic comparisons.
 
 **Photographing Shoeprint and Tire Tread Impressions.** General incident scene photographs must be taken to relate the impressions to the incident scene. These photographs must include close-range and long-range photographs. Examination-quality photographs must be taken to obtain maximum detail for forensic examination. They must be taken directly over the impressions using a tripod and lighting. The purpose of these photographs is to produce a detailed negative that can be enlarged to natural size. Examination-quality photographs must be taken as follows:
+
 - ASLR 12 MP or higher digital camera or a 35 mm film camera body should be used with a tripod and cable or electronic release.
 - RAW uncompressed, RAW lossless compression, and TIFF lossless compression are the acceptable file formats.JPEG files are not acceptable.
 - Set the ISO to 400 ISO and select the proper white balance to capture the impression in its correct color.
@@ -2891,6 +3041,7 @@ Plastics in wire insulation and miscellaneous plastics such as buttons can be co
 - Select aperture priority or manual mode to control depth of feld and select a setting of
 
 f/16 or f/22. Use a fixed focal length lens that is double the normal focal length for the camera.
+
 - Place a linear scale such as a ruler next to the impression and on the same plane as the impression, Also place a label to correlate the impression with crime scene notes.
 
 - For tire treads, use a long tape measure as a scale and photograph the impression in
@@ -2900,6 +3051,7 @@ overlapping segments to capture a full revolution (7-9 feet or 2-3 meters) of th
 Focus camera on the bottom of the impression. Attach an electronic flash and position at a very low angle for oblique lighting and 10 to 15 degrees above the ground to enhance the detail of the impression. € For footwear impressions, take at least three images with oblique lighting, moving the lighting around the entire impression. For tire impressions, take four images, positioning the flash to illuminate the impression from all four sides. Copy the image files to a hard drive, CD, or DVD. Make at least two copies marked as original/master and create additional copies for viewing processing, and printing. Impressionsinsnoware difficultto photograph because oflackofcontrast. Itis bestto attempt to photograph the impressions as if in soil. To increase the contrast, snow impressions can be lightly sprayed with snow print wax or with colored spray paint. The spray can must be held at least two to three feet from the impression, so the force of the aerosol does not damage the impression. A light application of spray must be directed at an angle of about 30 to 45 degrees so the paint only strikes the high points of the impression. Highlighted impressions will absorb heat from the sun and must be shielded until photographed and cast to prevent melting.
 
 **Casting Shoeprint and Tire Tread Impressions.** If the evidence itself cannot be submitted to the laboratory, it can be cast with dental stone and the cast submitted to a laboratory. Plaster of Paris, modeling plasters, and dental plasters are not hard enough for this application.
+
 - Store premeasured dental stone in resealable plastic bags. Mix with the appropriate amount of water in the bag until it has the consistency of pancake batter or heavy cream.
 
 - Casting material has sufficient weight and volume to destroy detail if it is poured
@@ -2909,6 +3061,7 @@ directly on top of the impression. The casting material should be poured on the 
 - Ifthe mixture is too viscous to flow into the impression, vibrate a finger or a small stick
 
 on the surface to cause the dental stone to flow into the impression. Do not put the stick or finger more than 1/4 inch below the surface of the casting material because it can damage the impression.
+
 - Before the cast completely hardens, write the date, collector's initials, and other identifying information on it. The cast should be left undisturbed for at least 20 to 30
 
 minutes in warm weather (longer in cold weather). If the cast is in sand or loose soil, it should lift easily. Casts in mud or clay may require careful treatment and excavation when being removed.
@@ -2976,11 +3129,13 @@ The following sections discuss safety related to bloodborne pathogens, chemicals
 Decontaminate equipment after use with a daily prepared solution of household bleach diluted 1:10 or 70 percent isopropyl alcohol or other appropriate disinfectant. Noncorrosive disinfectants are commercially available. It is important to allow sufficient contact time for complete disinfection. In addition to the preceding universal precautions, engineering controls and prudent work practices can reduce or eliminate exposure to potentially infectious materials. Some examples of engineering controls include puncture-resistant containers used for storage and disposal of sharps and paint stirrers and long- handled mirrors for use in locating and retrieving evidence in confined or hidden spaces.
 
 **Chemical Safety.** Depending on the type of material encountered, a variety of health and safety hazards can exist:
+
 - Flammable or combustible materials, such as gasoline, acetone, and ether, ignite easily when exposed to air and an ignition source, such as a spark or flame.
 
 - Some explosive materials, such as nitroglycerine and nitroglycerine-based dynamite,
 
 deteriorate over time to become chemically unstable. For example, ether will form peroxides around the mouth of the vessel in which it is stored. All explosive materials are sensitive to heat, shock, and friction.
+
 - Pyrophoric materials, such as phosphorus, sodium, and barium, can be liquid or solid and can ignite in air temperatures less than 130 degrees Fahrenheit (54 degrees Celsius) without an external ignition source.
 - Oxidizers, such as nitrates, hydrogen peroxide, and concentrated sulfuric acid readily yield oxygen to promote combustion. They should not be stored with flammable and combustible materials or substances that could accelerate their decomposition.
 
@@ -2999,6 +3154,7 @@ have been identified and documented.
 - Provide ventilation. Ensure that ventilation equipment does not interfere with entry,
 
 exit, or rescue procedures.
+
 - Provide barriers to warn unauthorized personnel and to keep entrants safe from external hazards.
 
 - Provide constant communication between personnel entering the confined space and attendants.
@@ -3050,15 +3206,15 @@ latex allergies. Personnel allergic to latex can usually wear nitrile or neopren
 
 Security professionals should consider the credibility, reputation, and reliability of the labs and testing personnel or companies used to process and examine evidence, as well as the vendor’s specialty/capabilities or area of expertise. Efforts should be made to vet potential vendors well in advance of a situation where they are needed. Real-time investigations do not normally allow adequate time for vetting, due diligence, and selection of a vendor. One way to find a professional laboratory is through an accrediting or other professional organization, such as the following:
 
-* **American Academy of Forensic Sciences (AAFS):** Dedicated to the application of science to the law. [www.aafs.org](https://www.aafs.org)
-* **American Board of Forensic Entomology:** Promotes the science of using insect evidence to uncover circumstances of interest to the law, often related to a crime.
-* **American Society of Crime Laboratory Directors (ASCLD):** Dedicated to providing excellence in forensic science through leadership and innovation. [www.ascld.org](https://www.ascld.org)
-* **Association for Crime Scene Reconstruction (ACSR):** Encourages the exchange of information and procedures useful in the reconstruction of crime scenes. [www.acsr.org](https://www.acsr.org)
-* **Canadian Society of Forensic Science (CSFS):** Maintains professional standards and promotes the study of forensic science. [www.csfs.ca](https://www.csfs.ca)
-* **The Chartered Society of Forensic Sciences (CSFS - UK):** A UK-based organization dedicated to the application of science to the cause of justice. [www.csofs.org](https://www.csofs.org)
-* **International Association for Identification (IAI):** Supports those engaged in forensic identification, investigation, and scientific examination of physical evidence. [www.theiai.org](https://www.theiai.org)
-* **International Association of Arson Investigators (IAAI):** Promotes fire investigation standards. [www.firearson.com](https://www.firearson.com)
-* **International Crime Scene Investigators Association (ICSIA):** Helps law enforcement personnel involved in the processing of crime scenes. [www.icsia.org](https://www.icsia.org)
+- **American Academy of Forensic Sciences (AAFS):** Dedicated to the application of science to the law. [www.aafs.org](https://www.aafs.org)
+- **American Board of Forensic Entomology:** Promotes the science of using insect evidence to uncover circumstances of interest to the law, often related to a crime.
+- **American Society of Crime Laboratory Directors (ASCLD):** Dedicated to providing excellence in forensic science through leadership and innovation. [www.ascld.org](https://www.ascld.org)
+- **Association for Crime Scene Reconstruction (ACSR):** Encourages the exchange of information and procedures useful in the reconstruction of crime scenes. [www.acsr.org](https://www.acsr.org)
+- **Canadian Society of Forensic Science (CSFS):** Maintains professional standards and promotes the study of forensic science. [www.csfs.ca](https://www.csfs.ca)
+- **The Chartered Society of Forensic Sciences (CSFS - UK):** A UK-based organization dedicated to the application of science to the cause of justice. [www.csofs.org](https://www.csofs.org)
+- **International Association for Identification (IAI):** Supports those engaged in forensic identification, investigation, and scientific examination of physical evidence. [www.theiai.org](https://www.theiai.org)
+- **International Association of Arson Investigators (IAAI):** Promotes fire investigation standards. [www.firearson.com](https://www.firearson.com)
+- **International Crime Scene Investigators Association (ICSIA):** Helps law enforcement personnel involved in the processing of crime scenes. [www.icsia.org](https://www.icsia.org)
 
 ---
 
@@ -3141,6 +3297,7 @@ Security employees called to testify may serve as either fact witnesses or opini
 ### 7.3 Testifying
 
 Security employees who will give testimony can take several steps to improve their effectiveness as witnesses. They should educate themselves about the following matters. Before testifying, in any venue, security employees should review their notes and discuss their testimony with counsel including any concerns they have about a weak point in the case. Attorneys have differing thoughts on strategies, presentation of witnesses, the form of the answer, and what should be said in direct examination or left unanswered until crossexamination (examination by opposing counsel). Typically, a security employee is just one part of the attorney’s strategy. In some cases, the attorney may want the security employee to provide short answers, without superlatives, in response to questions, In other cases, the attorney may favor effusive, dramatically descriptive responses, but in all cases, answer only the questions that are asked. Proper pre-testimony review examines the following:
+
 - Notes and reports on the incident;
 - Evidence that is available, accessible, and retrievable; and
 
@@ -3171,6 +3328,7 @@ Knowing what to expect of the opposition can help the security employee testify 
 - The attorney might ask for a witness’s notes. Witnesses often want to take notes
 
 or files to the stand, especially in complex cases. Before testifying, a witness should ask counsel whether to use notes and what to do if opposing counsel asks for them. If notes will be used, opposing counsel may have a right to receive a copy of them in advance. Any notes taken to the witness stand should be carefully organized. If opposing counsel takes the notes for a moment, the witness should not continue the testimony until the notes are returned. If opposing counsel shuffled them, the witness may politely ask the judge for time to put them back in order.
+
 - The attorney might ask trick questions. For instance, in a case alleging inadequate security, opposing counsel might ask, “When you were working alone on the night of this incident, what is the first thing you did when Mary flagged you down on the employee parking lot to report she had been assaulted?” Perhaps the incident happened during the day, or several officers were on duty, or the witness proactively intervened instead of being flagged down. If the witness only replies, “I checked to see if she was injured and then called for an ambulance,’ the witness has allowed opposing counsel to make misstatements without clarification or objection, The misstatements may influence the jury. A witness who does not understand a question should ask the attorney to speak up or clarify it. If the witness still does not understand the question clearly, the witness may state that he or she is confused; may ask whether he or she can give a qualified (limited and explained) answer; or may simply state that he or she cannot answer with a yes or no. Certainly the witness should refrain from answering the question that the witness merely thinks the attorney is asking. The attorneys and the judge may make comments, but the witness should do as the judge directs.
 
 Witnesses should never guess on the witness stand nor volunteer information. Ifthey do not know or cannot recall the answer, they should say so or ask if they can refer to their notes. However, continually saying “I can’t recall” may damage their credibility. If the answers being solicited are not things the witness should know, the attorney for the witness’s side will typically raise objections. Witnesses should not nod their heads in agreement or shake their heads in disagreement until opposing counsel has asked a question in its entirety. Security employees who will give testimony should stay abreast of developments in the security field. They would appear uninformed, unprofessional, and unconvincing if opposing counsel raised a common and relevant security practice that they did not know about. When answering questions, witnesses should emphasize self-confidence, speak clearly, and give positive, direct, and definitive answers whenever possible. They may take their time in answering but should not obviously delay or deny the obvious. If they have to use technical terms that may be unfamiliar to the jury, they should immediately restate or explain them in ordinary language. Though charged with rendering a verdict based on fact, jurors, like most people, are influenced by their personality, culture, and life experience. For instance, in criminal cases, numerous studies have found Black jurors less likely than white jurors to convict, especially when the defendant is Black. (Anwar 2012) This cross-race effect may make it especially important for security witnesses to build a rapport with the jurors and show themselves as knowledgeable. In addition to race, other personal characteristics—such as gender, age, religion, ethnicity, and sexual orientation—may bias juries. Witnesses may be able to communicate better with juries by paying attention to the reactions of jurors. Witnesses can often detect how jurors view them and their answers. If witnesses detect a negative response, they can alter their delivery to improve communication. It may be that their body language signals laziness, lack of professionalism, or coldness, or perhaps the testimony is too wordy or filled with jargon. In the past, witnesses were sometimes told to avoid making eye contact with the jurors. Today most experts believe that eye contact keeps the jury engaged in what is being said. The witness should focus on the attorney when questions are asked, then divide eye contact between the jury and the attorney while answering questions. (Broda-Bahm 2015) Regarding other body language and answering strategy issues, witnesses should do the following:
@@ -3228,6 +3386,7 @@ Luckily, many jurisdictions provide online access to certain public records, suc
 #### Regulatory Databases
 
 When investigating individuals and companies, regulatory agencies can provide an immense amount of valuable intelligence. Searching for and locating any regulatory enforcement actions against a person or company can shed light on a target’s personal and professional conduct and is an essential step in the due diligence process. Below are just some of the agencies and regulatory bodies that provide some level of online access to regulatory actions, investigations, and other informational databases in the United States. Other countries will have similar bodies that can be useful in an investigation.
+
 - Securities and Exchange Commission (SEC): Search for securities violations
 - Office of Foreign Assets Control (OFAC): Search for economic sanctions
 
@@ -3257,6 +3416,7 @@ Facebook remains one of the top social networking platforms used by U.S. adults,
 - Facebook: 2.7 billion monthly active users worldwide; used by nearly 70 percent of
 
 US. adults
+
 - Twitter: 353 million monthly active users worldwide; used by approximately 22 percent of U.S. adults
 - Instagram: 1.2 billion monthly active users worldwide; used by approximately 37 percent of U.S. adults
 
@@ -3299,6 +3459,7 @@ Professional relationships are established through introductions, references, co
 - Local Infragard chapters or similar organizations
 
 In some cases, it may be necessary to justify such participation to senior management. It may be advisable to invite a senior representative of the particular forum to meet (or help educate) corporate executives or staff. Professional associations are an important part of public-private partnerships between law enforcement and corporate security professionals. Training and professional development courses are also excellent places to meet people who will add to an investigator’s network. Additional advice on establishing liaison contacts comes from a seasoned security and investigations professional (Hudak 2005): Establish relationships with professionals at different levels of organizations. When first entering the community, make a courtesy visit to the highest official in the agency you can manage. Later, you can use that meeting as a reference to others in that organization. Do not limit your contacts to law enforcement—expand the courtesy visits to the fire department, emergency services, utilities, mayor’s office, postal inspector’s office, hospital security directors, and any organization that could be of service to your company. Internally, it is wise to develop close working relationships with key people within the enterprise by making an introductory visit and periodic follow-up visits and by exchanging information and favors. A crisis or major investigation is not the best moment to meet colleagues for the first time! Suggested internal contacts include the following:
+
 - Executive assistant and front office staff;
 - General counsel;
 - Contracting or procurement officer;
@@ -3356,6 +3517,7 @@ flowchart TD
 ```
 
 Joint Task Forces (JTFs) typically draw on a diverse set of resources to operate effectively. These resources include:
+
 - **Staffing Resources:** Personnel assigned from various organizations, including internal investigators, legal counsel, and external specialists.
 - **Intelligence Resources:** Criminal and public databases, intelligence databases, and shared files.
 - **Local Law Enforcement:** Officers, agencies, and regional task force members who provide formal police authority and localized networks.
@@ -3376,6 +3538,7 @@ Although intelligence information is a key force multiplier for [Us in almost an
 - Periodically evaluating and enhancing the program. As part of the program, the unit should set both general and specific intelligence objectives, including the topics that must be emphasized. In addition, strategies for collecting and using the information should be developed, and in some cases intelligence requirements should be assigned to specific investigators or locations. Potential sources of information are defined by the type of inquiry being conducted and the functional focus of the IU. Of course, skilled and experienced investigators are generally better able than novices to quickly recognize and exploit intelligence sources. These skills are taught in almost all basic and advanced investigations courses, and even the newest investigators, if properly trained, should have a basic understanding of the intelligence function. A basic maxim of investigations is to “check your own files first.” It is not uncommon for valuable sources of information within the organization to be overlooked. This is particularly true in large, complex, or multilocation enterprises. Case management software that accommodates exhibits and photographs and allows link analysis is extremely helpful—especially if it is stored on the organization’s network or in the cloud so that it can be accessed by all IU personnel. Using off-the-shelf programs, many of which allow customization, is more cost-effective than building programs from scratch.
 
 The most significant sources may be those recognized and used because of their specific and perhaps unique relevance to the particular investigation. Possibly used only once, such sources can provide critical data for resolving the case. Long-term continuous information sources are also of tremendous value. They may include liaison contacts, controlled informants who have the greatest potential to deliver, and confidential sources. In addition, each investigator develops personal sources that can provide certain kinds of information on a regular basis. Whenever possible, these sources should be shared with the IU. However, contact should be coordinated through the A key element in any intelligence program is protecting information about methods and sources, some of which may be extremely sensitive. (Of course, only legal methods and sources should be used.) A mechanism for code names or numbers should be established where appropriate to conceal the identities of individuals, organizations, or technical sources of information. The confidentiality mechanism should strive to minimize the possibility of compromise via inadvertent disclosure and through legal processes such as discovery, particularly when compromise of the source would represent a significant embarrassment or cause a physical threat to individuals or organizations. Intelligence sources vary widely and often depend on the functional focus of the IU, the geographic location, or the industry involved. The following are some common intelligence sources:
+
 - News media;
 - Online sources;
 - Internal files and historical records;
@@ -3419,6 +3582,7 @@ Advanced technology can also be considered a force multiplier in investigations 
 - Purchasing and installing specific data mining/analytics suites (some of which are
 
 customized for investigative use); and
+
 - Outsourcing to a company that specializes in data mining and analytics. These approaches can be used individually or in combination depending on the particular needs of the IU. Data mining and data analytics tools can also be used for open-source intelligence (OSINT) projects that are important to many types of businesses and organizations, not only for direct investigative functions, but also for related purposes such as brand and reputation management, and competitive intelligence. Advanced technology tools can also be used for investigative training. Creative learning aids such as virtual reality (VR) environments and collaborative/interactive case scenarios (which can be run with participants from widespread locations around the world) can greatly enhance agent capabilities. Contrary to the idea that technology tends to reduce human contact, these training opportunities, if properly arranged, can facilitate liaison across diverse organizations, specialties, and geographic regions. This can serve to enhance relationships among investigators and other professionals who may have opportunities to support one another in the future. Finally, today’s high-tech environment also necessitates a closer relationship among security professionals, investigators, and the IT staff within the company or organization. This should begin at the highest level—with the senior security or investigative executive collaborating closely with the chief information officer (CIO) or equivalent—and work down through the entire organization in both functions. Leveraging the IT staff and their capabilities for investigative purposes (within legal limits) may be mutually beneficial and yield creative ways to uncover information or generate solutions or process improvements. Many IT departments, for example, routinely perform pattern analysis or keystroke monitoring that could potentially identify insider threats or system abusers, Combining the mindset and the interests of IT professionals with those of security or investigations professionals can render creative and valuable outcomes,
 
 ### 8.2 Report Writing
@@ -3438,11 +3602,13 @@ Record the facts immediately,
 #### Types of Reports
 
 Although the exact nature of the reporting process varies, the following types of investigative reports are typical: Initial report. The initial report is filed a few days after the investigation is opened. It describes the progress of the investigation and details the leads, if any, that remain to be followed. In a simple case, the initial report may be the final or closing report.
+
 - Progress report. An investigation can last for months in the private sector; public sector cases may remain open and under investigation for years. Progress or interim reports of the case status are submitted at fixed intervals to detail the progress of the investigation and any leads that remain to be followed. In the private sector, the normal interval for progress report submission is 30 days.
 
 - Special report. The special report documents an action other than normal in the
 
 course of the investigation. The special report can be a supplement to a progress report, but it must be able to stand separately from the progress report. An example of a special report would be a report of surveillance conducted in an undercover investigation.
+
 - Final report. It is most important that a final report is logical and submitted under these circumstances: when the investigation is successfully brought to a close; when all investigative leads have been followed without success and further investigative action is deemed to be unproductive; or as directed by the person or office that authorized the opening of the case.
 
 #### Elements of the Report
@@ -3471,6 +3637,7 @@ The format of the investigative report varies widely among organizations. One me
 - Complainant and witness statements;
 
 Other interviewees’ written statements;
+
 - Evidence documentation and reports of analysis results (including physical, documentary, electronic, and technical evidence);
 - Surveillance logs (if appropriate); and
 - Photographs, audio recordings, or videos.
@@ -3502,6 +3669,7 @@ current and future risk,
 #### 8.3.1 Improving The Investigative Process
 
 According to an article by software provider Forensic Notes, “Once the workplace investigation has completed, then it is time for HR and the organization to analyze the investigation to see if changes need to be made for future investigations. You should also discuss what could have been handled more appropriately [as well as] how to improve future workplace investigations. Consider [asking]: do policies need updating? [and] is further training required?” (Forensic Notes 2020) Some additional questions might be:
+
 - Did we make efficient use of our people and investigative resources for this investigation? How can we improve?
 - Did we make efficient and effective use of outsourced or external resources for this investigation? How can we improve?
 - Were there any tools or capabilities needed for this investigation that were not available to us? Do we need to acquire or budget for any new equipment, services, or capabilities?
@@ -3565,6 +3733,7 @@ Standards are developed to address a market need or fill a gap in existing indus
 Standards are developed in accordance with the principles of consensus, openness, due process, and transparency. In the security arena, they can help nations, communities, societies, organizations, and individuals safeguard assets and improve resilience in the face of security threats, both natural and man-made.
 
 ### Voluntary Standards
+
 Standards from the International Organization for Standardization (ISO) and national standardization institutes are voluntary but widely adopted. Some have been integrated into various countries’ regulatory frameworks. ISO standards are relevant to assets protection and involve such issues as facilities management, health, environment and safety, risk management, security and resilience, and IT and information security.
 
 In the United States, voluntary standards are also set by trade or professional associations that develop standards for security management. Other entities such as the National Fire Protection Association (NFPA) develop standards that are not all voluntary—rather some may be incorporated into regulations, such as building codes.
@@ -3574,13 +3743,17 @@ Several standards from Underwriters Laboratories (UL) relate to security equipme
 Recognized security management standards and guidelines are available from various professional associations.
 
 ### Statutory Or Regulatory Standards
+
 Unlike voluntary standards, statutory or regulatory standards are binding under the law and can be enforced by formal authorities.
 
 ### Mixed Standards
+
 The distinction between statutory and voluntary standards becomes blurred when voluntary standards are incorporated into laws or regulations, as is the case in areas such as fire, construction, and life safety. In some situations, a standard may remain technically voluntary but obligatory in practice. For example, insurers may determine the availability and cost of casualty insurance based on the use of approved materials or standardized practices. Contracts, too, may incorporate standards as requirements and increasingly show that adoption of standards is increasingly client-driven.
 
 ### Benefits of Standards
+
 Security standards can play several roles in making a security professional’s job easier. Standards may do one or all of the following:
+
 - Codify best practices and processes and share lessons learned.
 - Provide tools to assess threats, risks, vulnerabilities, criticalities, and impacts.
 - Define measurement methods.
@@ -3592,11 +3765,13 @@ Security standards can play several roles in making a security professional’s 
 - Provide for consistency of services.
 
 ### Management System Standards
+
 Management systems standards are designed to help organizations improve the ways in which they provide services and perform processes; they are widely accepted and used in many fields and disciplines. The most prominent management systems standards are ISO 9001 on quality management systems and ISO 14001 on environmental management systems.
 
 The management systems approach encourages organizations to analyze organizational and stakeholder requirements and define processes that contribute to success. A management system provides the framework for continual improvement to increase the likelihood of achieving strategic, operational, tactical, and reputational objectives while enhancing the resilience of an organization.
 
 ### The Plan-Do-Check-Act (PDCA) Cycle
+
 The Plan-Do-Check-Act (PDCA) cycle is the operating principle of management systems standards. It is an approach to structured problem solving focused on continual improvement.
 
 **Plan-Do-Check-Act (PDCA) Cycle Diagram**
@@ -3617,8 +3792,8 @@ flowchart TD
 ```
 
 The cycle works as follows:
+
 - **Plan:** Identify and analyze the organization’s problems, assess and rank assets, and establish strategic/operational objectives.
 - **Do:** Prioritize next steps, develop a detailed action plan, and implement the plan on a trial or full scale.
 - **Check:** Monitor, measure, and examine whether the implemented solutions are producing outcomes that are consistent with the established objectives.
 - **Act:** Standardize successful solutions, identify remaining gaps, and begin the cycle again to ensure continual, iterative improvement.
-
