@@ -206,12 +206,9 @@ export const SESSION_STATUS_LABEL: Record<string, string> = {
   [SESSION_STATUS.ABANDONED]: 'Abandoned',
 };
 
-export const REPORT_STRINGS = {
-  RISK_HIGH: 'HIGH RISK',
-  RISK_MODERATE: 'MODERATE RISK',
-  RISK_LOW: 'LOW RISK',
-  POSTURE_SCORE_LABEL: 'Physical Security Posture Score',
-} as const;
+// Report-viewer strings live in report-strings.ts (keeps this file under the
+// 300-line gate); re-exported here so `@/config/strings` stays the import path.
+export { REPORT_STRINGS } from './report-strings';
 
 export const DPDPA = {
   CONSENT_VERSION: 'v1',

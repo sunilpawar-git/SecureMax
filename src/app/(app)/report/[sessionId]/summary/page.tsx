@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { FreeSummaryView } from '@/components/report/FreeSummaryView';
-import { APP, CTA, TRACK } from '@/config/strings';
+import { Button } from '@/components/ui/Button';
+import { APP, CTA, TRACK, REPORT_STRINGS } from '@/config/strings';
 import type { Finding } from '@/components/report/FindingCard';
 import type { RadarScores } from '@/app/(app)/questionnaire/types';
 
@@ -36,12 +37,12 @@ export default function ReportSummaryPage() {
         );
         const json = await res.json();
         if (!res.ok) {
-          setError(json.error || 'Failed to load summary');
+          setError(json.error || REPORT_STRINGS.SUMMARY_LOAD_ERROR);
           return;
         }
         setData(json);
       } catch {
-        setError('Network error. Please try again.');
+        setError(REPORT_STRINGS.NETWORK_ERROR);
       } finally {
         setLoading(false);
       }
@@ -53,7 +54,7 @@ export default function ReportSummaryPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <p className="text-sm text-slate-500 dark:text-slate-400">Loading your report summary...</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{REPORT_STRINGS.SUMMARY_LOADING}</p>
       </div>
     );
   }
@@ -63,13 +64,13 @@ export default function ReportSummaryPage() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
         <div className="text-center space-y-3">
           <p className="text-sm text-red-600 dark:text-red-400">
-            {error || 'Failed to load summary'}
+            {error || REPORT_STRINGS.SUMMARY_LOAD_ERROR}
           </p>
           <button
             onClick={() => window.location.reload()}
             className="text-sm text-emerald-700 underline"
           >
-            Retry
+            {REPORT_STRINGS.RETRY}
           </button>
         </div>
       </div>
@@ -83,9 +84,11 @@ export default function ReportSummaryPage() {
       <div className="max-w-2xl mx-auto space-y-8">
         <div className="text-center">
           <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-            {APP.NAME} — Security Assessment
+            {APP.NAME} — {REPORT_STRINGS.SECURITY_ASSESSMENT}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Free Executive Summary</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            {REPORT_STRINGS.FREE_EXEC_SUMMARY}
+          </p>
         </div>
 
         <FreeSummaryView
@@ -100,32 +103,34 @@ export default function ReportSummaryPage() {
           {isEnterprise ? (
             <>
               <h3 className="font-semibold text-emerald-900 dark:text-emerald-300">
-                Unlock Full Enterprise Report
+                {REPORT_STRINGS.UNLOCK_ENTERPRISE_TITLE}
               </h3>
               <p className="text-sm text-emerald-700 dark:text-emerald-300">
-                Includes compliance mapping, board-level risk language, and remediation roadmap.
+                {REPORT_STRINGS.UNLOCK_ENTERPRISE_DESC}
               </p>
-              <button
+              <Button
+                size="lg"
+                className="w-full"
                 onClick={() => router.push(`/enterprise/proposal?session=${sessionId}`)}
-                className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
               >
                 {CTA.ENTERPRISE_PROPOSAL}
-              </button>
+              </Button>
             </>
           ) : (
             <>
               <h3 className="font-semibold text-emerald-900 dark:text-emerald-300">
-                Unlock Full Report
+                {REPORT_STRINGS.UNLOCK_FULL_REPORT}
               </h3>
               <p className="text-sm text-emerald-700 dark:text-emerald-300">
-                Get detailed findings, action roadmap, and threat intelligence.
+                {REPORT_STRINGS.UNLOCK_FULL_REPORT_DESC}
               </p>
-              <button
+              <Button
+                size="lg"
+                className="w-full"
                 onClick={() => router.push(`/payment/${data.session_id ?? sessionId}`)}
-                className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
               >
-                Unlock Full Report
-              </button>
+                {REPORT_STRINGS.UNLOCK_FULL_REPORT}
+              </Button>
             </>
           )}
         </div>

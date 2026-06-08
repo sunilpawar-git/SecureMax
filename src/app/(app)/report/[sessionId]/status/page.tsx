@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { APP } from '@/config/strings';
+import { APP, REPORT_STRINGS } from '@/config/strings';
 
 type ReportStatus = 'pending' | 'generating' | 'completed' | 'failed';
 
@@ -33,7 +33,7 @@ export default function ReportStatusPage() {
         clearInterval(interval);
         setStatus({
           status: 'failed',
-          error: 'Report generation timed out. Please contact support.',
+          error: REPORT_STRINGS.GENERATION_TIMEOUT,
         });
         return;
       }
@@ -45,7 +45,7 @@ export default function ReportStatusPage() {
         const data = await res.json();
 
         if (!res.ok) {
-          setStatus({ status: 'failed', error: data.error || 'Failed to check status' });
+          setStatus({ status: 'failed', error: data.error || REPORT_STRINGS.STATUS_CHECK_FAILED });
           clearInterval(interval);
           return;
         }
@@ -93,7 +93,7 @@ export default function ReportStatusPage() {
               onClick={() => window.location.reload()}
               className="text-sm text-emerald-700 underline"
             >
-              Retry
+              {REPORT_STRINGS.RETRY}
             </button>
           </div>
         ) : (
@@ -114,10 +114,10 @@ export default function ReportStatusPage() {
               </svg>
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-300">
-              Generating your security audit report...
+              {REPORT_STRINGS.GENERATING}
             </p>
             <p className="text-xs text-slate-400 dark:text-slate-500">
-              This usually takes 30-60 seconds. You&apos;ll be redirected automatically.
+              {REPORT_STRINGS.GENERATING_HINT}
             </p>
           </div>
         )}

@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { APP } from '@/config/strings';
+import { APP, REPORT_STRINGS } from '@/config/strings';
+import { Button } from '@/components/ui/Button';
 import { ChecklistDownload } from './_components/ChecklistDownload';
 
 type DownloadState =
@@ -42,7 +43,7 @@ export default function ReportDownloadPage() {
             setState('pending_approval');
           } else {
             setState('error');
-            setError(data.error || 'Could not verify report access');
+            setError(data.error || REPORT_STRINGS.ACCESS_VERIFY_FAILED);
           }
           return;
         }
@@ -55,11 +56,11 @@ export default function ReportDownloadPage() {
           setState('payment_required');
         } else {
           setState('error');
-          setError('Report is not ready yet.');
+          setError(REPORT_STRINGS.REPORT_NOT_READY);
         }
       } catch {
         setState('error');
-        setError('Network error. Please try again.');
+        setError(REPORT_STRINGS.NETWORK_ERROR);
       }
     }
 
@@ -76,14 +77,14 @@ export default function ReportDownloadPage() {
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setState('error');
-        setError(data.error || 'Download failed');
+        setError(data.error || REPORT_STRINGS.DOWNLOAD_FAILED);
         return;
       }
 
       const contentType = res.headers.get('Content-Type') ?? '';
       if (!contentType.includes('application/pdf')) {
         setState('error');
-        setError('Unexpected response from server. Please retry.');
+        setError(REPORT_STRINGS.UNEXPECTED_RESPONSE);
         return;
       }
 
@@ -99,7 +100,7 @@ export default function ReportDownloadPage() {
 
       if (!isPdf) {
         setState('error');
-        setError('Received an invalid PDF file. Please contact support.');
+        setError(REPORT_STRINGS.INVALID_PDF);
         return;
       }
 
@@ -115,7 +116,7 @@ export default function ReportDownloadPage() {
       setState('ready');
     } catch {
       setState('error');
-      setError('Download failed. Please try again.');
+      setError(REPORT_STRINGS.DOWNLOAD_FAILED_RETRY);
     }
   }, [sessionId, reportMode]);
 
@@ -125,7 +126,9 @@ export default function ReportDownloadPage() {
         <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">{APP.NAME}</h1>
 
         {state === 'loading' && (
-          <p className="text-sm text-slate-500 dark:text-slate-400">Verifying report access...</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            {REPORT_STRINGS.VERIFYING_ACCESS}
+          </p>
         )}
 
         {state === 'ready' && (
@@ -145,16 +148,18 @@ export default function ReportDownloadPage() {
                 />
               </svg>
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-300">Your report is ready.</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              {REPORT_STRINGS.REPORT_READY}
+            </p>
             <fieldset className="text-left space-y-2 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
               <legend className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1">
-                Report Format
+                {REPORT_STRINGS.REPORT_FORMAT_LEGEND}
               </legend>
               {(
                 [
-                  { value: 'executive', label: 'Executive Brief (1 page)' },
-                  { value: 'technical', label: 'Technical Annex (full detail)' },
-                  { value: 'complete', label: 'Complete Report' },
+                  { value: 'executive', label: REPORT_STRINGS.FORMAT_EXECUTIVE },
+                  { value: 'technical', label: REPORT_STRINGS.FORMAT_TECHNICAL },
+                  { value: 'complete', label: REPORT_STRINGS.FORMAT_COMPLETE },
                 ] as const
               ).map((opt) => (
                 <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
@@ -170,30 +175,27 @@ export default function ReportDownloadPage() {
                 </label>
               ))}
             </fieldset>
-            <button
-              onClick={handleDownload}
-              className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
-            >
-              Download PDF Report
-            </button>
+            <Button size="lg" className="w-full" onClick={handleDownload}>
+              {REPORT_STRINGS.DOWNLOAD_PDF}
+            </Button>
             <ChecklistDownload sessionId={sessionId} reportId={sessionId} />
           </div>
         )}
 
         {state === 'downloading' && (
-          <p className="text-sm text-slate-500 dark:text-slate-400">Downloading your report...</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{REPORT_STRINGS.DOWNLOADING}</p>
         )}
 
         {state === 'payment_required' && (
           <div className="space-y-4">
             <p className="text-sm text-slate-600 dark:text-slate-300">
-              Payment required to access the full report.
+              {REPORT_STRINGS.PAYMENT_REQUIRED}
             </p>
             <a
               href={`/payment/${auditSessionId ?? sessionId}`}
               className="block w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
             >
-              Unlock Full Report
+              {REPORT_STRINGS.UNLOCK_FULL_REPORT}
             </a>
           </div>
         )}
@@ -201,11 +203,10 @@ export default function ReportDownloadPage() {
         {state === 'pending_approval' && (
           <div className="space-y-3">
             <p className="text-sm text-slate-600 dark:text-slate-300">
-              Your enterprise report is pending approval. Our team will unlock it after your
-              proposal is processed.
+              {REPORT_STRINGS.PENDING_APPROVAL}
             </p>
             <p className="text-xs text-slate-400 dark:text-slate-500">
-              You will be notified when the report is ready for download.
+              {REPORT_STRINGS.PENDING_APPROVAL_HINT}
             </p>
           </div>
         )}
@@ -217,7 +218,7 @@ export default function ReportDownloadPage() {
               onClick={() => window.location.reload()}
               className="text-sm text-emerald-700 underline"
             >
-              Retry
+              {REPORT_STRINGS.RETRY}
             </button>
           </div>
         )}

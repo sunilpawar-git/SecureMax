@@ -1,10 +1,9 @@
 'use client';
 
-import { SEVERITY } from '@/config/strings';
+import { SEVERITY, REPORT_STRINGS } from '@/config/strings';
 import { SEVERITY_STYLES } from '@/config/colors';
-
-export const REDACTED_PLACEHOLDER = '[Unlock full report to view]';
-export const LOCKED_BANNER_TEXT = 'Unlock full report to see details';
+import { Badge } from '@/components/ui/Badge';
+import { cx } from '@/lib/utils';
 
 export interface Finding {
   domain: string;
@@ -27,7 +26,7 @@ interface FindingCardProps {
  */
 function safeText(text: string, isLocked: boolean): string {
   if (!isLocked) return text;
-  return REDACTED_PLACEHOLDER;
+  return REPORT_STRINGS.REDACTED_PLACEHOLDER;
 }
 
 export function FindingCard({ finding, locked }: FindingCardProps) {
@@ -39,9 +38,9 @@ export function FindingCard({ finding, locked }: FindingCardProps) {
         <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
           {finding.domain}
         </span>
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${severityStyle}`}>
+        <Badge variant={null} className={cx('border font-semibold', severityStyle)}>
           {finding.severity.toUpperCase()}
-        </span>
+        </Badge>
       </div>
 
       <div className="px-4 py-3 space-y-2">
@@ -61,7 +60,7 @@ export function FindingCard({ finding, locked }: FindingCardProps) {
         {locked && (
           <div className="flex items-center justify-center py-2">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-600">
-              {LOCKED_BANNER_TEXT}
+              {REPORT_STRINGS.LOCKED_BANNER_TEXT}
             </span>
           </div>
         )}
