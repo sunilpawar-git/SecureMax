@@ -86,6 +86,7 @@ jobs:
           files: ./coverage/lcov.info
           flags: frontend
           name: frontend-coverage
+        continue-on-error: true
 
   frontend-security:
     name: Frontend Security Scan
@@ -213,6 +214,7 @@ jobs:
           files: ./ai-service/coverage.xml
           flags: backend
           name: backend-coverage
+        continue-on-error: true
 
   # ============================================================================
   # DOCKER BUILD & SCAN

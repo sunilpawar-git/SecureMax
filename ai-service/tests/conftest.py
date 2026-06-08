@@ -16,12 +16,16 @@ import pytest
 from fastapi.testclient import TestClient
 
 from config import get_settings
-from db import get_db
+from db import clean_database_dsn, get_db
 
 _settings = get_settings()
 # Use postgres superuser for test setup (local dev only)
 # App itself uses app_user role at runtime
-_DSN = "postgresql://postgres@localhost:5432/raivan_global"
+_DSN = clean_database_dsn(
+    os.environ.get(
+        "DATABASE_URL", "postgresql://postgres@localhost:5432/raivan_global"
+    )
+)
 
 TEST_SCHEMA = "test_ai"
 
