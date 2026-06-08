@@ -29,7 +29,7 @@ TEST_SCHEMA = "test_ai"
 
 _DDL = f"""
 -- vector extension already exists in shared database
--- CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE SCHEMA IF NOT EXISTS {TEST_SCHEMA};
 
