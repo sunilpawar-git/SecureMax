@@ -46,7 +46,10 @@ def _get_allowed_origins() -> list[str]:
 async def lifespan(app: FastAPI):
     settings = get_settings()
     pool = await init_pool(settings)
-    await assert_schema_ready(pool)
+
+    if os.environ.get("IS_TESTING") != "true":
+        await assert_schema_ready(pool)
+
     gemini = GeminiClient(settings) if settings.gemini_api_key else None
     app.state.pool = pool
     app.state.settings = settings

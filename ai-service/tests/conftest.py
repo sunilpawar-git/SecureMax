@@ -10,6 +10,7 @@ import os
 os.environ["ALLOW_INSECURE_LOCAL"] = "true"
 os.environ["DEV_BYPASS_SESSION_CHECK"] = "false"
 os.environ["AI_SERVICE_KEY"] = "test"
+os.environ["DB_SCHEMA"] = "test_ai"
 
 import asyncpg
 import pytest
