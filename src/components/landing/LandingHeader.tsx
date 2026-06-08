@@ -45,7 +45,7 @@ export function LandingHeader() {
           type="button"
           onClick={() => setDrawerOpen(true)}
           aria-label={NAV_DRAWER.OPEN}
-          className="md:hidden rounded-lg p-1 text-white hover:bg-white/10"
+          className="md:hidden rounded-lg p-2.5 text-white hover:bg-white/10"
         >
           <Bars3Icon className="h-6 w-6" aria-hidden="true" />
         </button>

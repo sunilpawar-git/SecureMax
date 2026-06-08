@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "postinstall": "prisma generate",
-    "dev": "next dev",
-    "dev:all": "concurrently --names \"next,ai\" --prefix-colors \"cyan,magenta\" \"next dev\" \"cd ai-service && source .venv/bin/activate && uvicorn main:app --reload --port 8000\"",
+    "dev": "next dev --webpack",
+    "dev:all": "concurrently --names \"next,ai\" --prefix-colors \"cyan,magenta\" \"next dev --webpack\" \"cd ai-service && source .venv/bin/activate && uvicorn main:app --reload --port 8000\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings 0",

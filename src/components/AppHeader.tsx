@@ -104,7 +104,7 @@ export function AppHeader({ variant, track, questionNumber }: AppHeaderProps) {
           type="button"
           onClick={() => setDrawerOpen(true)}
           aria-label={NAV_DRAWER.OPEN}
-          className="md:hidden rounded-lg p-1 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+          className="md:hidden rounded-lg p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
         >
           <Bars3Icon className="h-6 w-6" aria-hidden="true" />
         </button>
