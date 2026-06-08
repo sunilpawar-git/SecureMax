@@ -11,6 +11,7 @@ os.environ["ALLOW_INSECURE_LOCAL"] = "true"
 os.environ["DEV_BYPASS_SESSION_CHECK"] = "false"
 os.environ["AI_SERVICE_KEY"] = "test"
 os.environ["DB_SCHEMA"] = "test_ai"
+os.environ["IS_TESTING"] = "true"
 
 import asyncpg
 import pytest
@@ -22,6 +23,7 @@ from db import clean_database_dsn, get_db
 _settings = get_settings()
 # Use postgres superuser for test setup (local dev only)
 # App itself uses app_user role at runtime
+import os
 _DSN = clean_database_dsn(
     os.environ.get("DATABASE_URL", "postgresql://postgres@localhost:5432/raivan_global")
 )
