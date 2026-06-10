@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { FreeSummaryView } from '@/components/report/FreeSummaryView';
 import { SAMPLE_REPORT, TRACK } from '@/config/strings';
@@ -6,6 +8,9 @@ import { SAMPLE_REPORT, TRACK } from '@/config/strings';
  * Sample report teaser — reuses the real FreeSummaryView (urgency score +
  * radar chart) with illustrative static data, blurred and watermarked so it
  * reads as a preview, not a live report.
+ *
+ * Client component: FreeSummaryView is a client component that uses useCountUp hook,
+ * so this wrapper must be a client component to avoid hydration mismatches.
  */
 export function SampleReportPreview() {
   return (
