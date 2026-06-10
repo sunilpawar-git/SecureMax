@@ -26,12 +26,14 @@ jest.mock('@/lib/ai-service', () => ({
 }));
 
 const mockFindMany = jest.fn();
+const mockFindUnique = jest.fn();
 const mockUpdate = jest.fn();
 const mockActionCreate = jest.fn();
 jest.mock('@/lib/prisma', () => ({
   prisma: {
     newsletter: {
       findMany: (...a: unknown[]) => mockFindMany(...a),
+      findUnique: (...a: unknown[]) => mockFindUnique(...a),
       update: (...a: unknown[]) => mockUpdate(...a),
     },
     adminAction: { create: (...a: unknown[]) => mockActionCreate(...a) },
@@ -52,6 +54,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   mockVerifyAdmin.mockResolvedValue(ADMIN_SESSION);
   mockAiFetch.mockResolvedValue({ newsletter_id: 'nl-1', title: 'Digest' });
+  mockFindUnique.mockResolvedValue({ id: 'nl-1' });
   mockFindMany.mockResolvedValue([
     {
       id: 'nl-1',

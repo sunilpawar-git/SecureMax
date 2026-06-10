@@ -13,6 +13,8 @@
  * never key values.
  */
 
+import 'server-only';
+
 import { env, isPlaceholder } from '@/lib/env';
 import { storeApiKey, verifyApiKeyHealth } from '@/lib/api-key-manager';
 import { logger } from '@/lib/logger';

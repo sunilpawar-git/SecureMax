@@ -8,7 +8,7 @@
 import { NextResponse } from 'next/server';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
-import { env, isPlaceholder } from '@/lib/env';
+import { getSecret } from '@/lib/secrets';
 import { logger } from '@/lib/logger';
 
 const HEALTH_TIMEOUT_MS = 3_000;
@@ -28,13 +28,11 @@ export async function GET() {
 
   if (aiServiceReachable) {
     try {
-      // /scraper/health goes through ServiceAuthMiddleware — proves the key works
       await aiServiceFetch('/scraper/health', { method: 'GET', timeoutMs: HEALTH_TIMEOUT_MS });
       aiServiceAuthOk = true;
     } catch (err) {
       const rejected =
         err instanceof AIServiceError && (err.statusCode === 401 || err.statusCode === 403);
-      // A non-auth failure (e.g. transient 500) is not a key problem
       aiServiceAuthOk = !rejected;
       if (rejected) {
         logger.warn('AI service rejected the service key', 'admin-health');
@@ -42,8 +40,12 @@ export async function GET() {
     }
   }
 
-  const linkedinConfigured =
-    !isPlaceholder(env.LINKEDIN_ACCESS_TOKEN) && !isPlaceholder(env.LINKEDIN_ORG_ID);
+  // Resolve via vault-first (same path publishers use) — not raw env
+  const [linkedinToken, linkedinOrg] = await Promise.all([
+    getSecret('linkedin'),
+    getSecret('linkedin_org_id'),
+  ]);
+  const linkedinConfigured = Boolean(linkedinToken && linkedinOrg);
 
   return NextResponse.json({ aiServiceReachable, aiServiceAuthOk, linkedinConfigured });
 }

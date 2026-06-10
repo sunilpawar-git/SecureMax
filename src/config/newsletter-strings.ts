@@ -47,6 +47,9 @@ export const NEWSLETTER_STRINGS = {
   KEYS_MISSING: 'keys missing',
   RESULT_POSTED: 'Posted',
   ERR_PUBLISH: 'Publishing failed — try again',
+  ERR_NOT_FOUND: 'Newsletter not found',
+  ERR_ALREADY_POSTED: 'Already posted to this platform',
+  ERR_NOT_CONFIGURED: 'Platform is not configured — add its API keys first',
   CLOSE: 'Close',
   PLATFORM_LABEL: {
     linkedin: 'LinkedIn',

@@ -7,7 +7,7 @@ import json
 import logging
 import re
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field, field_validator
 
 from config import get_settings
@@ -74,6 +74,8 @@ async def draft_post(req: DraftRequest, request: Request) -> dict:
     gemini = getattr(request.app.state, "gemini", None)
     if gemini is None:
         settings = get_settings()
+        if not settings.gemini_api_key:
+            raise HTTPException(status_code=503, detail="Gemini API key not configured")
         gemini = GeminiClient(settings)
 
     try:

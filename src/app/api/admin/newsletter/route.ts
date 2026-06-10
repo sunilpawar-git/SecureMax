@@ -12,13 +12,13 @@ import {
   ADMIN_ACTION_TYPE,
   ADMIN_ENTITY_TYPE,
   ADMIN_ERR,
+  NEWSLETTER_PLATFORMS,
   NEWSLETTER_STATUS,
   NEWSLETTER_STRINGS,
 } from '@/config/admin-strings';
 import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import { getPublisher } from '@/lib/social';
-import { NEWSLETTER_PLATFORMS } from '@/config/admin-strings';
 
 const LIST_LIMIT = 50;
 const GENERATE_TIMEOUT_MS = 60_000; // Gemini synthesis + Playwright render
@@ -108,6 +108,10 @@ export async function DELETE(request: NextRequest) {
   }
 
   try {
+    const existing = await prisma.newsletter.findUnique({ where: { id }, select: { id: true } });
+    if (!existing) {
+      return NextResponse.json({ error: NEWSLETTER_STRINGS.ERR_NOT_FOUND }, { status: 404 });
+    }
     await prisma.newsletter.update({
       where: { id },
       data: { status: NEWSLETTER_STATUS.DELETED },

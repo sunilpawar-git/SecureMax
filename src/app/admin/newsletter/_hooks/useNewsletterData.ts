@@ -4,7 +4,7 @@
  * ViewModel for the admin newsletter page — list, generate-now, soft-delete.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { NEWSLETTER_STRINGS } from '@/config/admin-strings';
 
 export interface NewsletterPostRow {
@@ -39,23 +39,30 @@ export function useNewsletterData(): NewsletterData {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const mountedRef = useRef(true);
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  useEffect(() => {
+    return () => { mountedRef.current = false; };
+  }, []);
+
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     setError(null);
     try {
       const res = await fetch('/api/admin/newsletter');
+      if (!mountedRef.current) return;
       if (!res.ok) throw new Error('Failed');
       const json = (await res.json()) as {
         newsletters?: NewsletterRow[];
         configured?: Record<string, boolean>;
       };
+      if (!mountedRef.current) return;
       setNewsletters(json.newsletters ?? []);
       setConfigured(json.configured ?? {});
     } catch {
-      setError(NEWSLETTER_STRINGS.ERR_LOAD);
+      if (mountedRef.current) setError(NEWSLETTER_STRINGS.ERR_LOAD);
     } finally {
-      setLoading(false);
+      if (mountedRef.current && !silent) setLoading(false);
     }
   }, []);
 
@@ -69,16 +76,17 @@ export function useNewsletterData(): NewsletterData {
     setError(null);
     try {
       const res = await fetch('/api/admin/newsletter?action=generate', { method: 'POST' });
+      if (!mountedRef.current) return;
       if (!res.ok) {
         const errJson = (await res.json().catch(() => ({}))) as { error?: string };
         setError(errJson.error ?? NEWSLETTER_STRINGS.ERR_GENERATE);
         return;
       }
-      await load();
+      await load(true);
     } catch {
-      setError(NEWSLETTER_STRINGS.ERR_GENERATE);
+      if (mountedRef.current) setError(NEWSLETTER_STRINGS.ERR_GENERATE);
     } finally {
-      setGenerating(false);
+      if (mountedRef.current) setGenerating(false);
     }
   }, [load]);
 
@@ -89,17 +97,18 @@ export function useNewsletterData(): NewsletterData {
         const res = await fetch(`/api/admin/newsletter?id=${encodeURIComponent(id)}`, {
           method: 'DELETE',
         });
+        if (!mountedRef.current) return;
         if (!res.ok) {
           setError(NEWSLETTER_STRINGS.ERR_DELETE);
           return;
         }
-        await load();
+        await load(true);
       } catch {
-        setError(NEWSLETTER_STRINGS.ERR_DELETE);
+        if (mountedRef.current) setError(NEWSLETTER_STRINGS.ERR_DELETE);
       }
     },
     [load],
   );
 
-  return { newsletters, configured, loading, generating, error, generateNow, remove, refresh: load };
+  return { newsletters, configured, loading, generating, error, generateNow, remove, refresh: () => void load(true) };
 }

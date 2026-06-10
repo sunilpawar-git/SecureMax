@@ -63,7 +63,7 @@ async def synthesize_newsletter(articles: list[dict], *, gemini) -> dict:
             "items": items,
             "cta": str(parsed.get("cta", ""))[:120],
         }
-    except (GeminiError, ValueError, json.JSONDecodeError, TypeError) as e:
+    except (GeminiError, ValueError, json.JSONDecodeError, TypeError, AttributeError, KeyError) as e:
         logger.warning("Newsletter synthesis failed — using deterministic fallback: %s", e)
         return _fallback_content(articles)
 

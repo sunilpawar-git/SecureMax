@@ -47,28 +47,38 @@ afterAll(() => {
 describe('xPublisher', () => {
   beforeEach(() => {
     secrets.x_api = 'x-token';
+    // INIT → APPEND → FINALIZE → tweet (4 calls)
     mockFetch
-      .mockResolvedValueOnce(jsonOk({ data: { id: 'media-1' } }))
-      .mockResolvedValueOnce(jsonOk({ data: { id: 'tweet-9' } }));
+      .mockResolvedValueOnce(jsonOk({ media_id_string: 'media-1' })) // INIT
+      .mockResolvedValueOnce({ ok: true, status: 204 }) // APPEND
+      .mockResolvedValueOnce(jsonOk({ media_id_string: 'media-1' })) // FINALIZE
+      .mockResolvedValueOnce(jsonOk({ data: { id: 'tweet-9' } })); // tweet
   });
 
-  it('uploads media then tweets with the media id', async () => {
+  it('uploads media (INIT/APPEND/FINALIZE) then tweets with the media id', async () => {
     const result = await xPublisher.publish(INPUT);
     expect(result.success).toBe(true);
     expect(result.externalId).toBe('tweet-9');
 
-    const [uploadUrl, uploadOpts] = mockFetch.mock.calls[0];
-    expect(uploadUrl).toContain('api.x.com/2/media/upload');
-    expect(uploadOpts.headers.Authorization).toBe('Bearer x-token');
+    const [initUrl, initOpts] = mockFetch.mock.calls[0];
+    expect(initUrl).toContain('upload.twitter.com/1.1/media/upload.json');
+    expect(initUrl).toContain('command=INIT');
+    expect(initOpts.headers.Authorization).toBe('Bearer x-token');
 
-    const [tweetUrl, tweetOpts] = mockFetch.mock.calls[1];
+    const [appendUrl] = mockFetch.mock.calls[1];
+    expect(appendUrl).toContain('upload.twitter.com/1.1/media/upload.json');
+
+    const [finalizeUrl] = mockFetch.mock.calls[2];
+    expect(finalizeUrl).toContain('command=FINALIZE');
+
+    const [tweetUrl, tweetOpts] = mockFetch.mock.calls[3];
     expect(tweetUrl).toContain('api.x.com/2/tweets');
     const body = JSON.parse(tweetOpts.body);
     expect(body.text).toBe('Weekly digest');
     expect(body.media.media_ids).toEqual(['media-1']);
   });
 
-  it('fails without tweeting when the upload errors', async () => {
+  it('fails without tweeting when the INIT errors', async () => {
     mockFetch.mockReset().mockResolvedValue({ ok: false, status: 403, text: async () => 'no' });
     const result = await xPublisher.publish(INPUT);
     expect(result.success).toBe(false);
@@ -100,7 +110,9 @@ describe('facebookPublisher', () => {
     const body = JSON.parse(opts.body);
     expect(body.url).toBe(INPUT.imageUrl);
     expect(body.caption).toBe('Weekly digest');
-    // Token travels in the body, never in the query string
+    // Token in Authorization header, not body or query string
+    expect(opts.headers.Authorization).toBe('Bearer fb-token');
+    expect(body.access_token).toBeUndefined();
     expect(url).not.toContain('fb-token');
   });
 
@@ -113,25 +125,38 @@ describe('facebookPublisher', () => {
 
 describe('instagramPublisher', () => {
   beforeEach(() => {
+    jest.useFakeTimers();
     secrets.instagram = 'ig-token';
     secrets.instagram_account_id = '171717';
+    // container create → status poll (FINISHED) → media_publish
     mockFetch
       .mockResolvedValueOnce(jsonOk({ id: 'container-1' }))
+      .mockResolvedValueOnce(jsonOk({ status_code: 'FINISHED' }))
       .mockResolvedValueOnce(jsonOk({ id: 'ig-post-3' }));
   });
 
-  it('creates a media container then publishes it', async () => {
-    const result = await instagramPublisher.publish(INPUT);
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('creates a media container, polls status, then publishes it', async () => {
+    const publishPromise = instagramPublisher.publish(INPUT);
+    // Advance past the polling interval
+    await jest.advanceTimersByTimeAsync(2_100);
+    const result = await publishPromise;
     expect(result.success).toBe(true);
     expect(result.externalId).toBe('ig-post-3');
 
     const [containerUrl, containerOpts] = mockFetch.mock.calls[0];
     expect(containerUrl).toContain('/171717/media');
+    expect(containerOpts.headers.Authorization).toBe('Bearer ig-token');
     const containerBody = JSON.parse(containerOpts.body);
     expect(containerBody.image_url).toBe(INPUT.imageUrl);
     expect(containerBody.caption).toBe('Weekly digest');
+    // Token no longer in body (security fix)
+    expect(containerBody.access_token).toBeUndefined();
 
-    const [publishUrl, publishOpts] = mockFetch.mock.calls[1];
+    const [publishUrl, publishOpts] = mockFetch.mock.calls[2];
     expect(publishUrl).toContain('/171717/media_publish');
     expect(JSON.parse(publishOpts.body).creation_id).toBe('container-1');
   });
@@ -141,6 +166,13 @@ describe('instagramPublisher', () => {
     const result = await instagramPublisher.publish(INPUT);
     expect(result.success).toBe(false);
     expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects invalid account ID format', async () => {
+    secrets.instagram_account_id = 'bad/id';
+    const result = await instagramPublisher.publish(INPUT);
+    expect(result.success).toBe(false);
+    expect(result.error).toContain('Invalid');
   });
 
   it('isConfigured requires both token and account id', async () => {

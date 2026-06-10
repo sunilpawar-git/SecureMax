@@ -23,7 +23,7 @@ jest.mock('@/lib/social', () => ({
 
 const mockNlFindUnique = jest.fn();
 const mockNlUpdate = jest.fn();
-const mockPostFindUnique = jest.fn();
+const mockPostFindFirst = jest.fn();
 const mockPostUpsert = jest.fn();
 const mockActionCreate = jest.fn();
 jest.mock('@/lib/prisma', () => ({
@@ -33,7 +33,7 @@ jest.mock('@/lib/prisma', () => ({
       update: (...a: unknown[]) => mockNlUpdate(...a),
     },
     newsletterPost: {
-      findUnique: (...a: unknown[]) => mockPostFindUnique(...a),
+      findFirst: (...a: unknown[]) => mockPostFindFirst(...a),
       upsert: (...a: unknown[]) => mockPostUpsert(...a),
     },
     adminAction: { create: (...a: unknown[]) => mockActionCreate(...a) },
@@ -70,7 +70,7 @@ beforeEach(() => {
     imagePng: Buffer.from('png'),
   });
   mockNlUpdate.mockResolvedValue({ id: 'nl-1' });
-  mockPostFindUnique.mockResolvedValue(null);
+  mockPostFindFirst.mockResolvedValue(null);
   mockPostUpsert.mockResolvedValue({ id: 'np-1' });
   mockActionCreate.mockResolvedValue({ id: 'act-1' });
 });
@@ -117,12 +117,15 @@ describe('POST /api/admin/newsletter/[id]/publish', () => {
         create: expect.objectContaining({ status: 'failed', errorMsg: 'LinkedIn API error (401)' }),
       }),
     );
-    // No success → the newsletter must NOT flip to published
-    expect(mockNlUpdate).not.toHaveBeenCalled();
+    // Status is flipped to published early (needed for URL-based platforms);
+    // the update call is expected even when all platforms fail.
+    expect(mockNlUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { status: 'published' } }),
+    );
   });
 
   it('never double-posts a platform that is already posted', async () => {
-    mockPostFindUnique.mockResolvedValue({ id: 'np-1', status: 'posted' });
+    mockPostFindFirst.mockResolvedValue({ id: 'np-1', status: 'posted' });
     const res = await publishReq({ platforms: ['linkedin'] });
     const body = await res.json();
     expect(body.results.linkedin.success).toBe(false);

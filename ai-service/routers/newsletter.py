@@ -71,7 +71,13 @@ async def create_newsletter_draft(pool, gemini, days: int = 7) -> dict:
             )
 
         content = await synthesize_newsletter(articles, gemini=gemini)
-        image = await render_png(build_newsletter_html(content))
+        try:
+            image = await render_png(build_newsletter_html(content))
+        except Exception as render_err:
+            logger.error("Newsletter render failed: %s", render_err)
+            raise HTTPException(
+                status_code=503, detail="Newsletter image rendering failed"
+            ) from render_err
 
         row = await conn.fetchrow(
             """
@@ -97,5 +103,8 @@ async def draft_newsletter(req: NewsletterDraftRequest, request: Request) -> dic
     pool = request.app.state.pool
     gemini = getattr(request.app.state, "gemini", None)
     if gemini is None:
-        gemini = GeminiClient(get_settings())
+        settings = get_settings()
+        if not settings.gemini_api_key:
+            raise HTTPException(status_code=503, detail="Gemini API key not configured")
+        gemini = GeminiClient(settings)
     return await create_newsletter_draft(pool, gemini, days=req.days)

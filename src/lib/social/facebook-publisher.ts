@@ -1,8 +1,8 @@
 /**
  * Facebook Page publisher — Graph API photo post from the public image URL.
  * Vault providers: "facebook_page" (page access token) and
- * "facebook_page_id" (numeric page id). The token travels in the POST body,
- * never in the query string (keeps it out of access logs).
+ * "facebook_page_id" (numeric page id). Token sent via Authorization header
+ * (not body/query) for security — keeps it out of CDN/WAF body logs.
  */
 
 import { getSecret } from '@/lib/secrets';
@@ -30,14 +30,20 @@ export const facebookPublisher: SocialPublisher = {
     ]);
     if (!token || !pageId) return { success: false, error: 'Facebook is not configured' };
 
+    if (!/^\d+$/.test(pageId)) {
+      return { success: false, error: 'Invalid Facebook page ID format' };
+    }
+
     try {
       const res = await fetchWithTimeout(`${GRAPH_BASE_URL}/${pageId}/photos`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           url: input.imageUrl,
           caption: input.caption,
-          access_token: token,
         }),
       });
       if (!res.ok) return failStep('Facebook', 'photo post', res);

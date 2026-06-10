@@ -11,6 +11,8 @@
  * This module is server-only — never import it from a Client Component.
  */
 
+import 'server-only';
+
 import { z } from 'zod';
 
 type EnvSource = Record<string, string | undefined>;

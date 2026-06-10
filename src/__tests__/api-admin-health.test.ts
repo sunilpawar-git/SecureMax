@@ -2,7 +2,8 @@
  * Phase 2 tests — /api/admin/health route.
  * Intent: the route reports actionable config state (AI service reachable,
  * service key accepted, LinkedIn configured) as booleans ONLY — no URLs,
- * no key fragments — and is admin-gated.
+ * no key fragments — and is admin-gated. LinkedIn check uses vault-first
+ * getSecret (same path publishers use).
  */
 
 const mockVerifyAdmin = jest.fn();
@@ -24,6 +25,11 @@ jest.mock('@/lib/ai-service', () => ({
   },
 }));
 
+const mockGetSecret = jest.fn();
+jest.mock('@/lib/secrets', () => ({
+  getSecret: (p: string) => mockGetSecret(p),
+}));
+
 jest.mock('@/lib/logger', () => ({
   logger: { error: jest.fn(), info: jest.fn(), warn: jest.fn() },
 }));
@@ -37,8 +43,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   mockVerifyAdmin.mockResolvedValue(ADMIN_SESSION);
   mockAiFetch.mockResolvedValue({ status: 'healthy' });
-  delete process.env.LINKEDIN_ACCESS_TOKEN;
-  delete process.env.LINKEDIN_ORG_ID;
+  mockGetSecret.mockResolvedValue('');
 });
 
 describe('GET /api/admin/health', () => {
@@ -48,9 +53,12 @@ describe('GET /api/admin/health', () => {
     expect(res.status).toBe(403);
   });
 
-  it('reports healthy state when AI service responds and auth passes', async () => {
-    process.env.LINKEDIN_ACCESS_TOKEN = 'real-token-value';
-    process.env.LINKEDIN_ORG_ID = '12345';
+  it('reports healthy state when AI service responds and LinkedIn keys in vault', async () => {
+    mockGetSecret.mockImplementation((p: string) => {
+      if (p === 'linkedin') return Promise.resolve('real-token-value');
+      if (p === 'linkedin_org_id') return Promise.resolve('12345');
+      return Promise.resolve('');
+    });
     const res = await GET();
     const body = await res.json();
     expect(body).toEqual({
@@ -78,9 +86,8 @@ describe('GET /api/admin/health', () => {
     expect(body.aiServiceAuthOk).toBe(false);
   });
 
-  it('treats placeholder LinkedIn values as unconfigured', async () => {
-    process.env.LINKEDIN_ACCESS_TOKEN = 'your-linkedin-token';
-    process.env.LINKEDIN_ORG_ID = '12345';
+  it('reports unconfigured when vault returns empty for LinkedIn', async () => {
+    mockGetSecret.mockResolvedValue('');
     const res = await GET();
     const body = await res.json();
     expect(body.linkedinConfigured).toBe(false);

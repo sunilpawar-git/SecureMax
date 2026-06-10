@@ -7,6 +7,7 @@ const config: Config = {
   roots: ['<rootDir>/src'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^server-only$': '<rootDir>/src/__mocks__/server-only.ts',
   },
   transformIgnorePatterns: [
     'node_modules/(?!(next-auth|@auth|@panva|jose|oauth4webapi|preact-render-to-string|openid-client)/)',

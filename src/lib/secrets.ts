@@ -12,6 +12,8 @@
  * they are read from env before the vault is even reachable.
  */
 
+import 'server-only';
+
 import { getApiKey } from '@/lib/api-key-manager';
 import { IMPORTABLE_PROVIDERS } from '@/lib/api-key-import';
 import { API_KEY_PROVIDERS } from '@/lib/admin/validators';
@@ -48,7 +50,11 @@ export async function getSecret(provider: SecretProvider): Promise<string> {
     value = IMPORTABLE_PROVIDERS[provider]?.() ?? '';
   }
 
-  cache.set(provider, { value, expiresAt: Date.now() + SECRET_CACHE_TTL_MS });
+  // Only cache non-empty results; empty means "not configured yet" and should
+  // be re-checked on next call so freshly-stored keys are picked up immediately.
+  if (value) {
+    cache.set(provider, { value, expiresAt: Date.now() + SECRET_CACHE_TTL_MS });
+  }
   return value;
 }
 

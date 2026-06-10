@@ -87,13 +87,17 @@ def build_newsletter_html(content: dict) -> str:
 
 async def render_png(html: str, *, width: int = PAGE_WIDTH, height: int = PAGE_HEIGHT) -> bytes:
     """Screenshot the HTML as a PNG using headless Chromium."""
+    import asyncio
+
     from playwright.async_api import async_playwright
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
+        browser = await p.chromium.launch(headless=True)
         try:
             page = await browser.new_page(viewport={"width": width, "height": height})
-            await page.set_content(html, wait_until="load")
+            await asyncio.wait_for(
+                page.set_content(html, wait_until="load"), timeout=30.0
+            )
             return await page.screenshot(type="png")
         finally:
             await browser.close()

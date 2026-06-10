@@ -6,7 +6,7 @@
  * One caption is applied to every selected platform.
  */
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   NEWSLETTER_PLATFORMS,
   NEWSLETTER_POST_STATUS,
@@ -33,6 +33,16 @@ export function PublishModal({ newsletter, configured, onClose, onPublished }: P
   const [publishing, setPublishing] = useState(false);
   const [results, setResults] = useState<Record<string, PlatformResult> | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handler);
+    dialogRef.current?.focus();
+    return () => document.removeEventListener('keydown', handler);
+  }, [onClose]);
 
   const postedPlatforms = new Set(
     newsletter.posts
@@ -62,7 +72,9 @@ export function PublishModal({ newsletter, configured, onClose, onPublished }: P
       }
       const json = (await res.json()) as { results?: Record<string, PlatformResult> };
       setResults(json.results ?? {});
-      onPublished();
+      setSelected([]);
+      const anySuccess = Object.values(json.results ?? {}).some((r) => r.success);
+      if (anySuccess) onPublished();
     } catch {
       setError(NEWSLETTER_STRINGS.ERR_PUBLISH);
     } finally {
@@ -71,9 +83,20 @@ export function PublishModal({ newsletter, configured, onClose, onPublished }: P
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-full max-w-md p-6 space-y-4">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      role="presentation"
+    >
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="publish-modal-title"
+        tabIndex={-1}
+        className="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-full max-w-md p-6 space-y-4 outline-none"
+      >
+        <h2 id="publish-modal-title" className="text-lg font-semibold text-slate-900 dark:text-slate-100">
           {NEWSLETTER_STRINGS.PUBLISH_MODAL_TITLE}
         </h2>
 
