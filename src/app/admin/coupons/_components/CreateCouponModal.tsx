@@ -7,6 +7,7 @@
 
 import { useState } from 'react';
 import { COUPON_STRINGS, COUPON_BULK_MAX } from '@/config/admin-strings';
+import { COUPON_SUCCESS_TEXT } from '@/config/admin-colors';
 
 interface CreateCouponModalProps {
   mode: 'single' | 'bulk';
@@ -60,6 +61,7 @@ export function CreateCouponModal({ mode, onClose, onCreate }: CreateCouponModal
 
         {createdCodes ? (
           <div className="space-y-4">
+            <p className={COUPON_SUCCESS_TEXT}>{COUPON_STRINGS.CREATED_LIVE}</p>
             <div className="max-h-48 overflow-y-auto rounded-lg bg-slate-50 dark:bg-slate-900 p-3">
               {createdCodes.map((code) => (
                 <p
@@ -74,7 +76,7 @@ export function CreateCouponModal({ mode, onClose, onCreate }: CreateCouponModal
               onClick={onClose}
               className="w-full rounded-lg bg-slate-900 dark:bg-slate-100 px-4 py-2 text-sm font-medium text-white dark:text-slate-900"
             >
-              {COUPON_STRINGS.CANCEL}
+              {COUPON_STRINGS.DONE}
             </button>
           </div>
         ) : (

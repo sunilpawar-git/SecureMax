@@ -16,6 +16,8 @@ import {
   listApiKeys,
 } from '@/lib/api-key-manager';
 import { logAdminAction } from '@/lib/admin/actions';
+import { importKeysFromEnv } from '@/lib/api-key-import';
+import { invalidateSecretCache } from '@/lib/secrets';
 import { ApiKeyStoreSchema, ApiKeyRotateSchema, ApiKeyRevokeSchema } from '@/lib/admin/validators';
 import { ADMIN_ACTION_TYPE, ADMIN_ENTITY_TYPE, ADMIN_ERR } from '@/config/admin-strings';
 import { logger } from '@/lib/logger';
@@ -25,6 +27,26 @@ export async function POST(request: NextRequest) {
   if (!session) return forbiddenResponse();
 
   const action = request.nextUrl.searchParams.get('action');
+
+  // import-env takes no body — handled before the JSON parse below
+  if (action === 'import-env') {
+    try {
+      const result = await importKeysFromEnv(session.user.email || 'admin');
+      invalidateSecretCache();
+      await logAdminAction({
+        adminId: session.user.id,
+        actionType: ADMIN_ACTION_TYPE.API_KEY_IMPORT,
+        entityType: ADMIN_ENTITY_TYPE.API_KEY,
+        entityId: 'env-import',
+        metadata: { imported: result.imported, skipped: result.skipped },
+      });
+      return apiSuccess(result);
+    } catch (error) {
+      logger.error('Env import failed', 'admin-api-keys', { detail: String(error) });
+      return apiError('Failed to import keys from environment', 500);
+    }
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await request.json();
@@ -46,6 +68,7 @@ export async function POST(request: NextRequest) {
           parsed.data.keyValue,
           session.user.email || 'admin',
         );
+        invalidateSecretCache(parsed.data.provider);
         await logAdminAction({
           adminId: session.user.id,
           actionType: ADMIN_ACTION_TYPE.API_KEY_ADD,
@@ -71,6 +94,7 @@ export async function POST(request: NextRequest) {
           parsed.data.newKeyValue,
           session.user.email || 'admin',
         );
+        invalidateSecretCache(parsed.data.provider);
         await logAdminAction({
           adminId: session.user.id,
           actionType: ADMIN_ACTION_TYPE.API_KEY_ROTATE,
@@ -92,6 +116,8 @@ export async function POST(request: NextRequest) {
         }
 
         await revokeApiKey(parsed.data.keyId, session.user.email || 'admin', parsed.data.reason);
+        // Revoke is by keyId (provider unknown here) — drop the whole cache
+        invalidateSecretCache();
         await logAdminAction({
           adminId: session.user.id,
           actionType: ADMIN_ACTION_TYPE.API_KEY_REVOKE,

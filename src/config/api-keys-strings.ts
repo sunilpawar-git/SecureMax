@@ -35,6 +35,12 @@ export const API_KEYS_STRINGS = {
   ERR_LOAD: 'Failed to load API keys',
   ERR_SAVE: 'Failed to save key',
   LINKEDIN_EXPIRY_WARNING: 'LinkedIn token expires soon — rotate before day 60.',
+  IMPORT_CTA: 'Import from environment',
+  IMPORTING: 'Importing…',
+  // {imported} and {skipped} are replaced with counts at the call site
+  IMPORT_RESULT: 'Imported {imported}, skipped {skipped} (placeholder or already stored).',
+  ERR_IMPORT: 'Failed to import keys from environment',
+  GEMINI_RESTART_NOTE: 'Gemini key rotation requires an AI-service restart to take effect.',
 } as const;
 
 /** LinkedIn tokens live ~60 days; warn at 50 (see CLAUDE.md LinkedIn section). */

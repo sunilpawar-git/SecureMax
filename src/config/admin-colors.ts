@@ -88,6 +88,10 @@ export const ACTION_TYPE_STYLES: Record<string, string> = {
   api_key_add: 'bg-lime-100 text-lime-800 dark:bg-lime-900/30 dark:text-lime-300',
   api_key_rotate: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
   api_key_revoke: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+  api_key_import: 'bg-lime-100 text-lime-800 dark:bg-lime-900/30 dark:text-lime-300',
+  newsletter_generated: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
+  newsletter_published: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
+  newsletter_deleted: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
 };
 
 // API key status badges
@@ -104,12 +108,22 @@ export const DRAFT_QUEUE_ACTIONS = {
   DELETE: 'px-3 py-1 text-xs font-medium bg-red-600 text-white rounded hover:bg-red-700 shrink-0',
 } as const;
 
+// Coupon create modal success message ("coupon is live")
+export const COUPON_SUCCESS_TEXT = 'text-sm text-green-700 dark:text-green-400';
+
 // Coupon status badges — display status includes derived "expired"
 export const COUPON_STATUS_STYLES: Record<string, string> = {
   active: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
   redeemed: 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200',
   revoked: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300',
   expired: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+};
+
+// Newsletter lifecycle badges
+export const NEWSLETTER_STATUS_STYLES: Record<string, string> = {
+  draft: 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200',
+  published: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
+  deleted: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
 };
 
 export const PAID_STATUS_STYLES = {
@@ -133,6 +147,10 @@ export const LINKEDIN_POST_SUCCESS_BADGE =
 
 // LinkedIn post bookkeeping warning (posted, but queue row update failed)
 export const LINKEDIN_POST_WARNING_TEXT = 'text-amber-600 dark:text-amber-400';
+
+// Service-health warning banner (admin pages)
+export const HEALTH_WARNING_BANNER =
+  'rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 px-4 py-2 text-sm text-amber-800 dark:text-amber-300';
 
 // Coupons page action accents and filter chips
 export const COUPON_PAGE_STYLES = {

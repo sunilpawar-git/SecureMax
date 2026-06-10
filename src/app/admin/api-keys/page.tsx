@@ -16,6 +16,12 @@ export default function ApiKeysPage() {
   const data = useApiKeysData();
   const [showAdd, setShowAdd] = useState(false);
   const [rotateTarget, setRotateTarget] = useState<string | null>(null);
+  const [importMessage, setImportMessage] = useState<string | null>(null);
+
+  const handleImport = async () => {
+    setImportMessage(null);
+    setImportMessage(await data.importFromEnv());
+  };
 
   return (
     <div className="space-y-6">
@@ -28,14 +34,28 @@ export default function ApiKeysPage() {
             {API_KEYS_STRINGS.SUBTITLE}
           </p>
         </div>
-        <button
-          onClick={() => setShowAdd(true)}
-          className="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-medium hover:bg-emerald-800 shrink-0"
-        >
-          {API_KEYS_STRINGS.ADD_KEY}
-        </button>
+        <div className="flex gap-2 shrink-0">
+          <button
+            onClick={() => {
+              void handleImport();
+            }}
+            disabled={data.importing}
+            className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50"
+          >
+            {data.importing ? API_KEYS_STRINGS.IMPORTING : API_KEYS_STRINGS.IMPORT_CTA}
+          </button>
+          <button
+            onClick={() => setShowAdd(true)}
+            className="px-4 py-2 bg-emerald-700 text-white rounded-lg text-sm font-medium hover:bg-emerald-800"
+          >
+            {API_KEYS_STRINGS.ADD_KEY}
+          </button>
+        </div>
       </div>
 
+      {importMessage && (
+        <p className="text-sm text-slate-600 dark:text-slate-300">{importMessage}</p>
+      )}
       {data.error && <p className="text-sm text-red-600 dark:text-red-400">{data.error}</p>}
       {data.loading ? (
         <p className="text-sm text-slate-500 dark:text-slate-400">{UI.LOADING}</p>

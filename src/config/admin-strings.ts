@@ -27,6 +27,10 @@ export const ADMIN_ACTION_TYPE = {
   API_KEY_ADD: 'api_key_add',
   API_KEY_ROTATE: 'api_key_rotate',
   API_KEY_REVOKE: 'api_key_revoke',
+  API_KEY_IMPORT: 'api_key_import',
+  NEWSLETTER_GENERATED: 'newsletter_generated',
+  NEWSLETTER_PUBLISHED: 'newsletter_published',
+  NEWSLETTER_DELETED: 'newsletter_deleted',
 } as const;
 
 export const ADMIN_ENTITY_TYPE = {
@@ -39,6 +43,7 @@ export const ADMIN_ENTITY_TYPE = {
   USER: 'user',
   ALERT: 'alert',
   API_KEY: 'api_key',
+  NEWSLETTER: 'newsletter',
 } as const;
 
 export const LEAD_STATUS = {
@@ -121,8 +126,19 @@ export const MARK_PAID_STRINGS = {
   ERR_FAILED: 'Failed to mark lead as paid',
 } as const;
 
+export const HEALTH_STRINGS = {
+  AI_UNREACHABLE:
+    'AI service unreachable — drafts and reports will fail. Is the FastAPI service running (port 8000)?',
+  AI_AUTH_FAILED:
+    'AI service rejected the service key — check that AI_SERVICE_KEY matches in both .env files.',
+  LINKEDIN_UNCONFIGURED:
+    'LinkedIn posting is not configured — set LINKEDIN_ACCESS_TOKEN and LINKEDIN_ORG_ID to enable one-click posting.',
+} as const;
+
 export const LINKEDIN_STRINGS = {
   POST_BUTTON: 'Post to LinkedIn',
+  // {status} is replaced with the upstream HTTP status at the call site
+  DRAFT_UPSTREAM_ERROR: 'LinkedIn draft failed — AI service returned {status}. Check service logs.',
   POSTING: 'Posting...',
   POST_SUCCESS: 'Posted!',
   POST_ERROR: 'Posting failed — try again or copy manually.',
@@ -214,6 +230,7 @@ export const ADMIN_NAV_ITEMS = [
   { href: '/admin/sessions', label: 'Sessions' },
   { href: '/admin/users', label: USERS_PAGE.NAV_LABEL },
   { href: '/admin/linkedin', label: 'LinkedIn' },
+  { href: '/admin/newsletter', label: 'Newsletter' },
   { href: '/admin/analytics', label: 'Analytics' },
   { href: '/admin/audit-log', label: 'Audit Log' },
   { href: '/admin/api-keys', label: 'API Keys' },
@@ -239,6 +256,14 @@ export const FOLLOWUP_STRINGS = {
 // Coupon system strings live in coupon-strings.ts (300-line gate);
 // re-exported here so `@/config/admin-strings` stays the import path.
 export { COUPON_STRINGS, COUPON_ERR, COUPON_BULK_MAX } from './coupon-strings';
+
+export {
+  NEWSLETTER_STATUS,
+  NEWSLETTER_POST_STATUS,
+  NEWSLETTER_PLATFORMS,
+  NEWSLETTER_STRINGS,
+  type NewsletterPlatform,
+} from './newsletter-strings';
 
 export const FOLLOW_UP_DAYS = 7;
 

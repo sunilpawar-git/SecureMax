@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { DraftQueue } from './_components/DraftQueue';
 import { PostingActions } from './_components/PostingActions';
+import { ServiceHealthBanner } from './_components/ServiceHealthBanner';
+import { useServiceHealth } from './_hooks/useServiceHealth';
 import { LINKEDIN_STRINGS } from '@/config/admin-strings';
 
 interface Article {
@@ -15,6 +17,7 @@ interface Article {
 }
 
 export default function LinkedInPage() {
+  const health = useServiceHealth();
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [draftPost, setDraftPost] = useState('');
@@ -150,6 +153,8 @@ export default function LinkedInPage() {
       <p className="text-sm text-slate-500 dark:text-slate-400">
         Select threat intel articles, generate an AI-drafted post, then copy to LinkedIn.
       </p>
+
+      <ServiceHealthBanner health={health} />
 
       <DraftQueue onUseDraft={useDraft} />
 

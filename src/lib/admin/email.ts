@@ -5,7 +5,7 @@
 
 import { APP } from '@/config/strings';
 import { logger } from '@/lib/logger';
-import { env } from '@/lib/env';
+import { getSecret } from '@/lib/secrets';
 
 interface SendEmailParams {
   to: string;
@@ -31,16 +31,19 @@ type ResendLike = {
 };
 
 let resendClient: ResendLike | null = null;
+// Cache is keyed by the key value so a vault rotation rebuilds the client
+let resendClientKey: string | null = null;
 
 async function getResendClient(): Promise<ResendLike | null> {
-  if (resendClient) return resendClient;
-  const apiKey = env.RESEND_API_KEY;
+  const apiKey = await getSecret('resend');
   if (!apiKey) {
-    logger.error('RESEND_API_KEY not set', 'admin-email');
+    logger.error('Resend key not configured (vault or env)', 'admin-email');
     return null;
   }
+  if (resendClient && resendClientKey === apiKey) return resendClient;
   const { Resend } = await import('resend');
   resendClient = new Resend(apiKey) as unknown as ResendLike;
+  resendClientKey = apiKey;
   return resendClient;
 }
 

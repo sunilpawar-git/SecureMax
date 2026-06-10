@@ -5,15 +5,18 @@
  * failure mode into { success: false } without throwing.
  */
 
-jest.mock('@/lib/env', () => ({
-  env: {
-    get LINKEDIN_ACCESS_TOKEN() {
-      return process.env.LINKEDIN_ACCESS_TOKEN ?? '';
-    },
-    get LINKEDIN_ORG_ID() {
-      return process.env.LINKEDIN_ORG_ID ?? '';
-    },
-  },
+// Phase 4: the service resolves credentials vault-first via getSecret().
+// Map providers back to process.env so the existing scenarios keep driving
+// the same configured/unconfigured states.
+const mockGetSecret = jest.fn((provider: string) =>
+  Promise.resolve(
+    provider === 'linkedin'
+      ? (process.env.LINKEDIN_ACCESS_TOKEN ?? '')
+      : (process.env.LINKEDIN_ORG_ID ?? ''),
+  ),
+);
+jest.mock('@/lib/secrets', () => ({
+  getSecret: (p: string) => mockGetSecret(p),
 }));
 
 jest.mock('@/lib/logger', () => ({
@@ -46,6 +49,14 @@ afterAll(() => {
   global.fetch = realFetch;
   delete process.env.LINKEDIN_ACCESS_TOKEN;
   delete process.env.LINKEDIN_ORG_ID;
+});
+
+describe('vault-first credential resolution', () => {
+  it('reads the token and org id through getSecret providers', async () => {
+    await publishToLinkedIn('Hello');
+    expect(mockGetSecret).toHaveBeenCalledWith('linkedin');
+    expect(mockGetSecret).toHaveBeenCalledWith('linkedin_org_id');
+  });
 });
 
 describe('buildPostPayload', () => {

@@ -11,7 +11,7 @@ from fastapi import APIRouter, Request
 from pydantic import BaseModel, Field, field_validator
 
 from config import get_settings
-from gemini_client import GeminiClient
+from gemini_client import GeminiClient, GeminiError
 
 router = APIRouter(prefix="/linkedin", tags=["linkedin"])
 logger = logging.getLogger(__name__)
@@ -91,7 +91,7 @@ async def draft_post(req: DraftRequest, request: Request) -> dict:
             "hashtags": hashtags,
             "character_count": char_count,
         }
-    except (OSError, ValueError, json.JSONDecodeError, RuntimeError) as e:
+    except (GeminiError, OSError, ValueError, json.JSONDecodeError, RuntimeError) as e:
         logger.warning("Gemini LinkedIn draft failed: %s", e)
         fallback_text = (
             "Recent security incidents highlight ongoing risks "

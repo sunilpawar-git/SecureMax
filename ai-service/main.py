@@ -18,6 +18,7 @@ from gemini_client import GeminiClient
 from routers.assistant import router as assistant_router
 from routers.cpp_admin import router as cpp_admin_router
 from routers.linkedin import router as linkedin_router
+from routers.newsletter import router as newsletter_router
 from routers.questionnaire import router as questionnaire_router
 from routers.report import router as report_router
 from routers.scraper import router as scraper_router
@@ -113,10 +114,40 @@ async def lifespan(app: FastAPI):
         id="weekly_linkedin_briefing",
         replace_existing=True,
     )
+
+    async def scheduled_weekly_newsletter():
+        """Monday 08:30 IST (03:00 UTC) — draft the weekly newsletter for admin review."""
+        try:
+            from fastapi import HTTPException
+
+            from routers.newsletter import create_newsletter_draft
+
+            if not gemini:
+                logger.warning("Weekly newsletter skipped — Gemini not configured")
+                return
+            try:
+                result = await create_newsletter_draft(pool, gemini, days=7)
+                logger.info("Weekly newsletter drafted: %s", result["newsletter_id"])
+            except HTTPException as e:
+                # Rule 12: an empty intel week is logged loudly, not swallowed
+                logger.warning("Weekly newsletter not drafted: %s", e.detail)
+        except Exception:
+            logger.exception("Weekly newsletter draft failed")
+
+    scheduler.add_job(
+        scheduled_weekly_newsletter,
+        "cron",
+        day_of_week="mon",
+        hour=3,
+        minute=0,
+        id="weekly_newsletter",
+        replace_existing=True,
+    )
     scheduler.start()
     app.state.scheduler = scheduler
     logger.info(
         "APScheduler started — daily scraper 02:30 UTC (08:00 IST), "
+        "weekly newsletter Mon 03:00 UTC (08:30 IST), "
         "weekly LinkedIn briefing Mon 03:30 UTC (09:00 IST)"
     )
 
@@ -146,6 +177,7 @@ app.add_middleware(
 app.include_router(assistant_router)
 app.include_router(cpp_admin_router)
 app.include_router(linkedin_router)
+app.include_router(newsletter_router)
 app.include_router(questionnaire_router)
 app.include_router(report_router)
 app.include_router(scraper_router)

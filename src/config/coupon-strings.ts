@@ -35,6 +35,8 @@ export const COUPON_STRINGS = {
   SUBMIT_BULK: 'Generate',
   SUBMITTING: 'Working…',
   CANCEL: 'Cancel',
+  DONE: 'Done',
+  CREATED_LIVE: 'Coupon is live — share this code with the client.',
   REVOKE_CONFIRM_TITLE: 'Revoke coupon?',
   REVOKE_CONFIRM_BODY: 'This code can no longer be redeemed. This cannot be undone.',
   EMPTY_STATE: 'No coupons yet',

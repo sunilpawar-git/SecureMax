@@ -152,9 +152,25 @@ export const CouponRedeemSchema = z.object({
 
 /**
  * Provider allowlist — SSOT for which third-party keys can be stored.
+ * One provider per distinct secret. x_api / facebook_page / instagram are
+ * added manually via the UI once those developer accounts exist (Phase 9).
  * Tech debt (accepted): adding a new provider requires extending this enum.
  */
-export const API_KEY_PROVIDERS = ['gemini', 'resend', 'razorpay', 'linkedin', 'turnstile'] as const;
+export const API_KEY_PROVIDERS = [
+  'gemini',
+  'resend',
+  'razorpay',
+  'razorpay_secret',
+  'linkedin',
+  'linkedin_org_id',
+  'turnstile',
+  'news_api',
+  'x_api',
+  'facebook_page',
+  'facebook_page_id',
+  'instagram',
+  'instagram_account_id',
+] as const;
 
 const apiKeyValue = z.string().trim().min(10).max(512);
 

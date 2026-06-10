@@ -26,12 +26,16 @@ export interface ApiKeysData {
   error: string | null;
   addKey: (provider: string, keyValue: string) => Promise<string | null>;
   rotateKey: (provider: string, newKeyValue: string) => Promise<string | null>;
+  /** Returns a result message (success or error) for display. */
+  importFromEnv: () => Promise<string>;
+  importing: boolean;
   refresh: () => void;
 }
 
 export function useApiKeysData(): ApiKeysData {
   const [keys, setKeys] = useState<ApiKeyRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [importing, setImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -87,5 +91,23 @@ export function useApiKeysData(): ApiKeysData {
     [mutate],
   );
 
-  return { keys, loading, error, addKey, rotateKey, refresh: load };
+  const importFromEnv = useCallback(async (): Promise<string> => {
+    setImporting(true);
+    try {
+      const res = await fetch('/api/admin/api-keys?action=import-env', { method: 'POST' });
+      if (!res.ok) return API_KEYS_STRINGS.ERR_IMPORT;
+      const json = (await res.json()) as { imported?: string[]; skipped?: string[] };
+      await load();
+      return API_KEYS_STRINGS.IMPORT_RESULT.replace(
+        '{imported}',
+        String(json.imported?.length ?? 0),
+      ).replace('{skipped}', String(json.skipped?.length ?? 0));
+    } catch {
+      return API_KEYS_STRINGS.ERR_IMPORT;
+    } finally {
+      setImporting(false);
+    }
+  }, [load]);
+
+  return { keys, loading, error, addKey, rotateKey, importFromEnv, importing, refresh: load };
 }

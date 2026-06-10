@@ -21,7 +21,7 @@ const PLACEHOLDER_VALUES = new Set([
   'your-secret-here',
 ]);
 
-function isPlaceholder(value: string | undefined): boolean {
+export function isPlaceholder(value: string | undefined): boolean {
   if (!value) return true;
   if (PLACEHOLDER_VALUES.has(value)) return true;
   return value.startsWith('your-');
@@ -129,6 +129,10 @@ export const env = {
   },
   get NEWS_API_KEY(): string {
     return read('NEWS_API_KEY');
+  },
+  /** Consumed by the FastAPI service; read here only for vault import/visibility. */
+  get GEMINI_API_KEY(): string {
+    return read('GEMINI_API_KEY');
   },
   get LINKEDIN_ACCESS_TOKEN(): string {
     return read('LINKEDIN_ACCESS_TOKEN');

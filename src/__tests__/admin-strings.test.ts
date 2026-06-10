@@ -55,7 +55,11 @@ describe('Admin String Resources (SSOT)', () => {
     expect(types).toContain('api_key_add');
     expect(types).toContain('api_key_rotate');
     expect(types).toContain('api_key_revoke');
-    expect(types.length).toBe(22);
+    expect(types).toContain('api_key_import');
+    expect(types).toContain('newsletter_generated');
+    expect(types).toContain('newsletter_published');
+    expect(types).toContain('newsletter_deleted');
+    expect(types.length).toBe(26);
   });
 
   it('defines all admin entity types', () => {
@@ -69,7 +73,8 @@ describe('Admin String Resources (SSOT)', () => {
     expect(types).toContain('user');
     expect(types).toContain('alert');
     expect(types).toContain('api_key');
-    expect(types.length).toBe(9);
+    expect(types).toContain('newsletter');
+    expect(types.length).toBe(10);
   });
 
   it('defines all lead statuses with labels', () => {

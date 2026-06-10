@@ -210,6 +210,45 @@ model LinkedinPost {
   @@map("linkedin_posts")
 }
 
+// ========== NEWSLETTERS (threat-intel one-pager for social posting) ==========
+
+model Newsletter {
+  id           String   @id @default(cuid())
+  title        String
+  bodyMarkdown String   @map("body_markdown") @db.Text
+  imagePng     Bytes?   @map("image_png") // rendered one-pager (PNG)
+  articleIds   Json     @map("article_ids") // threat_intel ids cited in this issue
+  status       String   @default("draft") // draft | published | deleted
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  posts NewsletterPost[]
+
+  @@index([status, createdAt])
+  @@map("newsletters")
+}
+
+// One row per (newsletter, platform) publish attempt — the social audit trail
+// (Rule 15: what was posted, when, where; never deleted).
+model NewsletterPost {
+  id            String    @id @default(cuid())
+  newsletterId  String    @map("newsletter_id")
+  platform      String // linkedin | x | facebook | instagram
+  caption       String    @db.Text
+  status        String    @default("pending") // pending | posted | failed
+  externalId    String?   @map("external_id") // platform-side post id / URN
+  errorMsg      String?   @map("error_msg")
+  postedAt      DateTime? @map("posted_at")
+  postedByAdmin String?   @map("posted_by_admin_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  newsletter Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+
+  @@unique([newsletterId, platform])
+  @@index([status])
+  @@map("newsletter_posts")
+}
+
 // ========== REPORT ARTIFACTS ==========
 
 model ReportArtifact {

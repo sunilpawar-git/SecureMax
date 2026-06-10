@@ -4,12 +4,13 @@
  * (POST https://api.linkedin.com/rest/posts). The legacy v2/ugcPosts
  * endpoint is deprecated — do not use it.
  *
- * LINKEDIN_ACCESS_TOKEN and LINKEDIN_ORG_ID are read from env here and never
- * leave the server. Known debt: tokens expire (~60 days) and there is no
- * refresh flow yet — surfaced in the API Keys UI (Phase 9).
+ * Credentials resolve vault-first via getSecret() ('linkedin',
+ * 'linkedin_org_id') with env fallback, and never leave the server.
+ * Known debt: tokens expire (~60 days) and there is no refresh flow yet —
+ * surfaced in the API Keys UI (Phase 9).
  */
 
-import { env } from '@/lib/env';
+import { getSecret } from '@/lib/secrets';
 import { logger } from '@/lib/logger';
 
 const LINKEDIN_POSTS_URL = 'https://api.linkedin.com/rest/posts';
@@ -43,8 +44,8 @@ export function buildPostPayload(postText: string, orgId: string): Record<string
  * the admin re-triggers manually (avoids accidental duplicate posts).
  */
 export async function publishToLinkedIn(postText: string): Promise<PublishResult> {
-  const accessToken = env.LINKEDIN_ACCESS_TOKEN;
-  const orgId = env.LINKEDIN_ORG_ID;
+  const accessToken = await getSecret('linkedin');
+  const orgId = await getSecret('linkedin_org_id');
 
   if (!accessToken || !orgId) {
     logger.error('LinkedIn publish skipped — credentials not configured', 'linkedin-post');

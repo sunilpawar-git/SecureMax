@@ -143,6 +143,32 @@ CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.threat_intel (
 CREATE INDEX IF NOT EXISTS idx_test_threat_intel_soft_deleted
     ON {TEST_SCHEMA}.threat_intel(soft_deleted);
 
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.newsletters (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    title TEXT NOT NULL,
+    body_markdown TEXT NOT NULL,
+    image_png BYTEA,
+    article_ids JSONB NOT NULL,
+    status TEXT NOT NULL DEFAULT 'draft',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.newsletter_posts (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    newsletter_id TEXT NOT NULL
+        REFERENCES {TEST_SCHEMA}.newsletters(id) ON DELETE CASCADE,
+    platform TEXT NOT NULL,
+    caption TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    external_id TEXT,
+    error_msg TEXT,
+    posted_at TIMESTAMPTZ,
+    posted_by_admin_id TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(newsletter_id, platform)
+);
+
 CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.scraper_runs (
     id TEXT PRIMARY KEY,
     source TEXT,
@@ -216,6 +242,8 @@ def _cleanup_test_data():
     async def _truncate():
         conn = await asyncpg.connect(_DSN)
         try:
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.newsletter_posts CASCADE")
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.newsletters CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.report_artifacts CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.report_jobs CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.threat_intel CASCADE")

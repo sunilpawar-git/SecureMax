@@ -199,6 +199,58 @@ describe('POST ?action=rotate', () => {
   });
 });
 
+describe('POST ?action=import-env', () => {
+  const savedResend = process.env.RESEND_API_KEY;
+  const savedLinkedin = process.env.LINKEDIN_ACCESS_TOKEN;
+
+  afterEach(() => {
+    if (savedResend === undefined) delete process.env.RESEND_API_KEY;
+    else process.env.RESEND_API_KEY = savedResend;
+    if (savedLinkedin === undefined) delete process.env.LINKEDIN_ACCESS_TOKEN;
+    else process.env.LINKEDIN_ACCESS_TOKEN = savedLinkedin;
+  });
+
+  it('imports env keys encrypted, logs AdminAction, and never returns values', async () => {
+    process.env.RESEND_API_KEY = SECRET;
+    delete process.env.LINKEDIN_ACCESS_TOKEN;
+
+    const req = new NextRequest('http://localhost:3000/api/admin/api-keys?action=import-env', {
+      method: 'POST',
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+
+    const text = await res.text();
+    expect(text).not.toContain(SECRET);
+    const json = JSON.parse(text);
+    expect(json.imported).toContain('resend');
+    expect(json.skipped).toContain('linkedin');
+
+    // Stored encrypted via the manager
+    expect(mockKeyUpsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({ provider: 'resend', keyEncrypted: `enc(${SECRET})` }),
+      }),
+    );
+
+    expect(mockActionCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ actionType: 'api_key_import' }),
+      }),
+    );
+  });
+
+  it('returns 403 for non-admins', async () => {
+    mockVerifyAdmin.mockResolvedValue(null);
+    const req = new NextRequest('http://localhost:3000/api/admin/api-keys?action=import-env', {
+      method: 'POST',
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(403);
+    expect(mockKeyUpsert).not.toHaveBeenCalled();
+  });
+});
+
 describe('POST ?action=revoke', () => {
   it('revokes by id and logs the admin action', async () => {
     const res = await POST(postReq('revoke', { keyId: 'key-1', reason: 'compromised' }));
