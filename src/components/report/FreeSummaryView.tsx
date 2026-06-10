@@ -2,7 +2,7 @@
 
 import { RadarChart } from '@/components/chart/radar-chart';
 import { FindingCard, type Finding } from './FindingCard';
-import type { RadarScores } from '@/app/(app)/questionnaire/types';
+import type { RadarScores } from '@/components/chart/radar-chart';
 import { REPORT_STRINGS } from '@/config/strings';
 
 interface FreeSummaryViewProps {

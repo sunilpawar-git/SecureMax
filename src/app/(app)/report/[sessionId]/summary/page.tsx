@@ -6,7 +6,7 @@ import { FreeSummaryView } from '@/components/report/FreeSummaryView';
 import { Button } from '@/components/ui/Button';
 import { APP, CTA, TRACK, REPORT_STRINGS, PAYMENT } from '@/config/strings';
 import type { Finding } from '@/components/report/FindingCard';
-import type { RadarScores } from '@/app/(app)/questionnaire/types';
+import type { RadarScores } from '@/components/chart/radar-chart';
 
 interface SummaryData {
   domain_scores: RadarScores;
