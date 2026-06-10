@@ -3,12 +3,30 @@ Tiered source fetchers: News API (tier 1), RSS (tier 2), Playwright (tier 3).
 Each fetcher returns a list of RawArticle instances.
 """
 
+import html as _html_mod
 import logging
+import re
 from datetime import datetime
 from xml.etree.ElementTree import Element
 
 import httpx
 from defusedxml.ElementTree import fromstring as safe_fromstring
+
+_TAG_RE = re.compile(r"<[^>]*>?")  # matches <tag> and truncated <tag (no closing >)
+_WS_RE = re.compile(r"\s+")
+
+
+def strip_html(text: str) -> str:
+    """Remove HTML markup and decode entities, collapsing whitespace.
+
+    Applied to all content fields before they enter RawArticle so no HTML
+    ever reaches the DB summary column or Gemini prompt. The regex also
+    handles truncated tags (e.g. '<h2 clas' cut off mid-attribute) that
+    News API returns when content is trimmed at a fixed character limit.
+    """
+    text = _TAG_RE.sub(" ", text)
+    text = _html_mod.unescape(text)
+    return _WS_RE.sub(" ", text).strip()
 
 from config import get_settings
 from scraper.models import RawArticle
@@ -68,13 +86,14 @@ async def fetch_news_api(
         data = resp.json()
         articles: list[RawArticle] = []
         for item in data.get("articles", []):
-            content = item.get("content") or item.get("description") or ""
+            raw = item.get("content") or item.get("description") or ""
+            content = strip_html(raw)
             if not content:
                 continue
             articles.append(
                 RawArticle(
                     url=item["url"],
-                    title=item.get("title", ""),
+                    title=strip_html(item.get("title", "")),
                     content=content,
                     source_name=item.get("source", {}).get("name", "Unknown"),
                     source_tier="news_api",
@@ -95,9 +114,9 @@ async def fetch_rss_feed(feed_url: str, source_name: str) -> list[RawArticle]:
     articles: list[RawArticle] = []
 
     for item in root.iter("item"):
-        title = _get_text(item, "title")
+        title = strip_html(_get_text(item, "title"))
         link = _get_text(item, "link")
-        description = _get_text(item, "description")
+        description = strip_html(_get_text(item, "description"))
         pub_date = _get_text(item, "pubDate")
 
         if not link or not description:
