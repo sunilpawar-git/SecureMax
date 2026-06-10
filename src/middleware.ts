@@ -1,9 +1,12 @@
-import { auth } from '@/lib/auth';
+import NextAuth from 'next-auth';
+import { authConfig } from '@/lib/auth/config';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { RATE_LIMITS } from '@/config/security';
 import { USER_ROLE } from '@/config/strings';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+
+const { auth } = NextAuth(authConfig);
 
 function getClientIp(request: NextRequest): string {
   return (
