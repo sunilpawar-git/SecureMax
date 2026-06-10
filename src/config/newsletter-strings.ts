@@ -36,6 +36,8 @@ export const NEWSLETTER_STRINGS = {
     string
   >,
   ARTICLES_CITED: 'articles cited',
+  VIEW_FULL: 'View full size',
+  DOWNLOAD: 'Download',
   ERR_LOAD: 'Failed to load newsletters',
   ERR_GENERATE: 'Generation failed — is the AI service running and the scraper populated?',
   ERR_DELETE: 'Failed to delete newsletter',

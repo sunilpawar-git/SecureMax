@@ -28,11 +28,20 @@ export function NewsletterCard({ newsletter, configured, onDelete, onPublished }
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 flex gap-4">
-      <img
-        src={`/api/admin/newsletter/${newsletter.id}/image`}
-        alt={NEWSLETTER_STRINGS.PREVIEW_ALT}
-        className="w-40 rounded border border-slate-200 dark:border-slate-700 self-start"
-      />
+      {/* Thumbnail — click to open full-size in a new tab */}
+      <a
+        href={`/api/admin/newsletter/${newsletter.id}/image`}
+        target="_blank"
+        rel="noreferrer"
+        title={NEWSLETTER_STRINGS.VIEW_FULL}
+        className="shrink-0"
+      >
+        <img
+          src={`/api/admin/newsletter/${newsletter.id}/image`}
+          alt={NEWSLETTER_STRINGS.PREVIEW_ALT}
+          className="w-40 rounded border border-slate-200 dark:border-slate-700 hover:opacity-80 transition-opacity cursor-zoom-in"
+        />
+      </a>
       <div className="flex-1 space-y-2 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <h3 className="font-medium text-slate-900 dark:text-slate-100 truncate">
@@ -58,13 +67,20 @@ export function NewsletterCard({ newsletter, configured, onDelete, onPublished }
             ))}
           </div>
         )}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setShowPublish(true)}
             className="px-3 py-1 text-xs font-medium bg-blue-600 text-white rounded hover:bg-blue-700"
           >
             {NEWSLETTER_STRINGS.PUBLISH_CTA}
           </button>
+          <a
+            href={`/api/admin/newsletter/${newsletter.id}/image`}
+            download={`newsletter-${newsletter.id}.png`}
+            className="px-3 py-1 text-xs font-medium bg-slate-600 text-white rounded hover:bg-slate-700"
+          >
+            {NEWSLETTER_STRINGS.DOWNLOAD}
+          </a>
           <button
             onClick={() => {
               if (window.confirm(NEWSLETTER_STRINGS.DELETE_CONFIRM)) onDelete(newsletter.id);
