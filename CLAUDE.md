@@ -119,7 +119,7 @@ The admin panel auto-signs-out after 30 minutes of inactivity via a client-side 
 ### Other Known Debt (P4)
 
 - **Admin checklist view**: the admin Reports table intentionally has no checklist link. `/checklist/[sessionId]` is owner-scoped (FastAPI rejects non-owners) and progress lives in the client's localStorage, so an admin link always shows a broken/empty page. Needs server-persisted checklist progress + an admin-scoped endpoint before it can be surfaced (see `ReportsTable.tsx` TODO).
-- **Landing page launch blockers**: `landing-strings.ts` ships placeholder testimonials and a placeholder WhatsApp number (`wa.me/919999999999`), both marked `TODO(launch-blocker)`. Replace with real content before pilot traffic.
+- **Landing page launch blockers**: `landing-strings.ts` ships placeholder testimonials marked `TODO(launch-blocker)`. Replace with real, consented client quotes before pilot traffic. (The WhatsApp contact number is real.)
 - **Scraper failure alert latency**: scraper failures surface via the daily digest sweep (first admin visit to follow-up per UTC day), not at run time — DB-flag design, no FastAPI → Next.js callback. Add an immediate alert path only if a same-day signal becomes necessary.
 
 ### Key DB Tables

@@ -143,8 +143,6 @@ export const FOOTER = {
   LINKEDIN_LABEL: 'LinkedIn',
   LINKEDIN_URL: 'https://www.linkedin.com/company/raivan-global',
   WHATSAPP_LABEL: 'WhatsApp',
-  // TODO(launch-blocker): placeholder number — replace with the real business
-  // WhatsApp line before any pilot traffic reaches the landing page.
-  WHATSAPP_CONTACT: 'https://wa.me/919999999999',
+  WHATSAPP_CONTACT: 'https://wa.me/918936995010',
   ADDRESS: 'Raivan Global, Level 4, Cyber Hub, DLF Phase 2, Gurugram, Haryana 122002, India',
 } as const;

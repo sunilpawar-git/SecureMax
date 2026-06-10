@@ -60,4 +60,10 @@ describe('Landing page sections', () => {
 
     expect(screen.getByText(FOOTER.ADDRESS)).toBeInTheDocument();
   });
+
+  it('footer WhatsApp link targets the real business number, not a placeholder', () => {
+    // Pinned to the actual number so a regression to a placeholder fails loud
+    expect(FOOTER.WHATSAPP_CONTACT).toBe('https://wa.me/918936995010');
+    expect(FOOTER.WHATSAPP_CONTACT).not.toContain('919999999999');
+  });
 });
