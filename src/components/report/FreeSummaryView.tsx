@@ -1,6 +1,6 @@
 'use client';
 
-import { RadarChart } from '@/app/(app)/questionnaire/radar-chart';
+import { RadarChart } from '@/components/chart/radar-chart';
 import { FindingCard, type Finding } from './FindingCard';
 import type { RadarScores } from '@/app/(app)/questionnaire/types';
 import { REPORT_STRINGS } from '@/config/strings';

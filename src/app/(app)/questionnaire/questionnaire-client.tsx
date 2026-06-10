@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { RadarChart } from './radar-chart';
+import { RadarChart } from '@/components/chart/radar-chart';
 import { QuestionnaireLayout } from './questionnaire-layout';
 import { APP, CTA, TRACK, VALID_TRACKS, UI, QUESTIONNAIRE } from '@/config/strings';
 import { startSession, resumeSession, submitAnswer } from './questionnaire-service';
