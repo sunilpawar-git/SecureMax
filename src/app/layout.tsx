@@ -48,7 +48,9 @@ export default function RootLayout({
         <SessionProvider>{children}</SessionProvider>
         <script
           dangerouslySetInnerHTML={{
-            __html: `if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}`,
+            __html: process.env.NODE_ENV === 'production'
+              ? `if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}`
+              : `if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(r){r.forEach(function(s){s.unregister()})})}`,
           }}
         />
       </body>

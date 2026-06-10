@@ -8,23 +8,23 @@ import fs from 'fs';
 import path from 'path';
 import { RATE_LIMITS } from '@/config/security';
 
-const proxySource = fs.readFileSync(path.join(process.cwd(), 'src', 'proxy.ts'), 'utf-8');
+const middlewareSource = fs.readFileSync(path.join(process.cwd(), 'src', 'middleware.ts'), 'utf-8');
 const layoutSource = fs.readFileSync(
   path.join(process.cwd(), 'src', 'app', 'admin', 'layout.tsx'),
   'utf-8',
 );
 
-describe('Auth rate limits are wired into the proxy (no dead config)', () => {
-  it('proxy.ts applies AUTH_WINDOW_MS and AUTH_MAX_REQUESTS', () => {
-    expect(proxySource).toContain('RATE_LIMITS.AUTH_WINDOW_MS');
-    expect(proxySource).toContain('RATE_LIMITS.AUTH_MAX_REQUESTS');
+describe('Auth rate limits are wired into the middleware (no dead config)', () => {
+  it('middleware.ts applies AUTH_WINDOW_MS and AUTH_MAX_REQUESTS', () => {
+    expect(middlewareSource).toContain('RATE_LIMITS.AUTH_WINDOW_MS');
+    expect(middlewareSource).toContain('RATE_LIMITS.AUTH_MAX_REQUESTS');
   });
 
   it('targets the brute-force surface (signin/callback) but not session polling', () => {
-    expect(proxySource).toContain('/api/auth/signin');
-    expect(proxySource).toContain('/api/auth/callback');
+    expect(middlewareSource).toContain('/api/auth/signin');
+    expect(middlewareSource).toContain('/api/auth/callback');
     // /api/auth/session must NOT be routed to the tight auth limiter.
-    expect(proxySource).not.toMatch(/startsWith\(['"]\/api\/auth\/session/);
+    expect(middlewareSource).not.toMatch(/startsWith\(['"]\/api\/auth\/session/);
   });
 
   it('auth limits are tighter than the global limits', () => {

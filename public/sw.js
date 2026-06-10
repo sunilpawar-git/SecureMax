@@ -12,6 +12,7 @@ const CACHE_NAME = `raivan-${CACHE_VERSION}`;
 const STATIC_SHELL = ['/', '/manifest.json', '/offline.html'];
 
 const NEVER_CACHE_PREFIXES = [
+  '/_next/',
   '/api/',
   '/admin',
   '/questionnaire',
