@@ -39,3 +39,12 @@ CREATE INDEX "newsletter_posts_status_idx" ON "newsletter_posts"("status");
 
 -- AddForeignKey
 ALTER TABLE "newsletter_posts" ADD CONSTRAINT "newsletter_posts_newsletter_id_fkey" FOREIGN KEY ("newsletter_id") REFERENCES "newsletters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- Role-based access control (mirrors pattern from other tables)
+GRANT SELECT, INSERT, UPDATE ON "newsletters" TO app_user;
+GRANT SELECT ON "newsletters" TO ai_readonly;
+GRANT SELECT ON "newsletters" TO scraper_user;
+
+GRANT SELECT, INSERT, UPDATE ON "newsletter_posts" TO app_user;
+GRANT SELECT ON "newsletter_posts" TO ai_readonly;
+GRANT SELECT ON "newsletter_posts" TO scraper_user;

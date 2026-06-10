@@ -107,4 +107,11 @@ async def draft_newsletter(req: NewsletterDraftRequest, request: Request) -> dic
         if not settings.gemini_api_key:
             raise HTTPException(status_code=503, detail="Gemini API key not configured")
         gemini = GeminiClient(settings)
-    return await create_newsletter_draft(pool, gemini, days=req.days)
+    try:
+        return await create_newsletter_draft(pool, gemini, days=req.days)
+    except HTTPException:
+        raise
+    except BaseException as exc:
+        logger.exception("Newsletter draft unexpected error: %s", exc)
+        detail = f"Draft failed: {type(exc).__name__}: {exc}"
+        raise HTTPException(status_code=503, detail=detail) from exc
