@@ -6,6 +6,7 @@
  */
 
 import { useState } from 'react';
+import { SCRAPER_STRINGS } from '@/config/admin-strings';
 import { useScraperData } from './_hooks/useScraperData';
 import { SourceHealth } from './_components/SourceHealth';
 import { FilterPanel } from './_components/FilterPanel';
@@ -58,10 +59,21 @@ export default function ScraperPage() {
         onSourceChange={data.setSource}
       />
 
+      <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+        <input
+          type="checkbox"
+          checked={data.showDeleted}
+          onChange={(e) => data.setShowDeleted(e.target.checked)}
+          className="rounded border-slate-300 dark:border-slate-600"
+        />
+        {SCRAPER_STRINGS.SHOW_DELETED_TOGGLE}
+      </label>
+
       <ArticleList
         articles={data.articles}
         total={data.totalArticles}
         onDelete={data.deleteArticle}
+        onRestore={data.restoreArticle}
       />
 
       {showAddModal && (

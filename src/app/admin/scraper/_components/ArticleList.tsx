@@ -1,18 +1,20 @@
 'use client';
 
 /**
- * Article list — displays threat intel articles with tags and delete button.
+ * Article list — displays threat intel articles with tags, delete and restore actions.
  */
 
+import { SCRAPER_STRINGS } from '@/config/admin-strings';
 import type { Article } from '../_hooks/useScraperData';
 
 interface ArticleListProps {
   articles: Article[];
   total: number;
   onDelete: (id: string) => void;
+  onRestore: (id: string) => void;
 }
 
-export function ArticleList({ articles, total, onDelete }: ArticleListProps) {
+export function ArticleList({ articles, total, onDelete, onRestore }: ArticleListProps) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-lg border dark:border-slate-700 p-4">
       <h3 className="font-medium text-slate-900 dark:text-slate-100 mb-3">Articles ({total})</h3>
@@ -35,21 +37,26 @@ export function ArticleList({ articles, total, onDelete }: ArticleListProps) {
                 >
                   {a.title}
                 </a>
-                {!a.usedInReports && (
+                {a.softDeleted ? (
                   <button
-                    onClick={() => {
-                      if (
-                        window.confirm(
-                          'Delete this article from the knowledge base? This cannot be undone.',
-                        )
-                      ) {
-                        onDelete(a.id);
-                      }
-                    }}
-                    className="text-xs text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 shrink-0"
+                    onClick={() => onRestore(a.id)}
+                    className="text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 shrink-0"
                   >
-                    Delete
+                    {SCRAPER_STRINGS.RESTORE_CTA}
                   </button>
+                ) : (
+                  !a.usedInReports && (
+                    <button
+                      onClick={() => {
+                        if (window.confirm('Delete this article from the knowledge base?')) {
+                          onDelete(a.id);
+                        }
+                      }}
+                      className="text-xs text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 shrink-0"
+                    >
+                      Delete
+                    </button>
+                  )
                 )}
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
@@ -79,6 +86,11 @@ export function ArticleList({ articles, total, onDelete }: ArticleListProps) {
                 {a.usedInReports && (
                   <span className="ml-2 text-amber-600 dark:text-amber-400 font-medium">
                     Used in reports
+                  </span>
+                )}
+                {a.softDeleted && (
+                  <span className="ml-2 text-red-500 dark:text-red-400 font-medium">
+                    {SCRAPER_STRINGS.DELETED_BADGE}
                   </span>
                 )}
               </p>

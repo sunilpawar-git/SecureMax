@@ -40,10 +40,22 @@ describe('Admin String Resources (SSOT)', () => {
     expect(types).toContain('email_sent');
     expect(types).toContain('threat_intel_added');
     expect(types).toContain('threat_intel_deleted');
+    expect(types).toContain('threat_intel_restored');
     expect(types).toContain('linkedin_draft_created');
     expect(types).toContain('linkedin_post_status_changed');
     expect(types).toContain('linkedin_post_copied');
-    expect(types.length).toBe(10);
+    expect(types).toContain('coupon_created');
+    expect(types).toContain('coupon_bulk_created');
+    expect(types).toContain('coupon_revoked');
+    expect(types).toContain('lead_marked_paid');
+    expect(types).toContain('admin_login');
+    expect(types).toContain('alert_digest_sent');
+    expect(types).toContain('linkedin_post_published');
+    expect(types).toContain('linkedin_post_deleted');
+    expect(types).toContain('api_key_add');
+    expect(types).toContain('api_key_rotate');
+    expect(types).toContain('api_key_revoke');
+    expect(types.length).toBe(22);
   });
 
   it('defines all admin entity types', () => {
@@ -53,7 +65,11 @@ describe('Admin String Resources (SSOT)', () => {
     expect(types).toContain('report');
     expect(types).toContain('threat_intel');
     expect(types).toContain('linkedin_post');
-    expect(types.length).toBe(5);
+    expect(types).toContain('coupon');
+    expect(types).toContain('user');
+    expect(types).toContain('alert');
+    expect(types).toContain('api_key');
+    expect(types.length).toBe(9);
   });
 
   it('defines all lead statuses with labels', () => {

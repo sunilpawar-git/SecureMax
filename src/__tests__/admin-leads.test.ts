@@ -11,10 +11,12 @@ const mockFindUnique = jest.fn();
 const mockUpdate = jest.fn();
 const mockCreate = jest.fn();
 const mockSessionUpdate = jest.fn();
+const mockSessionFindMany = jest.fn();
 const mockAdminActionCreate = jest.fn();
+const mockCouponCreate = jest.fn();
 
-jest.mock('@/lib/prisma', () => ({
-  prisma: {
+jest.mock('@/lib/prisma', () => {
+  const prismaMock: Record<string, unknown> = {
     enterpriseLead: {
       findMany: (...a: unknown[]) => mockFindMany(...a),
       count: (...a: unknown[]) => mockCount(...a),
@@ -22,10 +24,17 @@ jest.mock('@/lib/prisma', () => ({
       update: (...a: unknown[]) => mockUpdate(...a),
     },
     followUpReminder: { create: (...a: unknown[]) => mockCreate(...a) },
-    auditSession: { update: (...a: unknown[]) => mockSessionUpdate(...a) },
+    auditSession: {
+      update: (...a: unknown[]) => mockSessionUpdate(...a),
+      findMany: (...a: unknown[]) => mockSessionFindMany(...a),
+    },
     adminAction: { create: (...a: unknown[]) => mockAdminActionCreate(...a) },
-  },
-}));
+    couponCode: { create: (...a: unknown[]) => mockCouponCreate(...a) },
+  };
+  // Interactive transaction: run the callback against the same mock client
+  prismaMock.$transaction = (fn: (tx: unknown) => unknown) => fn(prismaMock);
+  return { prisma: prismaMock };
+});
 
 const mockSendLeadEmail = jest.fn();
 jest.mock('@/lib/admin/email', () => ({
@@ -35,6 +44,8 @@ jest.mock('@/lib/admin/email', () => ({
 beforeEach(() => {
   jest.clearAllMocks();
   mockAdminActionCreate.mockResolvedValue({ id: 'action-1' });
+  mockCouponCreate.mockResolvedValue({ id: 'cp-1', code: 'TESTCODE' });
+  mockSessionFindMany.mockResolvedValue([]);
 });
 
 describe('getLeads', () => {
@@ -189,6 +200,20 @@ describe('updateLeadStatus', () => {
         }),
       }),
     );
+  });
+
+  it('does not send the proposal email when the status flip fails (atomicity)', async () => {
+    const contactedLead = { ...baseLead, status: LEAD_STATUS.CONTACTED };
+    mockFindUnique.mockResolvedValue(contactedLead);
+    mockUpdate.mockRejectedValue(new Error('db down'));
+
+    await expect(updateLeadStatus('lead-1', LEAD_STATUS.PROPOSAL_SENT, 'admin-1')).rejects.toThrow(
+      'db down',
+    );
+
+    // Email must only go out after the reminder + status commit succeeds —
+    // otherwise a retried transition would resend the proposal.
+    expect(mockSendLeadEmail).not.toHaveBeenCalled();
   });
 
   it('allows re-opening a closed_lost lead', async () => {

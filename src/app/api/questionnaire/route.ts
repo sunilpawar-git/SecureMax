@@ -19,7 +19,8 @@ import {
 } from '@/lib/api';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
 import { prisma } from '@/lib/prisma';
-import { LIMITS, LIMITS_ERR, VALIDATION_ERR } from '@/config/strings';
+import { verifyTurnstile } from '@/lib/security/turnstile';
+import { CAPTCHA, LIMITS, LIMITS_ERR, VALIDATION_ERR } from '@/config/strings';
 import { StartSchema, AnswerSchema, ResumeSchema, AbandonSchema } from './schemas';
 
 type Action = 'start' | 'answer' | 'resume' | 'abandon';
@@ -29,7 +30,17 @@ function isAction(value: string | null): value is Action {
   return value !== null && (ACTIONS as readonly string[]).includes(value);
 }
 
-async function handleStart(userId: string, track: string, userHeaders: Record<string, string>) {
+async function handleStart(
+  userId: string,
+  track: string,
+  captchaToken: string | undefined,
+  userHeaders: Record<string, string>,
+) {
+  // Bot check before any session is created. verifyTurnstile is fail-closed
+  // in production and skips when no secret is configured (dev/test).
+  const captchaOk = await verifyTurnstile(captchaToken);
+  if (!captchaOk) return apiError(CAPTCHA.FAILED, 403);
+
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
   startOfMonth.setHours(0, 0, 0, 0);
@@ -76,7 +87,7 @@ export async function POST(request: NextRequest) {
       case 'start': {
         const parsed = validateData(raw, StartSchema);
         if (!parsed.success) return apiValidationError(parsed.errors);
-        return await handleStart(userId, parsed.data.track, userHeaders);
+        return await handleStart(userId, parsed.data.track, parsed.data.captcha_token, userHeaders);
       }
       case 'answer': {
         const parsed = validateData(raw, AnswerSchema);

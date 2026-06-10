@@ -1,6 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useReducer } from 'react';
+import { LINKEDIN_STRINGS } from '@/config/admin-strings';
+import { DRAFT_QUEUE_ACTIONS } from '@/config/admin-colors';
 
 interface LinkedInDraft {
   id: string;
@@ -19,7 +21,8 @@ type Action =
   | { type: 'FETCH_START' }
   | { type: 'FETCH_OK'; drafts: LinkedInDraft[] }
   | { type: 'FETCH_ERR'; msg: string }
-  | { type: 'PUBLISHED'; id: string };
+  | { type: 'PUBLISHED'; id: string }
+  | { type: 'DELETED'; id: string };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -34,10 +37,17 @@ function reducer(state: State, action: Action): State {
         ...state,
         drafts: state.drafts.map((d) => (d.id === action.id ? { ...d, status: 'published' } : d)),
       };
+    case 'DELETED':
+      return { ...state, drafts: state.drafts.filter((d) => d.id !== action.id) };
   }
 }
 
-export function DraftQueue() {
+interface DraftQueueProps {
+  /** Pre-fill the page editor with a queued draft (Repost / Edit). */
+  onUseDraft?: (text: string, id: string) => void;
+}
+
+export function DraftQueue({ onUseDraft }: DraftQueueProps) {
   const [state, dispatch] = useReducer(reducer, { drafts: [], loading: true, error: null });
 
   const fetchDrafts = useCallback(async () => {
@@ -64,6 +74,18 @@ export function DraftQueue() {
         body: JSON.stringify({ id, status: 'published' }),
       });
       dispatch({ type: 'PUBLISHED', id });
+    } catch {
+      /* non-critical */
+    }
+  };
+
+  const deleteDraft = async (id: string) => {
+    if (!window.confirm(LINKEDIN_STRINGS.DELETE_CONFIRM)) return;
+    try {
+      const res = await fetch(`/api/admin/linkedin?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      });
+      if (res.status === 204) dispatch({ type: 'DELETED', id });
     } catch {
       /* non-critical */
     }
@@ -98,12 +120,32 @@ export function DraftQueue() {
                 {new Date(draft.createdAt).toLocaleDateString()}
               </p>
             </div>
-            <button
-              onClick={() => void markPublished(draft.id)}
-              className="px-3 py-1 text-xs font-medium bg-green-600 text-white rounded hover:bg-green-700 shrink-0"
-            >
-              Mark Published
-            </button>
+            <div className="flex gap-1.5 shrink-0">
+              <button
+                onClick={() => onUseDraft?.(draft.postText, draft.id)}
+                className={DRAFT_QUEUE_ACTIONS.REPOST}
+              >
+                {LINKEDIN_STRINGS.REPOST}
+              </button>
+              <button
+                onClick={() => onUseDraft?.(draft.postText, draft.id)}
+                className={DRAFT_QUEUE_ACTIONS.EDIT}
+              >
+                {LINKEDIN_STRINGS.EDIT}
+              </button>
+              <button
+                onClick={() => void deleteDraft(draft.id)}
+                className={DRAFT_QUEUE_ACTIONS.DELETE}
+              >
+                {LINKEDIN_STRINGS.DELETE}
+              </button>
+              <button
+                onClick={() => void markPublished(draft.id)}
+                className="px-3 py-1 text-xs font-medium bg-green-600 text-white rounded hover:bg-green-700"
+              >
+                Mark Published
+              </button>
+            </div>
           </div>
         ))}
       </div>

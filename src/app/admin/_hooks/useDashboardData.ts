@@ -7,6 +7,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
+/** Silent background refresh cadence — 5 minutes. */
+export const DASHBOARD_AUTO_REFRESH_MS = 300_000;
+
 interface DashboardStats {
   activeSessions: number;
   completedSessions: number;
@@ -54,9 +57,12 @@ export function useDashboardData(): DashboardData {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  // Silent refreshes skip the loading flag so the UI doesn't flicker every 5 min
+  const load = useCallback(async (silent = false) => {
+    if (!silent) {
+      setLoading(true);
+      setError(null);
+    }
     try {
       const [s, a, r] = await Promise.all([
         fetchJson<DashboardStats>('/api/admin/stats'),
@@ -66,28 +72,37 @@ export function useDashboardData(): DashboardData {
       setStats(s);
       setActionItems(a);
       setRecentActivity(r);
+      if (silent) setError(null);
     } catch (err) {
-      setError('Failed to load dashboard data — check network or re-login.');
+      if (!silent) {
+        setError('Failed to load dashboard data — check network or re-login.');
+      }
       void Promise.resolve(err);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, []);
 
+  // timerEpoch bump restarts the interval, so a manual refresh resets the 5-min clock
+  const [timerEpoch, setTimerEpoch] = useState(0);
+
   useEffect(() => {
-    let cancelled = false;
-    const fetchData = async () => {
-      await load();
-      if (!cancelled) {
-        // load() already updated state via dispatch
-      }
-    };
-    void fetchData();
-    return () => {
-      cancelled = true;
-    };
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
+    void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { stats, actionItems, recentActivity, loading, error, refresh: load };
+  useEffect(() => {
+    const id = setInterval(() => {
+      void load(true);
+    }, DASHBOARD_AUTO_REFRESH_MS);
+    return () => clearInterval(id);
+  }, [load, timerEpoch]);
+
+  const refresh = useCallback(() => {
+    setTimerEpoch((e) => e + 1);
+    void load();
+  }, [load]);
+
+  return { stats, actionItems, recentActivity, loading, error, refresh };
 }

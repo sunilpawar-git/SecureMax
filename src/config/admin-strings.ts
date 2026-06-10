@@ -12,9 +12,21 @@ export const ADMIN_ACTION_TYPE = {
   EMAIL_SENT: 'email_sent',
   THREAT_INTEL_ADDED: 'threat_intel_added',
   THREAT_INTEL_DELETED: 'threat_intel_deleted',
+  THREAT_INTEL_RESTORED: 'threat_intel_restored',
   LINKEDIN_DRAFT_CREATED: 'linkedin_draft_created',
   LINKEDIN_POST_STATUS_CHANGED: 'linkedin_post_status_changed',
   LINKEDIN_POST_COPIED: 'linkedin_post_copied',
+  LINKEDIN_POST_PUBLISHED: 'linkedin_post_published',
+  LINKEDIN_POST_DELETED: 'linkedin_post_deleted',
+  COUPON_CREATED: 'coupon_created',
+  COUPON_BULK_CREATED: 'coupon_bulk_created',
+  COUPON_REVOKED: 'coupon_revoked',
+  LEAD_MARKED_PAID: 'lead_marked_paid',
+  ADMIN_LOGIN: 'admin_login',
+  ALERT_DIGEST_SENT: 'alert_digest_sent',
+  API_KEY_ADD: 'api_key_add',
+  API_KEY_ROTATE: 'api_key_rotate',
+  API_KEY_REVOKE: 'api_key_revoke',
 } as const;
 
 export const ADMIN_ENTITY_TYPE = {
@@ -23,6 +35,10 @@ export const ADMIN_ENTITY_TYPE = {
   REPORT: 'report',
   THREAT_INTEL: 'threat_intel',
   LINKEDIN_POST: 'linkedin_post',
+  COUPON: 'coupon',
+  USER: 'user',
+  ALERT: 'alert',
+  API_KEY: 'api_key',
 } as const;
 
 export const LEAD_STATUS = {
@@ -90,6 +106,69 @@ export const ADMIN_ERR = {
   SEARCH_QUERY_REQUIRED: 'Search query is required',
 } as const;
 
+export const MARK_PAID_STRINGS = {
+  CTA: 'Mark Paid',
+  DIALOG_TITLE: 'Mark lead as paid',
+  DIALOG_BODY:
+    'This unlocks the full enterprise report for the linked session. Confirm only after PO/invoice is received.',
+  INVOICE_LABEL: 'Invoice / PO reference (optional)',
+  INVOICE_PLACEHOLDER: 'e.g. INV-2026-041',
+  CONFIRM: 'Confirm Paid',
+  CANCEL: 'Cancel',
+  PAID_BADGE: 'Paid',
+  ERR_NO_SESSION: 'Lead has no linked audit session',
+  ERR_ALREADY_PAID: 'Session is already paid',
+  ERR_FAILED: 'Failed to mark lead as paid',
+} as const;
+
+export const LINKEDIN_STRINGS = {
+  POST_BUTTON: 'Post to LinkedIn',
+  POSTING: 'Posting...',
+  POST_SUCCESS: 'Posted!',
+  POST_ERROR: 'Posting failed — try again or copy manually.',
+  ALREADY_POSTED: 'This draft was already posted to LinkedIn.',
+  BOOKKEEPING_WARNING:
+    'Posted to LinkedIn, but updating the queue failed — refresh before reposting.',
+  REPOST: 'Repost',
+  EDIT: 'Edit',
+  DELETE: 'Delete',
+  DELETE_CONFIRM: 'Delete this draft? It will be removed from the queue.',
+  RETRY: 'Retry',
+} as const;
+
+export const LINKEDIN_POST_STATUS = {
+  DRAFT: 'draft',
+  COPIED: 'copied',
+  PUBLISHED: 'published',
+  POSTED: 'posted',
+  DELETED: 'deleted',
+} as const;
+
+export const REPORTS_TABLE = {
+  ACCESS_FREE: 'Free view available',
+  ACCESS_PAID: 'Paid download',
+} as const;
+
+export const LEAD_CARD_STRINGS = {
+  VIEW_PROPOSAL: 'View Proposal',
+} as const;
+
+// API Keys page strings live in api-keys-strings.ts (300-line gate);
+// re-exported here so `@/config/admin-strings` stays the import path.
+export { API_KEYS_STRINGS, LINKEDIN_TOKEN_WARN_AGE_DAYS } from './api-keys-strings';
+
+// Analytics dashboard strings live in analytics-strings.ts (300-line gate);
+// re-exported here so `@/config/admin-strings` stays the import path.
+export { ANALYTICS_STRINGS } from './analytics-strings';
+
+export const ALERT_STRINGS = {
+  NEW_LEAD_SUBJECT: 'New Enterprise Lead — Raivan Global Admin',
+  REPORT_DOWNLOAD_SUBJECT: 'Report Downloaded — Raivan Global Admin',
+  OVERDUE_DIGEST_SUBJECT: 'Daily Digest: Overdue Follow-ups — Raivan Global Admin',
+  SCRAPER_FAILURE_SUBJECT: 'Scraper Failure Alert — Raivan Global Admin',
+  SCRAPER_ZERO_SUBJECT: 'Scraper Found 0 Articles — Raivan Global Admin',
+} as const;
+
 export const ADMIN_EMAIL_TEMPLATES = {
   PROPOSAL_SUBJECT: 'Your Security Audit Report is Ready — Raivan Global',
   PROPOSAL_BODY_PREFIX:
@@ -120,12 +199,16 @@ export const USERS_PAGE = {
   PAGINATION_NEXT: 'Next →',
   ERR_LOAD_FAILED: 'Failed to load users',
   ERR_INVALID_FILTER: 'Invalid filter parameters',
+  COL_ACTION: 'Action',
+  VIEW_SESSIONS: 'Sessions',
 } as const;
 
 export const ADMIN_NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard' },
   { href: '/admin/scraper', label: 'Scraper' },
+  { href: '/admin/knowledge-base', label: 'Knowledge Base' },
   { href: '/admin/leads', label: 'Enterprise Leads' },
+  { href: '/admin/coupons', label: 'Coupons' },
   { href: '/admin/followup', label: 'HNI Follow-up' },
   { href: '/admin/reports', label: 'Reports' },
   { href: '/admin/sessions', label: 'Sessions' },
@@ -133,6 +216,7 @@ export const ADMIN_NAV_ITEMS = [
   { href: '/admin/linkedin', label: 'LinkedIn' },
   { href: '/admin/analytics', label: 'Analytics' },
   { href: '/admin/audit-log', label: 'Audit Log' },
+  { href: '/admin/api-keys', label: 'API Keys' },
 ] as const;
 
 export const FOLLOWUP_STRINGS = {
@@ -144,12 +228,17 @@ export const FOLLOWUP_STRINGS = {
   COL_ACTION: 'Action',
   EMAIL_CTA: 'Send Email',
   WHATSAPP_CTA: 'WhatsApp (enter number manually)',
+  WHATSAPP_CTA_DIRECT: 'WhatsApp',
   EMPTY_STATE: 'No pending follow-ups',
   UNKNOWN_USER: 'Unknown',
   LOAD_ERROR: 'Failed to load follow-up list',
   WHATSAPP_MESSAGE:
     "Hi! This is Raivan Global. We noticed you recently downloaded your security audit report. We'd love to discuss the findings and schedule a physical audit. When would be a good time?",
 } as const;
+
+// Coupon system strings live in coupon-strings.ts (300-line gate);
+// re-exported here so `@/config/admin-strings` stays the import path.
+export { COUPON_STRINGS, COUPON_ERR, COUPON_BULK_MAX } from './coupon-strings';
 
 export const FOLLOW_UP_DAYS = 7;
 
@@ -158,6 +247,24 @@ export const SEARCH_RESULTS_PER_TYPE = 5;
 export const MANUAL_ARTICLE_RELEVANCE_SCORE = 1.0;
 
 export const SCRAPER_SOURCE_OPTIONS = ['newsapi', 'rss', 'playwright', 'manual'] as const;
+
+/**
+ * Admin idle timeout — client-side guard only (P4: server-side role-specific
+ * session maxAge documented in CLAUDE.md). Warning shows 2 minutes before
+ * automatic sign-out at 30 minutes of inactivity.
+ */
+export const ADMIN_IDLE = {
+  TIMEOUT_MS: 30 * 60_000,
+  WARN_BEFORE_MS: 2 * 60_000,
+  WARNING_MESSAGE: 'You will be signed out in 2 minutes due to inactivity.',
+  STAY_SIGNED_IN: 'Stay signed in',
+} as const;
+
+export const SCRAPER_STRINGS = {
+  SHOW_DELETED_TOGGLE: 'Show deleted articles',
+  RESTORE_CTA: 'Restore',
+  DELETED_BADGE: 'Deleted',
+} as const;
 
 export const SEARCH_DEBOUNCE_MS = 300;
 

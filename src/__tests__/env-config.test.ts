@@ -54,6 +54,28 @@ describe('validateServerEnv', () => {
     expect(() => validateServerEnv(REAL_ENV)).not.toThrow();
   });
 
+  it('throws in production when the Turnstile secret is set without the site key', () => {
+    expect(() =>
+      validateServerEnv({ ...REAL_ENV, TURNSTILE_SECRET_KEY: 'a-real-turnstile-secret' }),
+    ).toThrow(/secret without site key/);
+  });
+
+  it('throws in production when the Turnstile site key is set without the secret', () => {
+    expect(() =>
+      validateServerEnv({ ...REAL_ENV, NEXT_PUBLIC_TURNSTILE_SITE_KEY: '0x4AAAAAAA' }),
+    ).toThrow(/site key without secret/);
+  });
+
+  it('passes in production when both Turnstile vars are set', () => {
+    expect(() =>
+      validateServerEnv({
+        ...REAL_ENV,
+        TURNSTILE_SECRET_KEY: 'a-real-turnstile-secret',
+        NEXT_PUBLIC_TURNSTILE_SITE_KEY: '0x4AAAAAAA',
+      }),
+    ).not.toThrow();
+  });
+
   it('names every missing required var in the error message', () => {
     let message = '';
     try {

@@ -5,6 +5,7 @@
  * Displays enriched user rows: avatar, track, role, session metrics.
  */
 
+import Link from 'next/link';
 import { TRACK_BADGE_STYLES, PAID_STATUS_STYLES, ROLE_BADGE_STYLES } from '@/config/admin-colors';
 import { USERS_PAGE } from '@/config/admin-strings';
 import { USER_ROLE, TRACK_LABEL } from '@/config/strings';
@@ -94,6 +95,9 @@ export function UsersTable({ users }: UsersTableProps) {
             <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
               {USERS_PAGE.COL_JOINED}
             </th>
+            <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
+              {USERS_PAGE.COL_ACTION}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -142,6 +146,14 @@ export function UsersTable({ users }: UsersTableProps) {
               </td>
               <td className="px-4 py-3 text-xs text-slate-400 dark:text-slate-500">
                 {formatShortDate(u.joinedAt)}
+              </td>
+              <td className="px-4 py-3">
+                <Link
+                  href={`/admin/sessions?userId=${encodeURIComponent(u.id)}`}
+                  className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                >
+                  {USERS_PAGE.VIEW_SESSIONS}
+                </Link>
               </td>
             </tr>
           ))}

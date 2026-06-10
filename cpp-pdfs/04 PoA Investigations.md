@@ -991,34 +991,34 @@ The two sample formats that follow are representative of those used by governmen
 
 #### Complaint & Incident Details
 
-- **Name:** Ms. / Mr. ************************\_\_************************
-- **Emergency Contact Person:** ******************\_\_\_\_******************
-- **Home Address:** ****************\_\_**************** **Phone:** ****\_****
-- **Work Address:** ****************\_\_**************** **Phone:** ****\_****
+- **Name:** Ms. / Mr. **********\*\*\*\***********\_\_**********\*\*\*\***********
+- **Emergency Contact Person:** ********\*\*********\_\_\_\_********\*\*********
+- **Home Address:** ******\*\*\*\*******\_\_******\*\*\*\******* **Phone:** \***\*\_\*\***
+- **Work Address:** ******\*\*\*\*******\_\_******\*\*\*\******* **Phone:** \***\*\_\*\***
 - **Injury Sustained:** [ ] Yes [ ] No
 - **Cause of Injury:** [ ] Falling Object [ ] Slipped [ ] Tripped [ ] Type of Shoe [ ] Fell [ ] Other
 - **Condition of Area:** [ ] Liquid Spill [ ] Food Spill [ ] Dark Area [ ] Uneven Surface [ ] No Adverse Conditions [ ] Other
 - **Medical Services Contacted?** [ ] Yes [ ] No
-- **Responding Unit:** ********\_******** **Transported to:** ******\_****** [ ] If no, why not? ****\_\_\_\_****
+- **Responding Unit:** **\*\*\*\***\_**\*\*\*\*** **Transported to:** **\*\***\_**\*\*** [ ] If no, why not? \***\*\_\_\_\_\*\***
 
 #### Property Description (Stolen / Missing / Damaged / Recovered)
 
-- **Description:** **************************\_\_**************************
-- **Serial #:** **********\_\_\_********** **Value:** $ ********\_\_\_********
+- **Description:** ************\*\*************\_\_************\*\*************
+- **Serial #:** ****\*\*****\_\_\_****\*\***** **Value:** $ **\*\*\*\***\_\_\_**\*\*\*\***
 
 #### Suspect / Person of Interest Information
 
-- **Name:** Ms. / Mr. ************************\_\_************************
-- **Home Address:** ****************\_\_**************** **Phone:** ****\_****
-- **Work Address:** ****************\_\_**************** **Phone:** ****\_****
-- **Physical Description:** ********************\_\_\_\_********************
+- **Name:** Ms. / Mr. **********\*\*\*\***********\_\_**********\*\*\*\***********
+- **Home Address:** ******\*\*\*\*******\_\_******\*\*\*\******* **Phone:** \***\*\_\*\***
+- **Work Address:** ******\*\*\*\*******\_\_******\*\*\*\******* **Phone:** \***\*\_\*\***
+- **Physical Description:** ********\*\*\*\*********\_\_\_\_********\*\*\*\*********
 - **Barring Notice Issued?** [ ] Yes [ ] No
 
 #### Witness Information
 
-- **Name:** Ms. / Mr. ************************\_\_************************
-- **Home Address:** ****************\_\_**************** **Phone:** ****\_****
-- **Work Address:** ****************\_\_**************** **Phone:** ****\_****
+- **Name:** Ms. / Mr. **********\*\*\*\***********\_\_**********\*\*\*\***********
+- **Home Address:** ******\*\*\*\*******\_\_******\*\*\*\******* **Phone:** \***\*\_\*\***
+- **Work Address:** ******\*\*\*\*******\_\_******\*\*\*\******* **Phone:** \***\*\_\*\***
 - **Written Statement Requested?** [ ] Yes [ ] No
 
 #### Incident Narrative & Signatures
@@ -1027,9 +1027,9 @@ The two sample formats that follow are representative of those used by governmen
   ***
   ***
   ***
-- **Notifications Made:** **********************\_\_**********************
-- **Reporting Officer:** ************\_************ **Signature:** ****\_\_\_\_****
-- **Supervisor:** **************\_\_************** **Police Officer:** ****\_\_**** **Badge:** **\_\_\_**
+- **Notifications Made:** **********\*\***********\_\_**********\*\***********
+- **Reporting Officer:** ****\*\*\*\*****\_****\*\*\*\***** **Signature:** \***\*\_\_\_\_\*\***
+- **Supervisor:** ******\*\*******\_\_******\*\******* **Police Officer:** \***\*\_\_\*\*** **Badge:** **\_\_\_**
 
 ---
 
@@ -1472,7 +1472,7 @@ On Tuesday, August 11, 2020, at approximately 11:35 a.m., while in the rail asse
 _End of Report_
 
 **Submitted by:** Confidential Informant #1
-**Date:** **********\_\_\_\_**********
+**Date:** ****\*\*****\_\_\_\_****\*\*****
 
 ---
 
@@ -2149,18 +2149,18 @@ Privacy legislation will significantly affect the future of background investiga
 
 _Please Print Clearly_
 
-| Personal Information                                                         |                                              |
-| :--------------------------------------------------------------------------- | :------------------------------------------- |
-| **Last Name:** **********\_\_\_\_**********                                  | **First Name:** **********\_\_\_\_********** |
-| **Middle Name:** **********\_\_**********                                    | **Any Name Changes?** ********\_********     |
-| **Date Available:** ********\_\_********                                     | **Position Applied For:** ******\_\_\_****** |
-| **Present Address:** ************************\_\_************************    |
-| **Street, City, State, Zip:** ********************\_\_\_******************** |
-| **How Long at Present Address?** **\_\_\_\_**                                | **Phone Number:** (**\_) ******\_********    |
-| **Email Address:** ************************\_\_\_\_************************  |
-| **Eligible to work in USA?** [ ] Yes [ ] No                                  | **Are you 18 or older?** [ ] Yes [ ] No      |
-| **Are you over 21?** [ ] Yes [ ] No                                          | **Worked for us before?** [ ] Yes [ ] No     |
-| **How did you hear about us?** ******************\_\_\_\_******************  |
+| Personal Information                                                                 |                                                   |
+| :----------------------------------------------------------------------------------- | :------------------------------------------------ |
+| **Last Name:** ****\*\*****\_\_\_\_****\*\*****                                      | **First Name:** ****\*\*****\_\_\_\_****\*\*****  |
+| **Middle Name:** ****\*\*****\_\_****\*\*****                                        | **Any Name Changes?** **\*\*\*\***\_**\*\*\*\***  |
+| **Date Available:** **\*\*\*\***\_\_**\*\*\*\***                                     | **Position Applied For:** **\*\***\_\_\_**\*\***  |
+| **Present Address:** **********\*\*\*\***********\_\_**********\*\*\*\***********    |
+| **Street, City, State, Zip:** ********\*\*\*\*********\_\_\_********\*\*\*\********* |
+| **How Long at Present Address?** **\_\_\_\_**                                        | **Phone Number:** (**\_) \*\*\*\***\_**\*\*\*\*** |
+| **Email Address:** **********\*\*\*\***********\_\_\_\_**********\*\*\*\***********  |
+| **Eligible to work in USA?** [ ] Yes [ ] No                                          | **Are you 18 or older?** [ ] Yes [ ] No           |
+| **Are you over 21?** [ ] Yes [ ] No                                                  | **Worked for us before?** [ ] Yes [ ] No          |
+| **How did you hear about us?** ********\*\*********\_\_\_\_********\*\*********      |
 
 #### Additional Qualifications
 
@@ -2170,22 +2170,22 @@ _Are there any experiences, skills, or qualifications which may be of special be
 
 ---
 
-- **Desired Starting Pay:** $ ****\_**** / hour
+- **Desired Starting Pay:** $ \***\*\_\*\*** / hour
 - **Preferred Contact Method:** [ ] E-mail [ ] Home Phone [ ] Cell Phone [ ] Message Phone
 
 #### Education
 
-- **High School Name:** **********\_\_\_********** **City, State:** ********\_********
+- **High School Name:** ****\*\*****\_\_\_****\*\***** **City, State:** **\*\*\*\***\_**\*\*\*\***
   - **Years Completed:** **\_\_\_\_** **Did you graduate?** [ ] Yes [ ] No
-- **College/Vocational:** **********\_********** **City, State:** ********\_********
+- **College/Vocational:** ****\*\*****\_****\*\***** **City, State:** **\*\*\*\***\_**\*\*\*\***
   - **Years Completed:** **\_\_\_\_** **Did you graduate?** [ ] Yes [ ] No
 
 #### Military Service Record
 
 - **Were you in the U.S. Armed Forces?** [ ] Yes [ ] No
-- **If yes, what branch?** **********\_********** **Dates of Service:** ******\_\_******
+- **If yes, what branch?** ****\*\*****\_****\*\***** **Dates of Service:** **\*\***\_\_**\*\***
 - **DD-214 Available?** [ ] Yes [ ] No
-- **Relevant Military Training:** ********************\_********************
+- **Relevant Military Training:** ********\*\*\*\*********\_********\*\*\*\*********
 
 > [!NOTE]
 > **Job Requirement Warning:**
@@ -2198,15 +2198,15 @@ _Are there any experiences, skills, or qualifications which may be of special be
 
 _Please list all positions you have held for the last 10 years, starting with the most recent. Include all temporary jobs, contract work, and/or unpaid volunteer work. Explain all gaps in employment._
 
-1. **Employer:** **********\_\_\_********** **Phone:** ********\_\_\_********
-   - **Address:** ************************\_\_\_\_************************
-   - **Dates:** From (mm/dd/yy) ******\_\_****** To (mm/dd/yy) ******\_\_******
-   - **Position:** **********\_********** **Reason for Leaving:** ******\_\_******
+1. **Employer:** ****\*\*****\_\_\_****\*\***** **Phone:** **\*\*\*\***\_\_\_**\*\*\*\***
+   - **Address:** **********\*\*\*\***********\_\_\_\_**********\*\*\*\***********
+   - **Dates:** From (mm/dd/yy) **\*\***\_\_**\*\*** To (mm/dd/yy) **\*\***\_\_**\*\***
+   - **Position:** ****\*\*****\_****\*\***** **Reason for Leaving:** **\*\***\_\_**\*\***
    - **May we contact this employer?** [ ] Yes [ ] No
-2. **Employer:** **********\_\_\_********** **Phone:** ********\_\_\_********
-   - **Address:** ************************\_\_\_\_************************
-   - **Dates:** From (mm/dd/yy) ******\_\_****** To (mm/dd/yy) ******\_\_******
-   - **Position:** **********\_********** **Reason for Leaving:** ******\_\_******
+2. **Employer:** ****\*\*****\_\_\_****\*\***** **Phone:** **\*\*\*\***\_\_\_**\*\*\*\***
+   - **Address:** **********\*\*\*\***********\_\_\_\_**********\*\*\*\***********
+   - **Dates:** From (mm/dd/yy) **\*\***\_\_**\*\*** To (mm/dd/yy) **\*\***\_\_**\*\***
+   - **Position:** ****\*\*****\_****\*\***** **Reason for Leaving:** **\*\***\_\_**\*\***
    - **May we contact this employer?** [ ] Yes [ ] No
 
 #### Personal References
@@ -2225,9 +2225,9 @@ The Company engages in a rigorous, comprehensive background check for all applic
 
 I acknowledge this process, give my consent to the company to fully investigate my background, and freely provide the information to conduct these preemployment background checks.
 
-**Printed Name:** **********\_\_\_\_**********
-**Signature:** ************\_\_\_************
-**Date:** **************\_\_**************
+**Printed Name:** ****\*\*****\_\_\_\_****\*\*****
+**Signature:** ****\*\*\*\*****\_\_\_****\*\*\*\*****
+**Date:** ******\*\*******\_\_******\*\*******
 
 > [!NOTE]
 > **Criminal History Disclosure:**
@@ -2241,14 +2241,14 @@ I acknowledge this process, give my consent to the company to fully investigate 
 >
 > ---
 
-**Printed Name:** **********\_\_\_\_**********
-**Signature:** ************\_\_\_************
-**Date:** **************\_\_**************
+**Printed Name:** ****\*\*****\_\_\_\_****\*\*****
+**Signature:** ****\*\*\*\*****\_\_\_****\*\*\*\*****
+**Date:** ******\*\*******\_\_******\*\*******
 
-- **Name on Driver's License:** ********************\_\_********************
-- **Driver's License Number:** ********\_\_\_******** **State:** **\_ **Exp Date:** **\_****
-- **Residence Address on License:** ******************\_\_******************
-- **Social Security Number:** **\_\_**-\_**\_-\_\_\_\_** **Email:** ********\_\_\_********
+- **Name on Driver's License:** ********\*\*\*\*********\_\_********\*\*\*\*********
+- **Driver's License Number:** **\*\*\*\***\_\_\_**\*\*\*\*** **State:** **\_ **Exp Date:\*\* **\_\*\***
+- **Residence Address on License:** ********\*\*********\_\_********\*\*********
+- **Social Security Number:** **\_\_**-\_**\_-\_\_\_\_** **Email:** **\*\*\*\***\_\_\_**\*\*\*\***
 - **Date of Birth:** \_**\_/\_\_**/\_\_\_\_
 
 #### Application Agreement
@@ -2263,11 +2263,11 @@ I authorize The Company and its representatives to contact the persons or compan
 
 I further authorize a background investigation to be made by The Company and its selected agents to solicit information about my background including but not limited to, information about my employment, education, driving record, criminal record, as required to determine licensure eligibility, and general public records history.
 
-**Signature:** ************\_\_\_************
-**Date:** **************\_\_**************
+**Signature:** ****\*\*\*\*****\_\_\_****\*\*\*\*****
+**Date:** ******\*\*******\_\_******\*\*******
 
-**Application Reviewer Name/Sig:** **********\_\_\_\_**********
-**Date:** **************\_\_**************
+**Application Reviewer Name/Sig:** ****\*\*****\_\_\_\_****\*\*****
+**Date:** ******\*\*******\_\_******\*\*******
 
 ---
 
@@ -2275,11 +2275,11 @@ I further authorize a background investigation to be made by The Company and its
 
 The individual below has listed you as a prior employer and has authorized our security company to obtain information regarding prior work history. Please fill out the following information and return it via fax, mail, or email as soon as possible. Your information will be strictly confidential. Thank you.
 
-- **Employee Name:** **********\_\_\_\_**********
-- **Name of Former Employer:** **********\_\_\_\_**********
+- **Employee Name:** ****\*\*****\_\_\_\_****\*\*****
+- **Name of Former Employer:** ****\*\*****\_\_\_\_****\*\*****
 - **Was employed by your company?** [ ] Yes [ ] No
 - **Dates of Employment:** From \_**\_/\_\_**/\_**\_ To \_\_**/\_**\_/\_\_**
-- **Reason for Separation:** **********\_\_\_\_**********
+- **Reason for Separation:** ****\*\*****\_\_\_\_****\*\*****
 - **Eligible for Rehire?** [ ] Yes [ ] No
 
 #### Performance Evaluation
@@ -2302,7 +2302,7 @@ Please rate the employee on the following attributes:
 
 ---
 
-**Completed By (Name/Title - Optional):** **********\_\_\_\_**********
+**Completed By (Name/Title - Optional):** ****\*\*****\_\_\_\_****\*\*****
 **Date:** \_**\_/\_\_**/\_\_\_\_
 
 ---

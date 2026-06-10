@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
   const filters = {
     status: p.get('status') ?? undefined,
     track: p.get('track') ?? undefined,
+    userId: p.get('userId') ?? undefined,
     page: safeInt(p.get('page'), 1),
     limit: safeInt(p.get('limit'), 50),
   };

@@ -58,6 +58,20 @@ export default function SessionsPage() {
         </div>
       </div>
 
+      {data.userIdFilter && (
+        <p className="text-xs text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 rounded-md px-4 py-2 flex items-center justify-between">
+          <span>
+            Filtered by user: <span className="font-mono">{data.userIdFilter}</span>
+          </span>
+          <button
+            onClick={() => data.setUserIdFilter('')}
+            className="font-medium underline hover:no-underline"
+          >
+            Clear
+          </button>
+        </p>
+      )}
+
       {data.error && (
         <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-md px-4 py-2">
           {data.error}

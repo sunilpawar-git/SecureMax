@@ -5,7 +5,6 @@
  */
 
 import { prisma } from '@/lib/prisma';
-import { FOLLOWUP_STRINGS } from '@/config/admin-strings';
 import { TRACK } from '@/config/strings';
 
 export interface FollowUpItem {
@@ -13,6 +12,7 @@ export interface FollowUpItem {
   userId: string;
   userName: string | null;
   userEmail: string;
+  userPhone: string | null;
   downloadedAt: Date | null;
   followupDueAt: Date | null;
   status: 'overdue' | 'due_today' | 'upcoming';
@@ -29,10 +29,10 @@ export function computeFollowUpStatus(dueAt: Date): 'overdue' | 'due_today' | 'u
   return 'upcoming';
 }
 
-export function buildWhatsAppUrl(phone: string): string {
-  const encoded = encodeURIComponent(FOLLOWUP_STRINGS.WHATSAPP_MESSAGE);
-  return `https://wa.me/${phone}?text=${encoded}`;
-}
+// Client-safe URL builder lives in followup-links.ts (this module pulls in
+// Prisma and must never be imported from a client component); re-exported here
+// to keep the service the single import surface for server callers.
+export { buildWhatsAppUrl } from './followup-links';
 
 export async function getFollowUpList(): Promise<FollowUpItem[]> {
   const sessions = await prisma.auditSession.findMany({
@@ -52,6 +52,7 @@ export async function getFollowUpList(): Promise<FollowUpItem[]> {
         select: {
           name: true,
           email: true,
+          phone: true,
         },
       },
     },
@@ -63,6 +64,7 @@ export async function getFollowUpList(): Promise<FollowUpItem[]> {
     userId: s.userId,
     userName: s.user.name,
     userEmail: s.user.email,
+    userPhone: s.user.phone,
     downloadedAt: s.downloadedAt,
     followupDueAt: s.postDownloadFollowupAt,
     status: s.postDownloadFollowupAt ? computeFollowUpStatus(s.postDownloadFollowupAt) : 'upcoming',

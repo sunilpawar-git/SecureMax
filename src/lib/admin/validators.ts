@@ -15,6 +15,12 @@ export const LeadStatusUpdateSchema = z.object({
   newStatus: z.enum(leadStatusValues),
 });
 
+export const LeadMarkPaidSchema = z.object({
+  action: z.literal('mark_paid'),
+  leadId: z.string().min(1),
+  invoiceRef: z.string().trim().max(200).optional(),
+});
+
 export const LeadEmailSchema = z.object({
   leadId: z.string().min(1),
   subject: z.string().min(1).max(200),
@@ -44,6 +50,11 @@ export const ThreatIntelDeleteSchema = z.object({
   articleId: z.string().min(1),
 });
 
+export const ThreatIntelRestoreSchema = z.object({
+  action: z.literal('restore'),
+  articleId: z.string().min(1),
+});
+
 export const ThreatIntelFilterSchema = z.object({
   domains: z
     .string()
@@ -61,6 +72,10 @@ export const ThreatIntelFilterSchema = z.object({
     .string()
     .optional()
     .transform((v) => (v === 'true' ? true : v === 'false' ? false : undefined)),
+  showDeleted: z
+    .string()
+    .optional()
+    .transform((v) => v === 'true'),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(50),
 });
@@ -105,3 +120,56 @@ export const UserFilterSchema = z.object({
 });
 
 export type UserFilter = z.infer<typeof UserFilterSchema>;
+
+export const CouponCreateSchema = z
+  .object({
+    mode: z.enum(['single', 'bulk']),
+    count: z.coerce.number().int().min(1).max(500).optional(),
+    note: z.string().trim().max(200).optional(),
+    expiresAt: z.string().datetime().optional(),
+  })
+  .refine((v) => v.mode !== 'bulk' || v.count !== undefined, {
+    message: 'count is required for bulk mode',
+    path: ['count'],
+  });
+
+export const CouponFilterSchema = z.object({
+  status: z.enum(['active', 'redeemed', 'revoked', 'expired']).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  format: z.enum(['json', 'csv']).default('json'),
+});
+
+export const CouponRedeemSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .min(4)
+    .max(20)
+    .regex(/^[A-Za-z0-9]+$/),
+  sessionId: z.string().min(1),
+});
+
+/**
+ * Provider allowlist — SSOT for which third-party keys can be stored.
+ * Tech debt (accepted): adding a new provider requires extending this enum.
+ */
+export const API_KEY_PROVIDERS = ['gemini', 'resend', 'razorpay', 'linkedin', 'turnstile'] as const;
+
+const apiKeyValue = z.string().trim().min(10).max(512);
+
+export const ApiKeyStoreSchema = z.object({
+  provider: z.enum(API_KEY_PROVIDERS),
+  keyName: z.string().trim().min(1).max(100),
+  keyValue: apiKeyValue,
+});
+
+export const ApiKeyRotateSchema = z.object({
+  provider: z.enum(API_KEY_PROVIDERS),
+  newKeyValue: apiKeyValue,
+});
+
+export const ApiKeyRevokeSchema = z.object({
+  keyId: z.string().min(1),
+  reason: z.string().trim().max(500).optional(),
+});

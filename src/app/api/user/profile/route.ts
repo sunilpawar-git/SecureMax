@@ -1,15 +1,17 @@
 /**
- * PATCH /api/user/profile — update user profile fields (city, country).
+ * PATCH /api/user/profile — update user profile fields (city, country, phone).
  */
 
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { requireAuth, unauthorizedResponse, apiSuccess, apiError } from '@/lib/api';
 import { prisma } from '@/lib/prisma';
+import { normalizePhone } from '@/lib/phone';
 
 const ProfileUpdateSchema = z.object({
   city: z.string().min(1).max(100).optional(),
   country: z.string().min(1).max(100).optional(),
+  phone: z.string().max(25).optional(),
 });
 
 export async function PATCH(request: NextRequest) {
@@ -28,9 +30,22 @@ export async function PATCH(request: NextRequest) {
     return apiError('Invalid profile data', 400);
   }
 
-  const { city, country } = parsed.data;
-  if (!city && !country) {
-    return apiError('At least one field (city or country) required', 400);
+  const { city, country, phone } = parsed.data;
+  if (!city && !country && phone === undefined) {
+    return apiError('At least one field (city, country, or phone) required', 400);
+  }
+
+  // Empty string clears the phone; non-empty must normalize to valid E.164 digits
+  let normalizedPhone: string | null | undefined;
+  if (phone !== undefined) {
+    if (phone.trim() === '') {
+      normalizedPhone = null;
+    } else {
+      normalizedPhone = normalizePhone(phone);
+      if (!normalizedPhone) {
+        return apiError('Invalid phone number', 422);
+      }
+    }
   }
 
   try {
@@ -39,8 +54,9 @@ export async function PATCH(request: NextRequest) {
       data: {
         ...(city && { city }),
         ...(country && { country }),
+        ...(normalizedPhone !== undefined && { phone: normalizedPhone }),
       },
-      select: { city: true, country: true },
+      select: { city: true, country: true, phone: true },
     });
     return apiSuccess(updated);
   } catch {

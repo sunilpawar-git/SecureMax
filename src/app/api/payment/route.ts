@@ -28,8 +28,9 @@ import {
   logPaymentVerification,
 } from '@/lib/payment/payment-service';
 import { logWebhookSuccess, logWebhookFailure } from '@/lib/admin/webhook-service';
+import { sendNewLeadAlert } from '@/lib/admin/alert-service';
 import { verifyTurnstile } from '@/lib/security/turnstile';
-import { PAYMENT, CAPTCHA } from '@/config/strings';
+import { PAYMENT, PAYMENT_ERR, CAPTCHA } from '@/config/strings';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
@@ -61,6 +62,11 @@ async function handleCreateOrder(request: Request, userId: string) {
   });
   if (!session) {
     return apiError('Session not found', 404);
+  }
+  // Server-side enforcement: a session unlocked via coupon redemption or admin
+  // mark-paid must never reach Razorpay — the UI hiding the Pay button is not enough.
+  if (session.paid) {
+    return apiError(PAYMENT_ERR.ALREADY_UNLOCKED, 409);
   }
 
   try {
@@ -143,6 +149,14 @@ async function handleEnterpriseProposal(request: Request) {
         sourceSessionId: reportId,
         status: 'new',
       },
+    });
+
+    // Fire-and-forget admin notification — alert failure must not fail the lead
+    void sendNewLeadAlert({
+      id: lead.id,
+      company: lead.company,
+      name: lead.name,
+      email: lead.email,
     });
 
     return apiSuccess(

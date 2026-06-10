@@ -14,6 +14,8 @@ export interface Lead {
   designation: string | null;
   facilitiesCount: number | null;
   sourceSessionId: string | null;
+  couponCode: string | null;
+  sessionPaid: boolean | null;
   status: string;
   followUpDueAt: string | null;
   lastEmailSentAt: string | null;
@@ -38,6 +40,7 @@ export interface LeadsData {
   setSearchQuery: (q: string) => void;
   updateStatus: (leadId: string, newStatus: string) => Promise<boolean>;
   sendEmail: (leadId: string, subject: string, body: string) => Promise<boolean>;
+  markPaid: (leadId: string, invoiceRef?: string) => Promise<boolean>;
   refresh: () => void;
 }
 
@@ -105,6 +108,22 @@ export function useLeadsData(): LeadsData {
     [load],
   );
 
+  const markPaid = useCallback(
+    async (leadId: string, invoiceRef?: string) => {
+      const res = await fetch('/api/admin/leads', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'mark_paid', leadId, ...(invoiceRef && { invoiceRef }) }),
+      });
+      if (res.ok) {
+        await load();
+        return true;
+      }
+      return false;
+    },
+    [load],
+  );
+
   return {
     leads,
     total,
@@ -116,6 +135,7 @@ export function useLeadsData(): LeadsData {
     setSearchQuery,
     updateStatus,
     sendEmail,
+    markPaid,
     refresh: load,
   };
 }

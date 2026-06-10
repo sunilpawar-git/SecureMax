@@ -14,6 +14,7 @@ interface KanbanBoardProps {
   leads: Lead[];
   onStatusChange: (leadId: string, newStatus: string) => void;
   onEmail: (lead: Lead) => void;
+  onMarkPaid?: (lead: Lead) => void;
 }
 
 const COLUMNS = [
@@ -24,7 +25,7 @@ const COLUMNS = [
   LEAD_STATUS.CLOSED_LOST,
 ];
 
-export function KanbanBoard({ leads, onStatusChange, onEmail }: KanbanBoardProps) {
+export function KanbanBoard({ leads, onStatusChange, onEmail, onMarkPaid }: KanbanBoardProps) {
   const [dragLeadId, setDragLeadId] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState<string | null>(null);
 
@@ -94,7 +95,12 @@ export function KanbanBoard({ leads, onStatusChange, onEmail }: KanbanBoardProps
                   aria-label="Drag to reorder lead"
                   className="cursor-grab active:cursor-grabbing"
                 >
-                  <LeadCard lead={lead} onStatusChange={onStatusChange} onEmail={onEmail} />
+                  <LeadCard
+                    lead={lead}
+                    onStatusChange={onStatusChange}
+                    onEmail={onEmail}
+                    onMarkPaid={onMarkPaid}
+                  />
                 </div>
               ))}
             </div>

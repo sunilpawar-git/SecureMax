@@ -47,6 +47,9 @@ const mockPrisma = {
   followUpReminder: { create: jest.fn() },
   auditSession: { findUnique: jest.fn(), update: jest.fn() },
   adminAction: { create: jest.fn() },
+  couponCode: { create: jest.fn() },
+  // Interactive transaction: run the callback against the same mock client
+  $transaction: (fn: (tx: unknown) => unknown) => fn(mockPrisma),
 };
 jest.mock('@/lib/prisma', () => ({ prisma: mockPrisma }));
 jest.mock('@/lib/admin/email', () => ({
@@ -60,6 +63,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   mockPrisma.adminAction.create.mockResolvedValue({ id: 'act-1' });
   mockPrisma.followUpReminder.create.mockResolvedValue({ id: 'fr-1' });
+  mockPrisma.couponCode.create.mockResolvedValue({ id: 'cp-1', code: 'TESTCODE' });
 });
 
 describe('updateLeadStatus — proposal_sent side effects (sourceSessionId field)', () => {

@@ -99,11 +99,11 @@ async def lifespan(app: FastAPI):
     scheduler.add_job(
         scheduled_scrape,
         "cron",
-        hour=18,
-        minute=45,
+        hour=2,
+        minute=30,
         id="daily_scraper",
         replace_existing=True,
-    )
+    )  # 02:30 UTC = 08:00 IST — fresh intel before the workday starts
     scheduler.add_job(
         scheduled_weekly_briefing,
         "cron",
@@ -116,7 +116,7 @@ async def lifespan(app: FastAPI):
     scheduler.start()
     app.state.scheduler = scheduler
     logger.info(
-        "APScheduler started — daily scraper 18:45 UTC, "
+        "APScheduler started — daily scraper 02:30 UTC (08:00 IST), "
         "weekly LinkedIn briefing Mon 03:30 UTC (09:00 IST)"
     )
 

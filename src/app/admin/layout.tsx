@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { USER_ROLE } from '@/config/strings';
 import { AdminNav } from './_components/AdminNav';
+import { IdleLogout } from './_components/IdleLogout';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -18,6 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <AdminNav />
       <main className="max-w-7xl mx-auto p-4 md:p-6">{children}</main>
+      <IdleLogout />
     </div>
   );
 }

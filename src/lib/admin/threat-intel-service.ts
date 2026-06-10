@@ -23,6 +23,7 @@ export interface ThreatIntelFilters {
   search?: string;
   source?: string;
   usedInReports?: boolean;
+  showDeleted?: boolean;
   page?: number;
   limit?: number;
 }
@@ -36,11 +37,13 @@ export async function getArticles(filters: ThreatIntelFilters = {}) {
     search,
     source,
     usedInReports,
+    showDeleted = false,
     page = 1,
     limit = 50,
   } = filters;
 
-  const where: Prisma.ThreatIntelWhereInput = { softDeleted: false };
+  // showDeleted=true includes soft-deleted rows alongside live ones.
+  const where: Prisma.ThreatIntelWhereInput = showDeleted ? {} : { softDeleted: false };
 
   if (search) where.title = { contains: search, mode: 'insensitive' };
   if (source) where.source = source;
@@ -144,6 +147,28 @@ export async function deleteArticle(
   await logAdminAction({
     adminId,
     actionType: ADMIN_ACTION_TYPE.THREAT_INTEL_DELETED,
+    entityType: ADMIN_ENTITY_TYPE.THREAT_INTEL,
+    entityId: articleId,
+  });
+
+  return { success: true };
+}
+
+export async function restoreArticle(
+  articleId: string,
+  adminId: string,
+): Promise<DeleteArticleResult> {
+  const article = await prisma.threatIntel.findUnique({ where: { id: articleId } });
+  if (!article) return { success: false, error: ADMIN_ERR.THREAT_INTEL_NOT_FOUND };
+
+  await prisma.threatIntel.update({
+    where: { id: articleId },
+    data: { softDeleted: false },
+  });
+
+  await logAdminAction({
+    adminId,
+    actionType: ADMIN_ACTION_TYPE.THREAT_INTEL_RESTORED,
     entityType: ADMIN_ENTITY_TYPE.THREAT_INTEL,
     entityId: articleId,
   });

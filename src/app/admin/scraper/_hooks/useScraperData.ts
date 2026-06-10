@@ -27,6 +27,7 @@ export interface Article {
   industryTags: string[];
   source: string;
   usedInReports: boolean;
+  softDeleted: boolean;
   scrapedAt: string | null;
 }
 
@@ -42,12 +43,15 @@ export interface ScraperData {
   isRunning: boolean;
   error: string | null;
   filters: { search: string; domains: string[]; source: string };
+  showDeleted: boolean;
+  setShowDeleted: (v: boolean) => void;
   setSearch: (s: string) => void;
   setDomains: (d: string[]) => void;
   setSource: (s: string) => void;
   runScraper: () => Promise<void>;
   addArticle: (data: Record<string, unknown>) => Promise<boolean>;
   deleteArticle: (id: string) => Promise<boolean>;
+  restoreArticle: (id: string) => Promise<boolean>;
   refresh: () => void;
 }
 
@@ -60,6 +64,7 @@ export function useScraperData(): ScraperData {
   const [search, setSearch] = useState('');
   const [domains, setDomains] = useState<string[]>([]);
   const [source, setSource] = useState('');
+  const [showDeleted, setShowDeleted] = useState(false);
 
   const loadHealth = useCallback(async () => {
     try {
@@ -75,6 +80,7 @@ export function useScraperData(): ScraperData {
     if (search) params.set('search', search);
     if (domains.length) params.set('domains', domains.join(','));
     if (source) params.set('source', source);
+    if (showDeleted) params.set('showDeleted', 'true');
     try {
       const res = await fetch(`/api/admin/threat-intel?${params}`);
       if (res.ok) {
@@ -85,7 +91,7 @@ export function useScraperData(): ScraperData {
     } catch {
       /* non-critical */
     }
-  }, [search, domains, source]);
+  }, [search, domains, source, showDeleted]);
 
   const refresh = useCallback(() => {
     loadHealth();
@@ -150,6 +156,22 @@ export function useScraperData(): ScraperData {
     [loadArticles],
   );
 
+  const restoreArticleFn = useCallback(
+    async (id: string) => {
+      const res = await fetch('/api/admin/threat-intel', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'restore', articleId: id }),
+      });
+      if (res.ok) {
+        await loadArticles();
+        return true;
+      }
+      return false;
+    },
+    [loadArticles],
+  );
+
   return {
     health,
     articles,
@@ -157,12 +179,15 @@ export function useScraperData(): ScraperData {
     isRunning,
     error,
     filters: { search, domains, source },
+    showDeleted,
+    setShowDeleted,
     setSearch,
     setDomains,
     setSource,
     runScraper,
     addArticle,
     deleteArticle: deleteArticleFn,
+    restoreArticle: restoreArticleFn,
     refresh,
   };
 }

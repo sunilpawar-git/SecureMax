@@ -56,17 +56,25 @@ export default auth(async (req) => {
 
     const isAiEndpoint = pathname.includes('/questionnaire') || pathname.includes('/report');
     const isAdminEndpoint = pathname.startsWith('/api/admin');
+    // Brute-force surface only (signin/callback) — NOT /api/auth/session,
+    // which SessionProvider polls legitimately and must stay on global limits.
+    const isAuthEndpoint =
+      pathname.startsWith('/api/auth/signin') || pathname.startsWith('/api/auth/callback');
 
     const windowMs = isAdminEndpoint
       ? RATE_LIMITS.ADMIN_WINDOW_MS
-      : isAiEndpoint
-        ? RATE_LIMITS.AI_ENDPOINT_WINDOW_MS
-        : RATE_LIMITS.GLOBAL_WINDOW_MS;
+      : isAuthEndpoint
+        ? RATE_LIMITS.AUTH_WINDOW_MS
+        : isAiEndpoint
+          ? RATE_LIMITS.AI_ENDPOINT_WINDOW_MS
+          : RATE_LIMITS.GLOBAL_WINDOW_MS;
     const maxReqs = isAdminEndpoint
       ? RATE_LIMITS.ADMIN_MAX_REQUESTS
-      : isAiEndpoint
-        ? RATE_LIMITS.AI_ENDPOINT_MAX_REQUESTS
-        : RATE_LIMITS.GLOBAL_MAX_REQUESTS;
+      : isAuthEndpoint
+        ? RATE_LIMITS.AUTH_MAX_REQUESTS
+        : isAiEndpoint
+          ? RATE_LIMITS.AI_ENDPOINT_MAX_REQUESTS
+          : RATE_LIMITS.GLOBAL_MAX_REQUESTS;
 
     const result = await checkRateLimit(`${ip}:${pathname}`, windowMs, maxReqs);
     if (!result.allowed) {

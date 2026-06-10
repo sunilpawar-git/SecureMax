@@ -95,12 +95,9 @@ export const LIMITS = {
   EMBEDDING_DIMENSIONS: 768,
 } as const;
 
-export const PAYMENT = {
-  CURRENCY: 'INR',
-  AMOUNT_PAISE: 499900,
-  MIN_AMOUNT_PAISE: 499900,
-  MAX_AMOUNT_PAISE: 999900,
-} as const;
+// Payment constants live in payment.ts (avoids a circular import with
+// landing-strings.ts); re-exported here so the import path stays stable.
+export { PAYMENT, PAYMENT_PAGE } from './payment';
 
 export const RADAR_THRESHOLDS = {
   GREEN_MIN: 70,
@@ -132,6 +129,17 @@ export const VALIDATION_ERR = {
 
 export const PAYMENT_ERR = {
   GATEWAY_LOADING: 'Payment gateway is loading. Please try again in a moment.',
+  ALREADY_UNLOCKED: 'This report is already unlocked — no payment needed.',
+} as const;
+
+export const PAYMENT_COUPON = {
+  TOGGLE: 'Have a coupon code?',
+  PLACEHOLDER: 'Enter coupon code',
+  APPLY: 'Apply',
+  APPLYING: 'Checking…',
+  SUCCESS: 'Coupon applied — your report is unlocked.',
+  VIEW_REPORT: 'View Report',
+  ERROR_GENERIC: 'Invalid or expired code',
 } as const;
 
 export const NAV = {
@@ -181,6 +189,8 @@ export const QUESTIONNAIRE = {
   TRUST_SIGNAL: 'Encrypted end-to-end. Grounded in CPP Seven Precis.',
   SCORE_OUT_OF: '/ 100',
   RADAR_ARIA: 'Live security posture across the seven CPP domains',
+  BOT_CHECK_TITLE: 'Quick security check',
+  BOT_CHECK_SUBTITLE: 'Complete the verification below to begin your assessment.',
 } as const;
 
 /** Question-card copy and accessibility labels (questionnaire active state). */
@@ -213,6 +223,10 @@ export { REPORT_STRINGS } from './report-strings';
 // Auth + onboarding-profile strings live in auth-strings.ts (same 300-line-gate
 // rationale); re-exported so `@/config/strings` stays the single import path.
 export { AUTH, AUTH_ERROR_MESSAGES, ONBOARDING, ONBOARDING_COUNTRIES } from './auth-strings';
+
+// Landing marketing copy (pricing, FAQ, footer, sample report, demo) lives in
+// landing-strings.ts (same 300-line-gate rationale); re-exported here.
+export { PRICING, FAQ, FOOTER, SAMPLE_REPORT, DEMO, TESTIMONIALS } from './landing-strings';
 
 export const DPDPA = {
   CONSENT_VERSION: 'v1',

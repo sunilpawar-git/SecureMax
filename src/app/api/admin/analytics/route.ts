@@ -6,8 +6,13 @@
 import { Prisma } from '@/generated/prisma/client';
 import { requireAdmin, forbiddenResponse, apiSuccess, apiError } from '@/lib/api';
 import { prisma } from '@/lib/prisma';
-
-const AMOUNT_PER_REPORT_PAISE = 4999_00;
+import {
+  getRevenueSplit,
+  getFunnelMetrics,
+  getSessionHealthMetrics,
+  getLinkedInROI,
+} from '@/lib/admin/analytics-service';
+import { PAYMENT } from '@/config/strings';
 
 export async function GET() {
   const admin = await requireAdmin();
@@ -28,7 +33,7 @@ export async function GET() {
     const abandoned = statusCounts.find((s) => s.status === 'abandoned')?._count.id ?? 0;
     const avgQuestionsPerSession = totalCount > 0 ? Math.round(eventAggregate / totalCount) : 0;
 
-    const amountCollected = paidCount * AMOUNT_PER_REPORT_PAISE;
+    const amountCollected = paidCount * PAYMENT.AMOUNT_PAISE;
     const conversionRate = completed > 0 ? Math.round((paidCount / completed) * 100) : 0;
 
     const sessionsWithScores = await prisma.auditSession.findMany({
@@ -86,11 +91,23 @@ export async function GET() {
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([date, data]) => ({ date, ...data }));
 
+    // Phase 10 extensions — funnel, payment split, session health, LinkedIn ROI
+    const [revenueSplit, funnel, sessionHealth, linkedinRoi] = await Promise.all([
+      getRevenueSplit(),
+      getFunnelMetrics(),
+      getSessionHealthMetrics(),
+      getLinkedInROI(),
+    ]);
+
     return apiSuccess({
       sessions: { total: totalCount, completed, abandoned, avgQuestionsPerSession },
       revenue: { totalPaid: paidCount, amountCollected, conversionRate },
       domains,
       trends,
+      revenueSplit,
+      funnel,
+      sessionHealth,
+      linkedinRoi,
     });
   } catch {
     return apiError('Failed to load analytics', 500);

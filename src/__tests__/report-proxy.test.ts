@@ -36,6 +36,18 @@ jest.mock('@/lib/env', () => ({
   env: { AI_SERVICE_URL: 'http://localhost:8000', AI_SERVICE_KEY: 'test-key' },
 }));
 
+// First-download bookkeeping (Phase 5) — keep these tests hermetic
+jest.mock('@/lib/prisma', () => ({
+  prisma: {
+    auditSession: { updateMany: jest.fn().mockResolvedValue({ count: 0 }) },
+    user: { findUnique: jest.fn() },
+  },
+}));
+
+jest.mock('@/lib/admin/alert-service', () => ({
+  sendReportDownloadAlert: jest.fn(),
+}));
+
 // --- Imports after mocks ---
 
 import type { NextRequest } from 'next/server';

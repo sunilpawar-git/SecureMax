@@ -2,7 +2,12 @@ import { HeroSection } from '@/components/landing/HeroSection';
 import { LandingHeader } from '@/components/landing/LandingHeader';
 import { TrustSignals } from '@/components/landing/TrustSignals';
 import { HowItWorks } from '@/components/landing/HowItWorks';
-import { APP, CTA, TRUST_STACK } from '@/config/strings';
+import { DemoWalkthroughSection } from '@/components/landing/DemoWalkthroughSection';
+import { PricingSection } from '@/components/landing/PricingSection';
+import { SampleReportPreview } from '@/components/landing/SampleReportPreview';
+import { TestimonialsSection } from '@/components/landing/TestimonialsSection';
+import { FAQSection } from '@/components/landing/FAQSection';
+import { APP, CTA, TRUST_STACK, FOOTER } from '@/config/strings';
 import { LEGAL_LINKS } from '@/config/legal-strings';
 import Link from 'next/link';
 
@@ -13,6 +18,11 @@ export default function LandingPage() {
       <main>
         <HeroSection />
         <HowItWorks />
+        <DemoWalkthroughSection />
+        <PricingSection />
+        <SampleReportPreview />
+        <TestimonialsSection />
+        <FAQSection />
         <TrustSignals />
 
         <section className="py-20 px-6 bg-white dark:bg-slate-800">
@@ -41,31 +51,50 @@ export default function LandingPage() {
         </section>
 
         <footer className="py-8 px-6 border-t border-slate-100 dark:border-slate-700">
-          <div className="mx-auto max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 dark:text-slate-500">
-            <p suppressHydrationWarning>
-              &copy; {new Date().getFullYear()} {APP.NAME}. All rights reserved.
-            </p>
-            <div className="flex gap-4">
-              <Link
-                href={LEGAL_LINKS.PRIVACY.href}
-                className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-              >
-                {LEGAL_LINKS.PRIVACY.label}
-              </Link>
-              <Link
-                href={LEGAL_LINKS.TERMS.href}
-                className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-              >
-                {LEGAL_LINKS.TERMS.label}
-              </Link>
-              <a
-                href={`mailto:${APP.SUPPORT_EMAIL}`}
-                className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-              >
-                {APP.SUPPORT_EMAIL}
-              </a>
-              <span>{TRUST_STACK.CREDENTIAL}</span>
+          <div className="mx-auto max-w-4xl space-y-4 text-xs text-slate-400 dark:text-slate-500">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p suppressHydrationWarning>
+                &copy; {new Date().getFullYear()} {APP.NAME}. All rights reserved.
+              </p>
+              <div className="flex flex-wrap gap-4 justify-center">
+                <Link
+                  href={LEGAL_LINKS.PRIVACY.href}
+                  className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                >
+                  {LEGAL_LINKS.PRIVACY.label}
+                </Link>
+                <Link
+                  href={LEGAL_LINKS.TERMS.href}
+                  className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                >
+                  {LEGAL_LINKS.TERMS.label}
+                </Link>
+                <a
+                  href={`mailto:${APP.SUPPORT_EMAIL}`}
+                  className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                >
+                  {APP.SUPPORT_EMAIL}
+                </a>
+                <a
+                  href={FOOTER.LINKEDIN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                >
+                  {FOOTER.LINKEDIN_LABEL}
+                </a>
+                <a
+                  href={FOOTER.WHATSAPP_CONTACT}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                >
+                  {FOOTER.WHATSAPP_LABEL}
+                </a>
+                <span>{TRUST_STACK.CREDENTIAL}</span>
+              </div>
             </div>
+            <p className="text-center sm:text-left">{FOOTER.ADDRESS}</p>
           </div>
         </footer>
       </main>

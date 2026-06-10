@@ -10,6 +10,7 @@ import { useLeadsData, type Lead } from './_hooks/useLeadsData';
 import { KanbanBoard } from './_components/KanbanBoard';
 import { EmailModal } from './_components/EmailModal';
 import { StatusConfirmDialog } from './_components/StatusConfirmDialog';
+import { MarkPaidDialog } from './_components/MarkPaidDialog';
 import { LEAD_STATUS, LEAD_STATUS_LABEL } from '@/config/admin-strings';
 
 const STATUS_OPTIONS = ['', ...Object.values(LEAD_STATUS)] as const;
@@ -17,6 +18,7 @@ const STATUS_OPTIONS = ['', ...Object.values(LEAD_STATUS)] as const;
 export default function LeadsPage() {
   const data = useLeadsData();
   const [emailTarget, setEmailTarget] = useState<Lead | null>(null);
+  const [markPaidTarget, setMarkPaidTarget] = useState<Lead | null>(null);
   const [confirmAction, setConfirmAction] = useState<{
     leadId: string;
     company: string;
@@ -80,6 +82,18 @@ export default function LeadsPage() {
           leads={data.leads}
           onStatusChange={handleStatusChange}
           onEmail={setEmailTarget}
+          onMarkPaid={setMarkPaidTarget}
+        />
+      )}
+
+      {markPaidTarget && (
+        <MarkPaidDialog
+          lead={markPaidTarget}
+          onConfirm={async (invoiceRef) => {
+            await data.markPaid(markPaidTarget.id, invoiceRef);
+            setMarkPaidTarget(null);
+          }}
+          onCancel={() => setMarkPaidTarget(null)}
         />
       )}
 

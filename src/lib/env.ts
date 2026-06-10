@@ -57,6 +57,19 @@ export function validateServerEnv(source: EnvSource = process.env): { ok: true }
         'Set real values before deploying.',
     );
   }
+
+  // Turnstile is configured as a pair. Secret without site key: the UI renders
+  // no captcha but the server fail-closes — every questionnaire start 403s.
+  // Site key without secret: the captcha renders but is never verified.
+  const hasSecret = !isPlaceholder(source.TURNSTILE_SECRET_KEY);
+  const hasSiteKey = !isPlaceholder(source.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  if (hasSecret !== hasSiteKey) {
+    throw new Error(
+      'TURNSTILE_SECRET_KEY and NEXT_PUBLIC_TURNSTILE_SITE_KEY must be set together ' +
+        `(found ${hasSecret ? 'secret without site key' : 'site key without secret'}). ` +
+        'Set both or neither.',
+    );
+  }
   return { ok: true };
 }
 
@@ -119,6 +132,9 @@ export const env = {
   },
   get LINKEDIN_ACCESS_TOKEN(): string {
     return read('LINKEDIN_ACCESS_TOKEN');
+  },
+  get LINKEDIN_ORG_ID(): string {
+    return read('LINKEDIN_ORG_ID');
   },
   get TURNSTILE_SECRET_KEY(): string {
     return read('TURNSTILE_SECRET_KEY');

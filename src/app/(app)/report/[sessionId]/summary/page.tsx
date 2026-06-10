@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { FreeSummaryView } from '@/components/report/FreeSummaryView';
 import { Button } from '@/components/ui/Button';
-import { APP, CTA, TRACK, REPORT_STRINGS } from '@/config/strings';
+import { APP, CTA, TRACK, REPORT_STRINGS, PAYMENT } from '@/config/strings';
 import type { Finding } from '@/components/report/FindingCard';
 import type { RadarScores } from '@/app/(app)/questionnaire/types';
 
@@ -80,6 +80,7 @@ export default function ReportSummaryPage() {
   }
 
   const isEnterprise = data.track === TRACK.ENTERPRISE;
+  const priceLabel = `\u20B9${(PAYMENT.AMOUNT_PAISE / 100).toLocaleString('en-IN')}`;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8 px-4">
@@ -121,7 +122,8 @@ export default function ReportSummaryPage() {
           ) : (
             <>
               <h3 className="font-semibold text-emerald-900 dark:text-emerald-300">
-                {REPORT_STRINGS.UNLOCK_FULL_REPORT}
+                {REPORT_STRINGS.UNLOCK_NUDGE_PREFIX}
+                {priceLabel}
               </h3>
               <p className="text-sm text-emerald-700 dark:text-emerald-300">
                 {REPORT_STRINGS.UNLOCK_FULL_REPORT_DESC}

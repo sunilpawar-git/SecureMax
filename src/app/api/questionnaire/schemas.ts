@@ -18,6 +18,7 @@ const answer = z.union([z.string(), z.array(z.string())]);
 
 export const StartSchema = z.object({
   track: z.enum([TRACK.HNI, TRACK.ENTERPRISE], { message: VALIDATION_ERR.INVALID_TRACK }),
+  captcha_token: z.string().max(5000).optional(),
 });
 
 export const AnswerSchema = z.object({

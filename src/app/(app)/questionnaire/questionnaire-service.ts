@@ -94,10 +94,13 @@ async function apiFetch(url: string, body: object): Promise<unknown> {
   return data;
 }
 
-export async function startSession(track: string): Promise<ActiveSession> {
+export async function startSession(track: string, captchaToken?: string): Promise<ActiveSession> {
   let data: unknown;
   try {
-    data = await apiFetch('/api/questionnaire?action=start', { track });
+    data = await apiFetch('/api/questionnaire?action=start', {
+      track,
+      ...(captchaToken ? { captcha_token: captchaToken } : {}),
+    });
   } catch (err) {
     // 409 means an active session already exists — try to resume it transparently.
     if (err instanceof Error && (err as unknown as Record<string, unknown>).statusCode === 409) {

@@ -967,7 +967,7 @@ This appendix contains two sample nondisclosure agreements. The first protects t
 
 _Governing One Party's Information_
 
-**THIS AGREEMENT** is dated this **\_\_\_\_** day of ******\_\_\_\_******, 20\_\_, and is made:
+**THIS AGREEMENT** is dated this **\_\_\_\_** day of **\*\***\_\_\_\_**\*\***, 20\_\_, and is made:
 
 **BETWEEN:**
 
@@ -1104,12 +1104,12 @@ To establish legally binding proof of conception and reduction to practice, all 
 
 - **Documenting Conception:** Upon conceiving an original idea, the inventor must immediately record it in their notebook using sketches, drawings, and text clear enough for someone skilled in the field to understand. The entry must be dated and signed by the inventor. Two independent witnesses who understand the invention must read and sign at the bottom of the entry:
   > **Witnessed, read, and understood by:**
-  > Signature: ************\_\_************ Name: ************\_\_************ Date: ******\_\_******
-  > Signature: ************\_\_************ Name: ************\_\_************ Date: ******\_\_******
+  > Signature: ****\*\*\*\*****\_\_****\*\*\*\***** Name: ****\*\*\*\*****\_\_****\*\*\*\***** Date: **\*\***\_\_**\*\***
+  > Signature: ****\*\*\*\*****\_\_****\*\*\*\***** Name: ****\*\*\*\*****\_\_****\*\*\*\***** Date: **\*\***\_\_**\*\***
 - **Documenting Reduction to Practice:** The actual reduction to practice must be documented in a laboratory notebook and corroborated by an independent observer. Drawings, blueprints, or purchase orders may be incorporated by reference using clear, positive identification tags. The entry should be written in the notebook of the person performing the execution, signed and dated by the inventor, and signed by two corroborating witnesses who observed the essential steps:
   > **Witnessed and corroborated by:**
-  > Signature: ************\_\_************ Name: ************\_\_************ Date: ******\_\_******
-  > Signature: ************\_\_************ Name: ************\_\_************ Date: ******\_\_******
+  > Signature: ****\*\*\*\*****\_\_****\*\*\*\***** Name: ****\*\*\*\*****\_\_****\*\*\*\***** Date: **\*\***\_\_**\*\***
+  > Signature: ****\*\*\*\*****\_\_****\*\*\*\***** Name: ****\*\*\*\*****\_\_****\*\*\*\***** Date: **\*\***\_\_**\*\***
 - If the reduction to practice occurs over an extended period, each significant step must be recorded on the date it occurs and witnessed using the same protocol.
 
 #### 3. Administrative Rules for Notebook Management

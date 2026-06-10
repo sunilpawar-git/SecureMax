@@ -2473,17 +2473,17 @@ As corporate environments face increasingly volatile, complex, and digital threa
 
 ##### Reference #1
 
-- **Contact Person Name & Title:** ******************\_\_\_\_******************
-- **Phone Number:** ********\_\_\_\_******** **Email Address:** ********\_\_\_\_********
-- **Project Scope / Deliverables:** ******************\_\_\_\_******************
-- **Project Duration & Date:** ******************\_\_\_\_******************
+- **Contact Person Name & Title:** ********\*\*********\_\_\_\_********\*\*********
+- **Phone Number:** **\*\*\*\***\_\_\_\_**\*\*\*\*** **Email Address:** **\*\*\*\***\_\_\_\_**\*\*\*\***
+- **Project Scope / Deliverables:** ********\*\*********\_\_\_\_********\*\*********
+- **Project Duration & Date:** ********\*\*********\_\_\_\_********\*\*********
 
 ##### Reference #2
 
-- **Contact Person Name & Title:** ******************\_\_\_\_******************
-- **Phone Number:** ********\_\_\_\_******** **Email Address:** ********\_\_\_\_********
-- **Project Scope / Deliverables:** ******************\_\_\_\_******************
-- **Project Duration & Date:** ******************\_\_\_\_******************
+- **Contact Person Name & Title:** ********\*\*********\_\_\_\_********\*\*********
+- **Phone Number:** **\*\*\*\***\_\_\_\_**\*\*\*\*** **Email Address:** **\*\*\*\***\_\_\_\_**\*\*\*\***
+- **Project Scope / Deliverables:** ********\*\*********\_\_\_\_********\*\*********
+- **Project Duration & Date:** ********\*\*********\_\_\_\_********\*\*********
 
 > [!IMPORTANT]
 > **Mandatory Attachments Required:**
@@ -2576,10 +2576,10 @@ Highly credentialed, board-certified protection professional with over 40 years 
 
 ### Appendix 4C: Professional Consulting Services Agreement
 
-**THIS AGREEMENT** is made and entered into as of this **\_** day of ******\_\_\_******, 20\_\_\_, by and between:
+**THIS AGREEMENT** is made and entered into as of this **\_** day of **\*\***\_\_\_**\*\***, 20\_\_\_, by and between:
 
-- **The Consultant:** ******************\_\_\_\_****************** (an independent contractor, hereinafter referred to as the "Consultant"), and
-- **The Company:** ******************\_\_\_\_****************** (hereinafter referred to as the "Company").
+- **The Consultant:** ********\*\*********\_\_\_\_********\*\********* (an independent contractor, hereinafter referred to as the "Consultant"), and
+- **The Company:** ********\*\*********\_\_\_\_********\*\********* (hereinafter referred to as the "Company").
 
 #### WITNESSETH:
 
@@ -2601,9 +2601,9 @@ The Consultant shall perform the professional services described in the attached
 
 ##### 3. Professional Fees & Payment Terms
 
-- **Billing Structure:** The Company shall compensate the Consultant at a rate of **$****\_\_**** per [Hour / Day]** for services rendered under this Agreement.
-- **Financial Cap:** Unless authorized in writing by a formal amendment signed by both parties, the total compensation payable to the Consultant under this Agreement shall not exceed **$****\_\_****** (representing a maximum of **\_\_\_\_** hours / days).
-- **Travel Time Compensation:** Travel time authorized in advance by the Company shall be compensated at a rate of **$****\_\_**** per hour** (or the standard hourly rate as agreed upon).
+- **Billing Structure:** The Company shall compensate the Consultant at a rate of **$\*\***\_\_\***\* per [Hour / Day]** for services rendered under this Agreement.
+- **Financial Cap:** Unless authorized in writing by a formal amendment signed by both parties, the total compensation payable to the Consultant under this Agreement shall not exceed **$\*\***\_\_**\*\*** (representing a maximum of **\_\_\_\_** hours / days).
+- **Travel Time Compensation:** Travel time authorized in advance by the Company shall be compensated at a rate of **$\*\***\_\_\***\* per hour** (or the standard hourly rate as agreed upon).
 - **Payment Terms:** The Consultant shall submit detailed, itemized monthly invoices to the Company. Approved invoices shall be paid net thirty (30) days from the date of receipt.
 
 ##### 4. Intellectual Property and Patent Rights
@@ -2688,9 +2688,9 @@ Consultant Signature: ____________________________________    Date: ____________
 
 #### Exhibit D: Professional Services Log
 
-- **Consultant Name:** ******************\_\_\_\_******************
-- **Project Reference / Task:** ******************\_\_\_\_******************
-- **Internal Monitor / Requestor:** ******************\_\_\_\_******************
+- **Consultant Name:** ********\*\*********\_\_\_\_********\*\*********
+- **Project Reference / Task:** ********\*\*********\_\_\_\_********\*\*********
+- **Internal Monitor / Requestor:** ********\*\*********\_\_\_\_********\*\*********
 
 ##### Instructions to the Monitor:
 
@@ -2715,10 +2715,10 @@ Signature of Requestor / Monitor: ____________________________________    Date: 
 
 #### Exhibit E: Statement of Professional Services (Billing Sheet)
 
-- **Consultant Name:** ******************\_\_\_\_******************
-- **Billing Period:** Week Ending ********\_\_\_\_********
-- **Firm Address:** ******************\_\_\_\_******************
-- **City, State, Zip Code:** ******************\_\_\_\_******************
+- **Consultant Name:** ********\*\*********\_\_\_\_********\*\*********
+- **Billing Period:** Week Ending **\*\*\*\***\_\_\_\_**\*\*\*\***
+- **Firm Address:** ********\*\*********\_\_\_\_********\*\*********
+- **City, State, Zip Code:** ********\*\*********\_\_\_\_********\*\*********
 
 ##### Billing Summary:
 
@@ -2742,7 +2742,7 @@ Signature of Requestor / Monitor: ____________________________________    Date: 
 |          |                      |                    |                         |                  |                        |                               |
 |          |                      |                    |                         |                  |                        |                               |
 
-**TOTAL AMOUNT DUE FOR REIMBURSEMENT: $********\_\_\_\_**********
+**TOTAL AMOUNT DUE FOR REIMBURSEMENT: $**\*\*****\_\_\_\_****\*\*****
 
 ```
 Consultant Signature: ____________________________________    Date: ______________________

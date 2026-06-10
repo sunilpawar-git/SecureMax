@@ -3,6 +3,7 @@ import type { JWT } from 'next-auth/jwt';
 import { prisma } from '@/lib/prisma';
 import { authConfig } from './config';
 import { handleJwt } from './callbacks';
+import { logAdminLogin } from './login-audit';
 import { USER_ROLE } from '@/config/strings';
 import { env } from '@/lib/env';
 
@@ -30,6 +31,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             role: isAdminEmail ? USER_ROLE.ADMIN : USER_ROLE.USER,
           },
         });
+        if (dbUser.role === USER_ROLE.ADMIN) {
+          await logAdminLogin(dbUser.id, account.provider);
+        }
         const hydratedToken: JWT = {
           ...token,
           sub: dbUser.id,

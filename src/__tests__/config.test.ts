@@ -105,9 +105,8 @@ describe('Payment config', () => {
     expect(PAYMENT.CURRENCY).toBe('INR');
   });
 
-  it('amount range is ₹4,999–₹9,999 in paise', () => {
-    expect(PAYMENT.MIN_AMOUNT_PAISE).toBe(499900);
-    expect(PAYMENT.MAX_AMOUNT_PAISE).toBe(999900);
+  it('report unlock price is ₹4,999 in paise', () => {
+    expect(PAYMENT.AMOUNT_PAISE).toBe(499900);
   });
 });
 
