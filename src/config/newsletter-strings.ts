@@ -52,6 +52,10 @@ export const NEWSLETTER_STRINGS = {
   ERR_NOT_FOUND: 'Newsletter not found',
   ERR_ALREADY_POSTED: 'Already posted to this platform',
   ERR_NOT_CONFIGURED: 'Platform is not configured — add its API keys first',
+  COPY_WHATSAPP: 'Copy WhatsApp',
+  COPIED: 'Copied!',
+  PREVIEW_EMAIL: 'Preview Email',
+  DOWNLOAD_EMAIL: 'Download Email',
   CLOSE: 'Close',
   PLATFORM_LABEL: {
     linkedin: 'LinkedIn',

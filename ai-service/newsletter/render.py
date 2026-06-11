@@ -9,9 +9,9 @@ All article-derived text is HTML-escaped — scraped content is untrusted input.
 import html as html_mod
 from string import Template
 
-# 1080x1350 (4:5 portrait) — Instagram-safe, fine on LinkedIn/X/Facebook
+# 1080-wide; height grows to fit content (full_page screenshot)
 PAGE_WIDTH = 1080
-PAGE_HEIGHT = 1350
+PAGE_HEIGHT = 1350  # initial viewport hint only — screenshot uses full_page=True
 
 # Brand palette (mirrors the web app's slate/amber scheme)
 _COLOR_BG = "#0f172a"
@@ -26,7 +26,7 @@ _BRAND_TAGLINE = "Security Consulting — Weekly Threat Intelligence"
 _PAGE_TMPL = Template("""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { width: ${width}px; height: ${height}px; background: ${bg};
+  body { width: ${width}px; background: ${bg};
          font-family: 'Helvetica Neue', Arial, sans-serif; color: ${text};
          display: flex; flex-direction: column; padding: 56px; }
   .brand { color: ${accent}; font-size: 30px; font-weight: 700; letter-spacing: 1px; }
@@ -39,7 +39,7 @@ _PAGE_TMPL = Template("""<!DOCTYPE html>
             text-transform: uppercase; letter-spacing: 1px; }
   .headline { font-size: 28px; font-weight: 600; margin: 8px 0; line-height: 1.25; }
   .takeaway { font-size: 22px; color: ${muted}; line-height: 1.35; }
-  .cta { margin-top: auto; background: ${accent}; color: ${bg}; font-size: 26px;
+  .cta { margin-top: 36px; background: ${accent}; color: ${bg}; font-size: 26px;
          font-weight: 700; padding: 24px 30px; border-radius: 12px; text-align: center; }
 </style></head>
 <body>
@@ -69,13 +69,13 @@ def build_newsletter_html(content) -> str:
         items = [
             {
                 "domain": t.cpp_domain,
-                "headline": t.theme_title[:80],
-                "takeaway": t.recommendation[:160],
+                "headline": t.theme_title,
+                "takeaway": t.recommendation,
             }
             for t in content.themes[:5]
         ]
         title = content.title or ""
-        intro = content.executive_summary[:200] if content.executive_summary else ""
+        intro = content.executive_summary or ""
         cta = content.cta_soft or "Is your organization prepared? Book a security audit."
     else:
         # Legacy dict path (backward compatible)
@@ -122,6 +122,6 @@ async def render_png(html: str, *, width: int = PAGE_WIDTH, height: int = PAGE_H
             await asyncio.wait_for(
                 page.set_content(html, wait_until="load"), timeout=30.0
             )
-            return await page.screenshot(type="png")
+            return await page.screenshot(type="png", full_page=True)
         finally:
             await browser.close()

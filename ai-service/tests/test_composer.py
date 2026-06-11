@@ -57,7 +57,8 @@ class TestComposeNewsletter:
         assert len(result.themes) == 2
 
     @pytest.mark.asyncio
-    async def test_truncates_long_title(self) -> None:
+    async def test_preserves_full_title(self) -> None:
+        """Title is stored verbatim; CSS line-clamp handles visual overflow."""
         gemini = MagicMock()
         gemini.generate = AsyncMock(return_value=json.dumps({
             "title": "A" * 120,
@@ -67,7 +68,7 @@ class TestComposeNewsletter:
         }))
 
         result = await compose_newsletter(_make_themes(1), gemini=gemini)
-        assert len(result.title) <= 80
+        assert result.title == "A" * 120
 
     @pytest.mark.asyncio
     async def test_falls_back_on_error(self) -> None:

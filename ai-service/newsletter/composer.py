@@ -35,7 +35,7 @@ async def compose_newsletter(
         parsed = json.loads(cleaned)
 
         return NewsletterContent(
-            title=parsed["title"][:80],
+            title=parsed["title"],
             issue_date=datetime.now(UTC).strftime("%d %B %Y"),
             executive_summary=parsed["executive_summary"],
             intelligence_briefing=parsed["intelligence_briefing"],

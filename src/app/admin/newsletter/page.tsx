@@ -54,6 +54,8 @@ export default function NewsletterPage() {
                 void data.remove(id);
               }}
               onPublished={data.refresh}
+              onCopyWhatsApp={data.copyWhatsApp}
+              onFetchEmail={data.fetchEmailHtml}
             />
           ))}
         </div>

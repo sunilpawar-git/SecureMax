@@ -31,6 +31,8 @@ export interface NewsletterData {
   generateNow: () => Promise<void>;
   remove: (id: string) => Promise<void>;
   refresh: () => void;
+  copyWhatsApp: (id: string) => Promise<boolean>;
+  fetchEmailHtml: (id: string) => Promise<string | null>;
 }
 
 export function useNewsletterData(): NewsletterData {
@@ -105,6 +107,33 @@ export function useNewsletterData(): NewsletterData {
     }
   }, []);
 
+  const copyWhatsApp = useCallback(async (id: string): Promise<boolean> => {
+    try {
+      const res = await fetch(
+        `/api/admin/newsletter/${encodeURIComponent(id)}/formats?type=whatsapp`,
+      );
+      if (!res.ok) return false;
+      const json = (await res.json()) as { text?: string };
+      if (!json.text) return false;
+      await navigator.clipboard.writeText(json.text);
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  const fetchEmailHtml = useCallback(async (id: string): Promise<string | null> => {
+    try {
+      const res = await fetch(
+        `/api/admin/newsletter/${encodeURIComponent(id)}/formats?type=email`,
+      );
+      if (!res.ok) return null;
+      return await res.text();
+    } catch {
+      return null;
+    }
+  }, []);
+
   return {
     newsletters,
     configured,
@@ -114,5 +143,7 @@ export function useNewsletterData(): NewsletterData {
     generateNow,
     remove,
     refresh: () => setRefreshKey((k) => k + 1),
+    copyWhatsApp,
+    fetchEmailHtml,
   };
 }

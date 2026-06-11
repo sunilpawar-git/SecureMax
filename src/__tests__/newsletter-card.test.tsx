@@ -25,15 +25,26 @@ function makeNewsletter(overrides: Partial<NewsletterRow> = {}): NewsletterRow {
   };
 }
 
+const noopAsync = () => Promise.resolve(false);
+const noopFetchEmail = () => Promise.resolve(null);
+
+const defaultProps = {
+  configured: {},
+  onDelete: jest.fn(),
+  onPublished: jest.fn(),
+  onCopyWhatsApp: jest.fn(noopAsync),
+  onFetchEmail: jest.fn(noopFetchEmail),
+};
+
 describe('NewsletterCard', () => {
   it('loads the preview from the admin image route (not the public one)', () => {
-    render(<NewsletterCard newsletter={makeNewsletter()} configured={{}} onDelete={jest.fn()} onPublished={jest.fn()} />);
+    render(<NewsletterCard newsletter={makeNewsletter()} {...defaultProps} />);
     const img = screen.getByAltText(NEWSLETTER_STRINGS.PREVIEW_ALT);
     expect(img).toHaveAttribute('src', '/api/admin/newsletter/nl-1/image');
   });
 
   it('shows the status badge and cited-article count', () => {
-    render(<NewsletterCard newsletter={makeNewsletter()} configured={{}} onDelete={jest.fn()} onPublished={jest.fn()} />);
+    render(<NewsletterCard newsletter={makeNewsletter()} {...defaultProps} />);
     expect(screen.getByText(NEWSLETTER_STRINGS.STATUS_LABEL.draft)).toBeInTheDocument();
     expect(screen.getByText(new RegExp(`2 ${NEWSLETTER_STRINGS.ARTICLES_CITED}`))).toBeInTheDocument();
   });
@@ -44,9 +55,7 @@ describe('NewsletterCard', () => {
         newsletter={makeNewsletter({
           posts: [{ platform: 'linkedin', status: 'posted', postedAt: '2026-06-08' }],
         })}
-        configured={{}}
-        onDelete={jest.fn()}
-        onPublished={jest.fn()}
+        {...defaultProps}
       />,
     );
     expect(screen.getByText('linkedin: posted')).toBeInTheDocument();
@@ -56,7 +65,7 @@ describe('NewsletterCard', () => {
     const user = userEvent.setup();
     const onDelete = jest.fn();
     const confirmSpy = jest.spyOn(window, 'confirm').mockReturnValue(false);
-    render(<NewsletterCard newsletter={makeNewsletter()} configured={{}} onDelete={onDelete} onPublished={jest.fn()} />);
+    render(<NewsletterCard newsletter={makeNewsletter()} {...defaultProps} onDelete={onDelete} />);
 
     await user.click(screen.getByRole('button', { name: NEWSLETTER_STRINGS.DELETE_CTA }));
     expect(onDelete).not.toHaveBeenCalled();
@@ -65,5 +74,11 @@ describe('NewsletterCard', () => {
     await user.click(screen.getByRole('button', { name: NEWSLETTER_STRINGS.DELETE_CTA }));
     expect(onDelete).toHaveBeenCalledWith('nl-1');
     confirmSpy.mockRestore();
+  });
+
+  it('renders the Copy WhatsApp and Preview Email buttons', () => {
+    render(<NewsletterCard newsletter={makeNewsletter()} {...defaultProps} />);
+    expect(screen.getByRole('button', { name: NEWSLETTER_STRINGS.COPY_WHATSAPP })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: NEWSLETTER_STRINGS.PREVIEW_EMAIL })).toBeInTheDocument();
   });
 });

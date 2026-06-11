@@ -20,14 +20,16 @@ ALTER TABLE "newsletters"
   ADD COLUMN IF NOT EXISTS "full_analysis"         TEXT,
   ADD COLUMN IF NOT EXISTS "commanders_note"       TEXT;
 
--- Backfill: existing rows carry relevance_score = 0.5 from the pre-sprint
--- single-score tagger. The new quality gate threshold is 0.6, so they would
--- all be excluded from newsletter drafting. Promote them to 0.6 (minimum
--- passing score) so they remain eligible. Future rescrapings will set the
--- real composite score via ON CONFLICT DO UPDATE (see pipeline.py).
+-- Backfill: the pre-sprint keyword tagger produced scores of 0, 0.15, 0.30,
+-- 0.45 (step-function based on keyword hit count). The new quality gate
+-- threshold is 0.6, so all of these would be excluded from newsletter
+-- drafting. Promote any row below threshold to 0.6 (minimum passing score)
+-- so the existing corpus remains eligible. Future rescrapings will overwrite
+-- these with real composite scores via ON CONFLICT DO UPDATE (see
+-- pipeline.py).
 UPDATE "threat_intel"
 SET "relevance_score" = 0.6
-WHERE "relevance_score" = 0.5;
+WHERE "relevance_score" < 0.6;
 
 -- GRANTs: new columns inherit the existing table-level grants from
 -- migration 11_add_newsletters. No new statements required.
