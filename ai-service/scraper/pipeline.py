@@ -12,9 +12,11 @@ from datetime import UTC, datetime
 
 import asyncpg
 
+from newsletter.constants import DOMAIN_KEYWORD_MAP
 from scraper.dedup import is_duplicate
 from scraper.embedder import embed_and_store
 from scraper.fetchers import fetch_news_api_tier, fetch_playwright_tier_wrapper, fetch_rss_tier
+from scraper.gatekeeper import compute_composite_score, fallback_scores
 from scraper.models import ProcessedArticle, RawArticle, SourceHealth
 from scraper.sources import SECURITY_KEYWORDS
 
@@ -29,8 +31,8 @@ def get_source_health() -> dict[str, SourceHealth]:
 
 
 async def get_stored_articles(pool: asyncpg.Pool, limit: int = 50) -> list[dict]:
-    limit = min(limit, 200)
     """Fetch recent articles from the database (not memory)."""
+    limit = min(limit, 200)
     async with pool.acquire() as conn:
         rows = await conn.fetch(
             """
@@ -235,25 +237,12 @@ async def _persist_article(
 
 def _fallback_process(article: RawArticle) -> ProcessedArticle:
     """Keyword-based tagging when Gemini is unavailable."""
-    from scraper.gatekeeper import compute_composite_score, fallback_scores
-
     content_lower = article.content.lower()
     matched_kw = [kw for kw in SECURITY_KEYWORDS if kw in content_lower]
 
-    domain_map = {
-        "physical security": "CPP-01",
-        "cctv": "CPP-01",
-        "access control": "CPP-01",
-        "perimeter breach": "CPP-01",
-        "surveillance": "CPP-01",
-        "fire safety": "CPP-03",
-        "emergency response": "CPP-03",
-        "theft prevention": "CPP-06",
-        "guard patrol": "CPP-06",
-        "intrusion detection": "CPP-05",
-        "security audit": "CPP-07",
-    }
-    domain_tags = sorted({domain_map[kw] for kw in matched_kw if kw in domain_map})
+    domain_tags = sorted(
+        {DOMAIN_KEYWORD_MAP[kw] for kw in matched_kw if kw in DOMAIN_KEYWORD_MAP}
+    )
     if not domain_tags:
         domain_tags = ["CPP-07"]
 

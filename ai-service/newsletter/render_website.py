@@ -16,6 +16,7 @@ import html
 
 from newsletter.constants import BRAND_NAME, BRAND_SIGN_OFF
 from newsletter.models import NewsletterContent
+from newsletter.utils import domain_label, safe_url
 
 
 def _esc(text: str) -> str:
@@ -79,7 +80,7 @@ def render_website_html(content: NewsletterContent) -> str:
         themes_html += f"""
     <section class="theme-card" data-domain="{_esc(theme.cpp_domain)}">
       <h3>{_esc(theme.theme_title)}
-        <span class="domain-badge">{_esc(theme.cpp_domain)}</span></h3>
+        <span class="domain-badge">{_esc(domain_label(theme.cpp_domain))}</span></h3>
       <div class="sitrep">
         <p><strong>Situation:</strong> {_esc(theme.situation)}</p>
         <p><strong>Assessment:</strong> {_esc(theme.assessment)}</p>
@@ -111,7 +112,7 @@ def render_website_html(content: NewsletterContent) -> str:
         cta = f"""
   <section class="cta-section">
     <p>{_esc(content.cta_soft)}</p>
-    <a href="{_esc(content.cta_audit_link)}" class="cta-button">
+    <a href="{_esc(safe_url(content.cta_audit_link))}" class="cta-button">
       Start Your Security Assessment</a>
   </section>"""
 

@@ -1,7 +1,7 @@
 # Raivan Global Newsletter System — Skill Document
 
 > **Status**: Living document. Update when the pipeline, prompts, or architecture change.
-> **Last updated**: 11 June 2026 (Sprint 6 completion)
+> **Last updated**: 11 June 2026 (Sprint 7 — gold-standard scraper overhaul)
 > **Audience**: AI agents, developers, security team, editorial reviewers.
 
 ---
@@ -88,7 +88,7 @@ The editorial voice is defined in `newsletter/prompts.py` → `VOICE_GUIDELINES`
 ┌─────────────────────────────────────────────────────────────────┐
 │                     DATA COLLECTION LAYER                       │
 │                                                                 │
-│  NewsAPI (4 queries)  →  RSS (16 feeds)  →  Playwright (4 sites)│
+│  NewsAPI (7 queries)  →  RSS (19 feeds)  →  Playwright (5 sites)│
 │         ↓                     ↓                     ↓           │
 │                    scraper/pipeline.py                           │
 │                    (dedup, fetch, clean)                         │
@@ -185,7 +185,7 @@ The editorial voice is defined in `newsletter/prompts.py` → `VOICE_GUIDELINES`
 
 | File | Role |
 |---|---|
-| `sources.yaml` | SSOT for all data sources (4 NewsAPI queries, 16 RSS feeds, 4 Playwright targets) |
+| `sources.yaml` | SSOT for all data sources (7 NewsAPI queries, 19 RSS feeds, 5 Playwright targets) |
 | `pipeline.py` | Orchestrates fetch → dedup → process → persist. Exports `run_scraper_pipeline()` and `get_stored_articles()` |
 | `models.py` | `RawArticle`, `ProcessedArticle`, `IntelScores` Pydantic models |
 | `gatekeeper.py` | 6-dimension Gemini Flash scoring. `score_article()`, `compute_composite_score()`, `passes_quality_gate()` |
@@ -198,7 +198,9 @@ The editorial voice is defined in `newsletter/prompts.py` → `VOICE_GUIDELINES`
 **Future improvements**:
 - Add source health monitoring (alert on feed failures)
 - Add geographic tagging at source level
-- Expand Indian regional language sources
+- Expand Indian regional language sources (Hindi/vernacular)
+- Add CERT-In advisory scraping (no RSS; requires Playwright)
+- Add BIS standards update monitoring
 
 ### 4.2 Intelligence Scoring (`scraper/gatekeeper.py`)
 
@@ -386,16 +388,16 @@ Score each dimension 1-5. A world-class newsletter scores 4+ on every dimension.
 | **Security Education** | No learning value | Explains one concept | Reader learns a new security methodology or framework principle |
 | **Conversion Potential** | No CTA or aggressive sales | CTA exists but feels forced | Natural "assess your posture" invitation that follows logically from the analysis |
 
-### Current Baseline Assessment (Sprint 6)
+### Current Baseline Assessment (Sprint 7)
 
 | Dimension | Current Score | Bottleneck |
 |---|---|---|
-| Relevance | 3 | Source diversity needs expansion; too many cyber-only articles |
-| Authority | 3.5 | CPP grounding is working but citations could be more specific |
+| Relevance | 4 | Source diversity expanded (fire, drone, VIP, geopolitical); scoring prompt broadened |
+| Authority | 3.5 | CPP grounding working; labels now plain-English for public audiences |
 | Intelligence Value | 3 | Themes cluster well but cross-incident pattern recognition is weak |
 | Actionability | 3.5 | Recommendations are concrete but could be more segment-specific |
 | Reader Engagement | 3 | SITREP structure is solid; voice consistency varies |
-| Security Education | 2.5 | CPP concepts mentioned but not explained for the layperson |
+| Security Education | 3 | CPP labels now reader-friendly; concepts still need deeper explanation |
 | Conversion Potential | 3 | CTA present and non-salesy; could tie more directly to specific threats |
 
 ---
@@ -475,7 +477,7 @@ Brand positioning is defined in `newsletter/prompts.py` → `BRAND_POSITIONING` 
 7. **PDF briefing format** — Downloadable PDF version for enterprise CISOs who prefer printable reports.
 8. **Scheduled email delivery** — Integrate with Resend (already used for lead emails) to auto-send the newsletter to subscribers.
 9. **Regional language support** — Hindi executive summaries for Indian HNI audience.
-10. **Source expansion** — Add CERT-In advisories, CAPSI publications, BIS standards updates.
+10. **Source expansion** — CAPSI added (Playwright). Still needed: CERT-In advisories (no RSS), BIS standards updates.
 
 ### Long-Term Vision (World-Class Intelligence Platform)
 
@@ -611,7 +613,8 @@ If you're new to the codebase, read these files in this order:
 | File | Layer | Lines | Purpose |
 |---|---|---|---|
 | `newsletter/__init__.py` | — | ~1 | Package docstring |
-| `newsletter/constants.py` | Config | ~43 | Scoring weights, thresholds, brand palette, segment labels |
+| `newsletter/constants.py` | Config | ~120 | Scoring weights, thresholds, brand palette, segment labels, CPP domain labels, keyword maps, fallback term sets |
+| `newsletter/utils.py` | Utility | ~8 | `domain_label()` — translates CPP codes to plain-English labels (DRY helper) |
 | `newsletter/prompts.py` | Config | ~115 | All 3 Gemini prompt templates + voice guidelines |
 | `newsletter/models.py` | Models | ~50 | ThemeCluster, SegmentImpact, EnrichedTheme, NewsletterContent |
 | `newsletter/clustering.py` | Pass 1 | ~90 | `cluster_articles()` — Gemini Flash theme grouping |
@@ -626,7 +629,7 @@ If you're new to the codebase, read these files in this order:
 | `newsletter/historical.py` | Intelligence | ~70 | Historical cross-referencing — exists, not yet wired |
 | `scraper/gatekeeper.py` | Scoring | ~180 | 6-dimension article scoring via Gemini Flash |
 | `scraper/pipeline.py` | Collection | ~270 | Scraper orchestration, persistence, `ON CONFLICT` updates |
-| `scraper/sources.yaml` | Config | ~108 | All 24 data sources (4 NewsAPI + 16 RSS + 4 Playwright) |
+| `scraper/sources.yaml` | Config | ~120 | All 31 data sources (7 NewsAPI + 19 RSS + 5 Playwright) |
 | `scraper/models.py` | Models | ~60 | RawArticle, ProcessedArticle, IntelScores |
 | `routers/newsletter.py` | Route | ~165 | `create_newsletter_draft()`, `draft_newsletter()` endpoint |
 | `config.py` | Config | ~30 | Global AI service configuration |

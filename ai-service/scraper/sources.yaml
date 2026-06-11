@@ -22,15 +22,30 @@ newsapi:
     query: 'CCTV surveillance India'
     api_key_env: NEWS_API_KEY
     page_size: 15
+  - name: 'News API — India Fire Building Disaster'
+    type: newsapi
+    query: '"fire" OR "building collapse" OR "stampede" India deaths'
+    api_key_env: NEWS_API_KEY
+    page_size: 20
+  - name: 'News API — Drone Attack Airport Security'
+    type: newsapi
+    query: 'drone attack OR airport security OR counter-drone'
+    api_key_env: NEWS_API_KEY
+    page_size: 15
+  - name: 'News API — Executive Kidnapping VIP Threat'
+    type: newsapi
+    query: 'kidnapping ransom executive protection VIP security'
+    api_key_env: NEWS_API_KEY
+    page_size: 15
 
 rss:
-  # Global security sources
-  - name: 'The Hacker News'
+  # Global physical security publications
+  - name: 'Security Magazine — Physical Security'
     type: rss
-    url: 'https://feeds.feedburner.com/TheHackersNews'
-  - name: 'Bleeping Computer'
+    url: 'https://www.securitymagazine.com/rss/topic/2228-physical-security'
+  - name: 'Security Magazine — Newswire'
     type: rss
-    url: 'https://www.bleepingcomputer.com/feed/'
+    url: 'https://www.securitymagazine.com/rss/topic/2189-security-newswire'
   - name: 'Help Net Security'
     type: rss
     url: 'https://www.helpnetsecurity.com/feed/'
@@ -41,7 +56,12 @@ rss:
     type: rss
     url: 'https://www.darkreading.com/rss.xml'
 
-  # Indian news — security, crime, infrastructure
+  # Global defense & emerging threats (drones, geopolitical)
+  - name: 'The Defense Post — Drones'
+    type: rss
+    url: 'https://www.thedefensepost.com/category/drones/feed'
+
+  # Indian news — security, crime, fire, disasters, infrastructure
   - name: 'NDTV — Top Stories'
     type: rss
     url: 'https://feeds.feedburner.com/ndtvnews-top-stories'
@@ -63,6 +83,17 @@ rss:
   - name: 'Business Standard — Companies'
     type: rss
     url: 'https://www.business-standard.com/rss/companies-101.rss'
+  - name: 'India Today — India'
+    type: rss
+    url: 'https://www.indiatoday.in/rss/1206578'
+  - name: 'News18 — India'
+    type: rss
+    url: 'https://www.news18.com/rss/india.xml'
+  - name: 'Livemint — News'
+    type: rss
+    url: 'https://www.livemint.com/rss/news'
+
+  # Indian security industry & government
   - name: 'CISF Official (Gov)'
     type: rss
     url: 'https://cisf.gov.in/rss-feed/'
@@ -103,5 +134,12 @@ playwright:
     url: 'https://www.ifsecglobal.com/asia/'
     selector_article: 'article'
     selector_title: 'h3'
+    selector_link: 'a'
+    max_articles: 10
+  - name: 'CAPSI — Private Security Industry India'
+    type: playwright
+    url: 'https://www.capsi.in/'
+    selector_article: '.news-item, article, .post'
+    selector_title: 'h2, h3, .title'
     selector_link: 'a'
     max_articles: 10

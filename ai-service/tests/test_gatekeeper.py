@@ -214,3 +214,63 @@ class TestFallbackScores:
         from newsletter.constants import AUDIENCE_SEGMENTS
         for seg in scores.affected_segments:
             assert seg in AUDIENCE_SEGMENTS
+
+
+class TestFallbackScoresExpandedThreats:
+    """Fire, stampede, drone, kidnapping articles must score HIGH on physical_security_relevance."""
+
+    def test_fire_incident_scores_high(self) -> None:
+        article = _make_article(
+            title="Delhi hotel fire kills 21",
+            content=(
+                "A fire at Flourish Stay in Malviya Nagar Delhi killed 21 people. "
+                "No fire safety certificate."
+            ),
+        )
+        scores = fallback_scores(article)
+        assert scores.physical_security_relevance >= 0.3
+        assert scores.geographic_relevance > 0
+
+    def test_stampede_scores_high(self) -> None:
+        article = _make_article(
+            title="Stampede at Mumbai event kills 5",
+            content="Overcrowding and stampede at a Mumbai concert. Crowd management failure.",
+        )
+        scores = fallback_scores(article)
+        assert scores.physical_security_relevance >= 0.3
+
+    def test_drone_attack_scores_high(self) -> None:
+        article = _make_article(
+            title="Drone attack on airport",
+            content="Counter-drone systems failed to stop a drone attack on the airport.",
+        )
+        scores = fallback_scores(article)
+        assert scores.physical_security_relevance >= 0.15
+
+    def test_kidnapping_scores_high(self) -> None:
+        article = _make_article(
+            title="Executive kidnapping in Noida",
+            content="Ransom demand after executive kidnapping near Noida expressway.",
+        )
+        scores = fallback_scores(article)
+        assert scores.physical_security_relevance >= 0.15
+        assert scores.geographic_relevance > 0
+
+    def test_building_collapse_scores_high(self) -> None:
+        article = _make_article(
+            title="Building collapse in Surat kills 7",
+            content="Building collapse due to structural failure in Surat. Emergency exit blocked.",
+        )
+        scores = fallback_scores(article)
+        assert scores.physical_security_relevance >= 0.3
+
+    def test_terrorism_scores_high(self) -> None:
+        article = _make_article(
+            title="Bomb blast at railway station",
+            content=(
+                "Terrorism suspected in bomb blast at railway station. "
+                "Active shooter neutralized."
+            ),
+        )
+        scores = fallback_scores(article)
+        assert scores.physical_security_relevance >= 0.3

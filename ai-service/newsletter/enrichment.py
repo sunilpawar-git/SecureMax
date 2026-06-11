@@ -46,7 +46,7 @@ async def _enrich_single(
     article_details = _format_articles(cluster, article_map)
     cpp_context = await _fetch_cpp_context(cluster, cpp_retrieve)
 
-    prompt = ENRICH_PROMPT.safe_substitute(
+    prompt = ENRICH_PROMPT.substitute(
         theme_title=cluster.theme_title,
         theme_summary=cluster.theme_summary,
         article_details=article_details,

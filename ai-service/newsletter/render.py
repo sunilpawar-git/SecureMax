@@ -6,22 +6,26 @@ needs Chromium (already a project dependency via the scraper).
 All article-derived text is HTML-escaped — scraped content is untrusted input.
 """
 
+from __future__ import annotations
+
 import html as html_mod
 from string import Template
+
+from newsletter.constants import (
+    BRAND_NAME,
+    BRAND_TAGLINE,
+    COLOR_ACCENT,
+    COLOR_BG,
+    COLOR_CARD,
+    COLOR_MUTED,
+    COLOR_TEXT,
+)
+from newsletter.models import NewsletterContent
+from newsletter.utils import domain_label
 
 # 1080-wide; height grows to fit content (full_page screenshot)
 PAGE_WIDTH = 1080
 PAGE_HEIGHT = 1350  # initial viewport hint only — screenshot uses full_page=True
-
-# Brand palette (mirrors the web app's slate/amber scheme)
-_COLOR_BG = "#0f172a"
-_COLOR_CARD = "#1e293b"
-_COLOR_TEXT = "#f1f5f9"
-_COLOR_MUTED = "#94a3b8"
-_COLOR_ACCENT = "#f59e0b"
-
-_BRAND_NAME = "Raivan Global"
-_BRAND_TAGLINE = "Security Consulting — Weekly Threat Intelligence"
 
 _PAGE_TMPL = Template("""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><style>
@@ -58,31 +62,24 @@ _ITEM_TMPL = Template(
 )
 
 
-def build_newsletter_html(content) -> str:
-    """Render newsletter content into the branded one-pager HTML (escaped).
+def build_newsletter_html(content: NewsletterContent) -> str:
+    """Render newsletter content into the branded one-pager HTML (escaped)."""
+    if not isinstance(content, NewsletterContent):
+        raise TypeError(
+            f"build_newsletter_html requires NewsletterContent, got {type(content).__name__}"
+        )
 
-    Accepts either the legacy dict shape {title, intro, items[], cta} or a
-    NewsletterContent model — both paths produce the same PNG layout.
-    """
-    if hasattr(content, "themes"):
-        # NewsletterContent model path
-        items = [
-            {
-                "domain": t.cpp_domain,
-                "headline": t.theme_title,
-                "takeaway": t.recommendation,
-            }
-            for t in content.themes[:5]
-        ]
-        title = content.title or ""
-        intro = content.executive_summary or ""
-        cta = content.cta_soft or "Is your organization prepared? Book a security audit."
-    else:
-        # Legacy dict path (backward compatible)
-        items = content.get("items", [])
-        title = content.get("title", "")
-        intro = content.get("intro", "")
-        cta = content.get("cta", "")
+    items = [
+        {
+            "domain": domain_label(t.cpp_domain),
+            "headline": t.theme_title,
+            "takeaway": t.recommendation,
+        }
+        for t in content.themes[:5]
+    ]
+    title = content.title or ""
+    intro = content.executive_summary or ""
+    cta = content.cta_soft or "Is your organization prepared? Book a security audit."
 
     items_html = "".join(
         _ITEM_TMPL.substitute(
@@ -94,14 +91,13 @@ def build_newsletter_html(content) -> str:
     )
     return _PAGE_TMPL.substitute(
         width=PAGE_WIDTH,
-        height=PAGE_HEIGHT,
-        bg=_COLOR_BG,
-        card=_COLOR_CARD,
-        text=_COLOR_TEXT,
-        muted=_COLOR_MUTED,
-        accent=_COLOR_ACCENT,
-        brand=html_mod.escape(_BRAND_NAME),
-        tagline=html_mod.escape(_BRAND_TAGLINE),
+        bg=COLOR_BG,
+        card=COLOR_CARD,
+        text=COLOR_TEXT,
+        muted=COLOR_MUTED,
+        accent=COLOR_ACCENT,
+        brand=html_mod.escape(BRAND_NAME),
+        tagline=html_mod.escape(BRAND_TAGLINE),
         title=html_mod.escape(title),
         intro=html_mod.escape(intro),
         items_html=items_html,

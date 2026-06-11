@@ -5,6 +5,7 @@ Uses WhatsApp bold (*text*) and italic (_text_) formatting.
 
 from newsletter.constants import BRAND_NAME, BRAND_SIGN_OFF
 from newsletter.models import NewsletterContent
+from newsletter.utils import domain_label
 
 
 def render_whatsapp_text(content: NewsletterContent) -> str:
@@ -20,7 +21,7 @@ def render_whatsapp_text(content: NewsletterContent) -> str:
     ]
 
     for i, theme in enumerate(content.themes[:3], 1):
-        lines.append(f"{i}. *{theme.theme_title}* ({theme.cpp_domain})")
+        lines.append(f"{i}. *{theme.theme_title}* ({domain_label(theme.cpp_domain)})")
         lines.append(f"   {theme.situation}")
         if theme.recommendation:
             lines.append(f"   _Action: {theme.recommendation}_")

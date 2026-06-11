@@ -24,6 +24,7 @@ from newsletter.constants import (
     COLOR_TEXT,
 )
 from newsletter.models import NewsletterContent
+from newsletter.utils import domain_label, safe_url
 
 
 def _esc(text: str) -> str:
@@ -108,7 +109,7 @@ def render_email_html(content: NewsletterContent) -> str:
             <h3 style="color:{COLOR_ACCENT};margin:0 0 8px;font-size:16px;">
               {_esc(theme.theme_title)}
               <span style="color:{COLOR_MUTED};font-size:12px;font-weight:normal;">
-                &nbsp;({_esc(theme.cpp_domain)})
+                &nbsp;({_esc(domain_label(theme.cpp_domain))})
               </span>
             </h3>
             <p style="color:{COLOR_TEXT};margin:6px 0;font-size:14px;">
@@ -154,7 +155,7 @@ def render_email_html(content: NewsletterContent) -> str:
     <tr><td style="padding:24px 0;text-align:center;">
       <p style="color:{COLOR_TEXT};font-size:16px;margin:0 0 16px;">
         {_esc(content.cta_soft)}</p>
-      <a href="{_esc(content.cta_audit_link)}" style="
+      <a href="{_esc(safe_url(content.cta_audit_link))}" style="
         display:inline-block;background:{COLOR_ACCENT};color:{COLOR_BG};
         padding:12px 32px;border-radius:6px;text-decoration:none;
         font-weight:bold;font-size:15px;

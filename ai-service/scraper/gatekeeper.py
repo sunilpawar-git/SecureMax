@@ -9,27 +9,17 @@ import logging
 import re
 from string import Template
 
-from newsletter.constants import INTEL_SCORE_WEIGHTS, NEWSLETTER_QUALITY_THRESHOLD
+from newsletter.constants import (
+    INDIA_GEO_TERMS,
+    INTEL_SCORE_WEIGHTS,
+    NEWSLETTER_QUALITY_THRESHOLD,
+    PHYSICAL_SECURITY_TERMS,
+)
 from scraper.models import IntelScores, RawArticle
 
 logger = logging.getLogger(__name__)
 
 _FENCE_RE = re.compile(r"^```[a-z]*\n?|\n?```$")
-
-_INDIA_TERMS = frozenset({
-    "india", "indian", "delhi", "mumbai", "bangalore", "bengaluru",
-    "hyderabad", "chennai", "kolkata", "pune", "ahmedabad", "jaipur",
-    "lucknow", "gurgaon", "noida", "gated community", "housing society",
-    "cisf", "crpf", "private security guard", "watchman",
-})
-
-_PHYSICAL_SECURITY_TERMS = frozenset({
-    "physical security", "cctv", "access control", "perimeter",
-    "surveillance", "guard", "patrol", "intrusion", "break-in",
-    "burglary", "theft", "trespassing", "fire safety",
-    "emergency response", "security breach", "security incident",
-    "workplace violence", "insider threat",
-})
 
 _ACTION_VERBS = frozenset({
     "review", "audit", "update", "check", "verify", "ensure",
@@ -39,12 +29,17 @@ _ACTION_VERBS = frozenset({
 
 _SCORING_PROMPT = Template(
     "You are an intelligence analyst scoring a security news article "
-    "for a weekly physical security newsletter targeting Indian audiences "
+    "for a weekly security newsletter targeting Indian audiences "
     "(HNIs, enterprises, critical infrastructure operators).\n\n"
     "Article:\nTitle: $title\nContent: $content\n\n"
     "Score each dimension from 0.0 to 1.0:\n"
-    "- physical_security_relevance: Is this about PHYSICAL security "
-    "(not purely cybersecurity)?\n"
+    "- physical_security_relevance: Does this article reveal a threat to life, "
+    "assets, or facility operations? This includes: fires, building collapses, "
+    "stampedes, break-ins, drone attacks, terrorism, industrial disasters, "
+    "executive kidnapping, crowd management failures, evacuation failures, "
+    "and any incident caused by inadequate security planning or compliance. "
+    "Score HIGH if the event demonstrates what happens when security audits, "
+    "fire safety certificates, or emergency planning are absent.\n"
     "- geographic_relevance: Is this India-specific or directly "
     "applicable to Indian security context?\n"
     "- threat_actionability: Can a facility manager or security head "
@@ -81,9 +76,9 @@ def passes_quality_gate(scores: IntelScores) -> bool:
 
 async def score_article(article: RawArticle, *, gemini) -> IntelScores:
     """Score an article via Gemini Flash. Falls back to keywords on failure."""
-    prompt = _SCORING_PROMPT.safe_substitute(
+    prompt = _SCORING_PROMPT.substitute(
         title=article.title,
-        content=article.content[:800],
+        content=article.content[:1500],
     )
     try:
         raw = await gemini.generate(prompt)
@@ -100,10 +95,10 @@ def fallback_scores(article: RawArticle) -> IntelScores:
     text = f"{article.title} {article.content}".lower()
     words = set(text.split())
 
-    phys_hits = sum(1 for t in _PHYSICAL_SECURITY_TERMS if t in text)
+    phys_hits = sum(1 for t in PHYSICAL_SECURITY_TERMS if t in text)
     phys_score = min(phys_hits * 0.15, 1.0)
 
-    india_hits = sum(1 for t in _INDIA_TERMS if t in text)
+    india_hits = sum(1 for t in INDIA_GEO_TERMS if t in text)
     geo_score = min(india_hits * 0.25, 1.0)
 
     action_hits = sum(1 for v in _ACTION_VERBS if v in words)

@@ -12,6 +12,7 @@ from datetime import UTC, datetime
 from newsletter.constants import BRAND_SIGN_OFF
 from newsletter.models import EnrichedTheme, NewsletterContent, SegmentImpact
 from newsletter.prompts import COMPOSE_PROMPT
+from newsletter.utils import domain_label
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,7 @@ async def compose_newsletter(
     themes_json = json.dumps(
         [t.model_dump(mode="json") for t in themes], indent=2
     )
-    prompt = COMPOSE_PROMPT.safe_substitute(themes_json=themes_json)
+    prompt = COMPOSE_PROMPT.substitute(themes_json=themes_json)
 
     try:
         raw = await gemini.generate(prompt)
@@ -52,8 +53,9 @@ async def compose_newsletter(
 
 def fallback_compose(themes: list[EnrichedTheme]) -> NewsletterContent:
     """Deterministic composition from enriched themes when Gemini fails."""
-    title = f"Weekly Security Intelligence — {datetime.now(UTC).strftime('%d %B %Y')}"
-    issue_date = datetime.now(UTC).strftime("%d %B %Y")
+    now = datetime.now(UTC)
+    title = f"Weekly Security Intelligence — {now.strftime('%d %B %Y')}"
+    issue_date = now.strftime("%d %B %Y")
 
     exec_parts = [f"This week's intelligence covers {len(themes)} key security development(s)."]
     briefing_parts = []
@@ -62,25 +64,26 @@ def fallback_compose(themes: list[EnrichedTheme]) -> NewsletterContent:
     for i, theme in enumerate(themes, 1):
         exec_parts.append(f"{i}. {theme.theme_title}: {theme.situation}")
 
+        label = domain_label(theme.cpp_domain)
         briefing_parts.append(
-            f"## {theme.theme_title} ({theme.cpp_domain})\n\n"
-            f"**Situation:** {theme.situation}\n\n"
-            f"**Assessment:** {theme.assessment}\n\n"
-            f"**Recommendation:** {theme.recommendation}"
+            f"{theme.theme_title} ({label})\n\n"
+            f"Situation: {theme.situation}\n\n"
+            f"Assessment: {theme.assessment}\n\n"
+            f"Recommendation: {theme.recommendation}"
         )
 
         seg = theme.segment_impact or SegmentImpact()
         analysis_parts.append(
-            f"## {theme.theme_title}\n\n"
-            f"**Situation:** {theme.situation}\n\n"
-            f"**Assessment:** {theme.assessment}\n\n"
-            f"**Implications:** {theme.implications}\n\n"
-            f"**Recommendation:** {theme.recommendation}\n\n"
-            f"**CPP Citation:** {theme.cpp_citation or theme.cpp_domain}\n\n"
-            f"### Segment Impact\n"
-            f"- Private Residences: {seg.hni or 'Review recommended'}\n"
-            f"- Corporates: {seg.enterprise or 'Review recommended'}\n"
-            f"- Critical Infrastructure: "
+            f"{theme.theme_title}\n\n"
+            f"Situation: {theme.situation}\n\n"
+            f"Assessment: {theme.assessment}\n\n"
+            f"Implications: {theme.implications}\n\n"
+            f"Recommendation: {theme.recommendation}\n\n"
+            f"CPP Citation: {theme.cpp_citation or label}\n\n"
+            f"Segment Impact\n"
+            f"Private Residences: {seg.hni or 'Review recommended'}\n"
+            f"Corporates: {seg.enterprise or 'Review recommended'}\n"
+            f"Critical Infrastructure: "
             f"{seg.critical_infrastructure or 'Review recommended'}"
         )
 

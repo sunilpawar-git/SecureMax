@@ -12,9 +12,39 @@ from unittest.mock import AsyncMock
 import pytest
 
 from gemini_client import GeminiError
+from newsletter.models import EnrichedTheme, NewsletterContent
 from newsletter.render import build_newsletter_html
 from newsletter.synthesis import synthesize_newsletter_pipeline
 from tests.conftest import _DSN, TEST_SCHEMA, _TestPool, run_db
+
+
+def _render_content(title: str, themes: list[EnrichedTheme]) -> NewsletterContent:
+    """Build a minimal NewsletterContent for render tests."""
+    return NewsletterContent(
+        title=title,
+        issue_date="11 June 2026",
+        executive_summary="Test summary",
+        intelligence_briefing="",
+        full_analysis="",
+        cta_soft="Book an audit.",
+        cta_audit_link="/security-audit",
+        themes=themes,
+    )
+
+
+def _simple_theme(
+    title: str, cpp_domain: str = "CPP-01", recommendation: str = "T1"
+) -> EnrichedTheme:
+    return EnrichedTheme(
+        theme_title=title,
+        situation="Situation",
+        assessment="Assessment",
+        implications="Implications",
+        recommendation=recommendation,
+        cpp_domain=cpp_domain,
+        cpp_citation="",
+        source_article_ids=[],
+    )
 
 _ARTICLES = [
     {
@@ -93,29 +123,24 @@ async def test_synthesis_fallback_produces_valid_content_on_gemini_error():
 
 
 def test_html_contains_title_items_and_brand():
-    html = build_newsletter_html(
-        {
-            "title": "Weekly Threat Digest",
-            "intro": "Intro text",
-            "items": [{"headline": "H1", "takeaway": "T1", "domain": "CPP-01"}],
-            "cta": "Call us.",
-        }
+    content = _render_content(
+        title="Weekly Threat Digest",
+        themes=[_simple_theme("H1", cpp_domain="CPP-01", recommendation="T1")],
     )
+    html = build_newsletter_html(content)
     assert "Weekly Threat Digest" in html
     assert "H1" in html
-    assert "CPP-01" in html
+    # domain label is now shown (not raw CPP code)
+    assert "Physical Security" in html
     assert "Raivan Global" in html
 
 
 def test_html_escapes_untrusted_article_content():
-    html = build_newsletter_html(
-        {
-            "title": '<script>alert("x")</script>',
-            "intro": "ok",
-            "items": [{"headline": "<img src=x onerror=1>", "takeaway": "ok", "domain": "CPP-01"}],
-            "cta": "ok",
-        }
+    content = _render_content(
+        title='<script>alert("x")</script>',
+        themes=[_simple_theme('<img src=x onerror=1>')],
     )
+    html = build_newsletter_html(content)
     assert "<script>" not in html
     assert "<img src=x" not in html
     assert "&lt;script&gt;" in html

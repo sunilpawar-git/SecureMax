@@ -52,3 +52,14 @@ class TestSourcesYaml:
         targets = get_playwright_targets()
         assert isinstance(targets, list)
         assert len(targets) > 0
+
+    def test_source_count_minimum(self) -> None:
+        """Validate we have sufficient source diversity for gold-standard coverage.
+
+        Counts as of Sprint 7 (gold-standard overhaul): 7 NewsAPI + 19 RSS + 5 Playwright.
+        Ratchet: adjust upward when sources are added, never downward.
+        """
+        data = load_sources(_YAML_PATH)
+        assert len(data.get("newsapi", [])) >= 7
+        assert len(data.get("rss", [])) >= 19  # 19 feeds as of Sprint 7
+        assert len(data.get("playwright", [])) >= 5

@@ -1,6 +1,7 @@
 """
-Newsletter-specific constants — SSOT for scoring, segments, brand, and thresholds.
-Imported by gatekeeper, synthesis passes, and renderers.
+Newsletter-specific constants — SSOT for scoring, segments, brand, thresholds,
+CPP domain labels, keyword-to-domain mappings, and fallback scorer term sets.
+Imported by gatekeeper, synthesis passes, renderers, and pipeline.
 """
 
 AUDIENCE_SEGMENTS = ("hni", "enterprise", "critical_infrastructure")
@@ -28,6 +29,115 @@ NEWSLETTER_QUALITY_THRESHOLD = 0.6
 
 MAX_NEWSLETTER_THEMES = 5
 MAX_NEWSLETTER_ARTICLES = 15
+
+# --- CPP domain labels (public-facing, plain English) ---
+
+CPP_DOMAIN_LABELS: dict[str, str] = {
+    "CPP-01": "Physical Security & Access Control",
+    "CPP-02": "Risk Management & Business Continuity",
+    "CPP-03": "Emergency & Crisis Response",
+    "CPP-04": "Security Investigations",
+    "CPP-05": "Information & Technology Security",
+    "CPP-06": "Guard & Personnel Operations",
+    "CPP-07": "Security Governance & Strategy",
+}
+
+# --- Threat keyword → CPP domain mapping (used by pipeline + gatekeeper fallback) ---
+# Every term in PHYSICAL_SECURITY_TERMS that describes a specific threat type
+# must have a domain mapping here so _fallback_process tags articles correctly.
+
+DOMAIN_KEYWORD_MAP: dict[str, str] = {
+    # CPP-01: Physical Security & Access Control
+    "physical security": "CPP-01",
+    "cctv": "CPP-01",
+    "access control": "CPP-01",
+    "perimeter": "CPP-01",
+    "perimeter breach": "CPP-01",
+    "surveillance": "CPP-01",
+    "airport security": "CPP-01",
+    "aviation security": "CPP-01",
+    "terrorism": "CPP-01",
+    "bomb": "CPP-01",
+    "bomb blast": "CPP-01",
+    "active shooter": "CPP-01",
+    "vehicle attack": "CPP-01",
+    "security breach": "CPP-01",
+    "security incident": "CPP-01",
+    "trespassing": "CPP-01",
+    "burglary": "CPP-01",
+    "break-in": "CPP-01",
+    "theft": "CPP-01",
+    # CPP-03: Emergency & Crisis Response
+    "fire": "CPP-03",
+    "fire safety": "CPP-03",
+    "fire safety certificate": "CPP-03",
+    "fire drill": "CPP-03",
+    "blaze": "CPP-03",
+    "arson": "CPP-03",
+    "stampede": "CPP-03",
+    "evacuation": "CPP-03",
+    "emergency exit": "CPP-03",
+    "building collapse": "CPP-03",
+    "structural failure": "CPP-03",
+    "crowd management": "CPP-03",
+    "overcrowding": "CPP-03",
+    "emergency response": "CPP-03",
+    "industrial accident": "CPP-03",
+    "chemical leak": "CPP-03",
+    "factory explosion": "CPP-03",
+    "noc": "CPP-03",
+    # CPP-05: Information & Technology Security
+    "intrusion": "CPP-05",
+    "intrusion detection": "CPP-05",
+    "insider threat": "CPP-05",
+    "drone attack": "CPP-05",
+    "counter-drone": "CPP-05",
+    # CPP-06: Guard & Personnel Operations
+    "guard": "CPP-06",
+    "patrol": "CPP-06",
+    "guard patrol": "CPP-06",
+    "theft prevention": "CPP-06",
+    "kidnapping": "CPP-06",
+    "ransom": "CPP-06",
+    "carjacking": "CPP-06",
+    "executive protection": "CPP-06",
+    "vip security": "CPP-06",
+    "workplace violence": "CPP-06",
+    # CPP-07: Security Governance & Strategy
+    "security audit": "CPP-07",
+}
+
+# --- Fallback scorer term sets ---
+
+PHYSICAL_SECURITY_TERMS: frozenset[str] = frozenset({
+    "physical security", "cctv", "access control", "perimeter",
+    "surveillance", "guard", "patrol", "intrusion", "break-in",
+    "burglary", "theft", "trespassing", "fire safety",
+    "emergency response", "security breach", "security incident",
+    "workplace violence", "insider threat",
+    "fire", "blaze", "arson", "stampede", "evacuation",
+    "crowd management", "building collapse", "emergency exit",
+    "overcrowding", "structural failure", "fire drill",
+    "fire safety certificate", "noc", "drone attack", "counter-drone",
+    "kidnapping", "ransom", "carjacking", "executive protection",
+    "vip security", "terrorism", "bomb blast", "active shooter",
+    "vehicle attack", "industrial accident", "chemical leak",
+    "factory explosion", "airport security", "aviation security",
+})
+
+INDIA_GEO_TERMS: frozenset[str] = frozenset({
+    # Administrative areas — prefer these over incident-specific venues
+    "india", "indian", "delhi", "mumbai", "bangalore", "bengaluru",
+    "hyderabad", "chennai", "kolkata", "pune", "ahmedabad", "jaipur",
+    "lucknow", "gurgaon", "noida", "gated community", "housing society",
+    "cisf", "crpf", "private security guard", "watchman",
+    "goa", "surat", "nagpur", "chandigarh", "patna", "bhopal",
+    "agra", "varanasi", "coimbatore", "kochi", "mangalore",
+    "indore", "thiruvananthapuram", "visakhapatnam", "ranchi",
+    "malviya nagar", "andheri",
+    "farmhouse", "resort", "mall",
+    "metro station", "railway station", "it park",
+})
 
 # --- Brand palette (shared across all renderers) ---
 

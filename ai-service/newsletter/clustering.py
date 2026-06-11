@@ -10,6 +10,7 @@ import re
 from newsletter.constants import MAX_NEWSLETTER_THEMES
 from newsletter.models import ThemeCluster
 from newsletter.prompts import CLUSTER_PROMPT
+from newsletter.utils import domain_label
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ async def cluster_articles(
         for a in articles
     )
 
-    prompt = CLUSTER_PROMPT.safe_substitute(articles=article_text)
+    prompt = CLUSTER_PROMPT.substitute(articles=article_text)
 
     try:
         raw = await gemini.generate(prompt)
@@ -58,19 +59,9 @@ def fallback_cluster(articles: list[dict]) -> list[ThemeCluster]:
         domain_groups.setdefault(primary, []).append(a["id"])
         domain_titles.setdefault(primary, []).append(a["title"])
 
-    domain_names = {
-        "CPP-01": "Physical Security",
-        "CPP-02": "Business Principles",
-        "CPP-03": "Crisis Management",
-        "CPP-04": "Investigations",
-        "CPP-05": "Information Security",
-        "CPP-06": "Personnel Security",
-        "CPP-07": "Security Management",
-    }
-
     clusters = []
     for domain, ids in sorted(domain_groups.items()):
-        domain_name = domain_names.get(domain, domain)
+        domain_name = domain_label(domain)
         clusters.append(
             ThemeCluster(
                 theme_title=f"{domain_name} Developments",
