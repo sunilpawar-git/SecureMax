@@ -26,23 +26,28 @@ export function useFollowupData() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
-    async function fetchFollowUps() {
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
+    setLoading(true);
+    setError(null);
+
+    (async () => {
       try {
-        const res = await fetch('/api/admin/followup');
+        const res = await fetch('/api/admin/followup', { signal });
         if (!res.ok) throw new Error('Failed to fetch');
         const data = await res.json();
-        if (!cancelled) setItems(data.items ?? []);
-      } catch {
-        if (!cancelled) setError(FOLLOWUP_STRINGS.LOAD_ERROR);
+        setItems(data.items ?? []);
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return;
+        setError(FOLLOWUP_STRINGS.LOAD_ERROR);
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!signal.aborted) setLoading(false);
       }
-    }
-    fetchFollowUps();
-    return () => {
-      cancelled = true;
-    };
+    })();
+
+    return () => controller.abort();
   }, []);
 
   return { items, loading, error };

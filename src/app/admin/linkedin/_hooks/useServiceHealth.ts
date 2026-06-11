@@ -17,18 +17,19 @@ export function useServiceHealth(): ServiceHealth | null {
   const [health, setHealth] = useState<ServiceHealth | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
-    fetch('/api/admin/health')
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    fetch('/api/admin/health', { signal })
       .then((res) => (res.ok ? (res.json() as Promise<ServiceHealth>) : null))
       .then((data) => {
-        if (!cancelled && data) setHealth(data);
+        if (!signal.aborted && data) setHealth(data);
       })
       .catch(() => {
         /* non-critical — banner simply does not render */
       });
-    return () => {
-      cancelled = true;
-    };
+
+    return () => controller.abort();
   }, []);
 
   return health;

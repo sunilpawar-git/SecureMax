@@ -70,6 +70,38 @@ describe('Service worker', () => {
   it('deletes stale caches on activate', () => {
     expect(sw).toContain('caches.delete');
   });
+
+  // Regression: /admin was missing from NEVER_CACHE_PREFIXES, causing the SW
+  // to cache admin page shells and serve stale "Loading..." state on soft nav.
+  it('excludes /admin routes from the cache', () => {
+    expect(sw).toContain("'/admin'");
+  });
+
+  // All sensitive route prefixes must be present so an editor can't accidentally
+  // delete one without the test suite catching it.
+  const REQUIRED_SKIP_PREFIXES = [
+    '/api/',
+    '/admin',
+    '/questionnaire',
+    '/dashboard',
+    '/payment',
+    '/report',
+    '/onboarding',
+    '/enterprise',
+    '/auth',
+  ];
+
+  it.each(REQUIRED_SKIP_PREFIXES)('NEVER_CACHE_PREFIXES includes %s', (prefix) => {
+    expect(sw).toContain(`'${prefix}'`);
+  });
+
+  it('uses skipWaiting to activate immediately on deploy', () => {
+    expect(sw).toContain('skipWaiting');
+  });
+
+  it('uses clients.claim to take over existing tabs on activate', () => {
+    expect(sw).toContain('clients.claim');
+  });
 });
 
 describe('Offline fallback page', () => {

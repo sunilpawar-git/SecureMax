@@ -8,14 +8,14 @@ import fs from 'fs';
 import path from 'path';
 import { RATE_LIMITS } from '@/config/security';
 
-const middlewareSource = fs.readFileSync(path.join(process.cwd(), 'src', 'middleware.ts'), 'utf-8');
+const middlewareSource = fs.readFileSync(path.join(process.cwd(), 'src', 'proxy.ts'), 'utf-8');
 const layoutSource = fs.readFileSync(
   path.join(process.cwd(), 'src', 'app', 'admin', 'layout.tsx'),
   'utf-8',
 );
 
 describe('Auth rate limits are wired into the middleware (no dead config)', () => {
-  it('middleware.ts applies AUTH_WINDOW_MS and AUTH_MAX_REQUESTS', () => {
+  it('proxy.ts applies AUTH_WINDOW_MS and AUTH_MAX_REQUESTS', () => {
     expect(middlewareSource).toContain('RATE_LIMITS.AUTH_WINDOW_MS');
     expect(middlewareSource).toContain('RATE_LIMITS.AUTH_MAX_REQUESTS');
   });

@@ -129,7 +129,10 @@ describe('4C: sessions userId filter', () => {
     expect(result.current.userIdFilter).toBe('user-42');
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('userId=user-42'));
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('userId=user-42'),
+        expect.anything(), // { signal } from AbortController
+      );
     });
     unmount();
   });
