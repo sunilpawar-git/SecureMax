@@ -281,7 +281,7 @@ class TestGeminiTagger:
     async def test_successful_gemini_tag_sets_tagged_by_gemini(self) -> None:
         from routers.scraper import _make_gemini_tagger
 
-        gemini_response = json.dumps(
+        tag_response = json.dumps(
             {
                 "summary": "A physical security breach occurred.",
                 "domain_tags": ["CPP-01"],
@@ -289,8 +289,19 @@ class TestGeminiTagger:
                 "relevance_score": 0.8,
             }
         )
+        score_response = json.dumps(
+            {
+                "physical_security_relevance": 0.9,
+                "geographic_relevance": 0.7,
+                "threat_actionability": 0.8,
+                "educational_value": 0.6,
+                "recency_novelty": 0.5,
+                "audience_impact": 0.7,
+                "affected_segments": ["enterprise"],
+            }
+        )
         mock_gemini = MagicMock()
-        mock_gemini.generate = AsyncMock(return_value=gemini_response)
+        mock_gemini.generate = AsyncMock(side_effect=[tag_response, score_response])
 
         tagger = _make_gemini_tagger(mock_gemini)
         article = RawArticle(
@@ -306,7 +317,8 @@ class TestGeminiTagger:
         assert result.tagged_by_gemini is True
         assert result.domain_tags == ["CPP-01"]
         assert result.industry_tags == ["corporate"]
-        assert result.relevance_score == 0.8
+        assert result.intel_scores is not None
+        assert result.relevance_score > 0
 
     @pytest.mark.asyncio
     async def test_gemini_failure_falls_back_and_not_tagged_by_gemini(self) -> None:

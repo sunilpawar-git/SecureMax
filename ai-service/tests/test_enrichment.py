@@ -1,169 +1,148 @@
-"""Tests for report/enrichment.py — CPP citation + threat intel linking."""
+"""Phase 2C tests — Pass 2 Analyze & Enrich module."""
 
 import json
 from unittest.mock import AsyncMock, MagicMock
 
-from config import get_settings
-from gemini_client import GeminiClient
-from report.enrichment import (
-    enrich_findings_with_cpp,
-    enrich_findings_with_threat_intel,
-)
-from tests.conftest import run_db
+import pytest
 
-_settings = get_settings()
+from newsletter.enrichment import _fallback_enrich, enrich_themes
+from newsletter.models import EnrichedTheme, ThemeCluster
 
 
-def _sample_findings() -> list[dict]:
+def _make_cluster(ids: list[str] | None = None) -> ThemeCluster:
+    return ThemeCluster(
+        theme_title="Perimeter Breaches",
+        theme_summary="Multiple perimeter fence breaches in Mumbai",
+        article_ids=ids or ["a1", "a2"],
+        primary_domain="CPP-01",
+        secondary_domains=["CPP-07"],
+    )
+
+
+def _make_articles() -> list[dict]:
     return [
-        {
-            "domain": "CPP-01",
-            "domain_name": "Physical Security",
-            "question": "Is the perimeter secured?",
-            "answer": "No",
-            "severity": "critical",
-            "recommendation": "Secure the perimeter.",
-        },
-        {
-            "domain": "CPP-05",
-            "domain_name": "Information Security",
-            "question": "Is data encrypted?",
-            "answer": "Never",
-            "severity": "high",
-            "recommendation": "Encrypt data.",
-        },
+        {"id": "a1", "title": "Fence cut at warehouse", "summary": "Breach at Mumbai site"},
+        {"id": "a2", "title": "CCTV bypass reported", "summary": "Surveillance evaded"},
     ]
 
 
-def _mock_gemini(embed_return=None) -> MagicMock:
-    mock = MagicMock(spec=GeminiClient)
-    mock.embed = AsyncMock(return_value=embed_return or [0.1] * 3072)
-    return mock
+class TestEnrichThemes:
+    @pytest.mark.asyncio
+    async def test_parses_valid_gemini_response(self) -> None:
+        gemini_response = json.dumps({
+            "situation": "Two perimeter breaches occurred in Mumbai.",
+            "assessment": "Physical barriers are inadequate.",
+            "implications": "Wider exposure for warehouse operators.",
+            "recommendation": "Install vibration sensors on perimeter fencing.",
+            "cpp_citation": "CPP-01 mandates concentric ring defence.",
+            "segment_impact": {
+                "hni": "Gated communities at risk",
+                "enterprise": "Corporate campuses need review",
+                "critical_infrastructure": "Limited direct impact",
+            },
+        })
+        gemini = MagicMock()
+        gemini.generate = AsyncMock(return_value=gemini_response)
 
-
-class TestEnrichFindingsWithCpp:
-    def test_findings_get_cpp_citation_attached(self, db_conn) -> None:
-        """With CPP chunks in DB, findings should get citations."""
-        _seed_test_chunk(db_conn, "CPP-01", "Perimeter", "Perimeter fencing is essential.")
-        gemini = _mock_gemini()
-        findings = _sample_findings()
-        enriched = run_db(enrich_findings_with_cpp(findings, db_conn, _settings, gemini=gemini))
-        cpp01_finding = next(f for f in enriched if f["domain"] == "CPP-01")
-        assert cpp01_finding.get("cpp_citation") is not None
-        assert cpp01_finding["cpp_citation"]["domain"] == "CPP-01"
-        assert "excerpt" in cpp01_finding["cpp_citation"]
-
-    def test_empty_db_returns_findings_without_citations(self, db_conn) -> None:
-        gemini = _mock_gemini()
-        findings = _sample_findings()
-        enriched = run_db(enrich_findings_with_cpp(findings, db_conn, _settings, gemini=gemini))
-        for f in enriched:
-            assert f.get("cpp_citation") is None
-
-    def test_does_not_mutate_original(self, db_conn) -> None:
-        gemini = _mock_gemini()
-        findings = _sample_findings()
-        originals = [dict(f) for f in findings]
-        run_db(enrich_findings_with_cpp(findings, db_conn, _settings, gemini=gemini))
-        assert findings == originals
-
-    def test_handles_embed_failure_gracefully(self, db_conn) -> None:
-        gemini = MagicMock(spec=GeminiClient)
-        gemini.embed = AsyncMock(side_effect=RuntimeError("API down"))
-        findings = _sample_findings()
-        enriched = run_db(enrich_findings_with_cpp(findings, db_conn, _settings, gemini=gemini))
-        assert len(enriched) == len(findings)
-        for f in enriched:
-            assert f.get("cpp_citation") is None
-
-
-class TestEnrichFindingsWithThreatIntel:
-    def test_returns_articles_matching_domain(self, db_conn) -> None:
-        _seed_test_threat_intel(db_conn, "CPP-01", "Perimeter breach at warehouse")
-        findings = _sample_findings()
-        articles = run_db(enrich_findings_with_threat_intel(findings, db_conn))
-        assert len(articles) >= 1
-        assert any("CPP-01" in json.dumps(a.get("domain_tags", [])) for a in articles)
-
-    def test_empty_threat_intel_returns_empty(self, db_conn) -> None:
-        findings = _sample_findings()
-        articles = run_db(enrich_findings_with_threat_intel(findings, db_conn))
-        assert articles == []
-
-    def test_soft_deleted_articles_excluded(self, db_conn) -> None:
-        _seed_test_threat_intel(db_conn, "CPP-01", "Deleted article", soft_deleted=True)
-        findings = _sample_findings()
-        articles = run_db(enrich_findings_with_threat_intel(findings, db_conn))
-        assert articles == []
-
-    def test_deduplicates_across_domains(self, db_conn) -> None:
-        _seed_test_threat_intel(db_conn, "CPP-01", "Shared article", article_id="shared-1")
-        findings = _sample_findings()
-        articles = run_db(enrich_findings_with_threat_intel(findings, db_conn))
-        urls = [a["url"] for a in articles]
-        assert len(urls) == len(set(urls))
-
-    def test_limits_articles(self, db_conn) -> None:
-        for i in range(10):
-            _seed_test_threat_intel(db_conn, "CPP-01", f"Article {i}", article_id=f"art-{i}")
-        findings = _sample_findings()
-        articles = run_db(enrich_findings_with_threat_intel(findings, db_conn, max_articles=5))
-        assert len(articles) <= 5
-
-
-def _seed_test_chunk(db_conn, domain: str, section: str, text: str) -> None:
-    import hashlib
-
-    content_hash = hashlib.sha256(text.encode()).hexdigest()
-    embedding = [0.1] * 3072
-    embedding_str = "[" + ",".join(str(v) for v in embedding) + "]"
-    run_db(
-        db_conn.execute(
-            """
-            INSERT INTO cpp_chunks (id, domain, section, chunk_text, embedding, content_hash)
-            VALUES ($1, $2, $3, $4, $5::vector, $6)
-            ON CONFLICT (content_hash) DO NOTHING
-            """,
-            f"chunk-{content_hash[:8]}",
-            domain,
-            section,
-            text,
-            embedding_str,
-            content_hash,
+        result = await enrich_themes(
+            [_make_cluster()], _make_articles(), gemini=gemini
         )
-    )
 
+        assert len(result) == 1
+        assert isinstance(result[0], EnrichedTheme)
+        assert result[0].situation == "Two perimeter breaches occurred in Mumbai."
+        assert result[0].cpp_domain == "CPP-01"
+        assert result[0].segment_impact.hni == "Gated communities at risk"
 
-def _seed_test_threat_intel(
-    db_conn,
-    domain: str,
-    title: str,
-    *,
-    article_id: str | None = None,
-    soft_deleted: bool = False,
-) -> None:
-    import hashlib
+    @pytest.mark.asyncio
+    async def test_with_cpp_retrieval(self) -> None:
+        gemini_response = json.dumps({
+            "situation": "Sit",
+            "assessment": "Assess",
+            "implications": "Impl",
+            "recommendation": "Rec",
+            "cpp_citation": "CPP-01 §3.2",
+        })
+        gemini = MagicMock()
+        gemini.generate = AsyncMock(return_value=gemini_response)
 
-    aid = article_id or hashlib.sha256(title.encode()).hexdigest()[:12]
-    url = f"https://example.com/{aid}"
-    content_hash = hashlib.sha256(title.encode()).hexdigest()
-    run_db(
-        db_conn.execute(
-            """
-            INSERT INTO threat_intel
-                (id, title, url, content_hash, summary, domain_tags, industry_tags,
-                 source, soft_deleted)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-            ON CONFLICT (url) DO NOTHING
-            """,
-            aid,
-            title,
-            url,
-            content_hash,
-            f"Summary of {title}",
-            json.dumps([domain]),
-            json.dumps(["physical_security"]),
-            "test",
-            soft_deleted,
+        chunk = MagicMock()
+        chunk.domain = "CPP-01"
+        chunk.section = "Physical Security Principles"
+        chunk.chunk_text = "The 4D model: Deter, Detect, Delay, Deny."
+        cpp_retrieve = AsyncMock(return_value=[chunk])
+
+        result = await enrich_themes(
+            [_make_cluster()], _make_articles(),
+            gemini=gemini, cpp_retrieve=cpp_retrieve,
         )
-    )
+
+        assert len(result) == 1
+        cpp_retrieve.assert_called_once()
+        call_kwargs = cpp_retrieve.call_args
+        assert "CPP-01" in call_kwargs.kwargs.get("domains", [])
+
+    @pytest.mark.asyncio
+    async def test_falls_back_on_gemini_error(self) -> None:
+        gemini = MagicMock()
+        gemini.generate = AsyncMock(side_effect=RuntimeError("down"))
+
+        result = await enrich_themes(
+            [_make_cluster()], _make_articles(), gemini=gemini
+        )
+
+        assert len(result) == 1
+        assert isinstance(result[0], EnrichedTheme)
+        assert "incident" in result[0].situation.lower()
+
+    @pytest.mark.asyncio
+    async def test_enriches_multiple_clusters(self) -> None:
+        c1 = _make_cluster(["a1"])
+        c2 = ThemeCluster(
+            theme_title="Crisis Management",
+            theme_summary="Emergency response gaps",
+            article_ids=["a2"],
+            primary_domain="CPP-03",
+        )
+        gemini = MagicMock()
+        gemini.generate = AsyncMock(return_value=json.dumps({
+            "situation": "S", "assessment": "A",
+            "implications": "I", "recommendation": "R",
+        }))
+
+        result = await enrich_themes([c1, c2], _make_articles(), gemini=gemini)
+        assert len(result) == 2
+
+    @pytest.mark.asyncio
+    async def test_cpp_retrieval_failure_continues(self) -> None:
+        """CPP retrieval failure should not block enrichment."""
+        gemini_response = json.dumps({
+            "situation": "S", "assessment": "A",
+            "implications": "I", "recommendation": "R",
+        })
+        gemini = MagicMock()
+        gemini.generate = AsyncMock(return_value=gemini_response)
+        cpp_retrieve = AsyncMock(side_effect=RuntimeError("DB down"))
+
+        result = await enrich_themes(
+            [_make_cluster()], _make_articles(),
+            gemini=gemini, cpp_retrieve=cpp_retrieve,
+        )
+        assert len(result) == 1
+
+
+class TestFallbackEnrich:
+    def test_produces_valid_enriched_theme(self) -> None:
+        cluster = _make_cluster()
+        article_map = {a["id"]: a for a in _make_articles()}
+        result = _fallback_enrich(cluster, article_map)
+
+        assert isinstance(result, EnrichedTheme)
+        assert result.cpp_domain == "CPP-01"
+        assert len(result.source_article_ids) == 2
+        assert "Fence cut" in result.assessment
+
+    def test_handles_missing_articles(self) -> None:
+        cluster = _make_cluster(["missing-id"])
+        result = _fallback_enrich(cluster, {})
+        assert isinstance(result, EnrichedTheme)

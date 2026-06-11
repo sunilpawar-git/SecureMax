@@ -85,7 +85,8 @@ async def backfill_threat_intel_embeddings(request: Request) -> dict:
 
 
 def _make_gemini_tagger(gemini):
-    """Returns an async callable that tags articles via Gemini Flash."""
+    """Returns an async callable that tags and scores articles via Gemini Flash."""
+    from scraper.gatekeeper import compute_composite_score, score_article
     from scraper.models import ProcessedArticle, RawArticle
 
     async def tag_article(article: RawArticle) -> ProcessedArticle:
@@ -117,6 +118,8 @@ def _make_gemini_tagger(gemini):
             cleaned = re.sub(r"\n?```$", "", cleaned).strip()
 
             parsed = json.loads(cleaned)
+            intel_scores = await score_article(article, gemini=gemini)
+            composite = compute_composite_score(intel_scores)
             return ProcessedArticle(
                 title=article.title,
                 url=article.url,
@@ -125,7 +128,8 @@ def _make_gemini_tagger(gemini):
                 domain_tags=parsed["domain_tags"],
                 industry_tags=parsed["industry_tags"],
                 source=f"{article.source_name} ({article.source_tier})",
-                relevance_score=parsed.get("relevance_score", 0.5),
+                relevance_score=composite,
+                intel_scores=intel_scores,
                 tagged_by_gemini=True,
             )
         except Exception as e:

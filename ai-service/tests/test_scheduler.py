@@ -1,7 +1,8 @@
 """Scheduler configuration tests — guard the cron times against silent drift.
 
 The daily scraper must run at 02:30 UTC (08:00 IST) so fresh threat intel is
-ready before the admin workday; the weekly briefing stays Mon 03:30 UTC.
+ready before the admin workday. The weekly newsletter fires Mon 03:00 UTC and
+the LinkedIn briefing fires Mon 04:00 UTC (60-min gap prevents a timing race).
 Parses main.py's add_job calls via AST so no app/DB bootstrap is needed.
 """
 
@@ -38,9 +39,10 @@ def test_daily_scraper_runs_at_0230_utc():
     assert jobs["daily_scraper"]["minute"] == 30
 
 
-def test_weekly_briefing_unchanged():
+def test_weekly_briefing_fires_after_newsletter():
+    """LinkedIn briefing at 04:00 UTC gives the 03:00 newsletter cron a full hour."""
     jobs = _find_add_job_calls()
     assert "weekly_linkedin_briefing" in jobs
-    assert jobs["weekly_linkedin_briefing"]["hour"] == 3
-    assert jobs["weekly_linkedin_briefing"]["minute"] == 30
+    assert jobs["weekly_linkedin_briefing"]["hour"] == 4
+    assert jobs["weekly_linkedin_briefing"]["minute"] == 0
     assert jobs["weekly_linkedin_briefing"]["day_of_week"] == "mon"

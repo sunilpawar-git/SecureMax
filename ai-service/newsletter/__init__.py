@@ -1,1 +1,1 @@
-"""Newsletter generation — Gemini synthesis + Playwright one-pager rendering."""
+"""Newsletter generation — multi-pass intelligence synthesis + multi-format rendering."""

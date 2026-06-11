@@ -213,14 +213,21 @@ model LinkedinPost {
 // ========== NEWSLETTERS (threat-intel one-pager for social posting) ==========
 
 model Newsletter {
-  id           String   @id @default(cuid())
-  title        String
-  bodyMarkdown String   @map("body_markdown") @db.Text
-  imagePng     Bytes?   @map("image_png") // rendered one-pager (PNG)
-  articleIds   Json     @map("article_ids") // threat_intel ids cited in this issue
-  status       String   @default("draft") // draft | published | deleted
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id                   String   @id @default(cuid())
+  title                String
+  bodyMarkdown         String   @map("body_markdown") @db.Text
+  imagePng             Bytes?   @map("image_png")
+  emailHtml            String?  @map("email_html") @db.Text
+  whatsappText         String?  @map("whatsapp_text") @db.Text
+  websiteHtml          String?  @map("website_html") @db.Text
+  executiveSummary     String?  @map("executive_summary") @db.Text
+  intelligenceBriefing String?  @map("intelligence_briefing") @db.Text
+  fullAnalysis         String?  @map("full_analysis") @db.Text
+  commandersNote       String?  @map("commanders_note") @db.Text
+  articleIds           Json     @map("article_ids")
+  status               String   @default("draft")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
 
   posts NewsletterPost[]
 

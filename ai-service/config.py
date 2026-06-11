@@ -33,6 +33,8 @@ class Settings(BaseSettings):
     generation_model_fast: str = "models/gemini-2.0-flash"
     generation_model_pro: str = "models/gemini-2.5-pro"
     cpp_retrieval_top_k: int = 3
+    newsletter_quality_threshold: float = 0.6
+    newsletter_max_articles: int = 15
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 

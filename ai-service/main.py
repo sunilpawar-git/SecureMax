@@ -70,30 +70,59 @@ async def lifespan(app: FastAPI):
             logger.exception("Scheduled scraper failed")
 
     async def scheduled_weekly_briefing():
-        """Monday 09:00 IST (03:30 UTC) — synthesize weekly LinkedIn briefing."""
-        try:
-            from linkedin.weekly_briefing import synthesize_weekly_briefing
+        """Monday 09:30 IST (04:00 UTC) — derive LinkedIn post from latest newsletter.
 
-            if not gemini:
-                logger.warning("Weekly briefing skipped — Gemini not configured")
-                return
+        Falls back to a deterministic digest from threat_intel if no recent
+        newsletter row exists (e.g. newsletter cron failed or was skipped).
+        """
+        try:
             async with pool.acquire() as conn:
-                rows = await conn.fetch(
-                    """SELECT title, summary, domain_tags, source
-                    FROM threat_intel
-                    WHERE soft_deleted = FALSE
-                      AND scraped_at >= NOW() - INTERVAL '7 days'
-                    ORDER BY scraped_at DESC LIMIT 10"""
+                row = await conn.fetchrow(
+                    """SELECT id, executive_summary, title
+                    FROM newsletters
+                    WHERE status IN ('draft', 'published')
+                      AND created_at >= NOW() - INTERVAL '2 days'
+                    ORDER BY created_at DESC LIMIT 1"""
                 )
-                articles = [dict(r) for r in rows]
-                briefing_text = await synthesize_weekly_briefing(articles, gemini=gemini)
+
+                if row and row["executive_summary"]:
+                    briefing_text = row["executive_summary"][:3000]
+                    source_label = f"newsletter {row['id']}"
+                else:
+                    logger.warning(
+                        "Weekly LinkedIn briefing — no recent newsletter; "
+                        "using threat_intel fallback"
+                    )
+                    fallback_rows = await conn.fetch(
+                        """SELECT title, summary FROM threat_intel
+                        WHERE soft_deleted = FALSE
+                        ORDER BY scraped_at DESC LIMIT 5"""
+                    )
+                    if not fallback_rows:
+                        logger.warning(
+                            "Weekly LinkedIn briefing skipped — "
+                            "no newsletter and no threat intel found"
+                        )
+                        return
+                    lines = ["Security Intelligence Digest\n"]
+                    for r in fallback_rows:
+                        lines.append(
+                            f"\u2022 {r['title']}: {(r['summary'] or '')[:200]}"
+                        )
+                    lines.append(
+                        "\nIs your organization prepared? "
+                        "Book a professional security audit."
+                    )
+                    briefing_text = "\n".join(lines)[:3000]
+                    source_label = "threat_intel fallback"
+
                 await conn.execute(
                     """INSERT INTO linkedin_posts
                        (id, draft_text, status, platform, created_at, updated_at)
                        VALUES (gen_random_uuid(), $1, 'draft', 'linkedin', NOW(), NOW())""",
                     briefing_text,
                 )
-            logger.info("Weekly LinkedIn briefing drafted (%d chars)", len(briefing_text))
+            logger.info("Weekly LinkedIn briefing drafted from %s", source_label)
         except Exception:
             logger.exception("Weekly LinkedIn briefing failed")
 
@@ -109,8 +138,8 @@ async def lifespan(app: FastAPI):
         scheduled_weekly_briefing,
         "cron",
         day_of_week="mon",
-        hour=3,
-        minute=30,
+        hour=4,
+        minute=0,
         id="weekly_linkedin_briefing",
         replace_existing=True,
     )
@@ -148,7 +177,7 @@ async def lifespan(app: FastAPI):
     logger.info(
         "APScheduler started — daily scraper 02:30 UTC (08:00 IST), "
         "weekly newsletter Mon 03:00 UTC (08:30 IST), "
-        "weekly LinkedIn briefing Mon 03:30 UTC (09:00 IST)"
+        "weekly LinkedIn briefing Mon 04:00 UTC (09:30 IST)"
     )
 
     yield

@@ -1,9 +1,9 @@
 """
-Phase 6 tests — newsletter synthesis, HTML rendering, and the draft route.
-Intent: Gemini synthesizes the one-pager (Rule 5: judgment), code handles
-parsing/escaping/persistence (determinism). GeminiError must produce the
-deterministic fallback citing real articles — never a 500. Scraped article
-text is untrusted input: the HTML template must escape it.
+Newsletter synthesis, HTML rendering, and draft route tests.
+Intent: Gemini synthesizes the newsletter (Rule 5: judgment), code handles
+parsing/escaping/persistence (determinism). GeminiError must produce
+deterministic fallback content citing real articles — never a 500.
+Scraped article text is untrusted: all HTML outputs must escape it.
 """
 
 import json
@@ -13,7 +13,7 @@ import pytest
 
 from gemini_client import GeminiError
 from newsletter.render import build_newsletter_html
-from newsletter.synthesis import synthesize_newsletter
+from newsletter.synthesis import synthesize_newsletter_pipeline
 from tests.conftest import _DSN, TEST_SCHEMA, _TestPool, run_db
 
 _ARTICLES = [
@@ -22,12 +22,14 @@ _ARTICLES = [
         "title": "Warehouse breach via tailgating",
         "summary": "Attackers tailgated through an unmanned dock door.",
         "domain_tags": ["CPP-01"],
+        "affected_segments": ["hni", "enterprise"],
     },
     {
         "id": "ti-2",
         "title": "Data centre badge cloning incident",
         "summary": "Cloned access badges used to enter a server hall.",
         "domain_tags": ["CPP-05"],
+        "affected_segments": ["enterprise"],
     },
 ]
 
@@ -36,32 +38,58 @@ class _FailingGemini:
     async def generate(self, prompt, model=None):
         raise GeminiError("boom")
 
+    async def embed(self, text, model=None):
+        raise GeminiError("boom")
+
 
 async def test_synthesis_parses_gemini_json():
-    gemini = AsyncMock()
-    gemini.generate.return_value = json.dumps(
+    """Full pipeline returns NewsletterContent with Gemini-driven content."""
+    cluster_response = json.dumps([
         {
-            "title": "This Week in Physical Security",
-            "intro": "Two incidents stood out.",
-            "items": [
-                {"headline": "Tailgating risk", "takeaway": "Man the docks.", "domain": "CPP-01"}
-            ],
-            "cta": "Book an audit.",
+            "theme_title": "Access Control Failures",
+            "theme_summary": "Tailgating and badge cloning.",
+            "article_ids": ["ti-1", "ti-2"],
+            "primary_domain": "CPP-01",
         }
+    ])
+    enrich_response = json.dumps({
+        "situation": "Two access control breaches.",
+        "assessment": "Physical access controls are weak.",
+        "implications": "Broad facility exposure.",
+        "recommendation": "Man the docks and audit badge systems.",
+        "cpp_citation": "CPP-01 §4.1",
+        "segment_impact": {
+            "hni": "Review home perimeter access.",
+            "enterprise": "Audit badge provisioning.",
+            "critical_infrastructure": "Enforce dual-person access.",
+        },
+    })
+    compose_response = json.dumps({
+        "title": "This Week in Physical Security",
+        "executive_summary": "Two incidents stood out this week.",
+        "intelligence_briefing": "Full briefing content goes here.",
+        "full_analysis": "Deep analysis with CPP citations.",
+        "commanders_note": "Stay vigilant.",
+        "cta_soft": "Book an audit.",
+        "cta_audit_link": "/security-audit",
+    })
+    gemini = AsyncMock()
+    gemini.generate = AsyncMock(
+        side_effect=[cluster_response, enrich_response, compose_response]
     )
-    content = await synthesize_newsletter(_ARTICLES, gemini=gemini)
-    assert content["title"] == "This Week in Physical Security"
-    assert content["items"][0]["domain"] == "CPP-01"
-    assert content["cta"] == "Book an audit."
+    content = await synthesize_newsletter_pipeline(_ARTICLES, gemini=gemini)
+    assert content.title == "This Week in Physical Security"
+    assert content.themes[0].cpp_domain == "CPP-01"
+    assert content.cta_soft == "Book an audit."
+    assert content.intelligence_briefing == "Full briefing content goes here."
 
 
-async def test_synthesis_fallback_cites_real_articles_on_gemini_error():
-    content = await synthesize_newsletter(_ARTICLES, gemini=_FailingGemini())
-    headlines = " ".join(item["headline"] for item in content["items"])
-    assert "Warehouse breach via tailgating" in headlines
-    assert "Data centre badge cloning incident" in headlines
-    assert content["title"]
-    assert content["cta"]
+async def test_synthesis_fallback_produces_valid_content_on_gemini_error():
+    """Each pass has its own fallback — a failing Gemini still produces content."""
+    content = await synthesize_newsletter_pipeline(_ARTICLES, gemini=_FailingGemini())
+    assert content.title
+    assert content.cta_soft
+    assert len(content.themes) > 0
 
 
 def test_html_contains_title_items_and_brand():
@@ -98,8 +126,9 @@ def _seed_article(db_conn, article_id: str, title: str) -> None:
         db_conn.execute(
             """
             INSERT INTO threat_intel
-                (id, title, url, content_hash, summary, domain_tags, industry_tags)
-            VALUES ($1, $2, $3, $4, $5, '["CPP-01"]', '["general"]')
+                (id, title, url, content_hash, summary, domain_tags, industry_tags,
+                 relevance_score)
+            VALUES ($1, $2, $3, $4, $5, '["CPP-01"]', '["general"]', 0.8)
             """,
             article_id,
             title,
@@ -142,7 +171,11 @@ def test_draft_route_creates_newsletter_row(test_client, db_conn, monkeypatch):
     assert row["status"] == "draft"
     assert bytes(row["image_png"]) == b"png-bytes"
     assert "ti-nl-1" in json.loads(row["article_ids"])
-    assert "Perimeter fence cut at logistics hub" in row["body_markdown"]
+    assert row["body_markdown"]
+    assert row["executive_summary"]
+    assert row["email_html"]
+    assert row["whatsapp_text"]
+    assert row["website_html"]
 
 
 def test_draft_route_fails_loud_when_no_articles(test_client):

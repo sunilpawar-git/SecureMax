@@ -58,15 +58,39 @@ _ITEM_TMPL = Template(
 )
 
 
-def build_newsletter_html(content: dict) -> str:
-    """Render newsletter content into the branded one-pager HTML (escaped)."""
+def build_newsletter_html(content) -> str:
+    """Render newsletter content into the branded one-pager HTML (escaped).
+
+    Accepts either the legacy dict shape {title, intro, items[], cta} or a
+    NewsletterContent model — both paths produce the same PNG layout.
+    """
+    if hasattr(content, "themes"):
+        # NewsletterContent model path
+        items = [
+            {
+                "domain": t.cpp_domain,
+                "headline": t.theme_title[:80],
+                "takeaway": t.recommendation[:160],
+            }
+            for t in content.themes[:5]
+        ]
+        title = content.title or ""
+        intro = content.executive_summary[:200] if content.executive_summary else ""
+        cta = content.cta_soft or "Is your organization prepared? Book a security audit."
+    else:
+        # Legacy dict path (backward compatible)
+        items = content.get("items", [])
+        title = content.get("title", "")
+        intro = content.get("intro", "")
+        cta = content.get("cta", "")
+
     items_html = "".join(
         _ITEM_TMPL.substitute(
             domain=html_mod.escape(item.get("domain", "")),
             headline=html_mod.escape(item.get("headline", "")),
             takeaway=html_mod.escape(item.get("takeaway", "")),
         )
-        for item in content.get("items", [])
+        for item in items
     )
     return _PAGE_TMPL.substitute(
         width=PAGE_WIDTH,
@@ -78,10 +102,10 @@ def build_newsletter_html(content: dict) -> str:
         accent=_COLOR_ACCENT,
         brand=html_mod.escape(_BRAND_NAME),
         tagline=html_mod.escape(_BRAND_TAGLINE),
-        title=html_mod.escape(content.get("title", "")),
-        intro=html_mod.escape(content.get("intro", "")),
+        title=html_mod.escape(title),
+        intro=html_mod.escape(intro),
         items_html=items_html,
-        cta=html_mod.escape(content.get("cta", "")),
+        cta=html_mod.escape(cta),
     )
 
 

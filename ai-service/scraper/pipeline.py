@@ -29,6 +29,7 @@ def get_source_health() -> dict[str, SourceHealth]:
 
 
 async def get_stored_articles(pool: asyncpg.Pool, limit: int = 50) -> list[dict]:
+    limit = min(limit, 200)
     """Fetch recent articles from the database (not memory)."""
     async with pool.acquire() as conn:
         rows = await conn.fetch(
@@ -181,14 +182,30 @@ async def _persist_article(
     embed_fn: Callable[[str], Awaitable[list[float]]] | None = None,
 ) -> bool:
     """INSERT into threat_intel. Returns True if inserted, False if duplicate."""
+    scores = article.intel_scores
     async with pool.acquire() as conn:
         row = await conn.fetchrow(
             """
             INSERT INTO threat_intel
                 (id, title, url, content_hash, summary, domain_tags, industry_tags,
-                 source, relevance_score)
-            VALUES (gen_random_uuid()::text, $1, $2, $3, $4, $5::jsonb, $6::jsonb, $7, $8)
-            ON CONFLICT (url) DO NOTHING
+                 source, relevance_score,
+                 physical_security_relevance, geographic_relevance,
+                 threat_actionability, educational_value,
+                 recency_novelty, audience_impact, affected_segments)
+            VALUES (gen_random_uuid()::text,
+                    $1, $2, $3, $4, $5::jsonb, $6::jsonb, $7, $8,
+                    $9, $10, $11, $12, $13, $14, $15::jsonb)
+            ON CONFLICT (url) DO UPDATE SET
+                content_hash = EXCLUDED.content_hash,
+                summary = EXCLUDED.summary,
+                relevance_score = EXCLUDED.relevance_score,
+                physical_security_relevance = EXCLUDED.physical_security_relevance,
+                geographic_relevance = EXCLUDED.geographic_relevance,
+                threat_actionability = EXCLUDED.threat_actionability,
+                educational_value = EXCLUDED.educational_value,
+                recency_novelty = EXCLUDED.recency_novelty,
+                audience_impact = EXCLUDED.audience_impact,
+                affected_segments = EXCLUDED.affected_segments
             RETURNING id
             """,
             article.title,
@@ -199,6 +216,13 @@ async def _persist_article(
             json.dumps(article.industry_tags),
             article.source,
             article.relevance_score,
+            scores.physical_security_relevance if scores else 0.0,
+            scores.geographic_relevance if scores else 0.0,
+            scores.threat_actionability if scores else 0.0,
+            scores.educational_value if scores else 0.0,
+            scores.recency_novelty if scores else 0.0,
+            scores.audience_impact if scores else 0.0,
+            json.dumps(scores.affected_segments if scores else []),
         )
         if row is None:
             return False
@@ -211,6 +235,8 @@ async def _persist_article(
 
 def _fallback_process(article: RawArticle) -> ProcessedArticle:
     """Keyword-based tagging when Gemini is unavailable."""
+    from scraper.gatekeeper import compute_composite_score, fallback_scores
+
     content_lower = article.content.lower()
     matched_kw = [kw for kw in SECURITY_KEYWORDS if kw in content_lower]
 
@@ -231,6 +257,7 @@ def _fallback_process(article: RawArticle) -> ProcessedArticle:
     if not domain_tags:
         domain_tags = ["CPP-07"]
 
+    intel_scores = fallback_scores(article)
     return ProcessedArticle(
         title=article.title,
         url=article.url,
@@ -239,7 +266,8 @@ def _fallback_process(article: RawArticle) -> ProcessedArticle:
         domain_tags=domain_tags,
         industry_tags=["general"],
         source=f"{article.source_name} ({article.source_tier})",
-        relevance_score=len(matched_kw) * 0.15,
+        relevance_score=compute_composite_score(intel_scores),
+        intel_scores=intel_scores,
     )
 
 
