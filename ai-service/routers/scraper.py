@@ -7,7 +7,7 @@ import json
 import logging
 import re
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, BackgroundTasks, Request
 
 from config import get_settings
 from scraper.embedder import backfill_embeddings
@@ -20,8 +20,14 @@ _FLASH_MODEL = get_settings().generation_model_fast
 
 
 @router.post("/run")
-async def trigger_scraper(request: Request) -> dict:
-    pool = request.app.state.pool
+async def trigger_scraper(request: Request, background_tasks: BackgroundTasks) -> dict:
+    """Kick off the scraper pipeline in a background task and return immediately.
+
+    With 200+ articles each needing Gemini tagging (~1-2 s each), the pipeline
+    can take several minutes. Running it as a background task prevents the HTTP
+    request from timing out and blocking the admin UI.
+    """
+    pool = request.app.state.scraper_pool
     gemini = getattr(request.app.state, "gemini", None)
 
     process_fn = None
@@ -33,8 +39,8 @@ async def trigger_scraper(request: Request) -> dict:
         except Exception as e:
             logger.warning("Gemini tagger setup failed, using fallback: %s", e)
 
-    stats = await run_pipeline(pool, process_fn=process_fn, embed_fn=embed_fn)
-    return {"status": "completed", "stats": stats}
+    background_tasks.add_task(run_pipeline, pool, process_fn=process_fn, embed_fn=embed_fn)
+    return {"status": "started", "message": "Pipeline running in background — refresh in ~2 min"}
 
 
 @router.get("/health")
@@ -66,7 +72,7 @@ async def scraper_health(request: Request) -> dict:
 
 @router.get("/articles")
 async def list_articles(request: Request, limit: int = 50) -> dict:
-    pool = request.app.state.pool
+    pool = request.app.state.scraper_pool
     articles = await get_stored_articles(pool, limit=limit)
     return {"total": len(articles), "articles": articles}
 
@@ -74,7 +80,7 @@ async def list_articles(request: Request, limit: int = 50) -> dict:
 @router.post("/backfill-embeddings")
 async def backfill_threat_intel_embeddings(request: Request) -> dict:
     """Backfill embeddings for threat_intel rows missing them."""
-    pool = request.app.state.pool
+    pool = request.app.state.scraper_pool
     gemini = getattr(request.app.state, "gemini", None)
 
     if gemini is None:

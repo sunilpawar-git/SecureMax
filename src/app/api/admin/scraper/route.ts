@@ -26,9 +26,8 @@ export async function POST() {
     return forbiddenResponse();
   }
   try {
-    // Scraper pipeline can take 2-5 minutes (18 RSS + 7 NewsAPI + Playwright).
-    // Override the default 30s timeout so the banner never fires mid-run.
-    const result = await aiServiceFetch('/scraper/run', { body: {}, timeoutMs: 300_000 });
+    // Pipeline runs as a background task in FastAPI; this POST returns in <1 s.
+    const result = await aiServiceFetch('/scraper/run', { body: {} });
     return apiSuccess(result);
   } catch (error) {
     return handleServiceError(error, 'Scraper unavailable — check service logs');

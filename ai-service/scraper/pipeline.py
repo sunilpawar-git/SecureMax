@@ -144,7 +144,7 @@ async def _insert_run(pool: asyncpg.Pool, run_id: str) -> None:
                 VALUES ($1, 'running', $2)
                 """,
                 run_id,
-                datetime.now(UTC),
+                datetime.now(UTC).replace(tzinfo=None),
             )
     except Exception as e:
         logger.warning("Failed to insert scraper run %s: %s", run_id, e)
@@ -172,7 +172,7 @@ async def _complete_run(pool: asyncpg.Pool, run_id: str, stats: dict) -> None:
                 stats["stored"],
                 stats["duplicates"],
                 json.dumps(stats["errors"]) if stats["errors"] else None,
-                datetime.now(UTC),
+                datetime.now(UTC).replace(tzinfo=None),
             )
     except Exception as e:
         logger.warning("Failed to complete scraper run %s: %s", run_id, e)
