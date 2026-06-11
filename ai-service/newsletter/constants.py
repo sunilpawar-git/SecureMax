@@ -86,7 +86,34 @@ DOMAIN_KEYWORD_MAP: dict[str, str] = {
     "chemical leak": "CPP-03",
     "factory explosion": "CPP-03",
     "noc": "CPP-03",
-    # CPP-05: Information & Technology Security
+    # CPP-01: Physical Security — plain-language crime/incident terms used by general news
+    "robbery": "CPP-01",
+    "armed robbery": "CPP-01",
+    "dacoity": "CPP-01",       # Indian term for armed gang robbery
+    "shooting": "CPP-01",
+    "blast": "CPP-01",
+    "explosion": "CPP-01",
+    "abduction": "CPP-06",     # synonym for kidnapping (→ CPP-06)
+    "militant": "CPP-01",
+    "extremist": "CPP-01",
+    "heist": "CPP-01",
+    # CPP-03: Emergency & Crisis Response — general disaster language
+    "disaster": "CPP-03",
+    "gas leak": "CPP-03",
+    "hazmat": "CPP-03",
+    "mass casualty": "CPP-03",
+    # CPP-05: Information & Technology Security — cyber-security terms
+    # (enables ingestion from cyber-focused feeds: Help Net, Dark Reading, SecurityWeek)
+    "ransomware": "CPP-05",
+    "malware": "CPP-05",
+    "cyber attack": "CPP-05",
+    "cyberattack": "CPP-05",
+    "data breach": "CPP-05",
+    "phishing": "CPP-05",
+    "zero-day": "CPP-05",
+    "hacking": "CPP-05",
+    "cybersecurity": "CPP-05",
+    "vulnerability": "CPP-05",
     "intrusion": "CPP-05",
     "intrusion detection": "CPP-05",
     "insider threat": "CPP-05",

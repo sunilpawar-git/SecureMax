@@ -29,35 +29,15 @@ def strip_html(text: str) -> str:
     return _WS_RE.sub(" ", text).strip()
 
 from config import get_settings
+from newsletter.constants import DOMAIN_KEYWORD_MAP
 from scraper.models import RawArticle
 
 logger = logging.getLogger(__name__)
 
-SECURITY_KEYWORDS = [
-    "physical security",
-    "cctv",
-    "access control",
-    "perimeter breach",
-    "security audit",
-    "theft prevention",
-    "intrusion detection",
-    "surveillance",
-    "guard patrol",
-    "fire safety",
-    "emergency response",
-    "security breach",
-    "security incident",
-    "security threat",
-    "security risk",
-    "security management",
-    "security officer",
-    "trespassing",
-    "break-in",
-    "burglary",
-    "workplace violence",
-    "insider threat",
-    "crisis management",
-]
+# SSOT: any term that maps to a CPP domain is security-relevant.
+# Derived from DOMAIN_KEYWORD_MAP so the DB filter and the tagging pipeline
+# always use the same vocabulary — no duplicate list to maintain.
+SECURITY_KEYWORDS: list[str] = sorted(DOMAIN_KEYWORD_MAP.keys())
 
 
 async def fetch_news_api(
@@ -103,9 +83,21 @@ async def fetch_news_api(
         return articles
 
 
+_RSS_HEADERS = {
+    # Many CDN/WAF setups (Cloudflare, Akamai) block the default python-httpx UA.
+    # A browser-like UA avoids 403 blocks while remaining honest about our identity.
+    "User-Agent": (
+        "Mozilla/5.0 (compatible; RaivanGlobalScraper/1.0; "
+        "+https://raivanglobal.com/security-intel)"
+    ),
+}
+
+
 async def fetch_rss_feed(feed_url: str, source_name: str) -> list[RawArticle]:
     """Tier 2: RSS feeds — stable, niche sources."""
-    async with httpx.AsyncClient(timeout=30) as client:
+    async with httpx.AsyncClient(
+        timeout=30, follow_redirects=True, headers=_RSS_HEADERS
+    ) as client:
         resp = await client.get(feed_url)
         if resp.status_code != 200:
             raise ConnectionError(f"RSS feed returned {resp.status_code}")

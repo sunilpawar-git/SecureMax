@@ -3,6 +3,7 @@ Scraper tier fetchers — extracted from pipeline.py to keep files under 300 lin
 Each function fetches from a specific data tier and returns raw articles.
 """
 
+import asyncio
 import logging
 
 from scraper.models import RawArticle, SourceHealth
@@ -62,9 +63,13 @@ async def fetch_rss_tier(
     stats: dict,
     source_health: dict[str, SourceHealth],
 ) -> list[RawArticle]:
-    """Fetch from all configured RSS feeds."""
-    all_articles: list[RawArticle] = []
-    for feed in RSS_FEEDS:
+    """Fetch all configured RSS feeds concurrently.
+
+    Uses asyncio.gather so all feeds are fetched in parallel rather than
+    sequentially — reduces wall-clock time from O(N×latency) to O(max_latency),
+    keeping the full pipeline well within the 300s HTTP timeout.
+    """
+    async def _fetch_one(feed: dict) -> list[RawArticle]:
         source_name = feed["name"]
         health = source_health.setdefault(
             source_name,
@@ -73,10 +78,16 @@ async def fetch_rss_tier(
         try:
             articles = await fetch_rss_feed(feed["url"], source_name)
             health.record_success(len(articles))
-            all_articles.extend(articles)
+            return articles
         except Exception as e:
             health.record_failure()
             stats["errors"].append(f"{source_name}: {e}")
+            return []
+
+    results = await asyncio.gather(*[_fetch_one(feed) for feed in RSS_FEEDS])
+    all_articles: list[RawArticle] = []
+    for batch in results:
+        all_articles.extend(batch)
     return all_articles
 
 

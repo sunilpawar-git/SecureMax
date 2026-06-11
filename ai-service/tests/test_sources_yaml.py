@@ -56,10 +56,11 @@ class TestSourcesYaml:
     def test_source_count_minimum(self) -> None:
         """Validate we have sufficient source diversity for gold-standard coverage.
 
-        Counts as of Sprint 7 (gold-standard overhaul): 7 NewsAPI + 19 RSS + 5 Playwright.
+        Counts as of Sprint 8 (dead-feed purge): 7 NewsAPI + 18 RSS + 5 Playwright.
+        7 broken feeds (403/404/HTML-not-RSS) replaced with 6 verified-live feeds.
         Ratchet: adjust upward when sources are added, never downward.
         """
         data = load_sources(_YAML_PATH)
         assert len(data.get("newsapi", [])) >= 7
-        assert len(data.get("rss", [])) >= 19  # 19 feeds as of Sprint 7
+        assert len(data.get("rss", [])) >= 18  # 18 feeds as of Sprint 8
         assert len(data.get("playwright", [])) >= 5

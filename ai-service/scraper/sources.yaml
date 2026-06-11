@@ -39,13 +39,14 @@ newsapi:
     page_size: 15
 
 rss:
-  # Global physical security publications
-  - name: 'Security Magazine — Physical Security'
+  # Global physical security & cybersecurity publications
+  # NOTE: securitymagazine.com blocks RSS scrapers via Cloudflare (403); removed Sprint 8.
+  - name: 'Infosecurity Magazine'
     type: rss
-    url: 'https://www.securitymagazine.com/rss/topic/2228-physical-security'
-  - name: 'Security Magazine — Newswire'
+    url: 'https://www.infosecurity-magazine.com/rss/news/'
+  - name: 'SecurityWeek'
     type: rss
-    url: 'https://www.securitymagazine.com/rss/topic/2189-security-newswire'
+    url: 'https://www.securityweek.com/feed/'
   - name: 'Help Net Security'
     type: rss
     url: 'https://www.helpnetsecurity.com/feed/'
@@ -57,11 +58,18 @@ rss:
     url: 'https://www.darkreading.com/rss.xml'
 
   # Global defense & emerging threats (drones, geopolitical)
-  - name: 'The Defense Post — Drones'
+  # NOTE: thedefensepost.com/category/drones/feed returns HTML not RSS; removed Sprint 8.
+  - name: 'The War Zone'
     type: rss
-    url: 'https://www.thedefensepost.com/category/drones/feed'
+    url: 'https://www.thedrive.com/the-war-zone/rss'
 
+  # Workplace safety & fire/HSE
+  # NOTE: fireandsafetyindia.com/feed/ returns 404; removed Sprint 8.
+  - name: 'Safety+Health Magazine'
+    type: rss
+    url: 'https://www.safetyandhealthmagazine.com/rss'
   # Indian news — security, crime, fire, disasters, infrastructure
+  # NOTE: business-standard.com and news18.com block RSS scrapers (Access Denied); removed Sprint 8.
   - name: 'NDTV — Top Stories'
     type: rss
     url: 'https://feeds.feedburner.com/ndtvnews-top-stories'
@@ -80,29 +88,27 @@ rss:
   - name: 'Indian Express — India'
     type: rss
     url: 'https://indianexpress.com/section/india/feed/'
-  - name: 'Business Standard — Companies'
-    type: rss
-    url: 'https://www.business-standard.com/rss/companies-101.rss'
   - name: 'India Today — India'
     type: rss
     url: 'https://www.indiatoday.in/rss/1206578'
-  - name: 'News18 — India'
-    type: rss
-    url: 'https://www.news18.com/rss/india.xml'
   - name: 'Livemint — News'
     type: rss
     url: 'https://www.livemint.com/rss/news'
-
-  # Indian security industry & government
-  - name: 'CISF Official (Gov)'
+  # NOTE: abplive.com/crime/feed returns 200 but invalid XML (bozo feed); removed Sprint 8.
+  # NOTE: indialegallive.com covers court proceedings with no security keyword overlap; removed Sprint 8.
+  - name: 'Indian Defence Review'
     type: rss
-    url: 'https://cisf.gov.in/rss-feed/'
+    url: 'https://www.indiandefencereview.com/feed/'
+
+  # Indian security industry
+  # NOTE: cisf.gov.in/rss-feed/ returns 404 (URL dead); removed Sprint 8.
+  # NOTE: hsewatch.com covers psychosocial/occupational health — no security keyword overlap; replaced Sprint 8.
+  - name: 'The Hacker News'
+    type: rss
+    url: 'https://feeds.feedburner.com/TheHackersNews'
   - name: 'SecurityLink India'
     type: rss
     url: 'https://www.securitylinkindia.com/feed/'
-  - name: 'Fire & Safety India'
-    type: rss
-    url: 'https://www.fireandsafetyindia.com/feed/'
 
 playwright:
   # Global security blogs
