@@ -4,7 +4,7 @@
  * ViewModel hook for audit log — fetch, filter, export.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { AuditLogEntry } from '@/lib/admin/audit-service';
 
 interface AuditResponse {
@@ -33,30 +33,37 @@ export function useAuditData(): AuditData {
   const [actionFilter, setActionFilter] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const abortRef = useRef<AbortController | null>(null);
 
   const load = useCallback(async () => {
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+    const { signal } = abortRef.current;
+
     setLoading(true);
     const params = new URLSearchParams();
     if (actionFilter) params.set('actionType', actionFilter);
     if (startDate) params.set('startDate', new Date(startDate).toISOString());
     if (endDate) params.set('endDate', new Date(endDate).toISOString());
     try {
-      const res = await fetch(`/api/admin/audit-log?${params}`);
+      const res = await fetch(`/api/admin/audit-log?${params}`, { signal });
       if (res.ok) {
         const data: AuditResponse = await res.json();
         setEntries(data.entries);
         setTotal(data.total);
       }
-    } catch {
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return;
       /* graceful */
     } finally {
-      setLoading(false);
+      if (!signal.aborted) setLoading(false);
     }
   }, [actionFilter, startDate, endDate]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on filter change
     void load();
+    return () => { abortRef.current?.abort(); };
   }, [load]);
 
   const exportCsv = useCallback(() => {

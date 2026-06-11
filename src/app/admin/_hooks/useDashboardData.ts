@@ -5,7 +5,7 @@
  * View components consume this; no data fetching in views.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 /** Silent background refresh cadence — 5 minutes. */
 export const DASHBOARD_AUTO_REFRESH_MS = 300_000;
@@ -44,8 +44,8 @@ export interface DashboardData {
   refresh: () => void;
 }
 
-async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
+async function fetchJson<T>(url: string, signal?: AbortSignal): Promise<T> {
+  const res = await fetch(url, signal ? { signal } : undefined);
   if (!res.ok) throw new Error(`${url} returned ${res.status}`);
   return res.json() as Promise<T>;
 }
@@ -56,30 +56,35 @@ export function useDashboardData(): DashboardData {
   const [recentActivity, setRecentActivity] = useState<AdminAction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   // Silent refreshes skip the loading flag so the UI doesn't flicker every 5 min
   const load = useCallback(async (silent = false) => {
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+    const { signal } = abortRef.current;
+
     if (!silent) {
       setLoading(true);
       setError(null);
     }
     try {
       const [s, a, r] = await Promise.all([
-        fetchJson<DashboardStats>('/api/admin/stats'),
-        fetchJson<ActionItems>('/api/admin/action-items'),
-        fetchJson<AdminAction[]>('/api/admin/recent-activity'),
+        fetchJson<DashboardStats>('/api/admin/stats', signal),
+        fetchJson<ActionItems>('/api/admin/action-items', signal),
+        fetchJson<AdminAction[]>('/api/admin/recent-activity', signal),
       ]);
       setStats(s);
       setActionItems(a);
       setRecentActivity(r);
       if (silent) setError(null);
     } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return;
       if (!silent) {
         setError('Failed to load dashboard data — check network or re-login.');
       }
-      void Promise.resolve(err);
     } finally {
-      if (!silent) setLoading(false);
+      if (!signal.aborted && !silent) setLoading(false);
     }
   }, []);
 
@@ -89,6 +94,7 @@ export function useDashboardData(): DashboardData {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
     void load();
+    return () => { abortRef.current?.abort(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

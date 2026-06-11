@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 
 interface DomainStats {
   domains: Record<string, number>;
@@ -58,16 +58,16 @@ const INITIAL: State = {
 
 export function useKnowledgeBase() {
   const [state, dispatch] = useReducer(reducer, INITIAL);
-  const fetched = useRef<boolean | null>(null);
 
-  const fetchStats = useCallback(async () => {
+  const fetchStats = useCallback(async (signal?: AbortSignal) => {
     dispatch({ type: 'FETCH_START' });
     try {
-      const res = await fetch('/api/admin/knowledge-base');
+      const res = await fetch('/api/admin/knowledge-base', signal ? { signal } : undefined);
       if (!res.ok) throw new Error(`Stats fetch failed: ${res.status}`);
       const json = await res.json();
       dispatch({ type: 'FETCH_OK', data: json.data ?? json });
     } catch (err) {
+      if ((err as Error).name === 'AbortError') return;
       dispatch({
         type: 'FETCH_ERR',
         msg: err instanceof Error ? err.message : 'Failed to load stats',
@@ -75,10 +75,11 @@ export function useKnowledgeBase() {
     }
   }, []);
 
-  if (fetched.current == null) {
-    fetched.current = true;
-    fetchStats();
-  }
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetchStats(controller.signal);
+    return () => controller.abort();
+  }, [fetchStats]);
 
   const uploadDocument = useCallback(
     async (file: File, domain: string) => {

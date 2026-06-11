@@ -4,7 +4,7 @@
  * ViewModel hook for the coupons admin page — list, create, revoke, export.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { COUPON_STRINGS } from '@/config/admin-strings';
 
 export interface CouponRow {
@@ -51,29 +51,36 @@ export function useCouponsData(): CouponsData {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState('');
+  const abortRef = useRef<AbortController | null>(null);
 
   const load = useCallback(async () => {
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+    const { signal } = abortRef.current;
+
     setLoading(true);
     setError(null);
     const params = new URLSearchParams();
     if (statusFilter) params.set('status', statusFilter);
     params.set('page', String(page));
     try {
-      const res = await fetch(`/api/admin/coupons?${params}`);
+      const res = await fetch(`/api/admin/coupons?${params}`, { signal });
       if (!res.ok) throw new Error('Failed');
       const data: CouponsResponse = await res.json();
       setCoupons(data.coupons);
       setTotal(data.total);
-    } catch {
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return;
       setError(COUPON_STRINGS.ERR_LOAD);
     } finally {
-      setLoading(false);
+      if (!signal.aborted) setLoading(false);
     }
   }, [statusFilter, page]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on filter change
     void load();
+    return () => { abortRef.current?.abort(); };
   }, [load]);
 
   const createCoupons = useCallback(

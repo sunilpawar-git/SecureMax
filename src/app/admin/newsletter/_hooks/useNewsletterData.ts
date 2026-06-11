@@ -4,7 +4,7 @@
  * ViewModel for the admin newsletter page — list, generate-now, soft-delete.
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { NEWSLETTER_STRINGS } from '@/config/admin-strings';
 
 export interface NewsletterPostRow {
@@ -39,76 +39,80 @@ export function useNewsletterData(): NewsletterData {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const mountedRef = useRef(true);
+  // refreshKey is bumped to re-trigger the load effect after mutations
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    return () => { mountedRef.current = false; };
-  }, []);
+    const controller = new AbortController();
+    const { signal } = controller;
 
-  const load = useCallback(async (silent = false) => {
-    if (!silent) setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/admin/newsletter');
-      if (!mountedRef.current) return;
-      if (!res.ok) throw new Error('Failed');
-      const json = (await res.json()) as {
-        newsletters?: NewsletterRow[];
-        configured?: Record<string, boolean>;
-      };
-      if (!mountedRef.current) return;
-      setNewsletters(json.newsletters ?? []);
-      setConfigured(json.configured ?? {});
-    } catch {
-      if (mountedRef.current) setError(NEWSLETTER_STRINGS.ERR_LOAD);
-    } finally {
-      if (mountedRef.current && !silent) setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
-    void load();
-  }, [load]);
+    setLoading(true);
+    setError(null);
+
+    (async () => {
+      try {
+        const res = await fetch('/api/admin/newsletter', { signal });
+        if (!res.ok) throw new Error('Failed');
+        const json = (await res.json()) as {
+          newsletters?: NewsletterRow[];
+          configured?: Record<string, boolean>;
+        };
+        setNewsletters(json.newsletters ?? []);
+        setConfigured(json.configured ?? {});
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return;
+        setError(NEWSLETTER_STRINGS.ERR_LOAD);
+      } finally {
+        if (!signal.aborted) setLoading(false);
+      }
+    })();
+
+    return () => controller.abort();
+  }, [refreshKey]);
 
   const generateNow = useCallback(async () => {
     setGenerating(true);
     setError(null);
     try {
       const res = await fetch('/api/admin/newsletter?action=generate', { method: 'POST' });
-      if (!mountedRef.current) return;
       if (!res.ok) {
         const errJson = (await res.json().catch(() => ({}))) as { error?: string };
         setError(errJson.error ?? NEWSLETTER_STRINGS.ERR_GENERATE);
         return;
       }
-      await load(true);
+      setRefreshKey((k) => k + 1);
     } catch {
-      if (mountedRef.current) setError(NEWSLETTER_STRINGS.ERR_GENERATE);
+      setError(NEWSLETTER_STRINGS.ERR_GENERATE);
     } finally {
-      if (mountedRef.current) setGenerating(false);
+      setGenerating(false);
     }
-  }, [load]);
+  }, []);
 
-  const remove = useCallback(
-    async (id: string) => {
-      setError(null);
-      try {
-        const res = await fetch(`/api/admin/newsletter?id=${encodeURIComponent(id)}`, {
-          method: 'DELETE',
-        });
-        if (!mountedRef.current) return;
-        if (!res.ok) {
-          setError(NEWSLETTER_STRINGS.ERR_DELETE);
-          return;
-        }
-        await load(true);
-      } catch {
-        if (mountedRef.current) setError(NEWSLETTER_STRINGS.ERR_DELETE);
+  const remove = useCallback(async (id: string) => {
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/newsletter?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) {
+        setError(NEWSLETTER_STRINGS.ERR_DELETE);
+        return;
       }
-    },
-    [load],
-  );
+      setRefreshKey((k) => k + 1);
+    } catch {
+      setError(NEWSLETTER_STRINGS.ERR_DELETE);
+    }
+  }, []);
 
-  return { newsletters, configured, loading, generating, error, generateNow, remove, refresh: () => void load(true) };
+  return {
+    newsletters,
+    configured,
+    loading,
+    generating,
+    error,
+    generateNow,
+    remove,
+    refresh: () => setRefreshKey((k) => k + 1),
+  };
 }

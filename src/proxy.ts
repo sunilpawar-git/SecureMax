@@ -95,6 +95,10 @@ export default auth(async (req) => {
 
     const response = NextResponse.next();
     response.headers.set('X-Request-ID', requestId);
+    // Admin API responses must never be cached — they contain sensitive session/tenant data.
+    if (pathname.startsWith('/api/admin')) {
+      response.headers.set('Cache-Control', 'no-store');
+    }
     return response;
   }
 

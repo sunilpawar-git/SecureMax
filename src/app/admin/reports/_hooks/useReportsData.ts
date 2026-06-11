@@ -4,7 +4,7 @@
  * ViewModel hook for reports management — fetches, regen, diff, unlock.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { DiffResult } from '@/lib/admin/diff-engine';
 
 export interface ReportEntry {
@@ -36,24 +36,31 @@ export function useReportsData(): ReportsData {
   const [reports, setReports] = useState<ReportEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const load = useCallback(async () => {
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+    const { signal } = abortRef.current;
+
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/admin/reports');
+      const res = await fetch('/api/admin/reports', { signal });
       if (!res.ok) throw new Error('Failed');
       setReports(await res.json());
-    } catch {
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return;
       setError('Failed to load reports');
     } finally {
-      setLoading(false);
+      if (!signal.aborted) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
     void load();
+    return () => { abortRef.current?.abort(); };
   }, [load]);
 
   const regenerate = useCallback(

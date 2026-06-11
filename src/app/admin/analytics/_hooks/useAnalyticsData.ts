@@ -5,7 +5,7 @@
  * Phase 10 extensions (funnel, payment split, session health, LinkedIn ROI).
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { ANALYTICS_STRINGS } from '@/config/analytics-strings';
 import type {
   RevenueSplit,
@@ -45,20 +45,25 @@ export function useAnalyticsData(): AnalyticsState {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch('/api/admin/analytics');
-        if (!res.ok) throw new Error(ANALYTICS_STRINGS.LOAD_ERROR);
-        setData(await res.json());
-      } catch (err) {
-        setError(err instanceof Error ? err.message : ANALYTICS_STRINGS.LOAD_ERROR);
-      } finally {
-        setLoading(false);
-      }
+  const load = useCallback(async (signal: AbortSignal) => {
+    try {
+      const res = await fetch('/api/admin/analytics', { signal });
+      if (!res.ok) throw new Error(ANALYTICS_STRINGS.LOAD_ERROR);
+      setData(await res.json());
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return;
+      setError(err instanceof Error ? err.message : ANALYTICS_STRINGS.LOAD_ERROR);
+    } finally {
+      if (!signal.aborted) setLoading(false);
     }
-    void load();
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
+    void load(controller.signal);
+    return () => controller.abort();
+  }, [load]);
 
   return { data, loading, error };
 }

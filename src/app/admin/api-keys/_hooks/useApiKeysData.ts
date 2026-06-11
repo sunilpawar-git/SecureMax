@@ -7,7 +7,7 @@
  *   POST /api/admin/api-keys?action=store|rotate
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { API_KEYS_STRINGS } from '@/config/admin-strings';
 
 export interface ApiKeyRow {
@@ -37,25 +37,32 @@ export function useApiKeysData(): ApiKeysData {
   const [loading, setLoading] = useState(true);
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const load = useCallback(async () => {
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+    const { signal } = abortRef.current;
+
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/admin/api-keys');
+      const res = await fetch('/api/admin/api-keys', { signal });
       if (!res.ok) throw new Error('Failed');
       const json = (await res.json()) as { keys?: ApiKeyRow[] };
       setKeys(json.keys ?? []);
-    } catch {
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return;
       setError(API_KEYS_STRINGS.ERR_LOAD);
     } finally {
-      setLoading(false);
+      if (!signal.aborted) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
     void load();
+    return () => { abortRef.current?.abort(); };
   }, [load]);
 
   /** Returns null on success, an error message on failure. */

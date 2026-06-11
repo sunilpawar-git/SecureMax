@@ -66,44 +66,44 @@ export function useScraperData(): ScraperData {
   const [source, setSource] = useState('');
   const [showDeleted, setShowDeleted] = useState(false);
 
-  const loadHealth = useCallback(async () => {
+  const loadHealth = useCallback(async (signal?: AbortSignal) => {
     try {
-      const res = await fetch('/api/admin/scraper?action=health');
+      const res = await fetch('/api/admin/scraper?action=health', signal ? { signal } : undefined);
       if (res.ok) setHealth(await res.json());
-    } catch {
+    } catch (err) {
+      if ((err as Error).name === 'AbortError') return;
       /* non-critical */
     }
   }, []);
 
-  const loadArticles = useCallback(async () => {
+  const loadArticles = useCallback(async (signal?: AbortSignal) => {
     const params = new URLSearchParams();
     if (search) params.set('search', search);
     if (domains.length) params.set('domains', domains.join(','));
     if (source) params.set('source', source);
     if (showDeleted) params.set('showDeleted', 'true');
     try {
-      const res = await fetch(`/api/admin/threat-intel?${params}`);
+      const res = await fetch(`/api/admin/threat-intel?${params}`, signal ? { signal } : undefined);
       if (res.ok) {
         const data: ArticlesResponse = await res.json();
         setArticles(data.articles ?? []);
         setTotalArticles(data.total ?? 0);
       }
-    } catch {
+    } catch (err) {
+      if ((err as Error).name === 'AbortError') return;
       /* non-critical */
     }
   }, [search, domains, source, showDeleted]);
 
-  const refresh = useCallback(() => {
-    loadHealth();
-    loadArticles();
+  const refresh = useCallback((signal?: AbortSignal) => {
+    void loadHealth(signal);
+    void loadArticles(signal);
   }, [loadHealth, loadArticles]);
 
   useEffect(() => {
     const controller = new AbortController();
-    const fetchData = async () => {
-      await refresh();
-    };
-    void fetchData();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
+    refresh(controller.signal);
     return () => controller.abort();
   }, [refresh]);
 
@@ -120,7 +120,7 @@ export function useScraperData(): ScraperData {
       setError(`Network error: ${String(e)}`);
     } finally {
       setIsRunning(false);
-      refresh();
+      refresh(); // no signal — caller-initiated, component still mounted
     }
   }, [refresh]);
 
