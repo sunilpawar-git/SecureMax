@@ -214,12 +214,6 @@ async def draft_newsletter(
     does not hit HTTP timeouts.
     """
     pool = request.app.state.pool
-    gemini = getattr(request.app.state, "gemini", None)
-    if gemini is None:
-        settings = get_settings()
-        if not settings.gemini_api_key:
-            raise HTTPException(status_code=503, detail="Gemini API key not configured")
-        gemini = GeminiClient(settings)
 
     count = await _count_eligible_articles(pool, req.days)
     if count == 0:
@@ -227,6 +221,13 @@ async def draft_newsletter(
             status_code=422,
             detail=f"No threat intel articles in the last {req.days} days — run the scraper first",
         )
+
+    gemini = getattr(request.app.state, "gemini", None)
+    if gemini is None:
+        settings = get_settings()
+        if not settings.gemini_api_key:
+            raise HTTPException(status_code=503, detail="Gemini API key not configured")
+        gemini = GeminiClient(settings)
 
     async with pool.acquire() as conn:
         job_id = await job_repo.create_job(conn, days=req.days)

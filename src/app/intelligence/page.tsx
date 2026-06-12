@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     'Weekly physical security threat intelligence briefing by Raivan Global — powered by Indian Army Special Forces methodology.',
 };
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 interface Newsletter {
   id: string;

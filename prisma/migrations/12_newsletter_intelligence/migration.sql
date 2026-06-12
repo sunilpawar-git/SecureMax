@@ -27,9 +27,20 @@ ALTER TABLE "newsletters"
 -- so the existing corpus remains eligible. Future rescrapings will overwrite
 -- these with real composite scores via ON CONFLICT DO UPDATE (see
 -- pipeline.py).
-UPDATE "threat_intel"
-SET "relevance_score" = 0.6
-WHERE "relevance_score" < 0.6;
+-- relevance_score is added in migration 3 (lexicographic order runs after 12).
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'threat_intel'
+      AND column_name = 'relevance_score'
+  ) THEN
+    UPDATE "threat_intel"
+    SET "relevance_score" = 0.6
+    WHERE "relevance_score" < 0.6;
+  END IF;
+END $$;
 
 -- GRANTs: new columns inherit the existing table-level grants from
 -- migration 11_add_newsletters. No new statements required.
