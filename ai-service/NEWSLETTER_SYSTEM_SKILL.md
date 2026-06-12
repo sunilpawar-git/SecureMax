@@ -1,7 +1,7 @@
 # Raivan Global Newsletter System — Skill Document
 
 > **Status**: Living document. Update when the pipeline, prompts, or architecture change.
-> **Last updated**: 11 June 2026 (Sprint 7 — gold-standard scraper overhaul)
+> **Last updated**: 12 June 2026 (Sprint 7 — final scraper fixes: timezone handling, background task execution)
 > **Audience**: AI agents, developers, security team, editorial reviewers.
 
 ---
@@ -175,6 +175,8 @@ The editorial voice is defined in `newsletter/prompts.py` → `VOICE_GUIDELINES`
 | `weekly_newsletter` | Mon 03:00 | Mon 08:30 IST | Draft newsletter from last 7 days of articles |
 | `weekly_linkedin_briefing` | Mon 04:00 | Mon 09:30 IST | Derive LinkedIn post from newsletter (fallback: threat_intel digest) |
 
+**Admin-triggered runs**: The admin panel's "Run Scraper Now" button calls `POST /api/admin/scraper`, which triggers `/scraper/run` in the FastAPI service. Since v12-June-2026, this endpoint runs the scraper pipeline in a **FastAPI background task**, returning `{"status": "started"}` immediately to the UI. The admin refreshes after 2 minutes to see the results — no more 503 timeouts from long-running Gemini tagging of 200+ articles. The background task continues even if the admin leaves the page.
+
 ---
 
 ## 4. Current System Components
@@ -195,8 +197,10 @@ The editorial voice is defined in `newsletter/prompts.py` → `VOICE_GUIDELINES`
 **Outputs**: Scored, deduplicated rows in `threat_intel` table.
 **Key threshold**: `NEWSLETTER_QUALITY_THRESHOLD = 0.6` (articles below this are stored but excluded from newsletters).
 
+**Database Role**: The scraper pipeline runs via a dedicated `scraper_user` PostgreSQL role pool (initialized in `main.py` via `init_scraper_pool()`). This role has INSERT/UPDATE/DELETE permissions on `threat_intel` and `scraper_runs`, while the default `app_user` role does not. This isolation prevents accidental data corruption from non-scraper application code.
+
 **Future improvements**:
-- Add source health monitoring (alert on feed failures)
+- Add per-source caching (cache RSS feed responses for 1 hour to avoid repeated fetches during testing)
 - Add geographic tagging at source level
 - Expand Indian regional language sources (Hindi/vernacular)
 - Add CERT-In advisory scraping (no RSS; requires Playwright)
