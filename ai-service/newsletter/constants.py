@@ -36,6 +36,13 @@ NEWSLETTER_QUALITY_THRESHOLD = 0.6
 MAX_NEWSLETTER_THEMES = 5
 MAX_NEWSLETTER_ARTICLES = 15
 
+# --- Generation job lifecycle (mirrors report_jobs) ---
+
+NEWSLETTER_JOB_PENDING = "pending"
+NEWSLETTER_JOB_PROCESSING = "processing"
+NEWSLETTER_JOB_COMPLETED = "completed"
+NEWSLETTER_JOB_FAILED = "failed"
+
 # --- CPP domain labels (public-facing, plain English) ---
 
 CPP_DOMAIN_LABELS: dict[str, str] = {

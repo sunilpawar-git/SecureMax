@@ -168,6 +168,17 @@ CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.newsletters (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.newsletter_generation_jobs (
+    id TEXT PRIMARY KEY,
+    days INTEGER NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    newsletter_id TEXT REFERENCES {TEST_SCHEMA}.newsletters(id) ON DELETE SET NULL,
+    newsletter_title TEXT,
+    error_message TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.newsletter_posts (
     id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
     newsletter_id TEXT NOT NULL
@@ -257,6 +268,7 @@ def _cleanup_test_data():
         conn = await asyncpg.connect(_DSN)
         try:
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.newsletter_posts CASCADE")
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.newsletter_generation_jobs CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.newsletters CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.report_artifacts CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.report_jobs CASCADE")

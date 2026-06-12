@@ -39,6 +39,10 @@ export const NEWSLETTER_STRINGS = {
   VIEW_FULL: 'View full size',
   DOWNLOAD: 'Download',
   ERR_LOAD: 'Failed to load newsletters',
+  GENERATE_PENDING: 'Draft queued — synthesis usually takes 2–5 minutes.',
+  GENERATE_COMPLETE: (title: string) => `Draft ready: ${title}`,
+  GENERATE_STILL_RUNNING:
+    'Still generating — click Refresh in a minute if the draft has not appeared.',
   ERR_GENERATE: 'Generation failed — is the AI service running and the scraper populated?',
   ERR_DELETE: 'Failed to delete newsletter',
   PUBLISH_CTA: 'Publish…',

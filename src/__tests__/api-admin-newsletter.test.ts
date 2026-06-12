@@ -69,9 +69,19 @@ beforeEach(() => {
   mockActionCreate.mockResolvedValue({ id: 'act-1' });
 });
 
+function listReq(): NextRequest {
+  return new NextRequest('http://localhost:3000/api/admin/newsletter');
+}
+
+function statusReq(jobId: string): NextRequest {
+  return new NextRequest(
+    `http://localhost:3000/api/admin/newsletter?action=status&jobId=${encodeURIComponent(jobId)}`,
+  );
+}
+
 describe('GET /api/admin/newsletter', () => {
   it('lists newsletters without image bytes', async () => {
-    const res = await GET();
+    const res = await GET(listReq());
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.newsletters).toHaveLength(1);
@@ -83,8 +93,23 @@ describe('GET /api/admin/newsletter', () => {
 
   it('returns 403 for non-admins', async () => {
     mockVerifyAdmin.mockResolvedValue(null);
-    const res = await GET();
+    const res = await GET(listReq());
     expect(res.status).toBe(403);
+  });
+
+  it('proxies job status polls to FastAPI', async () => {
+    mockAiFetch.mockResolvedValue({
+      job_id: 'job-1',
+      status: 'completed',
+      newsletter_id: 'nl-1',
+      title: 'Digest',
+    });
+    const res = await GET(statusReq('job-1'));
+    expect(res.status).toBe(200);
+    expect(mockAiFetch).toHaveBeenCalledWith('/newsletter/jobs/job-1', { method: 'GET' });
+    const body = await res.json();
+    expect(body.status).toBe('completed');
+    expect(mockFindMany).not.toHaveBeenCalled();
   });
 });
 
@@ -95,7 +120,8 @@ describe('POST ?action=generate', () => {
     });
   }
 
-  it('proxies to the AI service and logs the admin action', async () => {
+  it('proxies async draft enqueue and logs job id', async () => {
+    mockAiFetch.mockResolvedValue({ job_id: 'job-1', status: 'pending' });
     const res = await POST(genReq());
     expect(res.status).toBe(200);
     expect(mockAiFetch).toHaveBeenCalledWith(
@@ -107,7 +133,7 @@ describe('POST ?action=generate', () => {
         data: expect.objectContaining({
           actionType: 'newsletter_generated',
           entityType: 'newsletter',
-          entityId: 'nl-1',
+          entityId: 'job-1',
         }),
       }),
     );

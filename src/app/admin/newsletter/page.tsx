@@ -35,6 +35,9 @@ export default function NewsletterPage() {
         </button>
       </div>
 
+      {data.notice && (
+        <p className="text-sm text-emerald-700 dark:text-emerald-400">{data.notice}</p>
+      )}
       {data.error && <p className="text-sm text-red-600 dark:text-red-400">{data.error}</p>}
 
       {data.loading ? (

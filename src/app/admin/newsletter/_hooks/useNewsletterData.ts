@@ -1,10 +1,11 @@
 'use client';
 
 /**
- * ViewModel for the admin newsletter page — list, generate-now, soft-delete.
+ * ViewModel for the admin newsletter page — list, generate-now with job polling,
+ * soft-delete.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { NEWSLETTER_STRINGS } from '@/config/admin-strings';
 
 export interface NewsletterPostRow {
@@ -28,11 +29,31 @@ export interface NewsletterData {
   loading: boolean;
   generating: boolean;
   error: string | null;
+  notice: string | null;
   generateNow: () => Promise<void>;
   remove: (id: string) => Promise<void>;
   refresh: () => void;
   copyWhatsApp: (id: string) => Promise<boolean>;
   fetchEmailHtml: (id: string) => Promise<string | null>;
+}
+
+const POLL_INTERVAL_MS = 3_000;
+const POLL_MAX_MS = 5 * 60_000;
+
+function sleep(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const timer = window.setTimeout(resolve, ms);
+    const onAbort = () => {
+      window.clearTimeout(timer);
+      reject(new DOMException('Aborted', 'AbortError'));
+    };
+    if (signal.aborted) {
+      window.clearTimeout(timer);
+      reject(new DOMException('Aborted', 'AbortError'));
+      return;
+    }
+    signal.addEventListener('abort', onAbort, { once: true });
+  });
 }
 
 export function useNewsletterData(): NewsletterData {
@@ -41,8 +62,9 @@ export function useNewsletterData(): NewsletterData {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // refreshKey is bumped to re-trigger the load effect after mutations
+  const [notice, setNotice] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const pollAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -73,9 +95,46 @@ export function useNewsletterData(): NewsletterData {
     return () => controller.abort();
   }, [refreshKey]);
 
+  const pollJob = useCallback(async (jobId: string, signal: AbortSignal) => {
+    const deadline = Date.now() + POLL_MAX_MS;
+    while (Date.now() < deadline) {
+      await sleep(POLL_INTERVAL_MS, signal);
+      const res = await fetch(
+        `/api/admin/newsletter?action=status&jobId=${encodeURIComponent(jobId)}`,
+        { signal },
+      );
+      if (!res.ok) continue;
+      const body = (await res.json()) as {
+        status?: string;
+        title?: string | null;
+        error_message?: string | null;
+      };
+      if (body.status === 'completed') {
+        setNotice(
+          body.title
+            ? NEWSLETTER_STRINGS.GENERATE_COMPLETE(body.title)
+            : NEWSLETTER_STRINGS.GENERATE_PENDING,
+        );
+        setRefreshKey((k) => k + 1);
+        return;
+      }
+      if (body.status === 'failed') {
+        setError(body.error_message ?? NEWSLETTER_STRINGS.ERR_GENERATE);
+        return;
+      }
+    }
+    setNotice(NEWSLETTER_STRINGS.GENERATE_STILL_RUNNING);
+    setRefreshKey((k) => k + 1);
+  }, []);
+
   const generateNow = useCallback(async () => {
+    pollAbortRef.current?.abort();
+    const pollController = new AbortController();
+    pollAbortRef.current = pollController;
+
     setGenerating(true);
     setError(null);
+    setNotice(null);
     try {
       const res = await fetch('/api/admin/newsletter?action=generate', { method: 'POST' });
       if (!res.ok) {
@@ -83,13 +142,21 @@ export function useNewsletterData(): NewsletterData {
         setError(errJson.error ?? NEWSLETTER_STRINGS.ERR_GENERATE);
         return;
       }
-      setRefreshKey((k) => k + 1);
-    } catch {
-      setError(NEWSLETTER_STRINGS.ERR_GENERATE);
+      const body = (await res.json()) as { job_id?: string; status?: string };
+      if (body.job_id) {
+        setNotice(NEWSLETTER_STRINGS.GENERATE_PENDING);
+        await pollJob(body.job_id, pollController.signal);
+      } else {
+        setRefreshKey((k) => k + 1);
+      }
+    } catch (err) {
+      if ((err as Error).name !== 'AbortError') {
+        setError(NEWSLETTER_STRINGS.ERR_GENERATE);
+      }
     } finally {
       setGenerating(false);
     }
-  }, []);
+  }, [pollJob]);
 
   const remove = useCallback(async (id: string) => {
     setError(null);
@@ -140,6 +207,7 @@ export function useNewsletterData(): NewsletterData {
     loading,
     generating,
     error,
+    notice,
     generateNow,
     remove,
     refresh: () => setRefreshKey((k) => k + 1),

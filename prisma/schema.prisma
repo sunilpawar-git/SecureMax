@@ -229,10 +229,28 @@ model Newsletter {
   createdAt            DateTime @default(now()) @map("created_at")
   updatedAt            DateTime @updatedAt @map("updated_at")
 
-  posts NewsletterPost[]
+  posts          NewsletterPost[]
+  generationJobs NewsletterGenerationJob[]
 
   @@index([status, createdAt])
   @@map("newsletters")
+}
+
+// Async admin "Generate Now" — polled by Next.js; work runs on persistent FastAPI.
+model NewsletterGenerationJob {
+  id              String   @id @default(uuid())
+  days            Int
+  status          String   @default("pending")
+  newsletterId    String?  @map("newsletter_id")
+  newsletterTitle String?  @map("newsletter_title")
+  errorMessage    String?  @map("error_message")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  newsletter Newsletter? @relation(fields: [newsletterId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@map("newsletter_generation_jobs")
 }
 
 // One row per (newsletter, platform) publish attempt — the social audit trail

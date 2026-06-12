@@ -238,11 +238,23 @@ def test_draft_route_creates_newsletter_row(test_client, db_conn, monkeypatch):
 
     assert resp.status_code == 201
     body = resp.json()
-    assert body["newsletter_id"]
-    assert body["title"]
+    assert body["status"] == "pending"
+    assert body["job_id"]
+
+    job = run_db(
+        db_conn.fetchrow(
+            "SELECT * FROM newsletter_generation_jobs WHERE id = $1",
+            body["job_id"],
+        )
+    )
+    assert job is not None
+    assert job["status"] == "completed"
+    assert job["newsletter_id"]
 
     row = run_db(
-        db_conn.fetchrow("SELECT * FROM newsletters WHERE id = $1", body["newsletter_id"])
+        db_conn.fetchrow(
+            "SELECT * FROM newsletters ORDER BY created_at DESC LIMIT 1"
+        )
     )
     assert row is not None
     assert row["status"] == "draft"
@@ -328,6 +340,9 @@ def test_draft_route_gemini_path_png_has_quality_metadata(
         test_client.app.state.gemini = original_gemini
 
     assert resp.status_code == 201
+    draft_body = resp.json()
+    assert draft_body["status"] == "pending"
+    assert draft_body["job_id"]
     assert captured_html, "render_png should receive HTML from draft route"
 
     html = captured_html[0]
@@ -340,8 +355,7 @@ def test_draft_route_gemini_path_png_has_quality_metadata(
 
     row = run_db(
         db_conn.fetchrow(
-            "SELECT executive_summary FROM newsletters WHERE id = $1",
-            resp.json()["newsletter_id"],
+            "SELECT executive_summary FROM newsletters ORDER BY created_at DESC LIMIT 1"
         )
     )
     assert row is not None
@@ -364,3 +378,42 @@ def test_draft_route_fails_loud_when_no_articles(test_client):
 def test_draft_route_rejects_out_of_range_window(test_client, days):
     resp = test_client.post("/newsletter/draft", json={"days": days})
     assert resp.status_code == 422
+
+
+def test_generation_job_status_endpoint(test_client, db_conn, monkeypatch):
+    """Poll GET /newsletter/jobs/{id} returns completed job with newsletter id."""
+    _seed_article(db_conn, "ti-nl-3", "Gate crash at corporate campus")
+
+    async def fake_render(html, **kwargs):
+        return b"png"
+
+    monkeypatch.setattr("routers.newsletter.render_png", fake_render)
+
+    original_pool = test_client.app.state.pool
+    original_gemini = getattr(test_client.app.state, "gemini", None)
+    test_client.app.state.pool = _TestPool(_DSN, TEST_SCHEMA)
+    test_client.app.state.gemini = _FailingGemini()
+    try:
+        draft_resp = test_client.post("/newsletter/draft", json={"days": 7})
+        job_id = draft_resp.json()["job_id"]
+        status_resp = test_client.get(f"/newsletter/jobs/{job_id}")
+    finally:
+        test_client.app.state.pool = original_pool
+        test_client.app.state.gemini = original_gemini
+
+    assert status_resp.status_code == 200
+    payload = status_resp.json()
+    assert payload["job_id"] == job_id
+    assert payload["status"] == "completed"
+    assert payload["newsletter_id"]
+    assert payload["title"]
+
+
+def test_generation_job_status_not_found(test_client):
+    original_pool = test_client.app.state.pool
+    test_client.app.state.pool = _TestPool(_DSN, TEST_SCHEMA)
+    try:
+        resp = test_client.get("/newsletter/jobs/does-not-exist")
+    finally:
+        test_client.app.state.pool = original_pool
+    assert resp.status_code == 404

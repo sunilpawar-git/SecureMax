@@ -8,13 +8,20 @@ newsletter row for admin review. Never auto-publishes.
 import json
 import logging
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from config import get_settings
 from cpp_repository import get_relevant_chunks
 from gemini_client import GeminiClient
-from newsletter.constants import MAX_NEWSLETTER_ARTICLES, NEWSLETTER_QUALITY_THRESHOLD
+from newsletter import job_repository as job_repo
+from newsletter.constants import (
+    MAX_NEWSLETTER_ARTICLES,
+    NEWSLETTER_JOB_FAILED,
+    NEWSLETTER_JOB_PENDING,
+    NEWSLETTER_JOB_PROCESSING,
+    NEWSLETTER_QUALITY_THRESHOLD,
+)
 from newsletter.render import build_newsletter_html, render_png
 from newsletter.render_email import render_email_html
 from newsletter.render_website import render_website_html
@@ -143,9 +150,71 @@ async def create_newsletter_draft(pool, gemini, days: int = 7) -> dict:
     return {"newsletter_id": row["id"], "title": content.title}
 
 
+async def _count_eligible_articles(pool, days: int) -> int:
+    """Quick pre-check before kicking off a background draft."""
+    async with pool.acquire() as conn:
+        return await conn.fetchval(
+            """
+            SELECT COUNT(*)::int FROM threat_intel
+            WHERE soft_deleted = FALSE
+              AND scraped_at >= NOW() - make_interval(days => $1)
+              AND relevance_score >= $2
+            """,
+            days,
+            NEWSLETTER_QUALITY_THRESHOLD,
+        )
+
+
+def _job_status_payload(job: dict) -> dict:
+    return {
+        "job_id": job["id"],
+        "status": job["status"],
+        "newsletter_id": job.get("newsletter_id"),
+        "title": job.get("newsletter_title"),
+        "error_message": job.get("error_message"),
+    }
+
+
+async def _background_draft(pool, gemini, days: int, job_id: str) -> None:
+    """Run newsletter synthesis in the background (admin Generate Now)."""
+    async with pool.acquire() as conn:
+        await job_repo.update_job_status(conn, job_id, NEWSLETTER_JOB_PROCESSING)
+    try:
+        result = await create_newsletter_draft(pool, gemini, days=days)
+        async with pool.acquire() as conn:
+            await job_repo.complete_job(
+                conn,
+                job_id,
+                newsletter_id=result["newsletter_id"],
+                newsletter_title=result["title"],
+            )
+        logger.info("Newsletter job %s completed: %s", job_id, result)
+    except HTTPException as exc:
+        async with pool.acquire() as conn:
+            await job_repo.update_job_status(
+                conn, job_id, NEWSLETTER_JOB_FAILED, error_message=str(exc.detail)
+            )
+        logger.warning("Newsletter job %s failed: %s", job_id, exc.detail)
+    except Exception as exc:
+        async with pool.acquire() as conn:
+            await job_repo.update_job_status(
+                conn, job_id, NEWSLETTER_JOB_FAILED, error_message=str(exc)
+            )
+        logger.exception("Newsletter job %s failed", job_id)
+
+
 @router.post("/draft", status_code=201)
-async def draft_newsletter(req: NewsletterDraftRequest, request: Request) -> dict:
-    """Draft a newsletter from the last N days of threat intel."""
+async def draft_newsletter(
+    req: NewsletterDraftRequest,
+    request: Request,
+    background_tasks: BackgroundTasks,
+) -> dict:
+    """Draft a newsletter from the last N days of threat intel.
+
+    Runs as a background task — synthesis (3-5 Gemini passes) plus Playwright
+    PNG render can take 2-5 minutes. Returns immediately so the admin UI
+    does not hit HTTP timeouts.
+    """
     pool = request.app.state.pool
     gemini = getattr(request.app.state, "gemini", None)
     if gemini is None:
@@ -153,13 +222,27 @@ async def draft_newsletter(req: NewsletterDraftRequest, request: Request) -> dic
         if not settings.gemini_api_key:
             raise HTTPException(status_code=503, detail="Gemini API key not configured")
         gemini = GeminiClient(settings)
-    try:
-        return await create_newsletter_draft(pool, gemini, days=req.days)
-    except HTTPException:
-        raise
-    except BaseException as exc:
-        logger.exception("Newsletter draft unexpected error: %s", exc)
+
+    count = await _count_eligible_articles(pool, req.days)
+    if count == 0:
         raise HTTPException(
-            status_code=503,
-            detail="Newsletter draft failed — check server logs",
-        ) from exc
+            status_code=422,
+            detail=f"No threat intel articles in the last {req.days} days — run the scraper first",
+        )
+
+    async with pool.acquire() as conn:
+        job_id = await job_repo.create_job(conn, days=req.days)
+
+    background_tasks.add_task(_background_draft, pool, gemini, req.days, job_id)
+    return {"job_id": job_id, "status": NEWSLETTER_JOB_PENDING}
+
+
+@router.get("/jobs/{job_id}")
+async def get_generation_job(job_id: str, request: Request) -> dict:
+    """Poll generation status — short request safe for Vercel serverless proxy."""
+    pool = request.app.state.pool
+    async with pool.acquire() as conn:
+        job = await job_repo.get_job(conn, job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Generation job not found")
+    return _job_status_payload(job)
