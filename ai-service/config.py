@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     embedding_chunk_tokens: int = 400
     embedding_overlap_tokens: int = 50
     embedding_model: str = "models/gemini-embedding-2"
-    generation_model_fast: str = "models/gemini-2.0-flash"
+    generation_model_fast: str = "models/gemini-2.5-flash"
     generation_model_pro: str = "models/gemini-2.5-pro"
     cpp_retrieval_top_k: int = 3
     newsletter_quality_threshold: float = 0.6

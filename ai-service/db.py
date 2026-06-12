@@ -38,6 +38,12 @@ async def init_pool(settings: Settings) -> asyncpg.Pool:
     return await asyncpg.create_pool(dsn, min_size=2, max_size=10)
 
 
+async def init_scraper_pool(settings: Settings) -> asyncpg.Pool:
+    """Pool for the scraper pipeline — uses scraper_user role (threat_intel writes)."""
+    dsn = clean_database_dsn(settings.get_scraper_url())
+    return await asyncpg.create_pool(dsn, min_size=1, max_size=5)
+
+
 async def get_db(request: Request) -> AsyncGenerator[asyncpg.Connection, None]:
     """FastAPI dependency — acquires a connection from the pool for one request."""
     pool: asyncpg.Pool = request.app.state.pool

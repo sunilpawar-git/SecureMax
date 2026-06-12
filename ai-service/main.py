@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from auth_middleware import ServiceAuthMiddleware
 from config import get_settings
-from db import init_pool
+from db import init_pool, init_scraper_pool
 from gemini_client import GeminiClient
 from routers.assistant import router as assistant_router
 from routers.cpp_admin import router as cpp_admin_router
@@ -47,24 +47,26 @@ def _get_allowed_origins() -> list[str]:
 async def lifespan(app: FastAPI):
     settings = get_settings()
     pool = await init_pool(settings)
+    scraper_pool = await init_scraper_pool(settings)
 
     if os.environ.get("IS_TESTING") != "true":
         await assert_schema_ready(pool)
 
     gemini = GeminiClient(settings) if settings.gemini_api_key else None
     app.state.pool = pool
+    app.state.scraper_pool = scraper_pool
     app.state.settings = settings
     app.state.gemini = gemini
 
     async def scheduled_scrape():
-        """Daily scraper run — accesses pool directly (no request context)."""
+        """Daily scraper run — uses scraper_pool (scraper_user role for threat_intel writes)."""
         try:
             from routers.scraper import _make_gemini_tagger
             from scraper.pipeline import run_pipeline
 
             process_fn = _make_gemini_tagger(gemini) if gemini else None
             embed_fn = gemini.embed if gemini else None
-            stats = await run_pipeline(pool, process_fn=process_fn, embed_fn=embed_fn)
+            stats = await run_pipeline(scraper_pool, process_fn=process_fn, embed_fn=embed_fn)
             logger.info("Scheduled scraper completed: %s", stats)
         except Exception:
             logger.exception("Scheduled scraper failed")
@@ -183,6 +185,7 @@ async def lifespan(app: FastAPI):
     yield
 
     scheduler.shutdown(wait=False)
+    await scraper_pool.close()
     await pool.close()
 
 
