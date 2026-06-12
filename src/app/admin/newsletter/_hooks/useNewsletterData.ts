@@ -191,9 +191,7 @@ export function useNewsletterData(): NewsletterData {
 
   const fetchEmailHtml = useCallback(async (id: string): Promise<string | null> => {
     try {
-      const res = await fetch(
-        `/api/admin/newsletter/${encodeURIComponent(id)}/formats?type=email`,
-      );
+      const res = await fetch(`/api/admin/newsletter/${encodeURIComponent(id)}/formats?type=email`);
       if (!res.ok) return null;
       return await res.text();
     } catch {

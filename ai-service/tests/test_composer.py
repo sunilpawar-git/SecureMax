@@ -35,14 +35,16 @@ class TestComposeNewsletter:
     @pytest.mark.asyncio
     async def test_parses_valid_gemini_response(self) -> None:
         themes = _make_themes()
-        gemini_response = json.dumps({
-            "title": "Weekly Security Intelligence Digest",
-            "executive_summary": "Executive summary text.",
-            "intelligence_briefing": "Full briefing content here.",
-            "full_analysis": "Deep analysis with all themes.",
-            "commanders_note": "From the commander's desk...",
-            "cta_soft": "Assess your security posture today.",
-        })
+        gemini_response = json.dumps(
+            {
+                "title": "Weekly Security Intelligence Digest",
+                "executive_summary": "Executive summary text.",
+                "intelligence_briefing": "Full briefing content here.",
+                "full_analysis": "Deep analysis with all themes.",
+                "commanders_note": "From the commander's desk...",
+                "cta_soft": "Assess your security posture today.",
+            }
+        )
         gemini = MagicMock()
         gemini.generate = AsyncMock(return_value=gemini_response)
 
@@ -60,12 +62,16 @@ class TestComposeNewsletter:
     async def test_preserves_full_title(self) -> None:
         """Title is stored verbatim; CSS line-clamp handles visual overflow."""
         gemini = MagicMock()
-        gemini.generate = AsyncMock(return_value=json.dumps({
-            "title": "A" * 120,
-            "executive_summary": "E",
-            "intelligence_briefing": "B",
-            "full_analysis": "F",
-        }))
+        gemini.generate = AsyncMock(
+            return_value=json.dumps(
+                {
+                    "title": "A" * 120,
+                    "executive_summary": "E",
+                    "intelligence_briefing": "B",
+                    "full_analysis": "F",
+                }
+            )
+        )
 
         result = await compose_newsletter(_make_themes(1), gemini=gemini)
         assert result.title == "A" * 120
@@ -83,12 +89,16 @@ class TestComposeNewsletter:
     @pytest.mark.asyncio
     async def test_sets_issue_date(self) -> None:
         gemini = MagicMock()
-        gemini.generate = AsyncMock(return_value=json.dumps({
-            "title": "T",
-            "executive_summary": "E",
-            "intelligence_briefing": "B",
-            "full_analysis": "F",
-        }))
+        gemini.generate = AsyncMock(
+            return_value=json.dumps(
+                {
+                    "title": "T",
+                    "executive_summary": "E",
+                    "intelligence_briefing": "B",
+                    "full_analysis": "F",
+                }
+            )
+        )
 
         result = await compose_newsletter(_make_themes(1), gemini=gemini)
         assert result.issue_date != ""
@@ -96,12 +106,16 @@ class TestComposeNewsletter:
     @pytest.mark.asyncio
     async def test_cta_audit_link_set(self) -> None:
         gemini = MagicMock()
-        gemini.generate = AsyncMock(return_value=json.dumps({
-            "title": "T",
-            "executive_summary": "E",
-            "intelligence_briefing": "B",
-            "full_analysis": "F",
-        }))
+        gemini.generate = AsyncMock(
+            return_value=json.dumps(
+                {
+                    "title": "T",
+                    "executive_summary": "E",
+                    "intelligence_briefing": "B",
+                    "full_analysis": "F",
+                }
+            )
+        )
 
         result = await compose_newsletter(_make_themes(1), gemini=gemini)
         assert result.cta_audit_link == "/security-audit"

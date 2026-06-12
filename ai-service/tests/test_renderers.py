@@ -194,9 +194,9 @@ class TestPngRenderer:
         content.themes[0].theme_title = '<img src=x onerror="alert(1)">'
         result = build_newsletter_html(content)
         # Raw < and " are escaped — the browser cannot execute the injected attribute
-        assert '<img src=x' not in result
+        assert "<img src=x" not in result
         assert 'onerror="' not in result
-        assert '&lt;img' in result
+        assert "&lt;img" in result
 
     def test_max_five_themes_rendered(self) -> None:
         content = _make_content(7)
@@ -207,6 +207,7 @@ class TestPngRenderer:
 
     def test_rejects_non_newsletter_content(self) -> None:
         import pytest
+
         with pytest.raises(TypeError, match="NewsletterContent"):
             build_newsletter_html({"title": "bad", "items": []})  # type: ignore[arg-type]
 

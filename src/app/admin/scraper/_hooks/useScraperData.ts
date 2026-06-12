@@ -76,29 +76,38 @@ export function useScraperData(): ScraperData {
     }
   }, []);
 
-  const loadArticles = useCallback(async (signal?: AbortSignal) => {
-    const params = new URLSearchParams();
-    if (search) params.set('search', search);
-    if (domains.length) params.set('domains', domains.join(','));
-    if (source) params.set('source', source);
-    if (showDeleted) params.set('showDeleted', 'true');
-    try {
-      const res = await fetch(`/api/admin/threat-intel?${params}`, signal ? { signal } : undefined);
-      if (res.ok) {
-        const data: ArticlesResponse = await res.json();
-        setArticles(data.articles ?? []);
-        setTotalArticles(data.total ?? 0);
+  const loadArticles = useCallback(
+    async (signal?: AbortSignal) => {
+      const params = new URLSearchParams();
+      if (search) params.set('search', search);
+      if (domains.length) params.set('domains', domains.join(','));
+      if (source) params.set('source', source);
+      if (showDeleted) params.set('showDeleted', 'true');
+      try {
+        const res = await fetch(
+          `/api/admin/threat-intel?${params}`,
+          signal ? { signal } : undefined,
+        );
+        if (res.ok) {
+          const data: ArticlesResponse = await res.json();
+          setArticles(data.articles ?? []);
+          setTotalArticles(data.total ?? 0);
+        }
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return;
+        /* non-critical */
       }
-    } catch (err) {
-      if ((err as Error).name === 'AbortError') return;
-      /* non-critical */
-    }
-  }, [search, domains, source, showDeleted]);
+    },
+    [search, domains, source, showDeleted],
+  );
 
-  const refresh = useCallback((signal?: AbortSignal) => {
-    void loadHealth(signal);
-    void loadArticles(signal);
-  }, [loadHealth, loadArticles]);
+  const refresh = useCallback(
+    (signal?: AbortSignal) => {
+      void loadHealth(signal);
+      void loadArticles(signal);
+    },
+    [loadHealth, loadArticles],
+  );
 
   useEffect(() => {
     const controller = new AbortController();

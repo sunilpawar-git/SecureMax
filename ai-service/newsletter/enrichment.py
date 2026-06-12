@@ -96,28 +96,19 @@ async def _fetch_cpp_context(cluster: ThemeCluster, cpp_retrieve) -> str:
         )
         if not chunks:
             return ""
-        return "\n\n".join(
-            f"[{c.domain} / {c.section}]: {c.chunk_text}" for c in chunks
-        )
+        return "\n\n".join(f"[{c.domain} / {c.section}]: {c.chunk_text}" for c in chunks)
     except Exception as e:
         logger.warning("CPP retrieval failed: %s", e)
         return ""
 
 
-def _fallback_enrich(
-    cluster: ThemeCluster, article_map: dict
-) -> EnrichedTheme:
+def _fallback_enrich(cluster: ThemeCluster, article_map: dict) -> EnrichedTheme:
     """Deterministic fallback — structure from cluster metadata only."""
-    titles = [
-        article_map[aid]["title"]
-        for aid in cluster.article_ids
-        if aid in article_map
-    ]
+    titles = [article_map[aid]["title"] for aid in cluster.article_ids if aid in article_map]
     title_list = "; ".join(titles[:3])
     return EnrichedTheme(
         theme_title=cluster.theme_title,
-        situation=f"This week, {len(titles)} incident(s) related to "
-        f"{cluster.theme_summary}",
+        situation=f"This week, {len(titles)} incident(s) related to {cluster.theme_summary}",
         assessment=f"Articles covered: {title_list}.",
         implications="Review existing security controls in this domain.",
         recommendation="Conduct a targeted security review aligned with "

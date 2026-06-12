@@ -240,9 +240,7 @@ def _fallback_process(article: RawArticle) -> ProcessedArticle:
     content_lower = article.content.lower()
     matched_kw = [kw for kw in SECURITY_KEYWORDS if kw in content_lower]
 
-    domain_tags = sorted(
-        {DOMAIN_KEYWORD_MAP[kw] for kw in matched_kw if kw in DOMAIN_KEYWORD_MAP}
-    )
+    domain_tags = sorted({DOMAIN_KEYWORD_MAP[kw] for kw in matched_kw if kw in DOMAIN_KEYWORD_MAP})
     if not domain_tags:
         domain_tags = ["CPP-07"]
 

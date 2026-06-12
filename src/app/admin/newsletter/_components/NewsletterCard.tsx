@@ -39,8 +39,7 @@ export function NewsletterCard({
   const [showEmailPreview, setShowEmailPreview] = useState(false);
   const waTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const badge =
-    NEWSLETTER_STATUS_STYLES[newsletter.status] ?? NEWSLETTER_STATUS_STYLES.draft;
+  const badge = NEWSLETTER_STATUS_STYLES[newsletter.status] ?? NEWSLETTER_STATUS_STYLES.draft;
 
   const handleCopyWhatsApp = useCallback(async () => {
     const ok = await onCopyWhatsApp(newsletter.id);
@@ -119,13 +118,17 @@ export function NewsletterCard({
             {NEWSLETTER_STRINGS.PUBLISH_CTA}
           </button>
           <button
-            onClick={() => { void handleCopyWhatsApp(); }}
+            onClick={() => {
+              void handleCopyWhatsApp();
+            }}
             className={`${BTN_BASE} ${waCopied ? 'bg-emerald-600' : 'bg-teal-600'} text-white hover:opacity-90`}
           >
             {waCopied ? NEWSLETTER_STRINGS.COPIED : NEWSLETTER_STRINGS.COPY_WHATSAPP}
           </button>
           <button
-            onClick={() => { void handlePreviewEmail(); }}
+            onClick={() => {
+              void handlePreviewEmail();
+            }}
             className={`${BTN_BASE} bg-indigo-600 text-white hover:bg-indigo-700`}
           >
             {NEWSLETTER_STRINGS.PREVIEW_EMAIL}
@@ -160,7 +163,9 @@ export function NewsletterCard({
       {showEmailPreview && emailHtml && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-          onClick={(e) => { if (e.target === e.currentTarget) setShowEmailPreview(false); }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowEmailPreview(false);
+          }}
           role="presentation"
         >
           <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-full max-w-3xl h-[80vh] flex flex-col">

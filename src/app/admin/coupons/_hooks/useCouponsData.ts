@@ -80,7 +80,9 @@ export function useCouponsData(): CouponsData {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on filter change
     void load();
-    return () => { abortRef.current?.abort(); };
+    return () => {
+      abortRef.current?.abort();
+    };
   }, [load]);
 
   const createCoupons = useCallback(

@@ -21,10 +21,7 @@ const ROOT = path.resolve(__dirname, '../../');
 const SRC = path.join(ROOT, 'src');
 const APP_DIR = path.join(SRC, 'app');
 
-const RESTRICTED_DIRS = [
-  path.join(SRC, 'components'),
-  path.join(SRC, 'lib'),
-];
+const RESTRICTED_DIRS = [path.join(SRC, 'components'), path.join(SRC, 'lib')];
 
 const IMPORT_RE = /from\s+['"]([^'"]+)['"]/g;
 

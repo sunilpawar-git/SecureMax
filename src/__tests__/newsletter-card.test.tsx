@@ -46,7 +46,9 @@ describe('NewsletterCard', () => {
   it('shows the status badge and cited-article count', () => {
     render(<NewsletterCard newsletter={makeNewsletter()} {...defaultProps} />);
     expect(screen.getByText(NEWSLETTER_STRINGS.STATUS_LABEL.draft)).toBeInTheDocument();
-    expect(screen.getByText(new RegExp(`2 ${NEWSLETTER_STRINGS.ARTICLES_CITED}`))).toBeInTheDocument();
+    expect(
+      screen.getByText(new RegExp(`2 ${NEWSLETTER_STRINGS.ARTICLES_CITED}`)),
+    ).toBeInTheDocument();
   });
 
   it('shows per-platform post results when present', () => {
@@ -78,7 +80,11 @@ describe('NewsletterCard', () => {
 
   it('renders the Copy WhatsApp and Preview Email buttons', () => {
     render(<NewsletterCard newsletter={makeNewsletter()} {...defaultProps} />);
-    expect(screen.getByRole('button', { name: NEWSLETTER_STRINGS.COPY_WHATSAPP })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: NEWSLETTER_STRINGS.PREVIEW_EMAIL })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: NEWSLETTER_STRINGS.COPY_WHATSAPP }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: NEWSLETTER_STRINGS.PREVIEW_EMAIL }),
+    ).toBeInTheDocument();
   });
 });

@@ -26,18 +26,12 @@ export const linkedinPublisher: SocialPublisher = {
   platform: 'linkedin',
 
   async isConfigured(): Promise<boolean> {
-    const [token, orgId] = await Promise.all([
-      getSecret('linkedin'),
-      getSecret('linkedin_org_id'),
-    ]);
+    const [token, orgId] = await Promise.all([getSecret('linkedin'), getSecret('linkedin_org_id')]);
     return Boolean(token && orgId);
   },
 
   async publish(input: SocialPublishInput): Promise<SocialPublishResult> {
-    const [token, orgId] = await Promise.all([
-      getSecret('linkedin'),
-      getSecret('linkedin_org_id'),
-    ]);
+    const [token, orgId] = await Promise.all([getSecret('linkedin'), getSecret('linkedin_org_id')]);
     if (!token || !orgId) {
       return { success: false, error: 'LinkedIn is not configured' };
     }

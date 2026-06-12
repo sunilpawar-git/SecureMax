@@ -65,13 +65,15 @@ async def _detect_window(conn, window_days: int) -> list[TrendResult]:
         curr = current_counts.get(domain, 0)
         prev = prior_counts.get(domain, 0)
         direction, change = _classify_trend(curr, prev)
-        trends.append(TrendResult(
-            domain=domain,
-            direction=direction,
-            current_count=curr,
-            previous_count=prev,
-            change_pct=change,
-        ))
+        trends.append(
+            TrendResult(
+                domain=domain,
+                direction=direction,
+                current_count=curr,
+                previous_count=prev,
+                change_pct=change,
+            )
+        )
 
     return sorted(trends, key=lambda t: abs(t.change_pct), reverse=True)
 
@@ -83,6 +85,7 @@ def _count_domains(rows) -> Counter:
         tags = row["domain_tags"]
         if isinstance(tags, str):
             import json
+
             tags = json.loads(tags)
         if isinstance(tags, list):
             for tag in tags:
@@ -117,13 +120,11 @@ def format_trend_summary(trends: dict[int, list[TrendResult]]) -> str:
             items = []
             for t in rising[:3]:
                 items.append(
-                    f"{t.domain} rising (+{t.change_pct:.0f}%, "
-                    f"{t.current_count} incidents)"
+                    f"{t.domain} rising (+{t.change_pct:.0f}%, {t.current_count} incidents)"
                 )
             for t in declining[:3]:
                 items.append(
-                    f"{t.domain} declining ({t.change_pct:.0f}%, "
-                    f"{t.current_count} incidents)"
+                    f"{t.domain} declining ({t.change_pct:.0f}%, {t.current_count} incidents)"
                 )
             parts.append(f"{label} trends: {'; '.join(items)}")
 

@@ -25,9 +25,7 @@ async def compose_newsletter(
     gemini,
 ) -> NewsletterContent:
     """Compose the final tiered newsletter from enriched themes."""
-    themes_json = json.dumps(
-        [t.model_dump(mode="json") for t in themes], indent=2
-    )
+    themes_json = json.dumps([t.model_dump(mode="json") for t in themes], indent=2)
     prompt = COMPOSE_PROMPT.substitute(themes_json=themes_json)
 
     try:

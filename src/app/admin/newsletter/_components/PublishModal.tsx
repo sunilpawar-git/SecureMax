@@ -85,7 +85,9 @@ export function PublishModal({ newsletter, configured, onClose, onPublished }: P
   return (
     <div
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       role="presentation"
     >
       <div
@@ -96,7 +98,10 @@ export function PublishModal({ newsletter, configured, onClose, onPublished }: P
         tabIndex={-1}
         className="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-full max-w-md p-6 space-y-4 outline-none"
       >
-        <h2 id="publish-modal-title" className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+        <h2
+          id="publish-modal-title"
+          className="text-lg font-semibold text-slate-900 dark:text-slate-100"
+        >
           {NEWSLETTER_STRINGS.PUBLISH_MODAL_TITLE}
         </h2>
 

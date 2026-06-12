@@ -38,9 +38,7 @@ BRAND_POSITIONING = (
     "frameworks grounded in the CPP Seven Precis."
 )
 
-SEGMENT_CONTEXT = "\n".join(
-    f"- {key}: {SEGMENT_LABELS[key]}" for key in SEGMENT_LABELS
-)
+SEGMENT_CONTEXT = "\n".join(f"- {key}: {SEGMENT_LABELS[key]}" for key in SEGMENT_LABELS)
 
 # --- Pass 1: Cluster & Theme ---
 

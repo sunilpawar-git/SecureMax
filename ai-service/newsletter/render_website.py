@@ -52,30 +52,23 @@ def render_website_html(content: NewsletterContent) -> str:
         if seg and (seg.hni or seg.enterprise or seg.critical_infrastructure):
             items = []
             if seg.hni:
-                items.append(
-                    f'<li><strong>Private Residences:</strong> {_esc(seg.hni)}</li>'
-                )
+                items.append(f"<li><strong>Private Residences:</strong> {_esc(seg.hni)}</li>")
             if seg.enterprise:
-                items.append(
-                    f'<li><strong>Corporates:</strong> {_esc(seg.enterprise)}</li>'
-                )
+                items.append(f"<li><strong>Corporates:</strong> {_esc(seg.enterprise)}</li>")
             if seg.critical_infrastructure:
                 items.append(
-                    '<li><strong>Critical Infrastructure:</strong> '
-                    f'{_esc(seg.critical_infrastructure)}</li>'
+                    "<li><strong>Critical Infrastructure:</strong> "
+                    f"{_esc(seg.critical_infrastructure)}</li>"
                 )
             seg_section = (
                 '<div class="segment-impact">'
                 "<h4>Segment Impact</h4>"
-                f'<ul>{"".join(items)}</ul></div>'
+                f"<ul>{''.join(items)}</ul></div>"
             )
 
         cpp_cite = ""
         if theme.cpp_citation:
-            cpp_cite = (
-                f'<p class="cpp-citation">'
-                f"<em>Source: {_esc(theme.cpp_citation)}</em></p>"
-            )
+            cpp_cite = f'<p class="cpp-citation"><em>Source: {_esc(theme.cpp_citation)}</em></p>'
 
         themes_html += f"""
     <section class="theme-card" data-domain="{_esc(theme.cpp_domain)}">

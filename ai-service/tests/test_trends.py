@@ -68,10 +68,12 @@ class TestDetectTrends:
     @pytest.mark.asyncio
     async def test_returns_results_for_all_windows(self) -> None:
         conn = AsyncMock()
-        conn.fetch = AsyncMock(return_value=[
-            {"domain_tags": ["CPP-01"]},
-            {"domain_tags": ["CPP-01", "CPP-03"]},
-        ])
+        conn.fetch = AsyncMock(
+            return_value=[
+                {"domain_tags": ["CPP-01"]},
+                {"domain_tags": ["CPP-01", "CPP-03"]},
+            ]
+        )
 
         results = await detect_trends(conn, windows=(7, 30))
         assert 7 in results

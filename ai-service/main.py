@@ -108,12 +108,9 @@ async def lifespan(app: FastAPI):
                         return
                     lines = ["Security Intelligence Digest\n"]
                     for r in fallback_rows:
-                        lines.append(
-                            f"\u2022 {r['title']}: {(r['summary'] or '')[:200]}"
-                        )
+                        lines.append(f"\u2022 {r['title']}: {(r['summary'] or '')[:200]}")
                     lines.append(
-                        "\nIs your organization prepared? "
-                        "Book a professional security audit."
+                        "\nIs your organization prepared? Book a professional security audit."
                     )
                     briefing_text = "\n".join(lines)[:3000]
                     source_label = "threat_intel fallback"

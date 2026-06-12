@@ -70,7 +70,7 @@ _ITEM_TMPL = Template(
     '<div class="item"><div class="domain">${domain}</div>'
     '<div class="headline">${headline}</div>'
     '<div class="takeaway">${takeaway}</div>'
-    '${segments_html}</div>'
+    "${segments_html}</div>"
 )
 
 
@@ -81,7 +81,8 @@ def _render_intro(text: str) -> str:
     if bullets and len(bullets) >= len(lines) // 2:
         items = "".join(
             f"<li>{html_mod.escape(_BULLET_RE.sub('', ln).strip())}</li>"
-            for ln in lines if _BULLET_RE.match(ln)
+            for ln in lines
+            if _BULLET_RE.match(ln)
         )
         return f'<ul class="intro-bullets">{items}</ul>'
     return f'<div class="intro">{html_mod.escape(text)}</div>'
@@ -105,13 +106,10 @@ def build_newsletter_html(content: NewsletterContent) -> str:
     """Render newsletter content into the branded one-pager HTML (escaped)."""
     if not isinstance(content, NewsletterContent):
         raise TypeError(
-            f"build_newsletter_html requires NewsletterContent, "
-            f"got {type(content).__name__}"
+            f"build_newsletter_html requires NewsletterContent, got {type(content).__name__}"
         )
 
-    source_count = len({
-        aid for t in content.themes for aid in t.source_article_ids
-    })
+    source_count = len({aid for t in content.themes for aid in t.source_article_ids})
     title = content.title or ""
     intro_html = _render_intro(content.executive_summary or "")
     cta = content.cta_soft or "Is your organization prepared? Book a security audit."
@@ -143,9 +141,7 @@ def build_newsletter_html(content: NewsletterContent) -> str:
     )
 
 
-async def render_png(
-    html: str, *, width: int = PAGE_WIDTH, height: int = PAGE_HEIGHT
-) -> bytes:
+async def render_png(html: str, *, width: int = PAGE_WIDTH, height: int = PAGE_HEIGHT) -> bytes:
     """Screenshot the HTML as a PNG using headless Chromium."""
     import asyncio
 
@@ -155,9 +151,7 @@ async def render_png(
         browser = await p.chromium.launch(headless=True)
         try:
             page = await browser.new_page(viewport={"width": width, "height": height})
-            await asyncio.wait_for(
-                page.set_content(html, wait_until="load"), timeout=30.0
-            )
+            await asyncio.wait_for(page.set_content(html, wait_until="load"), timeout=30.0)
             return await page.screenshot(type="png", full_page=True)
         finally:
             await browser.close()

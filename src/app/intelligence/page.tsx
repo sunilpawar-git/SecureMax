@@ -39,9 +39,7 @@ export default async function IntelligencePage() {
     return (
       <main className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center">
         <div className="text-center max-w-md px-6">
-          <h1 className="text-2xl font-bold text-amber-400 mb-4">
-            Security Intelligence
-          </h1>
+          <h1 className="text-2xl font-bold text-amber-400 mb-4">Security Intelligence</h1>
           <p className="text-slate-400">
             Our weekly intelligence briefing is being prepared. Check back soon.
           </p>

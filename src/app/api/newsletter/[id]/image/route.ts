@@ -32,17 +32,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     select: { status: true, imagePng: true },
   });
 
-  if (
-    !newsletter ||
-    newsletter.status === NEWSLETTER_STATUS.DELETED ||
-    !newsletter.imagePng
-  ) {
+  if (!newsletter || newsletter.status === NEWSLETTER_STATUS.DELETED || !newsletter.imagePng) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  const cacheHeader = newsletter.status === NEWSLETTER_STATUS.PUBLISHED
-    ? `public, max-age=${IMAGE_CACHE_SECONDS}`
-    : 'private, no-store';
+  const cacheHeader =
+    newsletter.status === NEWSLETTER_STATUS.PUBLISHED
+      ? `public, max-age=${IMAGE_CACHE_SECONDS}`
+      : 'private, no-store';
 
   return new NextResponse(Buffer.from(newsletter.imagePng), {
     status: 200,

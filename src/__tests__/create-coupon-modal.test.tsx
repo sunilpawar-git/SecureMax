@@ -31,9 +31,7 @@ describe('CreateCouponModal', () => {
 
     const done = screen.getByRole('button', { name: COUPON_STRINGS.DONE });
     expect(done).toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: COUPON_STRINGS.CANCEL }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: COUPON_STRINGS.CANCEL })).not.toBeInTheDocument();
 
     await user.click(done);
     expect(onClose).toHaveBeenCalled();

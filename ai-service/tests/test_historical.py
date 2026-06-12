@@ -32,9 +32,7 @@ class TestFindRelatedIncidents:
         conn = AsyncMock()
         conn.fetch = AsyncMock(return_value=[_make_row()])
 
-        results = await find_related_incidents(
-            conn, domain_tags=["CPP-01"], lookback_days=90
-        )
+        results = await find_related_incidents(conn, domain_tags=["CPP-01"], lookback_days=90)
 
         assert len(results) == 1
         assert isinstance(results[0], HistoricalMatch)
@@ -43,9 +41,7 @@ class TestFindRelatedIncidents:
     @pytest.mark.asyncio
     async def test_returns_empty_for_no_tags(self) -> None:
         conn = AsyncMock()
-        results = await find_related_incidents(
-            conn, domain_tags=[], lookback_days=90
-        )
+        results = await find_related_incidents(conn, domain_tags=[], lookback_days=90)
         assert results == []
         conn.fetch.assert_not_called()
 
@@ -68,9 +64,7 @@ class TestFindRelatedIncidents:
         conn = AsyncMock()
         conn.fetch = AsyncMock(return_value=[_make_row()])
 
-        await find_related_incidents(
-            conn, domain_tags=["CPP-01"], limit=3
-        )
+        await find_related_incidents(conn, domain_tags=["CPP-01"], limit=3)
 
         call_args = conn.fetch.call_args[0]
         assert call_args[4] == 3
@@ -78,14 +72,13 @@ class TestFindRelatedIncidents:
     @pytest.mark.asyncio
     async def test_handles_json_string_tags(self) -> None:
         import json
+
         row = _make_row()
         row["domain_tags"] = json.dumps(["CPP-01", "CPP-03"])
         conn = AsyncMock()
         conn.fetch = AsyncMock(return_value=[row])
 
-        results = await find_related_incidents(
-            conn, domain_tags=["CPP-01"]
-        )
+        results = await find_related_incidents(conn, domain_tags=["CPP-01"])
         assert len(results) == 1
         assert "CPP-01" in results[0].domain_tags
 
@@ -114,9 +107,11 @@ class TestFormatHistoricalContext:
     def test_multiple_matches(self) -> None:
         matches = [
             HistoricalMatch(
-                id=f"h{i}", title=f"Incident {i}", summary=f"Summary {i}",
+                id=f"h{i}",
+                title=f"Incident {i}",
+                summary=f"Summary {i}",
                 domain_tags=[f"CPP-0{i}"],
-                scraped_at=f"2026-05-{10+i}T00:00:00+00:00",
+                scraped_at=f"2026-05-{10 + i}T00:00:00+00:00",
                 similarity_reason=f"Shared domains: CPP-0{i}",
             )
             for i in range(1, 4)

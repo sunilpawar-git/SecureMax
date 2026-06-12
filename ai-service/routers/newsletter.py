@@ -102,9 +102,7 @@ async def create_newsletter_draft(pool, gemini, days: int = 7) -> dict:
             )
 
         async def _cpp_retrieve(query, domains=None):
-            return await get_relevant_chunks(
-                query, conn, settings, gemini=gemini, domains=domains
-            )
+            return await get_relevant_chunks(query, conn, settings, gemini=gemini, domains=domains)
 
         content = await synthesize_newsletter_pipeline(
             articles, gemini=gemini, cpp_retrieve=_cpp_retrieve

@@ -12,10 +12,7 @@ import { prisma } from '@/lib/prisma';
 
 const FormatType = z.enum(['email', 'whatsapp']);
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (!(await verifyAdmin())) return forbiddenResponse();
 
   const typeParam = request.nextUrl.searchParams.get('type');

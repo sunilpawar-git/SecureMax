@@ -23,9 +23,7 @@ import { SAMPLE_REPORT } from '@/config/strings';
 // verify it renders without hydration errors and displays the watermark.
 jest.mock('@/components/report/FreeSummaryView', () => ({
   FreeSummaryView: ({ urgencyScore }: { urgencyScore: number }) => (
-    <div data-testid="free-summary-view">
-      Mocked FreeSummaryView - Score: {urgencyScore}
-    </div>
+    <div data-testid="free-summary-view">Mocked FreeSummaryView - Score: {urgencyScore}</div>
   ),
 }));
 

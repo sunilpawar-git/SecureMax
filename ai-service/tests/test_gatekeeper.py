@@ -103,15 +103,19 @@ class TestGeminiScoring:
     @pytest.mark.asyncio
     async def test_parses_valid_json(self) -> None:
         gemini = MagicMock()
-        gemini.generate = AsyncMock(return_value=json.dumps({
-            "physical_security_relevance": 0.9,
-            "geographic_relevance": 0.7,
-            "threat_actionability": 0.8,
-            "educational_value": 0.6,
-            "recency_novelty": 0.5,
-            "audience_impact": 0.7,
-            "affected_segments": ["enterprise"],
-        }))
+        gemini.generate = AsyncMock(
+            return_value=json.dumps(
+                {
+                    "physical_security_relevance": 0.9,
+                    "geographic_relevance": 0.7,
+                    "threat_actionability": 0.8,
+                    "educational_value": 0.6,
+                    "recency_novelty": 0.5,
+                    "audience_impact": 0.7,
+                    "affected_segments": ["enterprise"],
+                }
+            )
+        )
 
         result = await score_article(_make_article(), gemini=gemini)
         assert isinstance(result, IntelScores)
@@ -121,15 +125,21 @@ class TestGeminiScoring:
     @pytest.mark.asyncio
     async def test_strips_markdown_fences(self) -> None:
         gemini = MagicMock()
-        gemini.generate = AsyncMock(return_value="```json\n" + json.dumps({
-            "physical_security_relevance": 0.8,
-            "geographic_relevance": 0.6,
-            "threat_actionability": 0.5,
-            "educational_value": 0.4,
-            "recency_novelty": 0.7,
-            "audience_impact": 0.5,
-            "affected_segments": [],
-        }) + "\n```")
+        gemini.generate = AsyncMock(
+            return_value="```json\n"
+            + json.dumps(
+                {
+                    "physical_security_relevance": 0.8,
+                    "geographic_relevance": 0.6,
+                    "threat_actionability": 0.5,
+                    "educational_value": 0.4,
+                    "recency_novelty": 0.7,
+                    "audience_impact": 0.5,
+                    "affected_segments": [],
+                }
+            )
+            + "\n```"
+        )
 
         result = await score_article(_make_article(), gemini=gemini)
         assert result.physical_security_relevance == 0.8
@@ -189,16 +199,12 @@ class TestFallbackScores:
         assert scores.recency_novelty == 1.0
 
     def test_enterprise_segment_detected(self) -> None:
-        article = _make_article(
-            content="Corporate office campus security was compromised."
-        )
+        article = _make_article(content="Corporate office campus security was compromised.")
         scores = fallback_scores(article)
         assert "enterprise" in scores.affected_segments
 
     def test_hni_segment_detected(self) -> None:
-        article = _make_article(
-            content="The family residence estate perimeter was breached."
-        )
+        article = _make_article(content="The family residence estate perimeter was breached.")
         scores = fallback_scores(article)
         assert "hni" in scores.affected_segments
 
@@ -212,6 +218,7 @@ class TestFallbackScores:
     def test_segments_validated_against_allowed_list(self) -> None:
         scores = fallback_scores(_make_article())
         from newsletter.constants import AUDIENCE_SEGMENTS
+
         for seg in scores.affected_segments:
             assert seg in AUDIENCE_SEGMENTS
 
@@ -268,8 +275,7 @@ class TestFallbackScoresExpandedThreats:
         article = _make_article(
             title="Bomb blast at railway station",
             content=(
-                "Terrorism suspected in bomb blast at railway station. "
-                "Active shooter neutralized."
+                "Terrorism suspected in bomb blast at railway station. Active shooter neutralized."
             ),
         )
         scores = fallback_scores(article)

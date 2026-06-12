@@ -69,6 +69,7 @@ async def fetch_rss_tier(
     sequentially — reduces wall-clock time from O(N×latency) to O(max_latency),
     keeping the full pipeline well within the 300s HTTP timeout.
     """
+
     async def _fetch_one(feed: dict) -> list[RawArticle]:
         source_name = feed["name"]
         health = source_health.setdefault(

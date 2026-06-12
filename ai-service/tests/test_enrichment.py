@@ -29,24 +29,24 @@ def _make_articles() -> list[dict]:
 class TestEnrichThemes:
     @pytest.mark.asyncio
     async def test_parses_valid_gemini_response(self) -> None:
-        gemini_response = json.dumps({
-            "situation": "Two perimeter breaches occurred in Mumbai.",
-            "assessment": "Physical barriers are inadequate.",
-            "implications": "Wider exposure for warehouse operators.",
-            "recommendation": "Install vibration sensors on perimeter fencing.",
-            "cpp_citation": "CPP-01 mandates concentric ring defence.",
-            "segment_impact": {
-                "hni": "Gated communities at risk",
-                "enterprise": "Corporate campuses need review",
-                "critical_infrastructure": "Limited direct impact",
-            },
-        })
+        gemini_response = json.dumps(
+            {
+                "situation": "Two perimeter breaches occurred in Mumbai.",
+                "assessment": "Physical barriers are inadequate.",
+                "implications": "Wider exposure for warehouse operators.",
+                "recommendation": "Install vibration sensors on perimeter fencing.",
+                "cpp_citation": "CPP-01 mandates concentric ring defence.",
+                "segment_impact": {
+                    "hni": "Gated communities at risk",
+                    "enterprise": "Corporate campuses need review",
+                    "critical_infrastructure": "Limited direct impact",
+                },
+            }
+        )
         gemini = MagicMock()
         gemini.generate = AsyncMock(return_value=gemini_response)
 
-        result = await enrich_themes(
-            [_make_cluster()], _make_articles(), gemini=gemini
-        )
+        result = await enrich_themes([_make_cluster()], _make_articles(), gemini=gemini)
 
         assert len(result) == 1
         assert isinstance(result[0], EnrichedTheme)
@@ -56,13 +56,15 @@ class TestEnrichThemes:
 
     @pytest.mark.asyncio
     async def test_with_cpp_retrieval(self) -> None:
-        gemini_response = json.dumps({
-            "situation": "Sit",
-            "assessment": "Assess",
-            "implications": "Impl",
-            "recommendation": "Rec",
-            "cpp_citation": "CPP-01 §3.2",
-        })
+        gemini_response = json.dumps(
+            {
+                "situation": "Sit",
+                "assessment": "Assess",
+                "implications": "Impl",
+                "recommendation": "Rec",
+                "cpp_citation": "CPP-01 §3.2",
+            }
+        )
         gemini = MagicMock()
         gemini.generate = AsyncMock(return_value=gemini_response)
 
@@ -73,8 +75,10 @@ class TestEnrichThemes:
         cpp_retrieve = AsyncMock(return_value=[chunk])
 
         result = await enrich_themes(
-            [_make_cluster()], _make_articles(),
-            gemini=gemini, cpp_retrieve=cpp_retrieve,
+            [_make_cluster()],
+            _make_articles(),
+            gemini=gemini,
+            cpp_retrieve=cpp_retrieve,
         )
 
         assert len(result) == 1
@@ -87,9 +91,7 @@ class TestEnrichThemes:
         gemini = MagicMock()
         gemini.generate = AsyncMock(side_effect=RuntimeError("down"))
 
-        result = await enrich_themes(
-            [_make_cluster()], _make_articles(), gemini=gemini
-        )
+        result = await enrich_themes([_make_cluster()], _make_articles(), gemini=gemini)
 
         assert len(result) == 1
         assert isinstance(result[0], EnrichedTheme)
@@ -105,10 +107,16 @@ class TestEnrichThemes:
             primary_domain="CPP-03",
         )
         gemini = MagicMock()
-        gemini.generate = AsyncMock(return_value=json.dumps({
-            "situation": "S", "assessment": "A",
-            "implications": "I", "recommendation": "R",
-        }))
+        gemini.generate = AsyncMock(
+            return_value=json.dumps(
+                {
+                    "situation": "S",
+                    "assessment": "A",
+                    "implications": "I",
+                    "recommendation": "R",
+                }
+            )
+        )
 
         result = await enrich_themes([c1, c2], _make_articles(), gemini=gemini)
         assert len(result) == 2
@@ -116,17 +124,23 @@ class TestEnrichThemes:
     @pytest.mark.asyncio
     async def test_cpp_retrieval_failure_continues(self) -> None:
         """CPP retrieval failure should not block enrichment."""
-        gemini_response = json.dumps({
-            "situation": "S", "assessment": "A",
-            "implications": "I", "recommendation": "R",
-        })
+        gemini_response = json.dumps(
+            {
+                "situation": "S",
+                "assessment": "A",
+                "implications": "I",
+                "recommendation": "R",
+            }
+        )
         gemini = MagicMock()
         gemini.generate = AsyncMock(return_value=gemini_response)
         cpp_retrieve = AsyncMock(side_effect=RuntimeError("DB down"))
 
         result = await enrich_themes(
-            [_make_cluster()], _make_articles(),
-            gemini=gemini, cpp_retrieve=cpp_retrieve,
+            [_make_cluster()],
+            _make_articles(),
+            gemini=gemini,
+            cpp_retrieve=cpp_retrieve,
         )
         assert len(result) == 1
 

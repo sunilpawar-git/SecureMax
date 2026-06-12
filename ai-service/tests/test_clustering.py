@@ -26,21 +26,23 @@ class TestClusterArticles:
     @pytest.mark.asyncio
     async def test_parses_valid_gemini_response(self) -> None:
         articles = _make_articles(4)
-        gemini_response = json.dumps([
-            {
-                "theme_title": "Perimeter Breaches",
-                "theme_summary": "Multiple fence breaches this week",
-                "article_ids": ["art-1", "art-2"],
-                "primary_domain": "CPP-01",
-                "secondary_domains": ["CPP-07"],
-            },
-            {
-                "theme_title": "Crisis Response Failures",
-                "theme_summary": "Emergency drills exposed gaps",
-                "article_ids": ["art-3", "art-4"],
-                "primary_domain": "CPP-03",
-            },
-        ])
+        gemini_response = json.dumps(
+            [
+                {
+                    "theme_title": "Perimeter Breaches",
+                    "theme_summary": "Multiple fence breaches this week",
+                    "article_ids": ["art-1", "art-2"],
+                    "primary_domain": "CPP-01",
+                    "secondary_domains": ["CPP-07"],
+                },
+                {
+                    "theme_title": "Crisis Response Failures",
+                    "theme_summary": "Emergency drills exposed gaps",
+                    "article_ids": ["art-3", "art-4"],
+                    "primary_domain": "CPP-03",
+                },
+            ]
+        )
         gemini = MagicMock()
         gemini.generate = AsyncMock(return_value=gemini_response)
 
@@ -57,14 +59,16 @@ class TestClusterArticles:
         gemini = MagicMock()
         gemini.generate = AsyncMock(
             return_value="```json\n"
-            + json.dumps([
-                {
-                    "theme_title": "Theme 1",
-                    "theme_summary": "Sum",
-                    "article_ids": ["art-1", "art-2"],
-                    "primary_domain": "CPP-01",
-                }
-            ])
+            + json.dumps(
+                [
+                    {
+                        "theme_title": "Theme 1",
+                        "theme_summary": "Sum",
+                        "article_ids": ["art-1", "art-2"],
+                        "primary_domain": "CPP-01",
+                    }
+                ]
+            )
             + "\n```"
         )
 
@@ -138,8 +142,7 @@ class TestFallbackCluster:
 
     def test_respects_max_themes(self) -> None:
         articles = [
-            {"id": f"a{i}", "title": f"T{i}", "summary": f"S{i}",
-             "domain_tags": [f"CPP-0{i}"]}
+            {"id": f"a{i}", "title": f"T{i}", "summary": f"S{i}", "domain_tags": [f"CPP-0{i}"]}
             for i in range(1, 8)
         ]
         result = fallback_cluster(articles)

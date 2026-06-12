@@ -38,9 +38,7 @@ class IntelScores(BaseModel):
     affected_segments: list[str] = Field(default_factory=list)
 
     def model_post_init(self, __context) -> None:
-        self.affected_segments = [
-            s for s in self.affected_segments if s in AUDIENCE_SEGMENTS
-        ]
+        self.affected_segments = [s for s in self.affected_segments if s in AUDIENCE_SEGMENTS]
 
 
 class ProcessedArticle(BaseModel):

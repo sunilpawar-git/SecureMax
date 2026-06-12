@@ -47,9 +47,7 @@ def test_linkedin_draft_falls_back_on_gemini_error(test_client, db_conn):
     test_client.app.state.pool = _TestPool(_DSN, TEST_SCHEMA)
     test_client.app.state.gemini = _FailingGemini()
     try:
-        resp = test_client.post(
-            "/linkedin/draft", json={"article_ids": ["ti-fallback-1"]}
-        )
+        resp = test_client.post("/linkedin/draft", json={"article_ids": ["ti-fallback-1"]})
     finally:
         test_client.app.state.pool = original_pool
         test_client.app.state.gemini = original_gemini

@@ -60,14 +60,16 @@ async def find_related_incidents(
             tags = json.loads(tags)
 
         overlap = set(tags) & set(domain_tags)
-        matches.append(HistoricalMatch(
-            id=row["id"],
-            title=row["title"],
-            summary=row["summary"][:200],
-            domain_tags=tags,
-            scraped_at=row["scraped_at"].isoformat() if row["scraped_at"] else "",
-            similarity_reason=f"Shared domains: {', '.join(sorted(overlap))}",
-        ))
+        matches.append(
+            HistoricalMatch(
+                id=row["id"],
+                title=row["title"],
+                summary=row["summary"][:200],
+                domain_tags=tags,
+                scraped_at=row["scraped_at"].isoformat() if row["scraped_at"] else "",
+                similarity_reason=f"Shared domains: {', '.join(sorted(overlap))}",
+            )
+        )
 
     return matches
 
@@ -79,8 +81,5 @@ def format_historical_context(matches: list[HistoricalMatch]) -> str:
 
     lines = [f"Historical precedent ({len(matches)} related incident(s)):"]
     for m in matches:
-        lines.append(
-            f"- [{m.scraped_at[:10]}] {m.title}: {m.summary} "
-            f"({m.similarity_reason})"
-        )
+        lines.append(f"- [{m.scraped_at[:10]}] {m.title}: {m.summary} ({m.similarity_reason})")
     return "\n".join(lines)

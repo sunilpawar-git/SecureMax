@@ -23,8 +23,6 @@ async def synthesize_newsletter_pipeline(
 ) -> NewsletterContent:
     """Three-pass synthesis: Cluster → Enrich → Compose."""
     clusters = await cluster_articles(articles, gemini=gemini)
-    themes = await enrich_themes(
-        clusters, articles, gemini=gemini, cpp_retrieve=cpp_retrieve
-    )
+    themes = await enrich_themes(clusters, articles, gemini=gemini, cpp_retrieve=cpp_retrieve)
     content = await compose_newsletter(themes, gemini=gemini)
     return content

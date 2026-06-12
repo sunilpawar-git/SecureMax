@@ -21,11 +21,26 @@ logger = logging.getLogger(__name__)
 
 _FENCE_RE = re.compile(r"^```[a-z]*\n?|\n?```$")
 
-_ACTION_VERBS = frozenset({
-    "review", "audit", "update", "check", "verify", "ensure",
-    "implement", "deploy", "install", "train", "assess", "test",
-    "monitor", "upgrade", "replace", "inspect",
-})
+_ACTION_VERBS = frozenset(
+    {
+        "review",
+        "audit",
+        "update",
+        "check",
+        "verify",
+        "ensure",
+        "implement",
+        "deploy",
+        "install",
+        "train",
+        "assess",
+        "test",
+        "monitor",
+        "upgrade",
+        "replace",
+        "inspect",
+    }
+)
 
 _SCORING_PROMPT = Template(
     "You are an intelligence analyst scoring a security news article "

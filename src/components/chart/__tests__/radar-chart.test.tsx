@@ -18,9 +18,7 @@ jest.mock('@/components/chart/use-count-up', () => ({
   useCountUp: (n: number) => n,
 }));
 
-const ALL_SCORES = Object.fromEntries(
-  Object.values(CPP_DOMAINS).map((d) => [d.code, 50]),
-);
+const ALL_SCORES = Object.fromEntries(Object.values(CPP_DOMAINS).map((d) => [d.code, 50]));
 
 const HIGH_SCORES = Object.fromEntries(
   Object.values(CPP_DOMAINS).map((d) => [d.code, RADAR_THRESHOLDS.GREEN_MIN]),

@@ -28,6 +28,7 @@ def strip_html(text: str) -> str:
     text = _html_mod.unescape(text)
     return _WS_RE.sub(" ", text).strip()
 
+
 from config import get_settings
 from newsletter.constants import DOMAIN_KEYWORD_MAP
 from scraper.models import RawArticle
@@ -95,9 +96,7 @@ _RSS_HEADERS = {
 
 async def fetch_rss_feed(feed_url: str, source_name: str) -> list[RawArticle]:
     """Tier 2: RSS feeds — stable, niche sources."""
-    async with httpx.AsyncClient(
-        timeout=30, follow_redirects=True, headers=_RSS_HEADERS
-    ) as client:
+    async with httpx.AsyncClient(timeout=30, follow_redirects=True, headers=_RSS_HEADERS) as client:
         resp = await client.get(feed_url)
         if resp.status_code != 200:
             raise ConnectionError(f"RSS feed returned {resp.status_code}")

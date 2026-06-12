@@ -22,9 +22,7 @@ def _find_add_job_calls():
             and node.func.attr == "add_job"
         ):
             kwargs = {
-                kw.arg: kw.value.value
-                for kw in node.keywords
-                if isinstance(kw.value, ast.Constant)
+                kw.arg: kw.value.value for kw in node.keywords if isinstance(kw.value, ast.Constant)
             }
             job_id = kwargs.get("id")
             if job_id:

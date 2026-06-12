@@ -65,9 +65,7 @@ def fallback_cluster(articles: list[dict]) -> list[ThemeCluster]:
         clusters.append(
             ThemeCluster(
                 theme_title=f"{domain_name} Developments",
-                theme_summary=(
-                    f"{len(ids)} article(s) related to {domain_name.lower()}."
-                ),
+                theme_summary=(f"{len(ids)} article(s) related to {domain_name.lower()}."),
                 article_ids=ids,
                 primary_domain=domain,
             )
@@ -76,9 +74,7 @@ def fallback_cluster(articles: list[dict]) -> list[ThemeCluster]:
     return clusters[:MAX_NEWSLETTER_THEMES]
 
 
-def _validate_coverage(
-    clusters: list[ThemeCluster], articles: list[dict]
-) -> None:
+def _validate_coverage(clusters: list[ThemeCluster], articles: list[dict]) -> None:
     """Warn if any article is missing from all clusters."""
     covered = {aid for c in clusters for aid in c.article_ids}
     all_ids = {a["id"] for a in articles}
