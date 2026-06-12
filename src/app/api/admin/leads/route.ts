@@ -6,8 +6,8 @@
 import { NextRequest } from 'next/server';
 import { apiSuccess, apiError } from '@/lib/api';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
-import { getLeads, updateLeadStatus } from '@/lib/admin/leads-service';
-import { LeadStatusUpdateSchema } from '@/lib/admin/validators';
+import { getLeads, updateLeadStatus, markLeadSessionPaid } from '@/lib/admin/leads-service';
+import { LeadStatusUpdateSchema, LeadMarkPaidSchema } from '@/lib/admin/validators';
 import { ADMIN_ERR } from '@/config/admin-strings';
 import { safeInt } from '@/lib/utils';
 import { logger } from '@/lib/logger';
@@ -42,6 +42,28 @@ export async function PATCH(request: NextRequest) {
     body = await request.json();
   } catch {
     return apiError(ADMIN_ERR.INVALID_REQUEST, 400);
+  }
+
+  // Manual payment confirmation path (PO/invoice received)
+  if (typeof body === 'object' && body !== null && 'action' in body) {
+    const markPaid = LeadMarkPaidSchema.safeParse(body);
+    if (!markPaid.success) return apiError(ADMIN_ERR.INVALID_REQUEST, 400);
+
+    try {
+      const result = await markLeadSessionPaid(
+        markPaid.data.leadId,
+        session.user.id,
+        markPaid.data.invoiceRef,
+      );
+      if (!result.success) {
+        const status = result.error === ADMIN_ERR.LEAD_NOT_FOUND ? 404 : 422;
+        return apiError(result.error ?? 'Unknown error', status);
+      }
+      return apiSuccess({ success: true });
+    } catch (err) {
+      logger.error('Mark paid failed', 'admin-leads', { detail: String(err) });
+      return apiError('Failed to mark lead as paid', 500);
+    }
   }
 
   const parsed = LeadStatusUpdateSchema.safeParse(body);

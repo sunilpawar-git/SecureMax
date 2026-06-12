@@ -14,7 +14,7 @@ import type { Finding } from '../FindingCard';
 
 expect.extend(toHaveNoViolations);
 
-jest.mock('@/app/(app)/questionnaire/radar-chart', () => ({
+jest.mock('@/components/chart/radar-chart', () => ({
   RadarChart: () => <div data-testid="radar-chart" />,
 }));
 

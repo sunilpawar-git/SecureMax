@@ -104,6 +104,24 @@ After the questionnaire ends, `ai-service/report/` assembles findings ranked by 
 
 Separate Next.js route group `src/app/admin/` protected by role check in middleware. Admin triggers the Playwright scraper (`ai-service/routers/scraper.py`), reviews synthesized security briefings, and posts to LinkedIn. Every LinkedIn post is logged in `LinkedinPost` with status, timestamp, and platform.
 
+### LinkedIn Direct Posting
+
+Direct posting (`src/lib/admin/linkedin-post-service.ts`) targets the **company page** via the versioned Posts API (`POST https://api.linkedin.com/rest/posts` with `LinkedIn-Version` header). Never use the deprecated `v2/ugcPosts` endpoint. Requires env vars `LINKEDIN_ACCESS_TOKEN` (scope `w_organization_social`) and `LINKEDIN_ORG_ID` (numeric organization id). Both are server-side only — never serialized to the client.
+
+**Known debt**: LinkedIn access tokens expire (~60 days) and there is no refresh flow. When posting starts failing with 401, generate a new token in the LinkedIn developer portal and update `LINKEDIN_ACCESS_TOKEN`.
+
+### Admin Session Idle Timeout
+
+The admin panel auto-signs-out after 30 minutes of inactivity via a client-side idle detector (`src/app/admin/_components/IdleLogout.tsx`, constants in `ADMIN_IDLE`). A warning appears 2 minutes before sign-out.
+
+**Known debt (P4)**: this guard is client-side only (JavaScript can be bypassed); the NextAuth session itself still uses the global 24h maxAge. A proper server-side fix requires role-specific session maxAge via NextAuth session callbacks.
+
+### Other Known Debt (P4)
+
+- **Admin checklist view**: the admin Reports table intentionally has no checklist link. `/checklist/[sessionId]` is owner-scoped (FastAPI rejects non-owners) and progress lives in the client's localStorage, so an admin link always shows a broken/empty page. Needs server-persisted checklist progress + an admin-scoped endpoint before it can be surfaced (see `ReportsTable.tsx` TODO).
+- **Landing page launch blockers**: `landing-strings.ts` ships placeholder testimonials marked `TODO(launch-blocker)`. Replace with real, consented client quotes before pilot traffic. (The WhatsApp contact number is real.)
+- **Scraper failure alert latency**: scraper failures surface via the daily digest sweep (first admin visit to follow-up per UTC day), not at run time — DB-flag design, no FastAPI → Next.js callback. Add an immediate alert path only if a same-day signal becomes necessary.
+
 ### Key DB Tables
 
 - `AuditSession` — one per questionnaire run; tracks `status`, `domainScores`, `moduleScores`, `paid`, `reportReady`

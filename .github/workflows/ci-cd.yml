@@ -56,6 +56,8 @@ jobs:
 
       - name: Build verification
         run: npm run build
+        env:
+          DATABASE_URL: 'postgresql://localhost/dummy'
         continue-on-error: false
 
   frontend-tests:
@@ -313,6 +315,14 @@ jobs:
         env:
           DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/raivan_test'
 
+      - name: Install Postgres client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Create application DB roles for migration GRANTs
+        run: psql "$DATABASE_URL" -f scripts/ci-create-db-roles.sql
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/raivan_test
+
       - name: Run Prisma migrations
         run: npx prisma migrate deploy
         env:
@@ -323,9 +333,6 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/raivan_test
         continue-on-error: true
-
-      - name: Install Postgres client
-        run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
       - name: Verify RLS tenant isolation (live Postgres)
         run: npm run db:verify-rls
@@ -385,6 +392,14 @@ jobs:
 
       - name: Build Next.js
         run: npm run build
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/raivan_test
+
+      - name: Install Postgres client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Create application DB roles for migration GRANTs
+        run: psql "$DATABASE_URL" -f scripts/ci-create-db-roles.sql
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/raivan_test
 

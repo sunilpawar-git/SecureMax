@@ -1,14 +1,21 @@
 /**
- * Admin threat intel API — GET (filter), POST (manual add), DELETE (soft-delete).
+ * Admin threat intel API — GET (filter), POST (manual add), DELETE (soft-delete),
+ * PATCH (restore soft-deleted).
  */
 
 import { NextRequest } from 'next/server';
 import { apiSuccess, apiError } from '@/lib/api';
 import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
-import { getArticles, addManualArticle, deleteArticle } from '@/lib/admin/threat-intel-service';
+import {
+  getArticles,
+  addManualArticle,
+  deleteArticle,
+  restoreArticle,
+} from '@/lib/admin/threat-intel-service';
 import {
   ThreatIntelAddSchema,
   ThreatIntelDeleteSchema,
+  ThreatIntelRestoreSchema,
   ThreatIntelFilterSchema,
 } from '@/lib/admin/validators';
 import { ADMIN_ERR } from '@/config/admin-strings';
@@ -57,6 +64,34 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     logger.error('Add failed', 'admin-threat-intel', { detail: String(err) });
     return apiError('Failed to add article', 500);
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  const session = await verifyAdmin();
+  if (!session) return forbiddenResponse();
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return apiError(ADMIN_ERR.INVALID_REQUEST, 400);
+  }
+
+  const parsed = ThreatIntelRestoreSchema.safeParse(body);
+  if (!parsed.success) {
+    return apiError(ADMIN_ERR.INVALID_REQUEST, 400);
+  }
+
+  try {
+    const result = await restoreArticle(parsed.data.articleId, session.user.id);
+    if (!result.success) {
+      return apiError(result.error ?? 'Unknown error', 404);
+    }
+    return apiSuccess({ success: true });
+  } catch (err) {
+    logger.error('Restore failed', 'admin-threat-intel', { detail: String(err) });
+    return apiError('Failed to restore article', 500);
   }
 }
 

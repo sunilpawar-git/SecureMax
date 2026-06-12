@@ -2,12 +2,13 @@
 
 import { useState, useCallback, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { RadarChart } from './radar-chart';
+import { RadarChart } from '@/components/chart/radar-chart';
 import { QuestionnaireLayout } from './questionnaire-layout';
 import { APP, CTA, TRACK, VALID_TRACKS, UI, QUESTIONNAIRE } from '@/config/strings';
 import { startSession, resumeSession, submitAnswer } from './questionnaire-service';
 import { useReportTrigger } from './use-report-trigger';
 import { ResumePrompt } from '@/components/ResumePrompt';
+import { TurnstileWidget } from '@/components/security/TurnstileWidget';
 import { useAppHeaderMeta } from '@/components/app-header-context';
 import { Button } from '@/components/ui/Button';
 import type { QuestionNode, RadarScores, SessionState } from './types';
@@ -53,6 +54,12 @@ function QuestionnaireContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentTrack, setCurrentTrack] = useState<string | null>(urlTrack);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+  // Bot check is only enforced client-side when a site key is configured;
+  // the server independently fail-closes in production.
+  const captchaRequired = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  const captchaPending = captchaRequired && !captchaToken;
 
   const reportTrigger = useReportTrigger(sessionId, sessionState === 'completed');
   const { setMeta } = useAppHeaderMeta();
@@ -91,23 +98,26 @@ function QuestionnaireContent() {
     };
   }, [urlSessionId, urlTrack, sessionState]);
 
-  const handleStart = useCallback(async (track: string) => {
-    setIsLoading(true);
-    setError(null);
-    setCurrentTrack(track);
-    try {
-      const session = await startSession(track);
-      setSessionId(session.sessionId);
-      setCurrentQuestion(session.currentQuestion);
-      setRadarScores(session.radarScores);
-      setQuestionsAnswered(session.questionsAnswered);
-      setSessionState('active');
-    } catch (err) {
-      setError(getErrorMessage(err));
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const handleStart = useCallback(
+    async (track: string) => {
+      setIsLoading(true);
+      setError(null);
+      setCurrentTrack(track);
+      try {
+        const session = await startSession(track, captchaToken ?? undefined);
+        setSessionId(session.sessionId);
+        setCurrentQuestion(session.currentQuestion);
+        setRadarScores(session.radarScores);
+        setQuestionsAnswered(session.questionsAnswered);
+        setSessionState('active');
+      } catch (err) {
+        setError(getErrorMessage(err));
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [captchaToken],
+  );
 
   const handleResume = useCallback(async (sid: string) => {
     setIsLoading(true);
@@ -167,10 +177,21 @@ function QuestionnaireContent() {
         <div className="max-w-lg w-full space-y-6 text-center">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">{APP.NAME}</h1>
           <p className="text-gray-600 dark:text-slate-300">{QUESTIONNAIRE.TRACK_PROMPT}</p>
+          {captchaPending && (
+            <div className="space-y-2">
+              <p className="font-medium text-gray-900 dark:text-slate-100">
+                {QUESTIONNAIRE.BOT_CHECK_TITLE}
+              </p>
+              <p className="text-sm text-gray-600 dark:text-slate-400">
+                {QUESTIONNAIRE.BOT_CHECK_SUBTITLE}
+              </p>
+            </div>
+          )}
+          <TurnstileWidget onVerify={(token) => setCaptchaToken(token || null)} />
           <div className="grid gap-4">
             <button
               onClick={() => handleStart(TRACK.HNI)}
-              disabled={isLoading}
+              disabled={isLoading || captchaPending}
               className={`w-full py-4 px-6 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 ${
                 currentTrack === TRACK.HNI
                   ? 'bg-emerald-800 ring-2 ring-emerald-400'
@@ -181,7 +202,7 @@ function QuestionnaireContent() {
             </button>
             <button
               onClick={() => handleStart(TRACK.ENTERPRISE)}
-              disabled={isLoading}
+              disabled={isLoading || captchaPending}
               className={`w-full py-4 px-6 text-white rounded-lg font-semibold transition-colors disabled:opacity-50 ${
                 currentTrack === TRACK.ENTERPRISE
                   ? 'bg-slate-800 ring-2 ring-slate-400 dark:bg-slate-700 dark:ring-slate-300'

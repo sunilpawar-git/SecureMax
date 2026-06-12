@@ -10,7 +10,7 @@
 
 import { LockClosedIcon } from '@heroicons/react/24/outline';
 import { QUESTIONNAIRE } from '@/config/strings';
-import { RadarChart } from './radar-chart';
+import { RadarChart } from '@/components/chart/radar-chart';
 import { QuestionCard } from './question-card';
 import type { QuestionNode, RadarScores } from './types';
 

@@ -23,6 +23,8 @@ model User {
   logoUrl       String?  @map("logo_url")
   city          String?
   country       String?
+  // Digits-only E.164 (no '+', e.g. "919876543210") — wa.me URL compatible
+  phone         String?
   consentAt      DateTime? @map("consent_at")
   consentVersion String?   @map("consent_version")
   consentPurpose String?   @map("consent_purpose")
@@ -34,6 +36,8 @@ model User {
   sessions      Session[]
   auditSessions AuditSession[]
   adminActions  AdminAction[]
+  couponsCreated  CouponCode[] @relation("CouponsCreated")
+  couponsRedeemed CouponCode[] @relation("CouponsRedeemed")
 
   @@map("users")
 }
@@ -107,6 +111,7 @@ model AuditSession {
   events         SessionEvent[]
   reportArtifact ReportArtifact?
   reportJob      ReportJob?
+  coupon         CouponCode?
 
   @@index([userId, status])
   @@map("audit_sessions")
@@ -205,6 +210,70 @@ model LinkedinPost {
   @@map("linkedin_posts")
 }
 
+// ========== NEWSLETTERS (threat-intel one-pager for social posting) ==========
+
+model Newsletter {
+  id                   String   @id @default(cuid())
+  title                String
+  bodyMarkdown         String   @map("body_markdown") @db.Text
+  imagePng             Bytes?   @map("image_png")
+  emailHtml            String?  @map("email_html") @db.Text
+  whatsappText         String?  @map("whatsapp_text") @db.Text
+  websiteHtml          String?  @map("website_html") @db.Text
+  executiveSummary     String?  @map("executive_summary") @db.Text
+  intelligenceBriefing String?  @map("intelligence_briefing") @db.Text
+  fullAnalysis         String?  @map("full_analysis") @db.Text
+  commandersNote       String?  @map("commanders_note") @db.Text
+  articleIds           Json     @map("article_ids")
+  status               String   @default("draft")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  posts          NewsletterPost[]
+  generationJobs NewsletterGenerationJob[]
+
+  @@index([status, createdAt])
+  @@map("newsletters")
+}
+
+// Async admin "Generate Now" — polled by Next.js; work runs on persistent FastAPI.
+model NewsletterGenerationJob {
+  id              String   @id @default(uuid())
+  days            Int
+  status          String   @default("pending")
+  newsletterId    String?  @map("newsletter_id")
+  newsletterTitle String?  @map("newsletter_title")
+  errorMessage    String?  @map("error_message")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  newsletter Newsletter? @relation(fields: [newsletterId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@map("newsletter_generation_jobs")
+}
+
+// One row per (newsletter, platform) publish attempt — the social audit trail
+// (Rule 15: what was posted, when, where; never deleted).
+model NewsletterPost {
+  id            String    @id @default(cuid())
+  newsletterId  String    @map("newsletter_id")
+  platform      String // linkedin | x | facebook | instagram
+  caption       String    @db.Text
+  status        String    @default("pending") // pending | posted | failed
+  externalId    String?   @map("external_id") // platform-side post id / URN
+  errorMsg      String?   @map("error_msg")
+  postedAt      DateTime? @map("posted_at")
+  postedByAdmin String?   @map("posted_by_admin_id")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  newsletter Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+
+  @@unique([newsletterId, platform])
+  @@index([status])
+  @@map("newsletter_posts")
+}
+
 // ========== REPORT ARTIFACTS ==========
 
 model ReportArtifact {
@@ -240,6 +309,38 @@ model ReportJob {
   @@map("report_jobs")
 }
 
+// ========== COUPON CODES ==========
+
+// Expiry is DERIVED from expiresAt at read/redeem time — never stored as a
+// mutable status (no cron, no stale state). Status only tracks lifecycle
+// transitions that an actor performed: redeem (user) or revoke (admin).
+enum CouponStatus {
+  ACTIVE
+  REDEEMED
+  REVOKED
+
+  @@map("coupon_status")
+}
+
+model CouponCode {
+  id           String        @id @default(cuid())
+  code         String        @unique
+  createdById  String        @map("created_by_id")
+  createdBy    User          @relation("CouponsCreated", fields: [createdById], references: [id])
+  redeemedById String?       @map("redeemed_by_id")
+  redeemedBy   User?         @relation("CouponsRedeemed", fields: [redeemedById], references: [id])
+  sessionId    String?       @unique @map("session_id")
+  session      AuditSession? @relation(fields: [sessionId], references: [id])
+  expiresAt    DateTime?     @map("expires_at")
+  redeemedAt   DateTime?     @map("redeemed_at")
+  status       CouponStatus  @default(ACTIVE)
+  note         String? // admin note (e.g. "For Acme Corp pilot")
+  createdAt    DateTime      @default(now()) @map("created_at")
+
+  @@index([status])
+  @@map("coupon_codes")
+}
+
 // ========== ENTERPRISE LEADS ==========
 
 model EnterpriseLead {
@@ -252,6 +353,7 @@ model EnterpriseLead {
   preferredContact String?  @map("preferred_contact")
   email            String?
   sourceSessionId  String?  @map("source_session_id")
+  couponCode       String?  @map("coupon_code")
   status           String   @default("new")
   lastEmailSentAt  DateTime? @map("last_email_sent_at")
   followUpDueAt    DateTime? @map("follow_up_due_at")

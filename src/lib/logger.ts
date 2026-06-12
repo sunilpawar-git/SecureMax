@@ -6,7 +6,8 @@
 
 const IS_PROD = process.env.NODE_ENV === 'production';
 
-const PII_PATTERNS = [/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, /\b\d{10,12}\b/g];
+// Emails + phone-like digit runs (10-15 digits covers full E.164 range)
+const PII_PATTERNS = [/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, /\b\d{10,15}\b/g];
 
 function sanitize(msg: string): string {
   let clean = msg;

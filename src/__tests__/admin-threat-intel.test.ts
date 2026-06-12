@@ -2,7 +2,12 @@
  * Tests for threat intel service — filtering, manual add, delete protection.
  */
 
-import { getArticles, addManualArticle, deleteArticle } from '@/lib/admin/threat-intel-service';
+import {
+  getArticles,
+  addManualArticle,
+  deleteArticle,
+  restoreArticle,
+} from '@/lib/admin/threat-intel-service';
 import { ADMIN_ACTION_TYPE, ADMIN_ERR } from '@/config/admin-strings';
 
 const mockFindMany = jest.fn();
@@ -107,7 +112,7 @@ describe('getArticles', () => {
     expect(result.total).toBe(result.articles.length);
   });
 
-  it('excludes soft-deleted articles', async () => {
+  it('excludes soft-deleted articles by default (regression guard)', async () => {
     mockFindMany.mockResolvedValue([]);
     mockCount.mockResolvedValue(0);
 
@@ -118,6 +123,16 @@ describe('getArticles', () => {
         where: expect.objectContaining({ softDeleted: false }),
       }),
     );
+  });
+
+  it('includes soft-deleted articles when showDeleted is true', async () => {
+    mockFindMany.mockResolvedValue([]);
+    mockCount.mockResolvedValue(0);
+
+    await getArticles({ showDeleted: true });
+
+    const whereArg = mockFindMany.mock.calls[0][0].where;
+    expect(whereArg.softDeleted).toBeUndefined();
   });
 });
 
@@ -197,5 +212,37 @@ describe('deleteArticle', () => {
     const result = await deleteArticle('bad-id', 'admin-1');
     expect(result.success).toBe(false);
     expect(result.error).toBe(ADMIN_ERR.THREAT_INTEL_NOT_FOUND);
+  });
+});
+
+describe('restoreArticle', () => {
+  it('sets softDeleted back to false and logs the action', async () => {
+    mockFindUnique.mockResolvedValue({ id: 'a1', softDeleted: true });
+    mockUpdate.mockResolvedValue({});
+
+    const result = await restoreArticle('a1', 'admin-1');
+    expect(result.success).toBe(true);
+    expect(mockUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'a1' },
+        data: { softDeleted: false },
+      }),
+    );
+    expect(mockAdminCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          actionType: ADMIN_ACTION_TYPE.THREAT_INTEL_RESTORED,
+        }),
+      }),
+    );
+  });
+
+  it('returns error for non-existent article', async () => {
+    mockFindUnique.mockResolvedValue(null);
+
+    const result = await restoreArticle('bad-id', 'admin-1');
+    expect(result.success).toBe(false);
+    expect(result.error).toBe(ADMIN_ERR.THREAT_INTEL_NOT_FOUND);
+    expect(mockUpdate).not.toHaveBeenCalled();
   });
 });

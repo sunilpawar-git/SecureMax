@@ -135,6 +135,13 @@ CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.threat_intel (
     industry_tags JSONB NOT NULL,
     source TEXT NOT NULL DEFAULT 'unknown',
     relevance_score DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    physical_security_relevance DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    geographic_relevance DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    threat_actionability DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    educational_value DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    recency_novelty DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    audience_impact DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+    affected_segments JSONB NOT NULL DEFAULT '[]'::jsonb,
     soft_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     scraped_at TIMESTAMPTZ DEFAULT NOW(),
     embedding public.vector(3072)
@@ -142,6 +149,50 @@ CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.threat_intel (
 
 CREATE INDEX IF NOT EXISTS idx_test_threat_intel_soft_deleted
     ON {TEST_SCHEMA}.threat_intel(soft_deleted);
+
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.newsletters (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    title TEXT NOT NULL,
+    body_markdown TEXT NOT NULL,
+    image_png BYTEA,
+    email_html TEXT,
+    whatsapp_text TEXT,
+    website_html TEXT,
+    executive_summary TEXT,
+    intelligence_briefing TEXT,
+    full_analysis TEXT,
+    commanders_note TEXT,
+    article_ids JSONB NOT NULL,
+    status TEXT NOT NULL DEFAULT 'draft',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.newsletter_generation_jobs (
+    id TEXT PRIMARY KEY,
+    days INTEGER NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    newsletter_id TEXT REFERENCES {TEST_SCHEMA}.newsletters(id) ON DELETE SET NULL,
+    newsletter_title TEXT,
+    error_message TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.newsletter_posts (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    newsletter_id TEXT NOT NULL
+        REFERENCES {TEST_SCHEMA}.newsletters(id) ON DELETE CASCADE,
+    platform TEXT NOT NULL,
+    caption TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    external_id TEXT,
+    error_msg TEXT,
+    posted_at TIMESTAMPTZ,
+    posted_by_admin_id TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(newsletter_id, platform)
+);
 
 CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.scraper_runs (
     id TEXT PRIMARY KEY,
@@ -216,6 +267,9 @@ def _cleanup_test_data():
     async def _truncate():
         conn = await asyncpg.connect(_DSN)
         try:
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.newsletter_posts CASCADE")
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.newsletter_generation_jobs CASCADE")
+            await conn.execute(f"TRUNCATE {TEST_SCHEMA}.newsletters CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.report_artifacts CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.report_jobs CASCADE")
             await conn.execute(f"TRUNCATE {TEST_SCHEMA}.threat_intel CASCADE")

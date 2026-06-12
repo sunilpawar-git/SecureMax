@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 from config import get_settings
 from cpp_repository import get_relevant_chunks
 from db import get_db
+from gemini_client import GeminiError
 
 router = APIRouter(prefix="/assistant", tags=["assistant"])
 logger = logging.getLogger(__name__)
@@ -111,7 +112,7 @@ async def ask_assistant(
         answer = await gemini.generate(prompt, model=settings.generation_model_fast)
         if len(answer) > _MAX_RESPONSE_CHARS:
             answer = answer[:_MAX_RESPONSE_CHARS] + "..."
-    except (OSError, ValueError, RuntimeError) as e:
+    except (GeminiError, OSError, ValueError, RuntimeError) as e:
         logger.warning("Gemini generation failed for assistant: %s", e)
         answer = (
             "I'm unable to generate a response right now. "

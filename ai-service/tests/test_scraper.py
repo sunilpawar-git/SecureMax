@@ -281,7 +281,7 @@ class TestGeminiTagger:
     async def test_successful_gemini_tag_sets_tagged_by_gemini(self) -> None:
         from routers.scraper import _make_gemini_tagger
 
-        gemini_response = json.dumps(
+        tag_response = json.dumps(
             {
                 "summary": "A physical security breach occurred.",
                 "domain_tags": ["CPP-01"],
@@ -289,8 +289,19 @@ class TestGeminiTagger:
                 "relevance_score": 0.8,
             }
         )
+        score_response = json.dumps(
+            {
+                "physical_security_relevance": 0.9,
+                "geographic_relevance": 0.7,
+                "threat_actionability": 0.8,
+                "educational_value": 0.6,
+                "recency_novelty": 0.5,
+                "audience_impact": 0.7,
+                "affected_segments": ["enterprise"],
+            }
+        )
         mock_gemini = MagicMock()
-        mock_gemini.generate = AsyncMock(return_value=gemini_response)
+        mock_gemini.generate = AsyncMock(side_effect=[tag_response, score_response])
 
         tagger = _make_gemini_tagger(mock_gemini)
         article = RawArticle(
@@ -306,7 +317,8 @@ class TestGeminiTagger:
         assert result.tagged_by_gemini is True
         assert result.domain_tags == ["CPP-01"]
         assert result.industry_tags == ["corporate"]
-        assert result.relevance_score == 0.8
+        assert result.intel_scores is not None
+        assert result.relevance_score > 0
 
     @pytest.mark.asyncio
     async def test_gemini_failure_falls_back_and_not_tagged_by_gemini(self) -> None:
@@ -513,3 +525,64 @@ class TestPipelineLock:
 
         assert stats["gemini_tagged"] == 0
         assert stats["stored"] == 1
+
+
+class TestStripHtml:
+    """strip_html must remove all markup and decode entities before content
+    reaches RawArticle — ensures no HTML ever lands in the DB summary column."""
+
+    def test_removes_simple_tags(self) -> None:
+        from scraper.sources import strip_html
+
+        assert strip_html("<p>Hello world</p>") == "Hello world"
+
+    def test_removes_nested_tags(self) -> None:
+        from scraper.sources import strip_html
+
+        html = '<div id="x"><div class="grid"><p>Content here</p></div></div>'
+        assert strip_html(html) == "Content here"
+
+    def test_decodes_html_entities(self) -> None:
+        from scraper.sources import strip_html
+
+        assert strip_html("AT&amp;T &lt;breach&gt;") == "AT&T <breach>"
+
+    def test_collapses_whitespace(self) -> None:
+        from scraper.sources import strip_html
+
+        assert strip_html("  foo  \n\t  bar  ") == "foo bar"
+
+    def test_passthrough_plain_text(self) -> None:
+        from scraper.sources import strip_html
+
+        plain = "Beware the son of Mythos, security experts warn"
+        assert strip_html(plain) == plain
+
+    def test_idg_html_pattern(self) -> None:
+        """Exact IDG/CSO markup pattern found in the DB."""
+        from scraper.sources import strip_html
+
+        idg = (
+            '<div id="remove_no_follow">\n\t\t<div class="grid grid--cols-10@md '
+            'grid--cols-8@lg article-column">\n\t\t\t\t\t  '
+            '<div class="col-12 col-10@md col-6@lg col-start-3@lg">\n\t\t\t\t\t\t'
+            "<p>Anthropic grants Project Glasswing access.</p>"
+        )
+        result = strip_html(idg)
+        assert "<" not in result
+        assert "Anthropic grants Project Glasswing access." in result
+
+    def test_truncated_tag_at_end(self) -> None:
+        """News API truncates content mid-tag; strip_html must not leave a dangling '<'."""
+        from scraper.sources import strip_html
+
+        result = strip_html("<h2 clas")
+        assert "<" not in result
+        assert result == ""
+
+    def test_truncated_tag_with_text_before(self) -> None:
+        from scraper.sources import strip_html
+
+        result = strip_html("Some text <h2 clas")
+        assert "<" not in result
+        assert result == "Some text"

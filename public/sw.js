@@ -6,12 +6,13 @@
  * Version bump: increment CACHE_VERSION on every deploy that changes static assets.
  */
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `raivan-${CACHE_VERSION}`;
 
 const STATIC_SHELL = ['/', '/manifest.json', '/offline.html'];
 
 const NEVER_CACHE_PREFIXES = [
+  '/_next/',
   '/api/',
   '/admin',
   '/questionnaire',

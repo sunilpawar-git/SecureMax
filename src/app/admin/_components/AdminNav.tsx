@@ -5,17 +5,30 @@
  */
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useRef, useEffect, useState } from 'react';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import { APP, NAV, NAV_DRAWER } from '@/config/strings';
 import { ADMIN_NAV_ITEMS } from '@/config/admin-strings';
-import { ADMIN_EXIT_LINK_STYLE } from '@/config/admin-colors';
+import {
+  ADMIN_EXIT_LINK_STYLE,
+  ADMIN_NAV_LINK_STYLE,
+  ADMIN_NAV_ACTIVE_LINK_STYLE,
+} from '@/config/admin-colors';
 import { MobileNavDrawer, type NavDrawerItem } from '@/components/MobileNavDrawer';
 import { useGlobalSearch } from '../_hooks/useGlobalSearch';
 import { SearchDropdown } from './SearchDropdown';
 
+// '/admin' must match exactly, otherwise every sub-route would mark Dashboard active
+function isActiveRoute(pathname: string | null, href: string): boolean {
+  if (!pathname) return false;
+  if (href === '/admin') return pathname === '/admin';
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function AdminNav() {
   const search = useGlobalSearch();
+  const pathname = usePathname();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -45,15 +58,19 @@ export function AdminNav() {
         </div>
 
         <div className="hidden md:flex gap-4 overflow-x-auto flex-shrink-0">
-          {ADMIN_NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm text-gray-300 hover:text-white transition-colors whitespace-nowrap"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {ADMIN_NAV_ITEMS.map((item) => {
+            const active = isActiveRoute(pathname, item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? 'page' : undefined}
+                className={active ? ADMIN_NAV_ACTIVE_LINK_STYLE : ADMIN_NAV_LINK_STYLE}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
 
         <div

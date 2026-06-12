@@ -5,7 +5,10 @@
  * View components consume this; no data fetching in views.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+
+/** Silent background refresh cadence — 5 minutes. */
+export const DASHBOARD_AUTO_REFRESH_MS = 300_000;
 
 interface DashboardStats {
   activeSessions: number;
@@ -41,8 +44,8 @@ export interface DashboardData {
   refresh: () => void;
 }
 
-async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
+async function fetchJson<T>(url: string, signal?: AbortSignal): Promise<T> {
+  const res = await fetch(url, signal ? { signal } : undefined);
   if (!res.ok) throw new Error(`${url} returned ${res.status}`);
   return res.json() as Promise<T>;
 }
@@ -53,41 +56,61 @@ export function useDashboardData(): DashboardData {
   const [recentActivity, setRecentActivity] = useState<AdminAction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  // Silent refreshes skip the loading flag so the UI doesn't flicker every 5 min
+  const load = useCallback(async (silent = false) => {
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+    const { signal } = abortRef.current;
+
+    if (!silent) {
+      setLoading(true);
+      setError(null);
+    }
     try {
       const [s, a, r] = await Promise.all([
-        fetchJson<DashboardStats>('/api/admin/stats'),
-        fetchJson<ActionItems>('/api/admin/action-items'),
-        fetchJson<AdminAction[]>('/api/admin/recent-activity'),
+        fetchJson<DashboardStats>('/api/admin/stats', signal),
+        fetchJson<ActionItems>('/api/admin/action-items', signal),
+        fetchJson<AdminAction[]>('/api/admin/recent-activity', signal),
       ]);
       setStats(s);
       setActionItems(a);
       setRecentActivity(r);
+      if (silent) setError(null);
     } catch (err) {
-      setError('Failed to load dashboard data — check network or re-login.');
-      void Promise.resolve(err);
+      if (err instanceof DOMException && err.name === 'AbortError') return;
+      if (!silent) {
+        setError('Failed to load dashboard data — check network or re-login.');
+      }
     } finally {
-      setLoading(false);
+      if (!signal.aborted && !silent) setLoading(false);
     }
   }, []);
 
+  // timerEpoch bump restarts the interval, so a manual refresh resets the 5-min clock
+  const [timerEpoch, setTimerEpoch] = useState(0);
+
   useEffect(() => {
-    let cancelled = false;
-    const fetchData = async () => {
-      await load();
-      if (!cancelled) {
-        // load() already updated state via dispatch
-      }
-    };
-    void fetchData();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
+    void load();
     return () => {
-      cancelled = true;
+      abortRef.current?.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { stats, actionItems, recentActivity, loading, error, refresh: load };
+  useEffect(() => {
+    const id = setInterval(() => {
+      void load(true);
+    }, DASHBOARD_AUTO_REFRESH_MS);
+    return () => clearInterval(id);
+  }, [load, timerEpoch]);
+
+  const refresh = useCallback(() => {
+    setTimerEpoch((e) => e + 1);
+    void load();
+  }, [load]);
+
+  return { stats, actionItems, recentActivity, loading, error, refresh };
 }

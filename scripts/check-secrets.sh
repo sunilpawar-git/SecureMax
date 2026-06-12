@@ -42,7 +42,7 @@ fi
 # ============================================================================
 # 3. Gemini API Keys (long alphanumeric strings in specific context)
 # ============================================================================
-if echo "$DIFF" | grep -qEi 'GEMINI_API_KEY|gemini.*key.*=.*[a-zA-Z0-9]{40,}'; then
+if echo "$DIFF" | grep -qEi 'GEMINI_API_KEY\s*=|gemini.*key.*=\s*['\''"]?[a-zA-Z0-9]{40,}'; then
   echo "❌ Gemini API key pattern detected"
   SECRETS_FOUND=1
 fi

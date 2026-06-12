@@ -11,6 +11,8 @@
  * This module is server-only — never import it from a Client Component.
  */
 
+import 'server-only';
+
 import { z } from 'zod';
 
 type EnvSource = Record<string, string | undefined>;
@@ -21,7 +23,7 @@ const PLACEHOLDER_VALUES = new Set([
   'your-secret-here',
 ]);
 
-function isPlaceholder(value: string | undefined): boolean {
+export function isPlaceholder(value: string | undefined): boolean {
   if (!value) return true;
   if (PLACEHOLDER_VALUES.has(value)) return true;
   return value.startsWith('your-');
@@ -55,6 +57,19 @@ export function validateServerEnv(source: EnvSource = process.env): { ok: true }
     throw new Error(
       `Missing or placeholder environment variables required in production: ${missing.join(', ')}. ` +
         'Set real values before deploying.',
+    );
+  }
+
+  // Turnstile is configured as a pair. Secret without site key: the UI renders
+  // no captcha but the server fail-closes — every questionnaire start 403s.
+  // Site key without secret: the captcha renders but is never verified.
+  const hasSecret = !isPlaceholder(source.TURNSTILE_SECRET_KEY);
+  const hasSiteKey = !isPlaceholder(source.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  if (hasSecret !== hasSiteKey) {
+    throw new Error(
+      'TURNSTILE_SECRET_KEY and NEXT_PUBLIC_TURNSTILE_SITE_KEY must be set together ' +
+        `(found ${hasSecret ? 'secret without site key' : 'site key without secret'}). ` +
+        'Set both or neither.',
     );
   }
   return { ok: true };
@@ -117,8 +132,15 @@ export const env = {
   get NEWS_API_KEY(): string {
     return read('NEWS_API_KEY');
   },
+  /** Consumed by the FastAPI service; read here only for vault import/visibility. */
+  get GEMINI_API_KEY(): string {
+    return read('GEMINI_API_KEY');
+  },
   get LINKEDIN_ACCESS_TOKEN(): string {
     return read('LINKEDIN_ACCESS_TOKEN');
+  },
+  get LINKEDIN_ORG_ID(): string {
+    return read('LINKEDIN_ORG_ID');
   },
   get TURNSTILE_SECRET_KEY(): string {
     return read('TURNSTILE_SECRET_KEY');

@@ -10,16 +10,18 @@ import { SESSION_STATUS } from '@/config/strings';
 export interface SessionFilters {
   status?: string;
   track?: string;
+  userId?: string;
   page?: number;
   limit?: number;
 }
 
 export async function getSessions(filters: SessionFilters = {}) {
-  const { status, track, page = 1, limit = 50 } = filters;
+  const { status, track, userId, page = 1, limit = 50 } = filters;
 
   const where: Record<string, unknown> = {};
   if (status) where.status = status;
   if (track) where.track = track;
+  if (userId) where.userId = userId;
 
   const [sessions, total] = await Promise.all([
     prisma.auditSession.findMany({

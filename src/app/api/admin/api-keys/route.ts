@@ -13,7 +13,13 @@ import {
   rotateApiKey,
   revokeApiKey,
   getApiKeyAuditLog,
+  listApiKeys,
 } from '@/lib/api-key-manager';
+import { logAdminAction } from '@/lib/admin/actions';
+import { importKeysFromEnv } from '@/lib/api-key-import';
+import { invalidateSecretCache } from '@/lib/secrets';
+import { ApiKeyStoreSchema, ApiKeyRotateSchema, ApiKeyRevokeSchema } from '@/lib/admin/validators';
+import { ADMIN_ACTION_TYPE, ADMIN_ENTITY_TYPE, ADMIN_ERR } from '@/config/admin-strings';
 import { logger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
@@ -21,6 +27,26 @@ export async function POST(request: NextRequest) {
   if (!session) return forbiddenResponse();
 
   const action = request.nextUrl.searchParams.get('action');
+
+  // import-env takes no body — handled before the JSON parse below
+  if (action === 'import-env') {
+    try {
+      const result = await importKeysFromEnv(session.user.email || 'admin');
+      invalidateSecretCache();
+      await logAdminAction({
+        adminId: session.user.id,
+        actionType: ADMIN_ACTION_TYPE.API_KEY_IMPORT,
+        entityType: ADMIN_ENTITY_TYPE.API_KEY,
+        entityId: 'env-import',
+        metadata: { imported: result.imported, skipped: result.skipped },
+      });
+      return apiSuccess(result);
+    } catch (error) {
+      logger.error('Env import failed', 'admin-api-keys', { detail: String(error) });
+      return apiError('Failed to import keys from environment', 500);
+    }
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await request.json();
@@ -31,60 +57,74 @@ export async function POST(request: NextRequest) {
   try {
     switch (action) {
       case 'store': {
-        const { provider, keyName, keyValue } = body as {
-          provider?: unknown;
-          keyName?: unknown;
-          keyValue?: unknown;
-        };
-        if (!provider || !keyName || !keyValue) {
-          return apiError('Missing provider, keyName, or keyValue', 400);
+        const parsed = ApiKeyStoreSchema.safeParse(body);
+        if (!parsed.success) {
+          return apiError(ADMIN_ERR.INVALID_REQUEST, 400);
         }
 
         const apiKey = await storeApiKey(
-          String(provider),
-          String(keyName),
-          String(keyValue),
+          parsed.data.provider,
+          parsed.data.keyName,
+          parsed.data.keyValue,
           session.user.email || 'admin',
         );
+        invalidateSecretCache(parsed.data.provider);
+        await logAdminAction({
+          adminId: session.user.id,
+          actionType: ADMIN_ACTION_TYPE.API_KEY_ADD,
+          entityType: ADMIN_ENTITY_TYPE.API_KEY,
+          entityId: apiKey.id,
+          metadata: { provider: parsed.data.provider },
+        });
 
         return apiSuccess({
-          message: `API key for ${String(provider)} stored successfully`,
+          message: `API key for ${parsed.data.provider} stored successfully`,
           keyId: apiKey.id,
         });
       }
 
       case 'rotate': {
-        const { provider: rotProv, newKeyValue } = body as {
-          provider?: unknown;
-          newKeyValue?: unknown;
-        };
-        if (!rotProv || !newKeyValue) {
-          return apiError('Missing provider or newKeyValue', 400);
+        const parsed = ApiKeyRotateSchema.safeParse(body);
+        if (!parsed.success) {
+          return apiError(ADMIN_ERR.INVALID_REQUEST, 400);
         }
 
         const rotKey = await rotateApiKey(
-          String(rotProv),
-          String(newKeyValue),
+          parsed.data.provider,
+          parsed.data.newKeyValue,
           session.user.email || 'admin',
         );
+        invalidateSecretCache(parsed.data.provider);
+        await logAdminAction({
+          adminId: session.user.id,
+          actionType: ADMIN_ACTION_TYPE.API_KEY_ROTATE,
+          entityType: ADMIN_ENTITY_TYPE.API_KEY,
+          entityId: rotKey.id,
+          metadata: { provider: parsed.data.provider },
+        });
 
         return apiSuccess({
-          message: `API key for ${String(rotProv)} rotated successfully`,
+          message: `API key for ${parsed.data.provider} rotated successfully`,
           keyId: rotKey.id,
         });
       }
 
       case 'revoke': {
-        const { keyId: revKeyId, reason } = body as { keyId?: unknown; reason?: unknown };
-        if (!revKeyId) {
-          return apiError('Missing keyId', 400);
+        const parsed = ApiKeyRevokeSchema.safeParse(body);
+        if (!parsed.success) {
+          return apiError(ADMIN_ERR.INVALID_REQUEST, 400);
         }
 
-        await revokeApiKey(
-          String(revKeyId),
-          session.user.email || 'admin',
-          reason != null ? String(reason) : undefined,
-        );
+        await revokeApiKey(parsed.data.keyId, session.user.email || 'admin', parsed.data.reason);
+        // Revoke is by keyId (provider unknown here) — drop the whole cache
+        invalidateSecretCache();
+        await logAdminAction({
+          adminId: session.user.id,
+          actionType: ADMIN_ACTION_TYPE.API_KEY_REVOKE,
+          entityType: ADMIN_ENTITY_TYPE.API_KEY,
+          entityId: parsed.data.keyId,
+          metadata: { reason: parsed.data.reason ?? null },
+        });
 
         return apiSuccess({ message: 'API key revoked successfully' });
       }
@@ -120,12 +160,18 @@ export async function POST(request: NextRequest) {
   }
 }
 
+/**
+ * GET /api/admin/api-keys — list all keys (masked previews only).
+ * GET /api/admin/api-keys?provider=X — existence check for one provider.
+ * SECURITY: key values are NEVER returned by any GET.
+ */
 export async function GET(request: NextRequest) {
   if (!(await verifyAdmin())) return forbiddenResponse();
 
   const provider = request.nextUrl.searchParams.get('provider');
   if (!provider) {
-    return apiError('Missing provider parameter', 400);
+    const keys = await listApiKeys();
+    return apiSuccess({ keys });
   }
 
   const keyInfo = await getApiKey(provider);

@@ -4,7 +4,8 @@
  * Reports table — lists all reports with version, track, urgency, actions.
  */
 
-import { TRACK_BADGE_STYLES } from '@/config/admin-colors';
+import { TRACK_BADGE_STYLES, ACCESS_TEXT_STYLES } from '@/config/admin-colors';
+import { REPORTS_TABLE } from '@/config/admin-strings';
 import type { ReportEntry } from '../_hooks/useReportsData';
 
 interface ReportsTableProps {
@@ -47,7 +48,7 @@ export function ReportsTable({ reports, onRegenerate, onUnlock, onViewDiff }: Re
               Gaps
             </th>
             <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
-              Unlocked
+              Access
             </th>
             <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-300">
               Generated
@@ -85,9 +86,9 @@ export function ReportsTable({ reports, onRegenerate, onUnlock, onViewDiff }: Re
               </td>
               <td className="px-4 py-3 text-xs">
                 {r.unlocked || r.paid ? (
-                  <span className="text-green-600">Yes</span>
+                  <span className={ACCESS_TEXT_STYLES.paid}>{REPORTS_TABLE.ACCESS_PAID}</span>
                 ) : (
-                  <span className="text-slate-400 dark:text-slate-500">No</span>
+                  <span className={ACCESS_TEXT_STYLES.free}>{REPORTS_TABLE.ACCESS_FREE}</span>
                 )}
               </td>
               <td className="px-4 py-3 text-xs text-slate-400 dark:text-slate-500">
@@ -116,6 +117,11 @@ export function ReportsTable({ reports, onRegenerate, onUnlock, onViewDiff }: Re
                     Unlock
                   </button>
                 )}
+                {/* TODO(P4): admin checklist view. /checklist/[sessionId] is
+                    owner-scoped (FastAPI rejects non-owners) and progress is
+                    stored in the client's localStorage, so an admin link shows
+                    nothing useful. Needs server-persisted progress + an
+                    admin-scoped checklist endpoint before it can be linked. */}
               </td>
             </tr>
           ))}

@@ -4,7 +4,8 @@ import Script from 'next/script';
 import { useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useRazorpay } from '@/hooks/use-razorpay';
-import { APP, PAYMENT, TRUST_STACK } from '@/config/strings';
+import { APP, PAYMENT, PAYMENT_PAGE, TRUST_STACK } from '@/config/strings';
+import { CouponRedemptionWidget } from './_components/CouponRedemptionWidget';
 
 export default function PaymentPage() {
   const params = useParams();
@@ -23,6 +24,7 @@ export default function PaymentPage() {
 
   const [devBypassing, setDevBypassing] = useState(false);
   const [devError, setDevError] = useState<string | null>(null);
+  const [couponRedeemed, setCouponRedeemed] = useState(false);
 
   const handleDevBypass = useCallback(async () => {
     setDevBypassing(true);
@@ -69,44 +71,52 @@ export default function PaymentPage() {
       <div className="max-w-md w-full space-y-6">
         <div className="text-center">
           <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">{APP.NAME}</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Unlock Your Full Security Report
-          </p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{PAYMENT_PAGE.SUBTITLE}</p>
         </div>
 
         <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 space-y-4">
           <div className="text-center space-y-2">
             <div className="text-3xl font-bold text-slate-900 dark:text-slate-100">{amount}</div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">One-time payment</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{PAYMENT_PAGE.ONE_TIME}</p>
           </div>
 
           <div className="border-t border-slate-100 pt-4 space-y-3">
-            <Feature text="Complete findings with detailed recommendations" />
-            <Feature text="CPP Seven Precis domain-mapped vulnerabilities" />
-            <Feature text="Threat intelligence enrichment" />
-            <Feature text="Downloadable PDF audit report" />
-            <Feature text="Priority booking for physical on-site audit" />
+            {PAYMENT_PAGE.FEATURES.map((text) => (
+              <Feature key={text} text={text} />
+            ))}
           </div>
 
-          <button
-            onClick={initiatePayment}
-            disabled={isDisabled}
-            className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white
-              hover:bg-emerald-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {state === 'creating_order' && 'Preparing payment...'}
-            {state === 'checkout_open' && 'Complete payment in Razorpay...'}
-            {state === 'verifying' && 'Verifying payment...'}
-            {state === 'success' && 'Payment verified!'}
-            {(state === 'idle' || state === 'error') && `Pay ${amount}`}
-          </button>
+          {!couponRedeemed && (
+            <>
+              <button
+                onClick={initiatePayment}
+                disabled={isDisabled}
+                className="w-full rounded-lg bg-emerald-700 px-4 py-3 text-sm font-medium text-white
+                  hover:bg-emerald-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {state === 'creating_order' && PAYMENT_PAGE.BTN_PREPARING}
+                {state === 'checkout_open' && PAYMENT_PAGE.BTN_CHECKOUT_OPEN}
+                {state === 'verifying' && PAYMENT_PAGE.BTN_VERIFYING}
+                {state === 'success' && PAYMENT_PAGE.BTN_VERIFIED}
+                {(state === 'idle' || state === 'error') &&
+                  `${PAYMENT_PAGE.BTN_PAY_PREFIX} ${amount}`}
+              </button>
 
-          {error && <p className="text-sm text-red-600 dark:text-red-400 text-center">{error}</p>}
+              {error && (
+                <p className="text-sm text-red-600 dark:text-red-400 text-center">{error}</p>
+              )}
+            </>
+          )}
+
+          <CouponRedemptionWidget
+            sessionId={sessionId}
+            onRedeemed={() => setCouponRedeemed(true)}
+          />
 
           {isDev && (
             <div className="border-t border-dashed border-amber-300 pt-4 space-y-2">
               <p className="text-xs text-amber-600 text-center font-medium">
-                ⚙ Dev mode — skip real payment
+                {PAYMENT_PAGE.DEV_MODE_NOTE}
               </p>
               <button
                 onClick={handleDevBypass}
@@ -115,7 +125,7 @@ export default function PaymentPage() {
                   font-medium text-amber-800 hover:bg-amber-100 transition-colors
                   disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {devBypassing ? 'Unlocking...' : 'Bypass Payment (Dev)'}
+                {devBypassing ? PAYMENT_PAGE.DEV_UNLOCKING : PAYMENT_PAGE.DEV_BYPASS_CTA}
               </button>
               {devError && (
                 <p className="text-xs text-red-600 dark:text-red-400 text-center">{devError}</p>

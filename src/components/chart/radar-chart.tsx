@@ -2,7 +2,9 @@
 
 import { CPP_DOMAINS, RADAR_THRESHOLDS, QUESTIONNAIRE } from '@/config/strings';
 import { COLORS } from '@/config/colors';
-import { useCountUp } from './use-count-up';
+import { useCountUp } from '@/components/chart/use-count-up';
+
+export type RadarScores = Record<string, number>;
 
 type RadarSize = 'sm' | 'md' | 'lg';
 

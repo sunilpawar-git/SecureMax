@@ -7,14 +7,46 @@ newsapi:
     query: 'physical security'
     api_key_env: NEWS_API_KEY
     page_size: 20
+  - name: 'News API — India Physical Security'
+    type: newsapi
+    query: 'physical security India'
+    api_key_env: NEWS_API_KEY
+    page_size: 20
+  - name: 'News API — India Security Breach'
+    type: newsapi
+    query: 'security breach India theft burglary'
+    api_key_env: NEWS_API_KEY
+    page_size: 20
+  - name: 'News API — India CCTV Surveillance'
+    type: newsapi
+    query: 'CCTV surveillance India'
+    api_key_env: NEWS_API_KEY
+    page_size: 15
+  - name: 'News API — India Fire Building Disaster'
+    type: newsapi
+    query: '"fire" OR "building collapse" OR "stampede" India deaths'
+    api_key_env: NEWS_API_KEY
+    page_size: 20
+  - name: 'News API — Drone Attack Airport Security'
+    type: newsapi
+    query: 'drone attack OR airport security OR counter-drone'
+    api_key_env: NEWS_API_KEY
+    page_size: 15
+  - name: 'News API — Executive Kidnapping VIP Threat'
+    type: newsapi
+    query: 'kidnapping ransom executive protection VIP security'
+    api_key_env: NEWS_API_KEY
+    page_size: 15
 
 rss:
-  - name: 'The Hacker News'
+  # Global physical security & cybersecurity publications
+  # NOTE: securitymagazine.com blocks RSS scrapers via Cloudflare (403); removed Sprint 8.
+  - name: 'Infosecurity Magazine'
     type: rss
-    url: 'https://feeds.feedburner.com/TheHackersNews'
-  - name: 'Bleeping Computer'
+    url: 'https://www.infosecurity-magazine.com/rss/news/'
+  - name: 'SecurityWeek'
     type: rss
-    url: 'https://www.bleepingcomputer.com/feed/'
+    url: 'https://www.securityweek.com/feed/'
   - name: 'Help Net Security'
     type: rss
     url: 'https://www.helpnetsecurity.com/feed/'
@@ -25,7 +57,61 @@ rss:
     type: rss
     url: 'https://www.darkreading.com/rss.xml'
 
+  # Global defense & emerging threats (drones, geopolitical)
+  # NOTE: thedefensepost.com/category/drones/feed returns HTML not RSS; removed Sprint 8.
+  - name: 'The War Zone'
+    type: rss
+    url: 'https://www.thedrive.com/the-war-zone/rss'
+
+  # Workplace safety & fire/HSE
+  # NOTE: fireandsafetyindia.com/feed/ returns 404; removed Sprint 8.
+  - name: 'Safety+Health Magazine'
+    type: rss
+    url: 'https://www.safetyandhealthmagazine.com/rss'
+  # Indian news — security, crime, fire, disasters, infrastructure
+  # NOTE: business-standard.com and news18.com block RSS scrapers (Access Denied); removed Sprint 8.
+  - name: 'NDTV — Top Stories'
+    type: rss
+    url: 'https://feeds.feedburner.com/ndtvnews-top-stories'
+  - name: 'The Hindu — National'
+    type: rss
+    url: 'https://www.thehindu.com/news/national/feeder/default.rss'
+  - name: 'Economic Times — Industry'
+    type: rss
+    url: 'https://economictimes.indiatimes.com/industry/rssfeeds/13352306.cms'
+  - name: 'Hindustan Times — India News'
+    type: rss
+    url: 'https://www.hindustantimes.com/feeds/rss/india-news/rssfeed.xml'
+  - name: 'Times of India — City'
+    type: rss
+    url: 'https://timesofindia.indiatimes.com/rssfeeds/913168846.cms'
+  - name: 'Indian Express — India'
+    type: rss
+    url: 'https://indianexpress.com/section/india/feed/'
+  - name: 'India Today — India'
+    type: rss
+    url: 'https://www.indiatoday.in/rss/1206578'
+  - name: 'Livemint — News'
+    type: rss
+    url: 'https://www.livemint.com/rss/news'
+  # NOTE: abplive.com/crime/feed returns 200 but invalid XML (bozo feed); removed Sprint 8.
+  # NOTE: indialegallive.com covers court proceedings with no security keyword overlap; removed Sprint 8.
+  - name: 'Indian Defence Review'
+    type: rss
+    url: 'https://www.indiandefencereview.com/feed/'
+
+  # Indian security industry
+  # NOTE: cisf.gov.in/rss-feed/ returns 404 (URL dead); removed Sprint 8.
+  # NOTE: hsewatch.com covers psychosocial/occupational health — no security keyword overlap; replaced Sprint 8.
+  - name: 'The Hacker News'
+    type: rss
+    url: 'https://feeds.feedburner.com/TheHackersNews'
+  - name: 'SecurityLink India'
+    type: rss
+    url: 'https://www.securitylinkindia.com/feed/'
+
 playwright:
+  # Global security blogs
   - name: 'The Security Company Blog'
     type: playwright
     url: 'https://thesecuritycompany.com/the-latest/'
@@ -39,4 +125,27 @@ playwright:
     selector_article: 'article.post'
     selector_title: '.entry-title'
     selector_link: '.entry-title a'
+    max_articles: 10
+
+  # Indian security & industry portals
+  - name: 'Security Today India'
+    type: playwright
+    url: 'https://www.securitytoday.in/news/'
+    selector_article: 'article'
+    selector_title: 'h2'
+    selector_link: 'a'
+    max_articles: 10
+  - name: 'IFSEC Global — India'
+    type: playwright
+    url: 'https://www.ifsecglobal.com/asia/'
+    selector_article: 'article'
+    selector_title: 'h3'
+    selector_link: 'a'
+    max_articles: 10
+  - name: 'CAPSI — Private Security Industry India'
+    type: playwright
+    url: 'https://www.capsi.in/'
+    selector_article: '.news-item, article, .post'
+    selector_title: 'h2, h3, .title'
+    selector_link: 'a'
     max_articles: 10

@@ -4,7 +4,8 @@
  * ViewModel hook for sessions management — fetch, filter, force-close.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 export interface SessionEntry {
   id: string;
@@ -30,28 +31,39 @@ export interface SessionsData {
   error: string | null;
   statusFilter: string;
   trackFilter: string;
+  userIdFilter: string;
   setStatusFilter: (s: string) => void;
   setTrackFilter: (t: string) => void;
+  setUserIdFilter: (u: string) => void;
   forceClose: (sessionId: string) => Promise<boolean>;
   refresh: () => void;
 }
 
 export function useSessionsData(): SessionsData {
+  const searchParams = useSearchParams();
   const [sessions, setSessions] = useState<SessionEntry[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState('');
   const [trackFilter, setTrackFilter] = useState('');
+  // Pre-filter from ?userId= (Users page jump link); null-safe when absent
+  const [userIdFilter, setUserIdFilter] = useState(searchParams?.get('userId') ?? '');
+  const abortRef = useRef<AbortController | null>(null);
 
   const load = useCallback(async () => {
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+    const { signal } = abortRef.current;
+
     setLoading(true);
     setError(null);
     const params = new URLSearchParams();
     if (statusFilter) params.set('status', statusFilter);
     if (trackFilter) params.set('track', trackFilter);
+    if (userIdFilter) params.set('userId', userIdFilter);
     try {
-      const res = await fetch(`/api/admin/sessions?${params}`);
+      const res = await fetch(`/api/admin/sessions?${params}`, { signal });
       if (!res.ok) {
         setError('Failed to load sessions');
         return;
@@ -59,16 +71,20 @@ export function useSessionsData(): SessionsData {
       const data: SessionsResponse = await res.json();
       setSessions(data.sessions);
       setTotal(data.total);
-    } catch {
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return;
       setError('Failed to load sessions');
     } finally {
-      setLoading(false);
+      if (!signal.aborted) setLoading(false);
     }
-  }, [statusFilter, trackFilter]);
+  }, [statusFilter, trackFilter, userIdFilter]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on filter change
     void load();
+    return () => {
+      abortRef.current?.abort();
+    };
   }, [load]);
 
   const forceClose = useCallback(
@@ -94,8 +110,10 @@ export function useSessionsData(): SessionsData {
     error,
     statusFilter,
     trackFilter,
+    userIdFilter,
     setStatusFilter,
     setTrackFilter,
+    setUserIdFilter,
     forceClose,
     refresh: load,
   };

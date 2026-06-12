@@ -22,6 +22,10 @@ jest.mock('next/link', () => ({
   ),
 }));
 
+jest.mock('next/navigation', () => ({
+  usePathname: () => '/admin',
+}));
+
 jest.mock('@/app/admin/_hooks/useGlobalSearch', () => ({
   useGlobalSearch: () => ({
     query: '',

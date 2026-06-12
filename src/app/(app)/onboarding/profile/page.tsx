@@ -10,6 +10,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
+  const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +24,11 @@ export default function ProfilePage() {
       const res = await fetch('/api/user/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ city: city.trim(), country }),
+        body: JSON.stringify({
+          city: city.trim(),
+          country,
+          ...(phone.trim() && { phone: phone.trim() }),
+        }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -100,6 +105,28 @@ export default function ProfilePage() {
                   className="w-full min-h-[48px] rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm
                     focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 dark:placeholder-slate-500"
                 />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1"
+                >
+                  {ONBOARDING.PHONE_LABEL}
+                </label>
+                <input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder={ONBOARDING.PHONE_PLACEHOLDER}
+                  pattern="^\+?[0-9\s\-()]{8,20}$"
+                  className="w-full min-h-[48px] rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm
+                    focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 dark:placeholder-slate-500"
+                />
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  {ONBOARDING.PHONE_HINT}
+                </p>
               </div>
             </div>
 

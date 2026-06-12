@@ -26,6 +26,9 @@ const mockPrisma = {
   },
   webhookLog: { create: jest.fn() },
   user: { findMany: jest.fn() },
+  couponCode: { create: jest.fn() },
+  // Interactive transaction: run the callback against the same mock client
+  $transaction: (fn: (tx: unknown) => unknown) => fn(mockPrisma),
 };
 
 jest.mock('@/lib/prisma', () => ({ prisma: mockPrisma }));
@@ -44,6 +47,7 @@ beforeEach(() => {
   mockPrisma.adminAction.create.mockResolvedValue({ id: 'act-1' });
   mockPrisma.followUpReminder.create.mockResolvedValue({ id: 'fr-1' });
   mockPrisma.webhookLog.create.mockResolvedValue({ id: 'wh-1' });
+  mockPrisma.couponCode.create.mockResolvedValue({ id: 'cp-1', code: 'TESTCODE' });
 });
 
 describe('Lead lifecycle flow', () => {

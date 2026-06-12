@@ -30,6 +30,8 @@ export const REPORT_STRINGS = {
     'Includes compliance mapping, board-level risk language, and remediation roadmap.',
   UNLOCK_FULL_REPORT: 'Unlock Full Report',
   UNLOCK_FULL_REPORT_DESC: 'Get detailed findings, action roadmap, and threat intelligence.',
+  // Conversion nudge — price is appended at render from PAYMENT.AMOUNT_PAISE (SSOT)
+  UNLOCK_NUDGE_PREFIX: 'Your full report is ready — unlock for ',
 
   // Status page
   GENERATION_TIMEOUT: 'Report generation timed out. Please contact support.',

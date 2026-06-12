@@ -6,7 +6,7 @@
  * Rule 9: these assertions fail if the mount-skip or the easing guard regress.
  */
 import { renderHook, act } from '@testing-library/react';
-import { useCountUp } from '../use-count-up';
+import { useCountUp } from '@/components/chart/use-count-up';
 
 describe('useCountUp', () => {
   let rafCbs: FrameRequestCallback[];

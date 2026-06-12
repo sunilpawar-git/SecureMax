@@ -1,9 +1,12 @@
-import { auth } from '@/lib/auth';
+import NextAuth from 'next-auth';
+import { authConfig } from '@/lib/auth/config';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { RATE_LIMITS } from '@/config/security';
 import { USER_ROLE } from '@/config/strings';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+
+const { auth } = NextAuth(authConfig);
 
 function getClientIp(request: NextRequest): string {
   return (
@@ -56,17 +59,25 @@ export default auth(async (req) => {
 
     const isAiEndpoint = pathname.includes('/questionnaire') || pathname.includes('/report');
     const isAdminEndpoint = pathname.startsWith('/api/admin');
+    // Brute-force surface only (signin/callback) — NOT /api/auth/session,
+    // which SessionProvider polls legitimately and must stay on global limits.
+    const isAuthEndpoint =
+      pathname.startsWith('/api/auth/signin') || pathname.startsWith('/api/auth/callback');
 
     const windowMs = isAdminEndpoint
       ? RATE_LIMITS.ADMIN_WINDOW_MS
-      : isAiEndpoint
-        ? RATE_LIMITS.AI_ENDPOINT_WINDOW_MS
-        : RATE_LIMITS.GLOBAL_WINDOW_MS;
+      : isAuthEndpoint
+        ? RATE_LIMITS.AUTH_WINDOW_MS
+        : isAiEndpoint
+          ? RATE_LIMITS.AI_ENDPOINT_WINDOW_MS
+          : RATE_LIMITS.GLOBAL_WINDOW_MS;
     const maxReqs = isAdminEndpoint
       ? RATE_LIMITS.ADMIN_MAX_REQUESTS
-      : isAiEndpoint
-        ? RATE_LIMITS.AI_ENDPOINT_MAX_REQUESTS
-        : RATE_LIMITS.GLOBAL_MAX_REQUESTS;
+      : isAuthEndpoint
+        ? RATE_LIMITS.AUTH_MAX_REQUESTS
+        : isAiEndpoint
+          ? RATE_LIMITS.AI_ENDPOINT_MAX_REQUESTS
+          : RATE_LIMITS.GLOBAL_MAX_REQUESTS;
 
     const result = await checkRateLimit(`${ip}:${pathname}`, windowMs, maxReqs);
     if (!result.allowed) {
@@ -84,6 +95,10 @@ export default auth(async (req) => {
 
     const response = NextResponse.next();
     response.headers.set('X-Request-ID', requestId);
+    // Admin API responses must never be cached — they contain sensitive session/tenant data.
+    if (pathname.startsWith('/api/admin')) {
+      response.headers.set('Cache-Control', 'no-store');
+    }
     return response;
   }
 

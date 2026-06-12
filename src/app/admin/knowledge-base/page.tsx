@@ -20,7 +20,7 @@ export default function KnowledgeBasePage() {
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Knowledge Base</h1>
         <div className="flex gap-3">
           <button
-            onClick={kb.refresh}
+            onClick={() => kb.refresh()}
             disabled={kb.loading}
             className="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
           >

@@ -179,6 +179,48 @@ export async function revokeApiKey(
   return apiKey;
 }
 
+export interface ApiKeyListItem {
+  id: string;
+  provider: string;
+  status: string;
+  maskedKey: string | null;
+  createdAt: Date;
+  rotatedAt: Date | null;
+  lastUsedAt: Date | null;
+}
+
+/**
+ * List keys for the admin table. SECURITY: never returns key values —
+ * only a masked preview (last 4 chars of the decrypted key) computed
+ * server-side. No audit row is written (read-only listing, not key use).
+ */
+export async function listApiKeys(): Promise<ApiKeyListItem[]> {
+  const keys = await prisma.apiKey.findMany({
+    orderBy: [{ provider: 'asc' }, { createdAt: 'desc' }],
+    take: 100,
+  });
+
+  return keys.map((k) => {
+    let maskedKey: string | null = null;
+    if (k.status === 'active') {
+      try {
+        maskedKey = decrypt(k.keyEncrypted).slice(-4);
+      } catch {
+        maskedKey = null; // undecryptable (e.g. rotated ENCRYPTION_KEY) — show nothing
+      }
+    }
+    return {
+      id: k.id,
+      provider: k.provider,
+      status: k.status,
+      maskedKey,
+      createdAt: k.createdAt,
+      rotatedAt: k.rotatedAt,
+      lastUsedAt: k.lastUsedAt,
+    };
+  });
+}
+
 /**
  * Get audit log for an API key
  */

@@ -5,46 +5,13 @@
  * but haven't booked a physical audit. Actions: email or WhatsApp.
  */
 
-import { useEffect, useState } from 'react';
 import { FOLLOWUP_STRINGS, ADMIN_EMAIL_TEMPLATES } from '@/config/admin-strings';
 import { FOLLOWUP_STATUS_STYLES } from '@/config/admin-colors';
-
-function buildWhatsAppUrl(phone: string): string {
-  const encoded = encodeURIComponent(FOLLOWUP_STRINGS.WHATSAPP_MESSAGE);
-  return phone ? `https://wa.me/${phone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
-}
-
-interface FollowUpItem {
-  sessionId: string;
-  userId: string;
-  userName: string | null;
-  userEmail: string;
-  downloadedAt: string | null;
-  followupDueAt: string | null;
-  status: 'overdue' | 'due_today' | 'upcoming';
-  track: string;
-}
+import { buildWhatsAppUrl } from '@/lib/admin/followup-links';
+import { useFollowupData, type FollowUpItemView } from './_hooks/useFollowupData';
 
 export default function FollowUpPage() {
-  const [items, setItems] = useState<FollowUpItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchFollowUps() {
-      try {
-        const res = await fetch('/api/admin/followup');
-        if (!res.ok) throw new Error('Failed to fetch');
-        const data = await res.json();
-        setItems(data.items ?? []);
-      } catch {
-        setError(FOLLOWUP_STRINGS.LOAD_ERROR);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchFollowUps();
-  }, []);
+  const { items, loading, error } = useFollowupData();
 
   return (
     <div className="space-y-6">
@@ -100,7 +67,7 @@ export default function FollowUpPage() {
   );
 }
 
-function FollowUpRow({ item }: { item: FollowUpItem }) {
+function FollowUpRow({ item }: { item: FollowUpItemView }) {
   const rowClass = FOLLOWUP_STATUS_STYLES[item.status] ?? '';
 
   return (
@@ -126,12 +93,12 @@ function FollowUpRow({ item }: { item: FollowUpItem }) {
             {FOLLOWUP_STRINGS.EMAIL_CTA}
           </a>
           <a
-            href={buildWhatsAppUrl('')}
+            href={buildWhatsAppUrl(item.userPhone ?? '')}
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs font-medium text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300"
           >
-            {FOLLOWUP_STRINGS.WHATSAPP_CTA}
+            {item.userPhone ? FOLLOWUP_STRINGS.WHATSAPP_CTA_DIRECT : FOLLOWUP_STRINGS.WHATSAPP_CTA}
           </a>
         </div>
       </td>

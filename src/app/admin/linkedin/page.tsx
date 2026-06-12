@@ -2,6 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { DraftQueue } from './_components/DraftQueue';
+import { PostingActions } from './_components/PostingActions';
+import { ServiceHealthBanner } from './_components/ServiceHealthBanner';
+import { useServiceHealth } from './_hooks/useServiceHealth';
+import { LINKEDIN_STRINGS } from '@/config/admin-strings';
 
 interface Article {
   id: string;
@@ -13,6 +17,7 @@ interface Article {
 }
 
 export default function LinkedInPage() {
+  const health = useServiceHealth();
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [draftPost, setDraftPost] = useState('');
@@ -21,6 +26,10 @@ export default function LinkedInPage() {
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState<string | null>(null);
   const [generateError, setGenerateError] = useState<string | null>(null);
+  // Direct posting state — draftId links the editor text to its LinkedinPost row
+  const [draftId, setDraftId] = useState<string | null>(null);
+  const [postState, setPostState] = useState<'idle' | 'posting' | 'success' | 'error'>('idle');
+  const [postError, setPostError] = useState<string | null>(null);
   const fullPost = draftPost + (hashtags.length ? '\n\n' + hashtags.join(' ') : '');
   const charCount = fullPost.length;
 
@@ -68,9 +77,12 @@ export default function LinkedInPage() {
         const data = (await res.json()) as {
           post_text?: string;
           hashtags?: string[];
+          draftId?: string | null;
         };
         setDraftPost(data.post_text ?? '');
         setHashtags(data.hashtags ?? []);
+        setDraftId(data.draftId ?? null);
+        setPostState('idle');
       } else {
         const errData = await res.json().catch(() => ({}));
         setGenerateError((errData as { error?: string }).error ?? `Draft failed (${res.status})`);
@@ -100,6 +112,39 @@ export default function LinkedInPage() {
     }
   };
 
+  const postToLinkedIn = async () => {
+    setPostState('posting');
+    setPostError(null);
+    try {
+      const res = await fetch('/api/admin/linkedin', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'publish', id: draftId ?? undefined, postText: fullPost }),
+      });
+      if (res.ok) {
+        const okData = (await res.json().catch(() => ({}))) as { bookkeepingFailed?: boolean };
+        setPostState('success');
+        setPostError(okData.bookkeepingFailed ? LINKEDIN_STRINGS.BOOKKEEPING_WARNING : null);
+      } else {
+        const errData = (await res.json().catch(() => ({}))) as { error?: string };
+        setPostError(errData.error ?? LINKEDIN_STRINGS.POST_ERROR);
+        setPostState('error');
+      }
+    } catch {
+      setPostError(LINKEDIN_STRINGS.POST_ERROR);
+      setPostState('error');
+    }
+  };
+
+  // DraftQueue Repost/Edit — pre-fill the editor with a queued draft
+  const useDraft = (text: string, id: string) => {
+    setDraftPost(text);
+    setHashtags([]);
+    setDraftId(id);
+    setPostState('idle');
+    setPostError(null);
+  };
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
@@ -109,7 +154,9 @@ export default function LinkedInPage() {
         Select threat intel articles, generate an AI-drafted post, then copy to LinkedIn.
       </p>
 
-      <DraftQueue />
+      <ServiceHealthBanner health={health} />
+
+      <DraftQueue onUseDraft={useDraft} />
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 space-y-3">
@@ -199,16 +246,19 @@ export default function LinkedInPage() {
             )}
           </div>
           {copyError && <p className="text-xs text-red-600 dark:text-red-400">{copyError}</p>}
-          <button
-            onClick={() => {
+          <PostingActions
+            draftPost={draftPost}
+            isGenerating={isGenerating}
+            copied={copied}
+            postState={postState}
+            postError={postError}
+            onCopy={() => {
               void copyToClipboard();
             }}
-            disabled={isGenerating || !draftPost}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm
-              font-medium hover:bg-blue-700 disabled:opacity-50"
-          >
-            {copied ? 'Copied!' : 'Copy to Clipboard'}
-          </button>
+            onPost={() => {
+              void postToLinkedIn();
+            }}
+          />
         </div>
       </div>
     </div>

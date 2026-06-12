@@ -8,7 +8,14 @@ import { verifyAdmin, forbiddenResponse } from '@/lib/admin/auth';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
 import { logAdminAction } from '@/lib/admin/actions';
 import { LinkedInDraftSchema } from '@/lib/admin/validators';
-import { ADMIN_ACTION_TYPE, ADMIN_ENTITY_TYPE, ADMIN_ERR } from '@/config/admin-strings';
+import { handlePublish, PublishSchema } from './publish';
+import {
+  ADMIN_ACTION_TYPE,
+  ADMIN_ENTITY_TYPE,
+  ADMIN_ERR,
+  LINKEDIN_POST_STATUS,
+  LINKEDIN_STRINGS,
+} from '@/config/admin-strings';
 import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
@@ -47,7 +54,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-/** PATCH /api/admin/linkedin — update draft status. */
+/** PATCH /api/admin/linkedin — publish (action: "publish") or update draft status. */
 export async function PATCH(request: NextRequest) {
   const session = await verifyAdmin();
   if (!session) return forbiddenResponse();
@@ -57,6 +64,14 @@ export async function PATCH(request: NextRequest) {
     raw = await request.json();
   } catch {
     return NextResponse.json({ error: ADMIN_ERR.INVALID_REQUEST }, { status: 400 });
+  }
+
+  if (typeof raw === 'object' && raw !== null && 'action' in raw) {
+    const publishParsed = PublishSchema.safeParse(raw);
+    if (!publishParsed.success) {
+      return NextResponse.json({ error: ADMIN_ERR.INVALID_REQUEST }, { status: 400 });
+    }
+    return handlePublish(session.user.id, publishParsed.data);
   }
 
   const parsed = PatchStatusSchema.safeParse(raw);
@@ -107,11 +122,12 @@ export async function POST(request: NextRequest) {
       { body: parsed.data },
     );
 
+    let draftId: string | null = null;
     if (result.post_text) {
       const fullText = result.hashtags?.length
         ? `${result.post_text}\n\n${result.hashtags.join(' ')}`
         : result.post_text;
-      await prisma.linkedinPost.create({
+      const draft = await prisma.linkedinPost.create({
         data: {
           draftText: fullText,
           status: 'draft',
@@ -119,9 +135,10 @@ export async function POST(request: NextRequest) {
           postedByAdmin: session.user.id,
         },
       });
+      draftId = draft.id;
     }
 
-    return NextResponse.json(result);
+    return NextResponse.json({ ...result, draftId });
   } catch (error) {
     if (error instanceof AIServiceError) {
       logger.error('AI service error', 'linkedin-route', {
@@ -129,12 +146,45 @@ export async function POST(request: NextRequest) {
       });
       const clientStatus = error.statusCode >= 500 ? 503 : error.statusCode;
       return NextResponse.json(
-        { error: 'LinkedIn draft service unavailable — check service logs' },
+        {
+          error: LINKEDIN_STRINGS.DRAFT_UPSTREAM_ERROR.replace(
+            '{status}',
+            String(error.statusCode),
+          ),
+        },
         { status: clientStatus },
       );
     }
     logger.error('Unexpected error', 'linkedin-route');
     return NextResponse.json({ error: 'LinkedIn draft service unavailable' }, { status: 503 });
+  }
+}
+
+/** DELETE /api/admin/linkedin?id=X — soft-delete a draft (status = "deleted"). */
+export async function DELETE(request: NextRequest) {
+  const session = await verifyAdmin();
+  if (!session) return forbiddenResponse();
+
+  const id = request.nextUrl.searchParams.get('id');
+  if (!id) {
+    return NextResponse.json({ error: ADMIN_ERR.INVALID_REQUEST }, { status: 400 });
+  }
+
+  try {
+    await prisma.linkedinPost.update({
+      where: { id },
+      data: { status: LINKEDIN_POST_STATUS.DELETED },
+    });
+    await logAdminAction({
+      adminId: session.user.id,
+      actionType: ADMIN_ACTION_TYPE.LINKEDIN_POST_DELETED,
+      entityType: ADMIN_ENTITY_TYPE.LINKEDIN_POST,
+      entityId: id,
+    });
+    return new NextResponse(null, { status: 204 });
+  } catch (err) {
+    logger.error('Failed to delete draft', 'linkedin-route', { detail: String(err) });
+    return NextResponse.json({ error: 'Failed to delete' }, { status: 500 });
   }
 }
 

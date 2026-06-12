@@ -26,6 +26,7 @@ export async function POST() {
     return forbiddenResponse();
   }
   try {
+    // Pipeline runs as a background task in FastAPI; this POST returns in <1 s.
     const result = await aiServiceFetch('/scraper/run', { body: {} });
     return apiSuccess(result);
   } catch (error) {

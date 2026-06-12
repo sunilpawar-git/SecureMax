@@ -5,6 +5,8 @@ from datetime import UTC, datetime
 
 from pydantic import BaseModel, Field
 
+from newsletter.constants import AUDIENCE_SEGMENTS
+
 
 class RawArticle(BaseModel):
     url: str
@@ -24,6 +26,21 @@ class RawArticle(BaseModel):
         return hashlib.sha256(self.content.strip().encode()).hexdigest()
 
 
+class IntelScores(BaseModel):
+    """Multi-dimension intelligence scoring for newsletter quality gating."""
+
+    physical_security_relevance: float = Field(default=0.0, ge=0.0, le=1.0)
+    geographic_relevance: float = Field(default=0.0, ge=0.0, le=1.0)
+    threat_actionability: float = Field(default=0.0, ge=0.0, le=1.0)
+    educational_value: float = Field(default=0.0, ge=0.0, le=1.0)
+    recency_novelty: float = Field(default=0.0, ge=0.0, le=1.0)
+    audience_impact: float = Field(default=0.0, ge=0.0, le=1.0)
+    affected_segments: list[str] = Field(default_factory=list)
+
+    def model_post_init(self, __context) -> None:
+        self.affected_segments = [s for s in self.affected_segments if s in AUDIENCE_SEGMENTS]
+
+
 class ProcessedArticle(BaseModel):
     """Maps 1:1 to the threat_intel table columns (plus internal tracking fields)."""
 
@@ -35,7 +52,7 @@ class ProcessedArticle(BaseModel):
     industry_tags: list[str]
     source: str
     relevance_score: float = 0.0
-    # Not persisted to DB — used only to track whether Gemini actually ran
+    intel_scores: IntelScores | None = None
     tagged_by_gemini: bool = False
 
 

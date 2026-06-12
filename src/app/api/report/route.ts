@@ -9,7 +9,43 @@ import { NextRequest } from 'next/server';
 import { requireAuth, unauthorizedResponse, apiSuccess, apiError, validateCuid } from '@/lib/api';
 import { aiServiceFetch, AIServiceError } from '@/lib/ai-service';
 import { env } from '@/lib/env';
+import { prisma } from '@/lib/prisma';
+import { logger } from '@/lib/logger';
+import { sendReportDownloadAlert } from '@/lib/admin/alert-service';
 import { REPORT_STRINGS } from '@/config/strings';
+import { FOLLOW_UP_DAYS } from '@/config/admin-strings';
+
+/**
+ * First-download bookkeeping: stamps downloadedAt + schedules the HNI
+ * follow-up, then alerts the admin. updateMany with downloadedAt:null makes
+ * it idempotent (never overwrites — Rule 15) and the userId clause enforces
+ * ownership. Fire-and-forget: a failure here must not break the download.
+ */
+async function recordFirstDownload(sessionId: string, userId: string): Promise<void> {
+  try {
+    const now = new Date();
+    const followupDue = new Date(now.getTime() + FOLLOW_UP_DAYS * 86_400_000);
+    const result = await prisma.auditSession.updateMany({
+      where: { id: sessionId, userId, downloadedAt: null },
+      data: { downloadedAt: now, postDownloadFollowupAt: followupDue },
+    });
+    if (result.count === 0) return; // already recorded
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true, name: true },
+    });
+    if (user) {
+      await sendReportDownloadAlert({
+        sessionId,
+        userEmail: user.email,
+        userName: user.name,
+      });
+    }
+  } catch (err) {
+    logger.error('First-download bookkeeping failed', 'report-api', { detail: String(err) });
+  }
+}
 
 interface ReportFinding {
   domain: string;
@@ -114,6 +150,7 @@ export async function GET(request: NextRequest) {
           return apiError('Failed to retrieve report', pdfRes.status);
         }
         const pdfBytes = await pdfRes.arrayBuffer();
+        await recordFirstDownload(reportId, session.user.id);
         return new Response(pdfBytes, {
           status: 200,
           headers: {

@@ -27,6 +27,7 @@ export interface Article {
   industryTags: string[];
   source: string;
   usedInReports: boolean;
+  softDeleted: boolean;
   scrapedAt: string | null;
 }
 
@@ -42,12 +43,15 @@ export interface ScraperData {
   isRunning: boolean;
   error: string | null;
   filters: { search: string; domains: string[]; source: string };
+  showDeleted: boolean;
+  setShowDeleted: (v: boolean) => void;
   setSearch: (s: string) => void;
   setDomains: (d: string[]) => void;
   setSource: (s: string) => void;
   runScraper: () => Promise<void>;
   addArticle: (data: Record<string, unknown>) => Promise<boolean>;
   deleteArticle: (id: string) => Promise<boolean>;
+  restoreArticle: (id: string) => Promise<boolean>;
   refresh: () => void;
 }
 
@@ -60,44 +64,55 @@ export function useScraperData(): ScraperData {
   const [search, setSearch] = useState('');
   const [domains, setDomains] = useState<string[]>([]);
   const [source, setSource] = useState('');
+  const [showDeleted, setShowDeleted] = useState(false);
 
-  const loadHealth = useCallback(async () => {
+  const loadHealth = useCallback(async (signal?: AbortSignal) => {
     try {
-      const res = await fetch('/api/admin/scraper?action=health');
+      const res = await fetch('/api/admin/scraper?action=health', signal ? { signal } : undefined);
       if (res.ok) setHealth(await res.json());
-    } catch {
+    } catch (err) {
+      if ((err as Error).name === 'AbortError') return;
       /* non-critical */
     }
   }, []);
 
-  const loadArticles = useCallback(async () => {
-    const params = new URLSearchParams();
-    if (search) params.set('search', search);
-    if (domains.length) params.set('domains', domains.join(','));
-    if (source) params.set('source', source);
-    try {
-      const res = await fetch(`/api/admin/threat-intel?${params}`);
-      if (res.ok) {
-        const data: ArticlesResponse = await res.json();
-        setArticles(data.articles ?? []);
-        setTotalArticles(data.total ?? 0);
+  const loadArticles = useCallback(
+    async (signal?: AbortSignal) => {
+      const params = new URLSearchParams();
+      if (search) params.set('search', search);
+      if (domains.length) params.set('domains', domains.join(','));
+      if (source) params.set('source', source);
+      if (showDeleted) params.set('showDeleted', 'true');
+      try {
+        const res = await fetch(
+          `/api/admin/threat-intel?${params}`,
+          signal ? { signal } : undefined,
+        );
+        if (res.ok) {
+          const data: ArticlesResponse = await res.json();
+          setArticles(data.articles ?? []);
+          setTotalArticles(data.total ?? 0);
+        }
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return;
+        /* non-critical */
       }
-    } catch {
-      /* non-critical */
-    }
-  }, [search, domains, source]);
+    },
+    [search, domains, source, showDeleted],
+  );
 
-  const refresh = useCallback(() => {
-    loadHealth();
-    loadArticles();
-  }, [loadHealth, loadArticles]);
+  const refresh = useCallback(
+    (signal?: AbortSignal) => {
+      void loadHealth(signal);
+      void loadArticles(signal);
+    },
+    [loadHealth, loadArticles],
+  );
 
   useEffect(() => {
     const controller = new AbortController();
-    const fetchData = async () => {
-      await refresh();
-    };
-    void fetchData();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching on mount
+    refresh(controller.signal);
     return () => controller.abort();
   }, [refresh]);
 
@@ -114,7 +129,7 @@ export function useScraperData(): ScraperData {
       setError(`Network error: ${String(e)}`);
     } finally {
       setIsRunning(false);
-      refresh();
+      refresh(); // no signal — caller-initiated, component still mounted
     }
   }, [refresh]);
 
@@ -150,6 +165,22 @@ export function useScraperData(): ScraperData {
     [loadArticles],
   );
 
+  const restoreArticleFn = useCallback(
+    async (id: string) => {
+      const res = await fetch('/api/admin/threat-intel', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'restore', articleId: id }),
+      });
+      if (res.ok) {
+        await loadArticles();
+        return true;
+      }
+      return false;
+    },
+    [loadArticles],
+  );
+
   return {
     health,
     articles,
@@ -157,12 +188,15 @@ export function useScraperData(): ScraperData {
     isRunning,
     error,
     filters: { search, domains, source },
+    showDeleted,
+    setShowDeleted,
     setSearch,
     setDomains,
     setSource,
     runScraper,
     addArticle,
     deleteArticle: deleteArticleFn,
+    restoreArticle: restoreArticleFn,
     refresh,
   };
 }
