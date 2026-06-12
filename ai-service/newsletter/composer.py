@@ -61,8 +61,8 @@ def fallback_compose(themes: list[EnrichedTheme]) -> NewsletterContent:
     briefing_parts = []
     analysis_parts = []
 
-    for i, theme in enumerate(themes, 1):
-        exec_parts.append(f"{i}. {theme.theme_title}: {theme.situation}")
+    for _i, theme in enumerate(themes, 1):
+        exec_parts.append(f"- {theme.theme_title}: {theme.situation}")
 
         label = domain_label(theme.cpp_domain)
         briefing_parts.append(

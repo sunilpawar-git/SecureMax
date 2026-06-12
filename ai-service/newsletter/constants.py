@@ -12,6 +12,12 @@ SEGMENT_LABELS: dict[str, str] = {
     "critical_infrastructure": "For Critical Infrastructure",
 }
 
+SEGMENT_SHORT_LABELS: dict[str, str] = {
+    "hni": "HNI",
+    "enterprise": "Enterprise",
+    "critical_infrastructure": "Critical Infra",
+}
+
 # --- Intelligence scoring weights (must sum to 1.0) ---
 
 INTEL_SCORE_WEIGHTS: dict[str, float] = {

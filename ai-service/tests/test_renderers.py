@@ -216,6 +216,36 @@ class TestPngRenderer:
         # domain div should show label, not raw code
         assert 'class="domain">CPP-01<' not in result
 
+    def test_contains_issue_date(self) -> None:
+        content = _make_content(1)
+        html = build_newsletter_html(content)
+        assert "11 June 2026" in html
+
+    def test_contains_source_count(self) -> None:
+        content = _make_content(2)
+        html = build_newsletter_html(content)
+        assert "2 sources" in html
+
+    def test_contains_segment_tags(self) -> None:
+        content = _make_content(1)
+        html = build_newsletter_html(content)
+        assert "HNI" in html
+        assert "Enterprise" in html
+
+    def test_intro_renders_as_list(self) -> None:
+        content = _make_content(1)
+        content.executive_summary = "- Bullet one\n- Bullet two"
+        html = build_newsletter_html(content)
+        assert "<li>" in html
+        assert "Bullet one" in html
+
+    def test_intro_paragraph_fallback(self) -> None:
+        content = _make_content(1)
+        content.executive_summary = "Plain paragraph text."
+        html = build_newsletter_html(content)
+        assert "<li>" not in html
+        assert "intro" in html
+
 
 class TestDomainLabelsInRenderers:
     """Renderers must show plain-English labels, not raw CPP-XX codes in user-facing text."""

@@ -96,7 +96,10 @@ async def test_synthesis_parses_gemini_json():
     })
     compose_response = json.dumps({
         "title": "This Week in Physical Security",
-        "executive_summary": "Two incidents stood out this week.",
+        "executive_summary": (
+            "- Access control failures enabled tailgating at a Mumbai warehouse\n"
+            "- Badge cloning incident exposed data centre in Pune"
+        ),
         "intelligence_briefing": "Full briefing content goes here.",
         "full_analysis": "Deep analysis with CPP citations.",
         "commanders_note": "Stay vigilant.",
@@ -120,6 +123,55 @@ async def test_synthesis_fallback_produces_valid_content_on_gemini_error():
     assert content.title
     assert content.cta_soft
     assert len(content.themes) > 0
+
+
+def test_fallback_compose_emits_bullet_summary():
+    """fallback_compose executive_summary uses bullet format (- prefix)."""
+    from newsletter.composer import fallback_compose
+
+    themes = [
+        EnrichedTheme(
+            theme_title="Access Failures",
+            situation="Tailgating at a dock door.",
+            assessment="Weak controls.",
+            implications="Broad exposure.",
+            recommendation="Man the docks.",
+            cpp_domain="CPP-01",
+        ),
+        EnrichedTheme(
+            theme_title="Badge Cloning",
+            situation="Cloned badges used.",
+            assessment="Credential risk.",
+            implications="Server exposure.",
+            recommendation="Audit badges.",
+            cpp_domain="CPP-05",
+        ),
+    ]
+    content = fallback_compose(themes)
+    bullet_lines = [
+        ln for ln in content.executive_summary.split("\n")
+        if ln.startswith("- ")
+    ]
+    assert len(bullet_lines) == 2
+
+
+def test_fallback_summary_renders_as_list():
+    """Fallback exec summary renders as <ul> in the PNG HTML."""
+    from newsletter.composer import fallback_compose
+
+    themes = [
+        EnrichedTheme(
+            theme_title="Test Theme",
+            situation="Incident occurred.",
+            assessment="Assessment.",
+            implications="Implications.",
+            recommendation="Recommendation.",
+            cpp_domain="CPP-01",
+        ),
+    ]
+    content = fallback_compose(themes)
+    html = build_newsletter_html(content)
+    assert "<li>" in html
 
 
 def test_html_contains_title_items_and_brand():

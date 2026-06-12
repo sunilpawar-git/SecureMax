@@ -57,7 +57,12 @@ CLUSTER_PROMPT = Template(
     ' "primary_domain": "CPP-XX",'
     ' "secondary_domains": ["CPP-YY"]}]\n\n'
     "Every article must appear in exactly one cluster. "
-    "Primary domain from: CPP-01 through CPP-07."
+    "Primary domain from: CPP-01 through CPP-07.\n\n"
+    "Prioritise themes grounded in operational physical security "
+    "(CPP-01, CPP-03, CPP-06) — at least 2 of the clusters MUST relate "
+    "directly to physical threats, access control, or incident response. "
+    "Avoid purely economic, geopolitical, or strategic outlook themes "
+    "unless they directly imply a physical security countermeasure."
 )
 
 # --- Pass 2: Analyze & Enrich ---
@@ -72,10 +77,14 @@ ENRICH_PROMPT = Template(
     "$cpp_context\n\n"
     "Write a structured assessment:\n"
     "Return ONLY valid JSON (no markdown fences):\n"
-    '{"situation": "What happened — facts only, 2-3 sentences",'
+    '{"situation": "What happened — cite at least one specific incident '
+    "by name, date, and location from the source articles. "
+    'Facts only, 2-3 sentences",'
     ' "assessment": "Why this matters — analytical judgment, 2-3 sentences",'
     ' "implications": "Broader security implications, 2-3 sentences",'
-    ' "recommendation": "Concrete preventive action, 1-2 sentences",'
+    ' "recommendation": "Concrete countermeasure grounded in the incident(s) '
+    "above and the CPP context. Name the specific control, protocol, or "
+    'system to implement. 1-2 sentences",'
     ' "cpp_citation": "Specific CPP principle referenced, 1 sentence",'
     ' "segment_impact": {'
     '   "hni": "1 sentence: impact on private residences/HNIs",'
@@ -98,8 +107,9 @@ COMPOSE_PROMPT = Template(
     "Compose the newsletter in THREE tiers. Return ONLY valid JSON "
     "(no markdown fences):\n"
     '{"title": "Newsletter title, max 80 chars",'
-    ' "executive_summary": "~200 words. Hook + key themes + overall '
-    'assessment. For LinkedIn/WhatsApp.",'
+    ' "executive_summary": "3-4 bullet points, each 1 sentence. Each bullet: '
+    "one specific finding from a theme (cite an incident or threat by name). "
+    'No paragraph prose. For LinkedIn/WhatsApp.",'
     ' "intelligence_briefing": "~1000 words. Full SITREP-structured '
     "briefing with all themes, segment impacts, recommendations. "
     'For email newsletter.",'
