@@ -255,6 +255,99 @@ def test_draft_route_creates_newsletter_row(test_client, db_conn, monkeypatch):
     assert row["website_html"]
 
 
+@pytest.mark.integration
+def test_draft_route_gemini_path_png_has_quality_metadata(
+    test_client, db_conn, monkeypatch
+):
+    """Integration: DB → synthesis (mocked Gemini) → PNG HTML quality features."""
+    _seed_article(db_conn, "ti-nl-2", "Armed robbery at Mumbai jewellery store")
+
+    cluster_response = json.dumps([
+        {
+            "theme_title": "Retail Perimeter Breaches",
+            "theme_summary": "Physical access failures at retail sites.",
+            "article_ids": ["ti-nl-2"],
+            "primary_domain": "CPP-01",
+        }
+    ])
+    enrich_response = json.dumps({
+        "situation": (
+            "On 10 June 2026, armed robbers breached a Mumbai jewellery store "
+            "perimeter via an unmanned side entrance."
+        ),
+        "assessment": "Perimeter monitoring gaps enabled direct physical access.",
+        "implications": "Retail HNI assets remain exposed without layered controls.",
+        "recommendation": (
+            "Deploy manned access points and CCTV-linked alarm escalation."
+        ),
+        "cpp_citation": "CPP-01 §4.2 — layered perimeter defence.",
+        "segment_impact": {
+            "hni": "Private residences with retail exposure need perimeter review.",
+            "enterprise": "Retail campuses must audit unmanned entry points.",
+            "critical_infrastructure": "",
+        },
+    })
+    compose_response = json.dumps({
+        "title": "Weekly Intelligence: Retail Perimeter Threats",
+        "executive_summary": (
+            "- Armed robbery at Mumbai jewellery store exposed perimeter gap\n"
+            "- Unmanned side entrance enabled direct physical access"
+        ),
+        "intelligence_briefing": "Full SITREP briefing.",
+        "full_analysis": "Deep analysis with CPP citations.",
+        "commanders_note": "Perimeter discipline is non-negotiable.",
+        "cta_soft": "Assess your perimeter controls.",
+    })
+
+    gemini = AsyncMock()
+    gemini.generate = AsyncMock(
+        side_effect=[cluster_response, enrich_response, compose_response]
+    )
+    gemini.embed = AsyncMock(return_value=[0.1] * 3072)
+
+    captured_html: list[str] = []
+
+    async def fake_render(html, **kwargs):
+        captured_html.append(html)
+        return b"png-quality-bytes"
+
+    monkeypatch.setattr("routers.newsletter.render_png", fake_render)
+    monkeypatch.setattr(
+        "routers.newsletter.get_relevant_chunks",
+        AsyncMock(return_value=[]),
+    )
+
+    original_pool = test_client.app.state.pool
+    original_gemini = getattr(test_client.app.state, "gemini", None)
+    test_client.app.state.pool = _TestPool(_DSN, TEST_SCHEMA)
+    test_client.app.state.gemini = gemini
+    try:
+        resp = test_client.post("/newsletter/draft", json={"days": 7})
+    finally:
+        test_client.app.state.pool = original_pool
+        test_client.app.state.gemini = original_gemini
+
+    assert resp.status_code == 201
+    assert captured_html, "render_png should receive HTML from draft route"
+
+    html = captured_html[0]
+    assert "Analysis of 1 sources" in html
+    assert "<li>" in html
+    assert "Mumbai jewellery store" in html
+    assert "seg-tag" in html
+    assert "HNI" in html
+    assert "Enterprise" in html
+
+    row = run_db(
+        db_conn.fetchrow(
+            "SELECT executive_summary FROM newsletters WHERE id = $1",
+            resp.json()["newsletter_id"],
+        )
+    )
+    assert row is not None
+    assert row["executive_summary"].startswith("- ")
+
+
 def test_draft_route_fails_loud_when_no_articles(test_client):
     """Rule 12: an empty intel window is a 422, not a silent empty newsletter."""
     original_pool = test_client.app.state.pool
