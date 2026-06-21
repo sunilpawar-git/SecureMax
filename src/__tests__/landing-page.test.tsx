@@ -51,6 +51,14 @@ describe('Landing page sections', () => {
     }
   });
 
+  it('FAQ privacy answer does not contradict the city/country collected at onboarding', () => {
+    const privacyItem = FAQ.ITEMS.find((item) => item.q.includes('Is my data safe'));
+    expect(privacyItem).toBeDefined();
+    expect(privacyItem!.a.toLowerCase()).not.toContain(
+      'we never collect your property address or location',
+    );
+  });
+
   it('footer exposes LinkedIn, WhatsApp, and the physical address', () => {
     const linkedin = screen.getByRole('link', { name: FOOTER.LINKEDIN_LABEL });
     expect(linkedin).toHaveAttribute('href', FOOTER.LINKEDIN_URL);

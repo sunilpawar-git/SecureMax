@@ -122,7 +122,7 @@ export const FAQ = {
     },
     {
       q: 'Is my data safe? Do you know where I live?',
-      a: 'Your answers are encrypted end-to-end and we never collect your property address or location. Data is stored on India-hosted servers and is private to your account.',
+      a: 'Your answers are encrypted end-to-end and we never collect your exact property address. Data is stored on India-hosted servers and is private to your account.',
     },
     {
       q: 'What do I get in the paid report?',

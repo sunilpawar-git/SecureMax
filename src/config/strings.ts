@@ -74,7 +74,7 @@ export const LINKEDIN_POST_STATUS = {
 
 export const TRUST_STACK = {
   HNI_PRIVACY:
-    'Your answers are encrypted end-to-end. We never collect your property address or location. This report is private to you.',
+    'Your answers are encrypted end-to-end. We never collect your exact property address. This report is private to you.',
   ENTERPRISE_SOVEREIGNTY:
     'All data is stored on India-hosted servers. Access is restricted to your account.',
   METHODOLOGY: 'CPP Seven Precis Methodology',

@@ -80,6 +80,12 @@ describe('Trust stack strings', () => {
     expect(TRUST_STACK.HNI_PRIVACY.toLowerCase()).toContain('encrypted');
   });
 
+  it('HNI privacy statement does not contradict the city/country collected at onboarding', () => {
+    expect(TRUST_STACK.HNI_PRIVACY.toLowerCase()).not.toContain(
+      'we never collect your property address or location',
+    );
+  });
+
   it('enterprise sovereignty mentions India', () => {
     expect(TRUST_STACK.ENTERPRISE_SOVEREIGNTY.toLowerCase()).toContain('india');
   });
