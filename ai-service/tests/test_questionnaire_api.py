@@ -406,3 +406,52 @@ class TestProfileFieldWriteBack:
 
         row = run_db(db_conn.fetchrow("SELECT city FROM users WHERE id = $1", uid))
         assert row["city"] == "Dubai"
+
+
+class TestAnswerValidation:
+    """A forged answer must be rejected before it reaches the DB —
+    regression guard for the single_choice/length validation gap."""
+
+    def test_forged_country_outside_options_rejected(self, test_client, db_conn) -> None:
+        uid = "user-forged-country"
+        resp = _start(test_client, uid)
+        session_id = resp.json()["session_id"]
+        _answer(test_client, session_id, uid, "hni_q0_city", "Mumbai")
+
+        resp = _answer(
+            test_client, session_id, uid, "hni_q0b_country", "<script>alert(1)</script>"
+        )
+        assert resp.status_code == 400
+
+        row = run_db(db_conn.fetchrow("SELECT country FROM users WHERE id = $1", uid))
+        assert row["country"] is None
+
+    def test_forged_country_does_not_advance_session(self, test_client) -> None:
+        """A rejected answer must not move current_node_id forward."""
+        uid = "user-forged-country-stuck"
+        resp = _start(test_client, uid)
+        session_id = resp.json()["session_id"]
+        _answer(test_client, session_id, uid, "hni_q0_city", "Mumbai")
+        _answer(test_client, session_id, uid, "hni_q0b_country", "Atlantis")
+
+        resp = _answer(test_client, session_id, uid, "hni_q0b_country", "India")
+        assert resp.status_code == 200
+
+    def test_oversized_city_answer_rejected(self, test_client, db_conn) -> None:
+        uid = "user-oversized-city"
+        resp = _start(test_client, uid)
+        session_id = resp.json()["session_id"]
+
+        resp = _answer(test_client, session_id, uid, "hni_q0_city", "x" * 101)
+        assert resp.status_code == 400
+
+        row = run_db(db_conn.fetchrow("SELECT city FROM users WHERE id = $1", uid))
+        assert row["city"] is None
+
+    def test_blank_city_answer_rejected(self, test_client) -> None:
+        uid = "user-blank-city"
+        resp = _start(test_client, uid)
+        session_id = resp.json()["session_id"]
+
+        resp = _answer(test_client, session_id, uid, "hni_q0_city", "   ")
+        assert resp.status_code == 400

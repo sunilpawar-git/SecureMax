@@ -15,6 +15,8 @@ from branching import BranchResult, determine_next_node_with_ai
 from config import Settings, get_settings
 from constants import (
     ERR_ACCESS_DENIED,
+    ERR_INVALID_ANSWER_OPTION,
+    ERR_INVALID_PROFILE_ANSWER,
     ERR_NODE_NOT_IN_GRAPH,
     ERR_SESSION_ABANDONED,
     ERR_SESSION_ALREADY_COMPLETED,
@@ -117,6 +119,7 @@ async def submit_answer(
     session = await _load_active_session(conn, req.session_id, x_user_id)
     node_map = get_node_map(session["track"])
     current_node = _validate_question(node_map, session["current_node_id"], req.question_id)
+    _validate_answer_options(current_node, req.answer)
 
     enc_key = _require_enc_key()
     answer_str = req.answer if isinstance(req.answer, str) else json.dumps(req.answer)
@@ -246,6 +249,33 @@ def _validate_question(node_map: dict, current_id: str, question_id: str) -> dic
     if not node:
         raise HTTPException(status_code=500, detail=ERR_NODE_NOT_IN_GRAPH)
     return node
+
+
+_PROFILE_FIELD_MAX_LENGTH = 100  # matches Zod cap in api/user/profile/route.ts
+
+
+def _validate_answer_options(node: dict, answer: str | list[str]) -> None:
+    """Reject answers the questionnaire engine should never accept.
+
+    - single_choice/multi_choice: must be one of the graph's declared options.
+      Without this, a client could submit an arbitrary string for e.g.
+      `hni_q0b_country` and have it written verbatim to `User.country` via
+      `writes_to_profile_field` — bypassing the dropdown entirely.
+    - Any node with `writes_to_profile_field` (e.g. the city text_input):
+      capped at the same length as the Next.js PATCH /api/user/profile route,
+      so the two write paths into User.city/country stay consistent.
+    """
+    question_type = node.get("question_type", "")
+    if question_type in ("single_choice", "multi_choice"):
+        options = set(node.get("options") or [])
+        submitted = answer if isinstance(answer, list) else [answer]
+        if any(a not in options for a in submitted):
+            raise HTTPException(status_code=400, detail=ERR_INVALID_ANSWER_OPTION)
+
+    if node.get("writes_to_profile_field") and isinstance(answer, str) and (
+        not answer.strip() or len(answer) > _PROFILE_FIELD_MAX_LENGTH
+    ):
+        raise HTTPException(status_code=400, detail=ERR_INVALID_PROFILE_ANSWER)
 
 
 def _decrypt_context_events(

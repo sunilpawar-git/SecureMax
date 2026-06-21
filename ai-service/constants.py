@@ -20,6 +20,8 @@ ERR_SESSION_ABANDONED = "Session was abandoned"
 ERR_SESSION_ALREADY_EXISTS = "Active session already exists. Resume or abandon it first."
 ERR_WRONG_QUESTION = "Expected answer for {expected}, got {got}"
 ERR_NODE_NOT_IN_GRAPH = "Current node not in graph"
+ERR_INVALID_ANSWER_OPTION = "Answer is not one of the question's allowed options"
+ERR_INVALID_PROFILE_ANSWER = "Answer is empty or exceeds the maximum profile field length"
 ERR_ACCESS_DENIED = "Access denied"
 ERR_USER_NOT_FOUND = (
     "User not found. Ensure ai-service DATABASE_URL uses the same database as Next.js."

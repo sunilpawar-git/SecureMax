@@ -57,3 +57,20 @@ describe('deprecated consent/profile shims forward track to /onboarding', () => 
     expect(src).toContain('/onboarding?track=');
   });
 });
+
+describe('consent/profile redirect shims are tracked for removal', () => {
+  // The shims carry a TODO(deprecate-after-<date>) marker rather than a
+  // tracked ticket. Fail the suite once that date passes so removal isn't
+  // left to memory — bump the date (and this test) only as a deliberate
+  // decision to extend the compat window, not by accident.
+  const DEPRECATE_AFTER = new Date('2026-07-21');
+
+  it.each([
+    ['consent shim', CONSENT_SHIM],
+    ['profile shim', PROFILE_SHIM],
+  ])('%s TODO date has not passed yet — remove the shim once it does', (_label, segments) => {
+    const src = read(...segments);
+    expect(src).toMatch(/TODO\(deprecate-after-\d{4}-\d{2}-\d{2}\)/);
+    expect(new Date() < DEPRECATE_AFTER).toBe(true);
+  });
+});

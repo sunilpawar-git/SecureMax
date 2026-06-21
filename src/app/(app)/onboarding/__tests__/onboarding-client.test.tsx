@@ -105,6 +105,52 @@ describe('OnboardingClient (consent + optional phone)', () => {
     expect(push).not.toHaveBeenCalled();
   });
 
+  it('shows an error and does not navigate if the phone PATCH fails after consent succeeds', async () => {
+    fetchMock
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ consentAt: '2026-01-01T00:00:00.000Z' }),
+      })
+      .mockResolvedValueOnce({ ok: false, json: async () => ({ error: 'Could not save phone' }) });
+
+    render(<OnboardingClient />);
+    fireEvent.change(screen.getByLabelText(ONBOARDING.PHONE_LABEL), {
+      target: { value: '+91 98765 43210' },
+    });
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: /I Agree — Continue to Assessment/ }));
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    expect(await screen.findByText('Could not save phone')).toBeInTheDocument();
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it('retries only the phone PATCH path on re-submit after a PATCH failure (consent re-fires, is idempotent)', async () => {
+    fetchMock
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ consentAt: '2026-01-01T00:00:00.000Z' }),
+      })
+      .mockResolvedValueOnce({ ok: false, json: async () => ({ error: 'Could not save phone' }) })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ consentAt: '2026-01-01T00:00:00.000Z' }),
+      })
+      .mockResolvedValueOnce({ ok: true, json: async () => ({}) });
+
+    render(<OnboardingClient />);
+    fireEvent.change(screen.getByLabelText(ONBOARDING.PHONE_LABEL), {
+      target: { value: '+91 98765 43210' },
+    });
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: /I Agree — Continue to Assessment/ }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+
+    fireEvent.click(screen.getByRole('button', { name: /I Agree — Continue to Assessment/ }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(4));
+    expect(push).toHaveBeenCalledWith('/questionnaire');
+  });
+
   it('has no axe violations', async () => {
     const { container } = render(<OnboardingClient />);
     expect(await axe(container)).toHaveNoViolations();
