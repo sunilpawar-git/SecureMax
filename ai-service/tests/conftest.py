@@ -40,6 +40,8 @@ SET search_path TO {TEST_SCHEMA};
 CREATE TABLE IF NOT EXISTS {TEST_SCHEMA}.users (
     id TEXT PRIMARY KEY,
     email TEXT NOT NULL DEFAULT 'test@example.com',
+    city TEXT,
+    country TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );

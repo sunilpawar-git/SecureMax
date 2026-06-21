@@ -62,8 +62,8 @@ class TestEnterpriseGraphDepth:
         cpp04_count = sum(1 for n in non_terminal_nodes if n["domain"] == "CPP-04")
         assert cpp04_count >= 3, f"CPP-04 should have ≥3 questions (was 1), got {cpp04_count}"
 
-    def test_version_is_2(self, ent_data):
-        assert ent_data["metadata"]["version"] == 2
+    def test_version_is_3(self, ent_data):
+        assert ent_data["metadata"]["version"] == 3
 
     def test_all_nodes_have_required_fields(self, ent_nodes):
         for node in ent_nodes:

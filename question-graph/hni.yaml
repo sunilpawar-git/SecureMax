@@ -5,10 +5,43 @@
 
 metadata:
   track: hni
-  version: 2
-  entry_node: hni_q1_property_type
+  version: 3
+  entry_node: hni_q0_city
 
 nodes:
+  # ===== LOCATION (writes back to User.city/User.country) =====
+  - id: hni_q0_city
+    domain: CPP-07
+    text: 'Which city is the property located in?'
+    question_type: text_input
+    cpp_domain_tag: CPP-07
+    writes_to_profile_field: city
+    edges:
+      - target: hni_q0b_country
+        condition: any
+
+  - id: hni_q0b_country
+    domain: CPP-07
+    text: 'Which country is the property located in?'
+    question_type: single_choice
+    cpp_domain_tag: CPP-07
+    options:
+      [
+        India,
+        'United Arab Emirates',
+        Singapore,
+        'United Kingdom',
+        'United States',
+        'Saudi Arabia',
+        Qatar,
+        Bahrain,
+        Other,
+      ]
+    writes_to_profile_field: country
+    edges:
+      - target: hni_q1_property_type
+        condition: any
+
   # ===== OPENING =====
   - id: hni_q1_property_type
     domain: CPP-07

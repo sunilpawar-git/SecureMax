@@ -11,6 +11,7 @@ SESSION_ABANDONED = "abandoned"
 # DB table names
 TABLE_AUDIT_SESSIONS = "audit_sessions"
 TABLE_SESSION_EVENTS = "session_events"
+TABLE_USERS = "users"
 
 # HTTP error messages
 ERR_SESSION_NOT_FOUND = "Session not found"

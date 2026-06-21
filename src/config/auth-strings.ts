@@ -30,31 +30,13 @@ export const AUTH_ERROR_MESSAGES: Record<string, string> = {
   OAuthAccountNotLinked: 'This email is already linked to another sign-in method.',
 };
 
-/** Onboarding location-profile copy + validation messages. */
+/** Onboarding phone-capture copy + validation messages. City/country are now
+ * collected inside the questionnaire graph (question-graph/*.yaml) instead
+ * of this screen — see Phase 5 of the onboarding UX fixes. */
 export const ONBOARDING = {
-  PROFILE_HEADING: 'Where is your property located?',
-  PROFILE_DESC:
-    'This helps us tailor the security assessment to local threat landscapes and regulations.',
-  COUNTRY_LABEL: 'Country',
-  COUNTRY_PLACEHOLDER: 'Select country',
-  CITY_LABEL: 'City',
-  CITY_PLACEHOLDER: 'e.g. Mumbai, Dubai, London',
   PHONE_LABEL: 'Phone (optional)',
   PHONE_PLACEHOLDER: 'e.g. +91 98765 43210',
   PHONE_HINT: 'Include country code. Used only for audit follow-up — never shared.',
   PROFILE_ERROR_GENERIC: 'Something went wrong',
   PROFILE_ERROR_SAVE: 'Failed to save profile',
 } as const;
-
-/** Country options for the onboarding profile selector. */
-export const ONBOARDING_COUNTRIES = [
-  'India',
-  'United Arab Emirates',
-  'Singapore',
-  'United Kingdom',
-  'United States',
-  'Saudi Arabia',
-  'Qatar',
-  'Bahrain',
-  'Other',
-] as const;

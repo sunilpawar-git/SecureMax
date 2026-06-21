@@ -17,7 +17,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { AUTH, AUTH_ERROR_MESSAGES, ONBOARDING, ONBOARDING_COUNTRIES } from '@/config/strings';
+import { AUTH, AUTH_ERROR_MESSAGES, ONBOARDING } from '@/config/strings';
 
 const read = (...segments: string[]) =>
   fs.readFileSync(path.join(process.cwd(), ...segments), 'utf-8');
@@ -49,12 +49,6 @@ describe('Phase 5 SSOT string groups', () => {
       expect(typeof v).toBe('string');
       expect(v.trim().length).toBeGreaterThan(0);
     });
-  });
-
-  it('ONBOARDING_COUNTRIES lists the supported markets including India and Other', () => {
-    expect(ONBOARDING_COUNTRIES).toContain('India');
-    expect(ONBOARDING_COUNTRIES).toContain('Other');
-    expect(ONBOARDING_COUNTRIES.length).toBeGreaterThan(2);
   });
 });
 
@@ -97,18 +91,22 @@ describe('Auth error page adopts SSOT (no inline message map / copy)', () => {
   });
 });
 
-describe('Onboarding profile fields adopt primitives + SSOT', () => {
+describe('Onboarding phone field adopts primitives + SSOT', () => {
   const src = stripComments(read(...PROFILE));
 
   it('imports Card', () => {
     expect(src).toContain("from '@/components/ui/Card'");
   });
 
-  it('sources copy + country list from ONBOARDING, not inline', () => {
-    expect(src).toContain('ONBOARDING.PROFILE_HEADING');
-    expect(src).toContain('ONBOARDING_COUNTRIES');
-    expect(src).not.toContain('const COUNTRIES');
-    expect(src).not.toContain('Where is your property located?');
+  it('sources phone copy from ONBOARDING, not inline', () => {
+    expect(src).toContain('ONBOARDING.PHONE_LABEL');
+    expect(src).toContain('ONBOARDING.PHONE_HINT');
+  });
+
+  it('no longer collects city/country (moved into the question graph)', () => {
+    expect(src).not.toContain('ONBOARDING_COUNTRIES');
+    expect(src).not.toContain("id=\"city\"");
+    expect(src).not.toContain("id=\"country\"");
   });
 });
 

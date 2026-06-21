@@ -222,7 +222,7 @@ export { REPORT_STRINGS } from './report-strings';
 
 // Auth + onboarding-profile strings live in auth-strings.ts (same 300-line-gate
 // rationale); re-exported so `@/config/strings` stays the single import path.
-export { AUTH, AUTH_ERROR_MESSAGES, ONBOARDING, ONBOARDING_COUNTRIES } from './auth-strings';
+export { AUTH, AUTH_ERROR_MESSAGES, ONBOARDING } from './auth-strings';
 
 // Landing marketing copy (pricing, FAQ, footer, sample report, demo) lives in
 // landing-strings.ts (same 300-line-gate rationale); re-exported here.

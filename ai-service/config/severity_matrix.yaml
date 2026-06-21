@@ -259,6 +259,14 @@ CPP-06:
     risk_impact: 'Background checks not conducted — insider threat from employees or contractors unmitigated'
 
 CPP-07:
+  hni_q0_city:
+    negative_patterns: []
+    severity_override: low
+    risk_impact: 'Location capture only — no direct security finding; informs jurisdiction-specific context elsewhere in the report'
+  hni_q0b_country:
+    negative_patterns: []
+    severity_override: low
+    risk_impact: 'Location capture only — no direct security finding; informs jurisdiction-specific context elsewhere in the report'
   hni_q1_property_type:
     negative_patterns: ['multiple properties', 'frequently away']
     severity_override: medium
@@ -283,6 +291,14 @@ CPP-07:
     negative_patterns: ['no', 'never', 'no recurring schedule', 'no formal cycle']
     severity_override: medium
     risk_impact: 'No periodic security review — posture degrades as environment changes without reassessment'
+  ent_q0_city:
+    negative_patterns: []
+    severity_override: low
+    risk_impact: 'Location capture only — no direct security finding; informs jurisdiction-specific context elsewhere in the report'
+  ent_q0b_country:
+    negative_patterns: []
+    severity_override: low
+    risk_impact: 'Location capture only — no direct security finding; informs jurisdiction-specific context elsewhere in the report'
   ent_q1_facility_type:
     negative_patterns: ['manufacturing', 'warehouse', 'multi-site operation']
     severity_override: medium

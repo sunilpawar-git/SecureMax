@@ -16,10 +16,10 @@ export default async function QuestionnairePage({
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { consentAt: true, city: true },
+    select: { consentAt: true },
   });
 
-  if (!user?.consentAt || !user?.city) redirect(`/onboarding${trackQuery}`);
+  if (!user?.consentAt) redirect(`/onboarding${trackQuery}`);
 
   return <QuestionnaireClient />;
 }

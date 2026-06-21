@@ -10,6 +10,7 @@ import asyncpg
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 
 import session_repository as repo
+import user_repository
 from branching import BranchResult, determine_next_node_with_ai
 from config import Settings, get_settings
 from constants import (
@@ -156,6 +157,14 @@ async def submit_answer(
         cpp_citations=citations,
         domain_score_delta={"domain": domain, "score_drop_trigger": score_drop},
     )
+
+    # City/country questions also write back to the user's profile row —
+    # see `writes_to_profile_field` on the graph node (question-graph/*.yaml).
+    profile_field = current_node.get("writes_to_profile_field")
+    if profile_field:
+        await user_repository.update_profile_field(
+            conn, session["user_id"], profile_field, answer_str
+        )
 
     return await _build_answer_response(
         conn,

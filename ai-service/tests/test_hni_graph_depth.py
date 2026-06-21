@@ -58,8 +58,8 @@ class TestHniGraphDepth:
         cpp02_count = sum(1 for n in non_terminal_nodes if n["domain"] == "CPP-02")
         assert cpp02_count >= 4, f"CPP-02 should have ≥4 questions (was 2), got {cpp02_count}"
 
-    def test_version_is_2(self, hni_data):
-        assert hni_data["metadata"]["version"] == 2
+    def test_version_is_3(self, hni_data):
+        assert hni_data["metadata"]["version"] == 3
 
     def test_all_nodes_have_required_fields(self, hni_nodes):
         for node in hni_nodes:

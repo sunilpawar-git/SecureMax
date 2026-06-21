@@ -9,12 +9,10 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 
 interface ConsentLegalBlockProps {
-  /** Extra disable condition supplied by the parent (e.g. profile fields incomplete). */
-  disabled?: boolean;
   onConsented: (consentAt: string) => void | Promise<void>;
 }
 
-export function ConsentLegalBlock({ disabled, onConsented }: ConsentLegalBlockProps) {
+export function ConsentLegalBlock({ onConsented }: ConsentLegalBlockProps) {
   const { update: updateSession } = useSession();
   const [agreed, setAgreed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -104,7 +102,7 @@ export function ConsentLegalBlock({ disabled, onConsented }: ConsentLegalBlockPr
         className="w-full"
         onClick={handleConsent}
         loading={isSubmitting}
-        disabled={!agreed || disabled}
+        disabled={!agreed}
       >
         {isSubmitting ? 'Recording consent...' : 'I Agree — Continue to Assessment'}
       </Button>

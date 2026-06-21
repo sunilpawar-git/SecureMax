@@ -25,21 +25,40 @@ def _start(test_client, user_id: str, track: str = "hni"):
     )
 
 
+def _answer(test_client, session_id: str, user_id: str, question_id: str, answer: str):
+    return test_client.post(
+        "/questionnaire/answer",
+        json={"session_id": session_id, "question_id": question_id, "answer": answer},
+        headers={"X-User-Id": user_id},
+    )
+
+
+def _skip_location(test_client, session_id: str, user_id: str, track: str = "hni") -> dict:
+    """Answer the city + country nodes that now precede every track's real
+    entry question. Returns the response JSON for the property/facility
+    type question that follows."""
+    city_id = "hni_q0_city" if track == "hni" else "ent_q0_city"
+    country_id = "hni_q0b_country" if track == "hni" else "ent_q0b_country"
+    _answer(test_client, session_id, user_id, city_id, "Mumbai")
+    resp = _answer(test_client, session_id, user_id, country_id, "India")
+    return resp.json()
+
+
 class TestStartSession:
     def test_start_hni_session(self, test_client) -> None:
         resp = _start(test_client, "user-1")
         assert resp.status_code == 200
         data = resp.json()
         assert "session_id" in data
-        assert data["first_question"]["id"] == "hni_q1_property_type"
-        assert data["first_question"]["question_type"] == "single_choice"
+        assert data["first_question"]["id"] == "hni_q0_city"
+        assert data["first_question"]["question_type"] == "text_input"
         assert all(v == 100.0 for v in data["radar_scores"].values())
 
     def test_start_enterprise_session(self, test_client) -> None:
         resp = _start(test_client, "user-2", "enterprise")
         assert resp.status_code == 200
         data = resp.json()
-        assert data["first_question"]["id"] == "ent_q1_facility_type"
+        assert data["first_question"]["id"] == "ent_q0_city"
 
     def test_start_duplicate_session_blocked(self, test_client) -> None:
         _start(test_client, "user-3")
@@ -89,15 +108,10 @@ class TestSubmitAnswer:
 
     def test_submit_first_answer(self, test_client) -> None:
         session_id = self._start_hni(test_client)
-        resp = test_client.post(
-            "/questionnaire/answer",
-            json={
-                "session_id": session_id,
-                "question_id": "hni_q1_property_type",
-                "answer": "Villa",
-            },
-            headers={"X-User-Id": "user-answer-test"},
-        )
+        data = _skip_location(test_client, session_id, "user-answer-test")
+        assert data["next_question"]["id"] == "hni_q1_property_type"
+
+        resp = _answer(test_client, session_id, "user-answer-test", "hni_q1_property_type", "Villa")
         assert resp.status_code == 200
         data = resp.json()
         assert data["is_complete"] is False
@@ -149,24 +163,13 @@ class TestSubmitAnswer:
     def test_radar_scores_drop_on_negative_answer(self, test_client) -> None:
         uid = "user-radar"
         session_id = self._start_hni(test_client, uid)
+        _skip_location(test_client, session_id, uid)
         for qid, ans in [
             ("hni_q1_property_type", "Villa"),
             ("hni_q2_existing_vendor", "No"),
         ]:
-            test_client.post(
-                "/questionnaire/answer",
-                json={"session_id": session_id, "question_id": qid, "answer": ans},
-                headers={"X-User-Id": uid},
-            )
-        resp = test_client.post(
-            "/questionnaire/answer",
-            json={
-                "session_id": session_id,
-                "question_id": "hni_q3_incident_history",
-                "answer": "Yes",
-            },
-            headers={"X-User-Id": uid},
-        )
+            _answer(test_client, session_id, uid, qid, ans)
+        resp = _answer(test_client, session_id, uid, "hni_q3_incident_history", "Yes")
         data = resp.json()
         assert data["radar_scores"]["CPP-07"] < 100.0
 
@@ -175,15 +178,7 @@ class TestResumeSession:
     def test_resume_active_session(self, test_client) -> None:
         resp = _start(test_client, "user-resume")
         session_id = resp.json()["session_id"]
-        test_client.post(
-            "/questionnaire/answer",
-            json={
-                "session_id": session_id,
-                "question_id": "hni_q1_property_type",
-                "answer": "Apartment",
-            },
-            headers={"X-User-Id": "user-resume"},
-        )
+        _answer(test_client, session_id, "user-resume", "hni_q0_city", "Mumbai")
         resp = test_client.post(
             "/questionnaire/resume",
             json={"session_id": session_id},
@@ -191,7 +186,7 @@ class TestResumeSession:
         )
         assert resp.status_code == 200
         data = resp.json()
-        assert data["current_question"]["id"] == "hni_q2_existing_vendor"
+        assert data["current_question"]["id"] == "hni_q0b_country"
         assert data["questions_answered"] == 1
 
     def test_resume_missing_auth_rejected(self, test_client) -> None:
@@ -305,15 +300,7 @@ class TestCppCitations:
     def test_answer_response_includes_cpp_citations_field(self, test_client) -> None:
         resp = _start(test_client, "user-citations")
         session_id = resp.json()["session_id"]
-        resp = test_client.post(
-            "/questionnaire/answer",
-            json={
-                "session_id": session_id,
-                "question_id": "hni_q1_property_type",
-                "answer": "Villa",
-            },
-            headers={"X-User-Id": "user-citations"},
-        )
+        resp = _answer(test_client, session_id, "user-citations", "hni_q0_city", "Mumbai")
         assert resp.status_code == 200
         data = resp.json()
         assert "cpp_citations" in data
@@ -325,15 +312,7 @@ class TestAIBranchedFlag:
         """When all edges are 'any' or single-path, ai_branched must be False."""
         resp = _start(test_client, "user-branch-any")
         session_id = resp.json()["session_id"]
-        resp = test_client.post(
-            "/questionnaire/answer",
-            json={
-                "session_id": session_id,
-                "question_id": "hni_q1_property_type",
-                "answer": "Villa",
-            },
-            headers={"X-User-Id": "user-branch-any"},
-        )
+        resp = _answer(test_client, session_id, "user-branch-any", "hni_q0_city", "Mumbai")
         assert resp.status_code == 200
         data = resp.json()
         assert data["ai_branched"] is False
@@ -341,15 +320,7 @@ class TestAIBranchedFlag:
     def test_response_includes_ai_branched_field(self, test_client) -> None:
         resp = _start(test_client, "user-branch-field")
         session_id = resp.json()["session_id"]
-        resp = test_client.post(
-            "/questionnaire/answer",
-            json={
-                "session_id": session_id,
-                "question_id": "hni_q1_property_type",
-                "answer": "Villa",
-            },
-            headers={"X-User-Id": "user-branch-field"},
-        )
+        resp = _answer(test_client, session_id, "user-branch-field", "hni_q0_city", "Mumbai")
         data = resp.json()
         assert "ai_branched" in data
         assert isinstance(data["ai_branched"], bool)
@@ -364,6 +335,8 @@ class TestFullHNIFlow:
         session_id = resp.json()["session_id"]
 
         questions_answered = [
+            ("hni_q0_city", "Mumbai"),
+            ("hni_q0b_country", "India"),
             ("hni_q1_property_type", "Villa"),
             ("hni_q2_existing_vendor", "No"),
             ("hni_q3_incident_history", "No"),
@@ -372,18 +345,64 @@ class TestFullHNIFlow:
         ]
 
         for qid, answer in questions_answered:
-            resp = test_client.post(
-                "/questionnaire/answer",
-                json={
-                    "session_id": session_id,
-                    "question_id": qid,
-                    "answer": answer,
-                },
-                headers={"X-User-Id": uid},
-            )
+            resp = _answer(test_client, session_id, uid, qid, answer)
             assert resp.status_code == 200
 
         data = resp.json()
         assert data["is_complete"] is False
         assert data["next_question"]["id"] == "hni_cpp01_gate_code"
         assert data["radar_scores"]["CPP-01"] < 100.0
+
+
+class TestProfileFieldWriteBack:
+    """Phase 5 — answering the city/country nodes writes back to users.city/country."""
+
+    def test_city_answer_writes_user_city(self, test_client, db_conn) -> None:
+        uid = "user-writeback-city"
+        resp = _start(test_client, uid)
+        session_id = resp.json()["session_id"]
+
+        resp = _answer(test_client, session_id, uid, "hni_q0_city", "Mumbai")
+        assert resp.status_code == 200
+
+        row = run_db(db_conn.fetchrow("SELECT city, country FROM users WHERE id = $1", uid))
+        assert row["city"] == "Mumbai"
+        assert row["country"] is None
+
+    def test_country_answer_writes_user_country(self, test_client, db_conn) -> None:
+        uid = "user-writeback-country"
+        resp = _start(test_client, uid)
+        session_id = resp.json()["session_id"]
+
+        _answer(test_client, session_id, uid, "hni_q0_city", "Mumbai")
+        resp = _answer(test_client, session_id, uid, "hni_q0b_country", "India")
+        assert resp.status_code == 200
+
+        row = run_db(db_conn.fetchrow("SELECT city, country FROM users WHERE id = $1", uid))
+        assert row["city"] == "Mumbai"
+        assert row["country"] == "India"
+
+    def test_unrelated_questions_do_not_touch_profile(self, test_client, db_conn) -> None:
+        """A node without writes_to_profile_field must leave city/country untouched."""
+        uid = "user-writeback-unrelated"
+        resp = _start(test_client, uid)
+        session_id = resp.json()["session_id"]
+        _skip_location(test_client, session_id, uid)
+
+        resp = _answer(test_client, session_id, uid, "hni_q1_property_type", "Villa")
+        assert resp.status_code == 200
+
+        row = run_db(db_conn.fetchrow("SELECT city, country FROM users WHERE id = $1", uid))
+        assert row["city"] == "Mumbai"
+        assert row["country"] == "India"
+
+    def test_enterprise_city_answer_writes_user_city(self, test_client, db_conn) -> None:
+        uid = "user-writeback-ent"
+        resp = _start(test_client, uid, "enterprise")
+        session_id = resp.json()["session_id"]
+
+        resp = _answer(test_client, session_id, uid, "ent_q0_city", "Dubai")
+        assert resp.status_code == 200
+
+        row = run_db(db_conn.fetchrow("SELECT city FROM users WHERE id = $1", uid))
+        assert row["city"] == "Dubai"
