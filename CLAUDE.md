@@ -51,6 +51,11 @@ pytest tests/test_questionnaire.py -k "test_branch"   # run a single test
 ```bash
 npx prisma migrate dev
 npx prisma generate
+```
+
+Migration folder names sort lexicographically (not numerically) to determine apply order on a from-scratch bootstrap — always let `prisma migrate dev --name X` generate its default `YYYYMMDDHHMMSS_name` prefix. Never hand-roll a bare/zero-padded integer prefix.
+
+```bash
 
 # Seed CPP Seven Precis embeddings (run once after DB setup)
 cd ai-service && python scripts/seed_cpp_embeddings.py
