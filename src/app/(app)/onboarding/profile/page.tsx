@@ -1,13 +1,23 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { APP, ONBOARDING, ONBOARDING_COUNTRIES } from '@/config/strings';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 
 export default function ProfilePage() {
+  return (
+    <Suspense fallback={null}>
+      <ProfileForm />
+    </Suspense>
+  );
+}
+
+function ProfileForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const track = searchParams.get('track');
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
   const [phone, setPhone] = useState('');
@@ -34,7 +44,7 @@ export default function ProfilePage() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || ONBOARDING.PROFILE_ERROR_SAVE);
       }
-      router.push('/questionnaire');
+      router.push(track ? `/questionnaire?track=${encodeURIComponent(track)}` : '/questionnaire');
     } catch (err) {
       setError(err instanceof Error ? err.message : ONBOARDING.PROFILE_ERROR_GENERIC);
     } finally {

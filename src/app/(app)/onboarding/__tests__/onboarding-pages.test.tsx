@@ -16,6 +16,7 @@ expect.extend(toHaveNoViolations);
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: jest.fn() }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 jest.mock('next-auth/react', () => ({

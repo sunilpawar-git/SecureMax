@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { APP, DPDPA, TRUST_STACK } from '@/config/strings';
 import { LEGAL_LINKS } from '@/config/legal-strings';
@@ -10,7 +10,17 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 
 export default function ConsentPage() {
+  return (
+    <Suspense fallback={null}>
+      <ConsentForm />
+    </Suspense>
+  );
+}
+
+function ConsentForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const track = searchParams.get('track');
   const { update: updateSession } = useSession();
   const [agreed, setAgreed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,7 +40,9 @@ export default function ConsentPage() {
       const data = await res.json();
       // Refresh the JWT so the proxy sees consentAt on the very next request.
       await updateSession({ consentAt: data.consentAt });
-      router.push('/onboarding/profile');
+      router.push(
+        track ? `/onboarding/profile?track=${encodeURIComponent(track)}` : '/onboarding/profile',
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {

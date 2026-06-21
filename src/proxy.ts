@@ -138,7 +138,9 @@ export default auth(async (req) => {
     if (requiresConsent && !isConsentPage) {
       const consentAt = (session as { user: { consentAt?: string } }).user.consentAt;
       if (!consentAt) {
-        return NextResponse.redirect(new URL('/onboarding/consent', nextUrl));
+        const consentUrl = new URL('/onboarding/consent', nextUrl);
+        consentUrl.search = nextUrl.search;
+        return NextResponse.redirect(consentUrl);
       }
     }
   }

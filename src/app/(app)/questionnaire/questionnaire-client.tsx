@@ -7,6 +7,7 @@ import { QuestionnaireLayout } from './questionnaire-layout';
 import { APP, CTA, TRACK, VALID_TRACKS, UI, QUESTIONNAIRE } from '@/config/strings';
 import { startSession, resumeSession, submitAnswer } from './questionnaire-service';
 import { useReportTrigger } from './use-report-trigger';
+import { useAutoStart } from './use-auto-start';
 import { ResumePrompt } from '@/components/ResumePrompt';
 import { TurnstileWidget } from '@/components/security/TurnstileWidget';
 import { useAppHeaderMeta } from '@/components/app-header-context';
@@ -118,6 +119,8 @@ function QuestionnaireContent() {
     },
     [captchaToken],
   );
+
+  useAutoStart(urlTrack, urlSessionId, sessionState, handleStart);
 
   const handleResume = useCallback(async (sid: string) => {
     setIsLoading(true);
