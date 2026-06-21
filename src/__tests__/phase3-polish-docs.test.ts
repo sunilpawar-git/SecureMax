@@ -58,9 +58,9 @@ describe('Consent API writes version and purpose', () => {
   });
 });
 
-describe('Consent page displays purpose text', () => {
+describe('Consent legal block displays purpose text', () => {
   const content = fs.readFileSync(
-    path.join(process.cwd(), 'src', 'app', '(app)', 'onboarding', 'consent', 'page.tsx'),
+    path.join(process.cwd(), 'src', 'app', '(app)', 'onboarding', 'ConsentLegalBlock.tsx'),
     'utf-8',
   );
 

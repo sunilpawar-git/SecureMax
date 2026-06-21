@@ -32,8 +32,8 @@ describe('Middleware consent enforcement scope', () => {
     expect(prefixes).toContain('/payment');
   });
 
-  it('excludes /onboarding/consent from consent check to avoid redirect loop', () => {
-    expect(content).toContain('/onboarding/consent');
+  it('excludes /onboarding from consent check to avoid redirect loop', () => {
+    expect(content).toContain("pathname.startsWith('/onboarding')");
   });
 });
 

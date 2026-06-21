@@ -1,8 +1,9 @@
 /**
  * Phase 1 — track re-selection redundancy fix.
+ * Phase 4 — consent + profile merged into a single /onboarding screen, so the
+ * redirect target collapsed from two hops to one; the old consent/profile
+ * pages are now redirect shims that forward to /onboarding.
  *
- * The `track` query param chosen on the landing page was dropped at three
- * redirect points, forcing a second HNI/Enterprise pick right before Q1.
  * These are source-regex assertions (same approach as
  * auth-onboarding-restyle.test.ts) since proxy.ts and the onboarding pages
  * are not easily unit-rendered in isolation.
@@ -18,19 +19,19 @@ const stripComments = (src: string) =>
 
 const PROXY = ['src', 'proxy.ts'];
 const QUESTIONNAIRE_PAGE = ['src', 'app', '(app)', 'questionnaire', 'page.tsx'];
-const CONSENT = ['src', 'app', '(app)', 'onboarding', 'consent', 'page.tsx'];
-const PROFILE = ['src', 'app', '(app)', 'onboarding', 'profile', 'page.tsx'];
+const CONSENT_SHIM = ['src', 'app', '(app)', 'onboarding', 'consent', 'page.tsx'];
+const PROFILE_SHIM = ['src', 'app', '(app)', 'onboarding', 'profile', 'page.tsx'];
 
-describe('proxy.ts preserves track on the consent redirect', () => {
+describe('proxy.ts preserves track on the onboarding redirect', () => {
   const src = stripComments(read(...PROXY));
 
-  it('forwards the query string when redirecting to /onboarding/consent', () => {
-    expect(src).toContain("new URL('/onboarding/consent', nextUrl)");
+  it('forwards the query string when redirecting to /onboarding', () => {
+    expect(src).toContain("new URL('/onboarding', nextUrl)");
     expect(src).toContain('consentUrl.search = nextUrl.search');
   });
 });
 
-describe('questionnaire/page.tsx forwards track on both onboarding redirects', () => {
+describe('questionnaire/page.tsx forwards track to the single onboarding redirect', () => {
   const src = stripComments(read(...QUESTIONNAIRE_PAGE));
 
   it('reads track from searchParams', () => {
@@ -38,35 +39,21 @@ describe('questionnaire/page.tsx forwards track on both onboarding redirects', (
     expect(src).toContain('const { track } = await searchParams');
   });
 
-  it('appends track to the consent redirect', () => {
-    expect(src).toContain('redirect(`/onboarding/consent${trackQuery}`)');
-  });
-
-  it('appends track to the profile redirect', () => {
-    expect(src).toContain('redirect(`/onboarding/profile${trackQuery}`)');
+  it('redirects to /onboarding with track preserved', () => {
+    expect(src).toContain('redirect(`/onboarding${trackQuery}`)');
   });
 });
 
-describe('consent/page.tsx forwards track to the profile redirect', () => {
-  const src = stripComments(read(...CONSENT));
-
-  it('reads track via useSearchParams', () => {
+describe('deprecated consent/profile shims forward track to /onboarding', () => {
+  it('consent shim redirects preserving track', () => {
+    const src = stripComments(read(...CONSENT_SHIM));
     expect(src).toContain("searchParams.get('track')");
+    expect(src).toContain('/onboarding?track=');
   });
 
-  it('appends track when pushing to /onboarding/profile', () => {
-    expect(src).toContain('/onboarding/profile?track=');
-  });
-});
-
-describe('profile/page.tsx forwards track to the questionnaire redirect', () => {
-  const src = stripComments(read(...PROFILE));
-
-  it('reads track via useSearchParams', () => {
+  it('profile shim redirects preserving track', () => {
+    const src = stripComments(read(...PROFILE_SHIM));
     expect(src).toContain("searchParams.get('track')");
-  });
-
-  it('appends track when pushing to /questionnaire', () => {
-    expect(src).toContain('/questionnaire?track=');
+    expect(src).toContain('/onboarding?track=');
   });
 });

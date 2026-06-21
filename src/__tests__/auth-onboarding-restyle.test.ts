@@ -4,12 +4,15 @@
  * Auth signin/error pages are async Server Components that import NextAuth +
  * generated Prisma client (ESM `import.meta`), so they cannot be `require()`d
  * in Jest — we assert their source against the SSOT contract via regex, the
- * same approach as auth-pages.test.ts. The onboarding client pages get a real
- * RTL+axe render in onboarding-pages.test.tsx.
+ * same approach as auth-pages.test.ts. The combined onboarding client gets a
+ * real RTL+axe render in onboarding/__tests__/onboarding-client.test.tsx.
  *
- * Assertion #7 (locked plan): the consent page is RESTYLE ONLY. Its DPDPA
+ * Assertion #7 (locked plan): the consent block is RESTYLE ONLY. Its DPDPA
  * consent wording, checkbox, and flow stay byte-for-byte; we guard that here so
  * a future "move strings to config" refactor can't silently alter legal copy.
+ * Phase 4 merged consent + profile into one screen — the legal copy now lives
+ * in ConsentLegalBlock.tsx (relocated verbatim) and the profile fields in
+ * onboarding-client.tsx.
  */
 
 import fs from 'fs';
@@ -23,8 +26,8 @@ const stripComments = (src: string) =>
 
 const SIGNIN = ['src', 'app', 'auth', 'signin', 'page.tsx'];
 const ERROR = ['src', 'app', 'auth', 'error', 'page.tsx'];
-const PROFILE = ['src', 'app', '(app)', 'onboarding', 'profile', 'page.tsx'];
-const CONSENT = ['src', 'app', '(app)', 'onboarding', 'consent', 'page.tsx'];
+const PROFILE = ['src', 'app', '(app)', 'onboarding', 'onboarding-client.tsx'];
+const CONSENT = ['src', 'app', '(app)', 'onboarding', 'ConsentLegalBlock.tsx'];
 
 describe('Phase 5 SSOT string groups', () => {
   it('AUTH values are non-empty strings', () => {
@@ -94,25 +97,22 @@ describe('Auth error page adopts SSOT (no inline message map / copy)', () => {
   });
 });
 
-describe('Profile page adopts primitives + SSOT', () => {
+describe('Onboarding profile fields adopt primitives + SSOT', () => {
   const src = stripComments(read(...PROFILE));
 
-  it('imports Button and Card', () => {
-    expect(src).toContain("from '@/components/ui/Button'");
+  it('imports Card', () => {
     expect(src).toContain("from '@/components/ui/Card'");
   });
 
   it('sources copy + country list from ONBOARDING, not inline', () => {
     expect(src).toContain('ONBOARDING.PROFILE_HEADING');
-    expect(src).toContain('ONBOARDING.PROFILE_SUBMIT');
     expect(src).toContain('ONBOARDING_COUNTRIES');
     expect(src).not.toContain('const COUNTRIES');
     expect(src).not.toContain('Where is your property located?');
-    expect(src).not.toContain("'Continue to Assessment'");
   });
 });
 
-describe('Consent page — restyle only (assertion #7: copy byte-for-byte)', () => {
+describe('Consent legal block — restyle only (assertion #7: copy byte-for-byte)', () => {
   const raw = read(...CONSENT);
   const src = stripComments(raw);
 

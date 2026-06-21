@@ -19,8 +19,7 @@ export default async function QuestionnairePage({
     select: { consentAt: true, city: true },
   });
 
-  if (!user?.consentAt) redirect(`/onboarding/consent${trackQuery}`);
-  if (!user?.city) redirect(`/onboarding/profile${trackQuery}`);
+  if (!user?.consentAt || !user?.city) redirect(`/onboarding${trackQuery}`);
 
   return <QuestionnaireClient />;
 }

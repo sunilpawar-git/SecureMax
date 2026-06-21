@@ -32,7 +32,6 @@ export const AUTH_ERROR_MESSAGES: Record<string, string> = {
 
 /** Onboarding location-profile copy + validation messages. */
 export const ONBOARDING = {
-  PROFILE_SUBTITLE: 'Location Information',
   PROFILE_HEADING: 'Where is your property located?',
   PROFILE_DESC:
     'This helps us tailor the security assessment to local threat landscapes and regulations.',
@@ -43,9 +42,6 @@ export const ONBOARDING = {
   PHONE_LABEL: 'Phone (optional)',
   PHONE_PLACEHOLDER: 'e.g. +91 98765 43210',
   PHONE_HINT: 'Include country code. Used only for audit follow-up — never shared.',
-  PHONE_ERROR: 'Enter a valid phone number with country code',
-  PROFILE_SUBMIT: 'Continue to Assessment',
-  PROFILE_SUBMITTING: 'Saving...',
   PROFILE_ERROR_GENERIC: 'Something went wrong',
   PROFILE_ERROR_SAVE: 'Failed to save profile',
 } as const;

@@ -113,7 +113,8 @@ export default auth(async (req) => {
   }
 
   // H-2: Require DPDPA consent before accessing any protected app route.
-  // Excludes /onboarding/consent itself to avoid redirect loop.
+  // Excludes /onboarding itself to avoid a redirect loop against the combined
+  // consent+profile screen.
   // Security headers are set in next.config.ts (SSOT) — not here.
   const CONSENT_REQUIRED_PREFIXES = [
     '/questionnaire',
@@ -134,11 +135,11 @@ export default auth(async (req) => {
     }
 
     const requiresConsent = CONSENT_REQUIRED_PREFIXES.some((p) => pathname.startsWith(p));
-    const isConsentPage = pathname.startsWith('/onboarding/consent');
+    const isConsentPage = pathname.startsWith('/onboarding');
     if (requiresConsent && !isConsentPage) {
       const consentAt = (session as { user: { consentAt?: string } }).user.consentAt;
       if (!consentAt) {
-        const consentUrl = new URL('/onboarding/consent', nextUrl);
+        const consentUrl = new URL('/onboarding', nextUrl);
         consentUrl.search = nextUrl.search;
         return NextResponse.redirect(consentUrl);
       }

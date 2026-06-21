@@ -43,9 +43,9 @@ describe('Legal links are reachable', () => {
     expect(content).toContain('LEGAL_LINKS.TERMS');
   });
 
-  it('consent page wires the privacy link from the SSOT', () => {
+  it('consent legal block wires the privacy link from the SSOT', () => {
     const content = fs.readFileSync(
-      path.join(root, 'src', 'app', '(app)', 'onboarding', 'consent', 'page.tsx'),
+      path.join(root, 'src', 'app', '(app)', 'onboarding', 'ConsentLegalBlock.tsx'),
       'utf-8',
     );
     expect(content).toContain('LEGAL_LINKS.PRIVACY');
