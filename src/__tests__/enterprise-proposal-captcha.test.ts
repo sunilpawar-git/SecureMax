@@ -12,6 +12,7 @@ jest.mock('@/lib/prisma', () => ({
   prisma: {
     enterpriseLead: { create: jest.fn() },
     auditSession: { findFirst: jest.fn(), update: jest.fn() },
+    user: { findUnique: jest.fn().mockResolvedValue({ phone: null }) },
   },
 }));
 

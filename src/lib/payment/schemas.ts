@@ -20,7 +20,6 @@ export const EnterpriseProposalSchema = z.object({
   companyName: z.string().trim().min(1, VALIDATION_ERR.REQUIRED_COMPANY_NAME),
   contactName: z.string().trim().min(1, VALIDATION_ERR.REQUIRED_CONTACT_NAME),
   contactEmail: z.string().trim().email(VALIDATION_ERR.REQUIRED_EMAIL),
-  contactPhone: z.string().trim().optional(),
   facilityCount: z.number().int().min(1),
   reportId: z.string().trim().min(1, VALIDATION_ERR.REQUIRED_REPORT_ID),
   notes: z.string().trim().optional(),

@@ -9,7 +9,6 @@ interface FormData {
   companyName: string;
   contactName: string;
   contactEmail: string;
-  contactPhone: string;
   facilityCount: string;
   notes: string;
 }
@@ -18,7 +17,6 @@ const INITIAL: FormData = {
   companyName: '',
   contactName: '',
   contactEmail: '',
-  contactPhone: '',
   facilityCount: '1',
   notes: '',
 };
@@ -99,7 +97,6 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
           companyName: form.companyName,
           contactName: form.contactName,
           contactEmail: form.contactEmail,
-          contactPhone: form.contactPhone || undefined,
           facilityCount: parseInt(form.facilityCount, 10) || 1,
           reportId: sessionId,
           captchaToken: captchaToken || undefined,
@@ -187,13 +184,6 @@ function ProposalForm({ defaultName, defaultEmail }: ProposalFormProps) {
             onChange={handleChange}
             type="email"
             required
-          />
-          <Field
-            label="Phone (optional)"
-            name="contactPhone"
-            value={form.contactPhone}
-            onChange={handleChange}
-            type="tel"
           />
           <Field
             label="Number of Facilities"

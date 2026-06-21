@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     case 'verify':
       return handleVerify(request);
     case 'enterprise-proposal':
-      return handleEnterpriseProposal(request);
+      return handleEnterpriseProposal(request, userId);
     default:
       return apiError('Invalid action. Use: create-order, verify, enterprise-proposal');
   }
@@ -128,23 +128,24 @@ async function handleVerify(request: Request) {
   return apiSuccess({ verified: true, report_unlocked: unlocked });
 }
 
-async function handleEnterpriseProposal(request: Request) {
+async function handleEnterpriseProposal(request: Request, userId: string) {
   const parsed = await parseBody(request, EnterpriseProposalSchema);
   if (!parsed.success) return apiValidationError(parsed.errors);
 
   const captchaOk = await verifyTurnstile(parsed.data.captchaToken);
   if (!captchaOk) return apiError(CAPTCHA.FAILED, 400);
 
-  const { companyName, contactName, contactEmail, contactPhone, facilityCount, reportId } =
-    parsed.data;
+  const { companyName, contactName, contactEmail, facilityCount, reportId } = parsed.data;
 
   try {
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { phone: true } });
+
     const lead = await prisma.enterpriseLead.create({
       data: {
         name: contactName,
         company: companyName,
         email: contactEmail,
-        preferredContact: contactPhone,
+        preferredContact: user?.phone ?? null,
         facilitiesCount: facilityCount,
         sourceSessionId: reportId,
         status: 'new',
